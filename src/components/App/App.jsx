@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import Name from './Name.jsx';
+import Name from './Name/Name.jsx';
 
 class App extends Component {
   constructor() {
