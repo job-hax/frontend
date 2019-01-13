@@ -4,16 +4,19 @@ download nodejs version 10x
 https://nodejs.org/en/download/
 
 on terminal: 
+npm i -g yarn
+
+on terminal: 
 git clone https://github.com/job-hax/frontend.git
 
 enter the project directory
 on terminal:
-npm i or yarn install
+yarn install
 
 for development:
-npm run dev or yarn dev
+yarn dev
 
 production build:
-npm run build or yarn build
+yarn build
 
 Starting file: './src/index.js'
