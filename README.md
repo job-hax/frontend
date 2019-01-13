@@ -1,22 +1,31 @@
-# frontend
+# JobHax Frontend application
 
-download nodejs version 10x
+## Prerequisites
+1. Download nodejs version 10x:
+```
 https://nodejs.org/en/download/
-
-on terminal: 
+```
+2. Install yarn package manager for JavaScript: 
+```
 npm i -g yarn
-
-on terminal: 
+```
+## Installation
+1. Clone current repository:
 git clone https://github.com/job-hax/frontend.git
 
-enter the project directory
-on terminal:
+2. Install project dependencies via yarn:
+```
 yarn install
+```
 
-for development:
+3. Run:
+
+a) for local development:
+```
 yarn dev
-
-production build:
+```
+b) for production build:
+```
 yarn build
-
-Starting file: './src/index.js'
+```
+Note: Starting file: './src/index.js'
