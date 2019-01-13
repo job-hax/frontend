@@ -6,6 +6,8 @@ https://nodejs.org/en/download/
 on terminal: 
 git clone https://github.com/job-hax/frontend.git
 
+enter the project directory
+on terminal:
 npm i or yarn install
 
 for development:
