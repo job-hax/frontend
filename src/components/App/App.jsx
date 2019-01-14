@@ -1,20 +1,39 @@
 import React, {Component} from "react";
-import Name from './Name/Name.jsx';
+import Header from '../Header/Header.jsx';
+import Footer from '../Footer/Footer.jsx';
+import Content from '../Page1/Content.jsx';
+
+import './style.scss'
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      title: ""
+      activePage: 1
     };
   }
 
   render() {
+    const {activePage: page} = this.state;
     return (
-      <div>
-        <Name name={'Sako'}/>
-        <Name name={'Leo'}/>
-      </div>
+      <React.Fragment>
+        <Header/>
+        <Content content={page}/>
+        <div
+          onClick={() => this.setState({activePage: this.state.activePage - 1})}
+          className="button"
+        >
+          Previous Page
+        </div>
+        <div
+          onClick={() => this.setState({activePage: this.state.activePage + 1})}
+          className="button"
+        >
+          Next Page
+        </div>
+        <Footer/>
+      </React.Fragment>
+
     );
   }
 }
