@@ -1,0 +1,15 @@
+.header-container {
+  display: flex;
+  justify-content: flex-end;
+  height: 60px;
+  background-color: #a50002;
+
+  .header-icon {
+    margin: 0 15px;
+    border: 1px solid black;
+    cursor: pointer;
+
+    &.username {
+    }
+  }
+}
