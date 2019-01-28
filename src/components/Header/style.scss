@@ -2,23 +2,24 @@
   display: flex;
   justify-content: flex-end;
   height: 60px;
-  background-color: rgb(255,0,0) ;
+  background-color: rgb(255,0,0);
 
   .header-icon {
+    width: 35px;
     margin: 0 15px;
     cursor: pointer;
-
+    
     &.general {
       font-family: sans-serif;
       margin-top: 1%;
       margin-bottom: 1%;
       color: rgb(117,62,47);
     }
+    
     &.usericon {
       margin-top: 0.5%;
       margin-bottom: 1%;
-
-    margin-right: 2%;
+      margin-right: 2%;
       color: rgb(117,62,47);
     }
   }
