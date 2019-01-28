@@ -1,7 +1,27 @@
 .card-container {
-  border-radius: 10px;
+  border-radius: 0px;
   margin: 20px auto 15px auto;
-  height: 150px;
+  height: 100px;
   width: 95%;
-  background-color: #f70100;
+  background-color: rgb(255,5,0);
+
+  .card-companyname {
+    padding-top: 6%;
+    margin-left: 15%;
+    position: relative;
+    color: rgb(255,190,186);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 102%
+  }
+
+  .card-jobposition {
+    padding-top: 1%;
+    margin-left: 16%;
+    position: relative;
+    color: rgb(255,132,126);
+    font-family: sans-serif;
+    font-size: 88%;
+    font-weight: bold;
+  }
 }
