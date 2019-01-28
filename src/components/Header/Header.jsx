@@ -15,7 +15,7 @@ class Header extends Component {
         <div className="header-icon general">
           <img src="../../src/assets/icons/metrics.png"></img>
         </div>
-        <div className="header-icon usericon">
+        <div className="header-icon user-icon">
           <img src="../../src/assets/icons/user.png"></img>
         </div>
       </div>

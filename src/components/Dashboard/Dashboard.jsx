@@ -59,7 +59,7 @@ class Dashboard extends Component {
     return (
       <div className="dashboard-container">
         <Column
-          icon= "../../src/assets/icons/applied.png"
+          icon="../../src/assets/icons/applied.png"
           title="Applied"
           cards={this.jobsApplied}
           details="..."
