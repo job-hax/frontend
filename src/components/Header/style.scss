@@ -2,20 +2,25 @@
   display: flex;
   justify-content: flex-end;
   height: 60px;
-  background-color: #a50002;
-  padding-top: 10px;
-  padding-right: 20px;
+  background-color: rgb(255,0,0);
 
   .header-icon {
     width: 35px;
     margin: 0 15px;
-    border: 1px solid black;
     cursor: pointer;
-
-    &.icon-profile {
-      background-image: url('../../assets/icons/usericon.png');
-      background-repeat: no-repeat;
-      background-size: contain;
+    
+    &.general {
+      font-family: sans-serif;
+      margin-top: 1%;
+      margin-bottom: 1%;
+      color: rgb(117,62,47);
+    }
+    
+    &.usericon {
+      margin-top: 0.5%;
+      margin-bottom: 1%;
+      margin-right: 2%;
+      color: rgb(117,62,47);
     }
   }
 }
