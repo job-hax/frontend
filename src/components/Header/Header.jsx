@@ -6,17 +6,17 @@ class Header extends Component {
   render() {
     return (
       <div className="header-container">
-        <div className="header-icon username">
-          Icon1
+        <div className="header-icon general">
+          <img src="../../src/assets/icons/settings.png"></img>
         </div>
-        <div className="header-icon username">
-          Icon2
+        <div className="header-icon general">
+          <img src="../../src/assets/icons/connect.png"></img>
         </div>
-        <div className="header-icon username">
-          Icon3
+        <div className="header-icon general">
+          <img src="../../src/assets/icons/metrics.png"></img>
         </div>
-        <div className="header-icon username">
-          Icon4
+        <div className="header-icon usericon">
+          <img src="../../src/assets/icons/user.png"></img>
         </div>
       </div>
     );

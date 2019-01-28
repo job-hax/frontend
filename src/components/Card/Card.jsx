@@ -8,10 +8,10 @@ const Card = (props) => {
   console.log('props', company, jobTitle);
   return (
     <div className="card-container">
-      <div>
+      <div className="card-companyname">
         {company}
       </div>
-      <div>
+      <div className="card-jobposition">
         {jobTitle}
       </div>
     </div>

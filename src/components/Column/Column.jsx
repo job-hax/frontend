@@ -15,8 +15,16 @@ class Column extends Component {
   render() {
     return (
       <div className="column-container">
-        <div className="column-title">
-          {this.props.title}
+        <div className="column-header">
+          <div className="column-header icon">
+            <img src= {this.props.icon}></img>
+          </div>
+          <div className="column-header title">
+            {this.props.title}
+          </div>
+          <div className="column-header details">
+            {this.props.details}
+          </div>          
         </div>
         <div>
           {this.renderCards()}

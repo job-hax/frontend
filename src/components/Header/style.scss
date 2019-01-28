@@ -2,14 +2,24 @@
   display: flex;
   justify-content: flex-end;
   height: 60px;
-  background-color: #a50002;
+  background-color: rgb(255,0,0) ;
 
   .header-icon {
     margin: 0 15px;
-    border: 1px solid black;
     cursor: pointer;
 
-    &.username {
+    &.general {
+      font-family: sans-serif;
+      margin-top: 1%;
+      margin-bottom: 1%;
+      color: rgb(117,62,47);
+    }
+    &.usericon {
+      margin-top: 0.5%;
+      margin-bottom: 1%;
+
+    margin-right: 2%;
+      color: rgb(117,62,47);
     }
   }
 }
