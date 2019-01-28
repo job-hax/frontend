@@ -4,14 +4,38 @@ export const mockJobApps = {
   "error_message": "",
   "data": [
     {
+      "id": 33,
+      "applicationStatus": {
+        "id": 1,
+        "value": "toapply"
+      },
+      "jobTitle": "Senior Android Engineer",
+      "company": "Adobe",
+      "companyLogo": "../../src/assets/icons/JobHax-logo-white.svg",
+      "applyDate": "2019-01-24T14:18:12Z",
+      "source": "Linkedin.com",
+    },
+    {
+      "id": 32,
+      "applicationStatus": {
+        "id": 1,
+        "value": "toapply"
+      },
+      "jobTitle": "Android Engineer",
+      "company": "Google",
+      "companyLogo": "../../src/assets/icons/JobHax-logo-white.svg",
+      "applyDate": "2019-01-25T14:18:12Z",
+      "source": "Hired.com",
+    },
+    {
       "id": 31,
       "applicationStatus": {
         "id": 1,
         "value": "applied"
       },
-      "jobTitle": "🤖 Lead Android Engineer",
+      "jobTitle": "Lead Android Engineer",
       "company": "OpenPhone ",
-      "companyLogo": "/static/images/errorcvlogobright.png",
+      "companyLogo": "../../src/assets/icons/JobHax-logo-white.svg",
       "applyDate": "2019-01-23T14:18:12Z",
       "source": "Hired.com",
     },
@@ -59,7 +83,7 @@ export const mockJobApps = {
       },
       "jobTitle": "Android Engineer",
       "company": "Earnin ",
-      "companyLogo": "/static/images/errorcvlogobright.png",
+      "companyLogo": "../../src/assets/icons/JobHax-logo-white.svg",
       "applyDate": "2018-10-22T08:37:45Z",
       "source": "Hired.com",
     },
@@ -71,7 +95,7 @@ export const mockJobApps = {
       },
       "jobTitle": "Android",
       "company": "Houseparty ",
-      "companyLogo": "/static/images/errorcvlogobright.png",
+      "companyLogo": "../../src/assets/icons/JobHax-logo-white.svg",
       "applyDate": "2018-10-19T16:17:26Z",
       "source": "Hired.com",
     },
@@ -83,7 +107,7 @@ export const mockJobApps = {
       },
       "jobTitle": "Android Engineer",
       "company": "Twenty ",
-      "companyLogo": "/static/images/errorcvlogobright.png",
+      "companyLogo": "../../src/assets/icons/JobHax-logo-white.svg",
       "applyDate": "2018-09-28T10:33:32Z",
       "source": "Hired.com",
     },
@@ -107,7 +131,7 @@ export const mockJobApps = {
       },
       "jobTitle": "Android Engineer",
       "company": "Amazon ",
-      "companyLogo": "/static/images/errorcvlogobright.png",
+      "companyLogo": "../../src/assets/icons/JobHax-logo-white.svg",
       "applyDate": "2018-09-14T14:35:41Z",
       "source": "Hired.com",
     },
