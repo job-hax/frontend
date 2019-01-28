@@ -54,24 +54,33 @@ class Dashboard extends Component {
     });
   }
 
+
   render() {
     return (
       <div className="dashboard-container">
         <Column
+          icon= "../../src/assets/icons/applied.png"
           title="Applied"
           cards={this.jobsApplied}
+          details="..."
         />
         <Column
+          icon="../../src/assets/icons/interview.png"
           title="Interview"
           cards={this.jobsInterview}
+          details="..."
         />
         <Column
+          icon="../../src/assets/icons/offer.png"
           title="Offer"
           cards={this.jobsOffer}
+          details="..."
         />
         <Column
+          icon="../../src/assets/icons/rejected.png"
           title="Rejected"
           cards={this.jobsRejected}
+          details="..."
         />
       </div>
     );
