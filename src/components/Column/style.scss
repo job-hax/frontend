@@ -13,13 +13,13 @@
     display: flex;
     justify-content: center ;
   
-    &.icon {
+    &.column-icon {
       margin-right: 25%
     }
-    &.title {
+    &.column-title {
       margin-left: 0%;
     }
-    &.details {
+    &.column-details {
       margin-left: 25%;
     }
   }
