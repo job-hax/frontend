@@ -5,10 +5,14 @@ import './style.scss'
 
 class Column extends Component {
   renderCards() {
-      return this.props.cards &&
-        this.props.cards.map(card =>
-          <Card key={card.id} card={card}/>);
+    return this.props.cards &&
+      this.props.cards.map(card =>
+        <Card key={card.id} card={card}/>);
   };
+
+  addJob() {
+    return "Add Job"
+  }
 
   render() {
     return (
@@ -23,6 +27,9 @@ class Column extends Component {
           <div className="column-header column-details">
             {this.props.details}
           </div>          
+        </div>
+        <div className="column-addjob">
+          {this.addJob()}
         </div>
         <div>
           {this.renderCards()}

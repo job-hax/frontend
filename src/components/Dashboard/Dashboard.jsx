@@ -9,12 +9,14 @@ class Dashboard extends Component {
     super(props);
 
     this.state = {
+      jobsToApply: [],
       jobsApplied: [],
       jobsInterview: [],
       jobsOffer: [],
       jobsRejected: [],
     };
 
+    this.jobsToApply = [];
     this.jobsApplied = [];
     this.jobsInterview = [];
     this.jobsOffer = [];
@@ -31,6 +33,9 @@ class Dashboard extends Component {
   sortApplications(applications) {
     for (let application of applications) {
       switch (application.applicationStatus.value) {
+        case 'toapply':
+          this.jobsToApply.push(application);
+          break;
         case 'applied':
           this.jobsApplied.push(application);
           break;
@@ -47,6 +52,7 @@ class Dashboard extends Component {
       }
     }
     this.setState({
+      jobsToApply: this.jobsToApply,
       jobsApplied: this.jobsApplied,
       jobsInterview: this.jobsInterview,
       jobsOffer: this.jobsOffer,
@@ -59,7 +65,13 @@ class Dashboard extends Component {
     return (
       <div className="dashboard-container">
         <Column
-          icon="../../src/assets/icons/applied.png"
+          icon="../../src/assets/icons/toapply.png"
+          title="To Apply"
+          cards={this.jobsToApply}
+          details="..."
+        />
+        <Column
+          icon="../../src/assets/icons/applied2.png"
           title="Applied"
           cards={this.jobsApplied}
           details="..."
