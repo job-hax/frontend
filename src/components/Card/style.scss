@@ -1,8 +1,9 @@
 .card-container {
   border-radius: 0px;
-  margin: 20px auto 15px auto;
-  height: 100px;
-  width: 95%;
+  margin-bottom: 3%;
+  margin-left: 3%;
+  height: 90px;
+  width: 94%;
   background-color: rgba(188,43,255,.8);
   display: flex;
   justify-content: start;
@@ -10,10 +11,77 @@
   .card-company-icon {
     margin-top: 3%;
     margin-left: 2%;
+    width: 30px;
+    height: 30px;
+    border-radius: 20px;
+    background-color: white;
     
     img {
-        width: 30px;
-        height: 30px;
+      margin-top: 14%;
+      margin-left: 12%;
+      width: 21px;
+      height: 21px;
+      border-radius: 4px;
+    }
+  }
+
+  .card-company-info {
+    width: 80%;
+  }
+  .card-company-name {
+    padding-top: 6%;
+    margin-left: 5%;
+    color: rgba(255, 255, 255, 0.911);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 102%
+  }
+
+  .card-job-position {
+    padding-top: 1%;
+    margin-left: 7%;
+    color: rgba(248, 232, 255, 0.8);
+    font-family: sans-serif;
+    font-size: 88%;
+    font-weight: bold;
+  }
+
+  .card-job-details {
+    padding-top: 1%;
+    margin-right: 5%;
+    height: 5px;
+    color: rgba(248, 232, 255, 0.8);
+    font-family: sans-serif;
+    font-size: 110%;
+    font-weight: bold;
+    cursor: pointer;
+  }
+}
+
+.cardRejected-container {
+  border-radius: 0px;
+  margin-bottom: 3%;
+  margin-left: 3%;
+  height: 90px;
+  width: 94%;
+  background-color: rgba(188,43,255,.4);
+  display: flex;
+  justify-content: start;
+
+  .card-company-icon {
+    margin-top: 3%;
+    margin-left: 2%;
+    width: 30px;
+    height: 30px;
+    border-radius: 20px;
+    background-color: white;
+    
+    img {
+      margin-top: 14%;
+      margin-left: 12%;
+      width: 21px;
+      height: 21px;
+      border-radius: 4px;
     }
   }
 

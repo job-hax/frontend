@@ -11,16 +11,24 @@ class Dashboard extends Component {
     this.state = {
       jobsToApply: [],
       jobsApplied: [],
-      jobsInterview: [],
+      jobsPhoneScreen: [],
+      jobsOnsiteInterview: [],
       jobsOffer: [],
-      jobsRejected: [],
+      jobsRejectedApplied: [],
+      jobsRejectedPhoneScreen: [],
+      jobsRejectedOnsiteInterview: [],
+      jobsRejectedOffer: [],
     };
 
     this.jobsToApply = [];
     this.jobsApplied = [];
-    this.jobsInterview = [];
+    this.jobsPhoneScreen = [];
+    this.jobsOnsiteInterview = [];
     this.jobsOffer = [];
-    this.jobsRejected = [];
+    this.jobsRejectedApplied = [];
+    this.jobsRejectedPhoneScreen = [];
+    this.jobsRejectedOnsiteInterview = [];
+    this.jobsRejectedOffer = [];
   }
 
   componentDidMount() {
@@ -37,16 +45,36 @@ class Dashboard extends Component {
           this.jobsToApply.push(application);
           break;
         case 'applied':
-          this.jobsApplied.push(application);
+          if (application.isRejected) {
+            this.jobsRejectedApplied.push(application)
+          }
+          else {
+            this.jobsApplied.push(application);
+          }
           break;
-        case 'interview':
-          this.jobsInterview.push(application);
+        case 'phonescreen':
+          if (application.isRejected) {
+            this.jobsRejectedPhoneScreen.push(application)
+          }
+          else {
+            this.jobsPhoneScreen.push(application);
+          }
+          break;
+        case 'onsiteinterview':
+          if (application.isRejected) {
+            this.jobsRejectedOnsiteInterview.push(application)
+          }
+          else {
+            this.jobsOnsiteInterview.push(application);
+          }
           break;
         case 'offer':
-          this.jobsOffer.push(application);
-          break;
-        case 'rejected':
-          this.jobsRejected.push(application);
+          if (application.isRejected) {
+            this.jobsRejectedOffer.push(application)
+          }
+          else {
+           this.jobsOffer.push(application); 
+          }
           break;
         default:
       }
@@ -54,45 +82,73 @@ class Dashboard extends Component {
     this.setState({
       jobsToApply: this.jobsToApply,
       jobsApplied: this.jobsApplied,
-      jobsInterview: this.jobsInterview,
+      jobsInterview: this.jobsPhoneScreen,
+      jobsRejected: this.jobsOnsiteInterview,
       jobsOffer: this.jobsOffer,
-      jobsRejected: this.jobsRejected
     });
   }
 
+  rejectedsheader(count, message) {
+    return (
+      <div className="column-rejectedcardsheader">
+        <div>
+          Rejected ({count})
+        </div>
+        <div className="rejected-details">
+          {message}
+        </div>
+        <div>
+          <img src="../../src/assets/icons/downarrow.png"/>
+        </div>
+      </div>
+    )
+  }
 
   render() {
     return (
       <div className="dashboard-container">
         <Column
           icon="../../src/assets/icons/toapply.png"
-          title="To Apply"
+          title="To Apply "
+          count={this.jobsToApply.length}
           cards={this.jobsToApply}
           details="..."
         />
         <Column
           icon="../../src/assets/icons/applied2.png"
-          title="Applied"
+          title="Applied "
+          count={this.jobsApplied.length}
           cards={this.jobsApplied}
+          cardsRejected={this.jobsRejectedApplied}
           details="..."
+          rejectedsheader={this.rejectedsheader(this.jobsRejectedApplied.length, "rejected without any interview")}
         />
         <Column
-          icon="../../src/assets/icons/interview.png"
-          title="Interview"
-          cards={this.jobsInterview}
+          icon="../../src/assets/icons/phonescreen.png"
+          title="Phone Screen "
+          count={this.jobsPhoneScreen.length}
+          cards={this.jobsPhoneScreen}
+          cardsRejected={this.jobsRejectedPhoneScreen}
           details="..."
+          rejectedsheader={ this.rejectedsheader(this.jobsRejectedPhoneScreen.length, "rejected after phone screen(s)")}
+        />
+        <Column
+          icon="../../src/assets/icons/onsiteinterview.png"
+          title="Onsite Interview "
+          count={this.jobsOnsiteInterview.length}
+          cards={this.jobsOnsiteInterview}
+          cardsRejected={this.jobsRejectedOnsiteInterview}
+          details="..."
+          rejectedsheader={ this.rejectedsheader(this.jobsRejectedOnsiteInterview.length, "rejected after interview(s)")}
         />
         <Column
           icon="../../src/assets/icons/offer.png"
-          title="Offer"
+          title="Offer "
+          count={this.jobsOffer.length}
           cards={this.jobsOffer}
+          cardsRejected={this.jobsRejectedOffer}
           details="..."
-        />
-        <Column
-          icon="../../src/assets/icons/rejected.png"
-          title="Rejected"
-          cards={this.jobsRejected}
-          details="..."
+          rejectedsheader={ this.rejectedsheader(this.jobsRejectedOffer.length, "you rejected their offer")}
         />
       </div>
     );
