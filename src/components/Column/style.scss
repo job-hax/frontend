@@ -2,10 +2,11 @@
   background-color: rgb(255, 255, 255);
   width: 24%;
   margin: 6px;
-  margin-block-start: 120px;
+  margin-top: 120px;
   border-radius: 0px;
   overflow-x: hidden;
-  height: max-content;
+  height: fit-content;
+  height: -moz-fit-content;
   max-height: 71%;
   box-shadow: 1px 1px rgba(0,0,0,0.2);
   border-bottom-left-radius: 4px;
