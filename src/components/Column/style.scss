@@ -2,11 +2,14 @@
   background-color: rgb(255, 255, 255);
   width: 24%;
   margin: 6px;
-  margin-block-start: 7.8%;
+  margin-block-start: 120px;
   border-radius: 0px;
   overflow-x: hidden;
   height: max-content;
   max-height: 71%;
+  box-shadow: 1px 1px rgba(0,0,0,0.2);
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
 
   .column-rejectedcardsheader { 
     height: 60px;
@@ -14,12 +17,16 @@
     position: fixed;
     text-align: center;
     padding-top: 20px;
+    margin-top: -0.19%;
     border-top: solid;
     border-top-width: 1px;
     border-top-color: rgba(244, 229, 248, .8);
     font-family: sans-serif;
     color: rgb(129,131,133);
     background-color: rgb(255, 255, 255);// rgba(226, 205, 231, 0.712);
+    box-shadow: 1px 1px rgba(0,0,0,0.2);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
     
 
     img{
@@ -55,17 +62,25 @@
     position: fixed ;
     bottom: 90px ;
   }
+
+  .rejecteds-show-button {
+    background: transparent;
+    border: 0px;
+  }
 }
 
 .column-header-container {
   position: fixed;
   background-color: rgb(255, 255, 255);
-  height: 108px;
+  height: 109px;
   width: 19.15%;
   margin-top: -7.5%;
   font-size: 18px;
   color: rgb(129,131,133);
   font-family: sans-serif;
+  box-shadow: 1px 0px rgba(0,0,0,0.2);
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
 
   .column-header {
     font-size: 18px;

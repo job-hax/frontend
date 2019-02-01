@@ -70,6 +70,11 @@ class Column extends Component {
     }
   }
 
+  rejectedShow () {
+    return (none
+    )
+  }
+
   render() {
     return (
         <div className="column-container">

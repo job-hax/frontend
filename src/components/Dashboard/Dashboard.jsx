@@ -98,7 +98,9 @@ class Dashboard extends Component {
           {message}
         </div>
         <div>
-          <img src="../../src/assets/icons/downarrow.png"/>
+          <button className="rejecteds-show-button" onClick={this.rejectedShow} >
+            <img src="../../src/assets/icons/downarrow.png"/>
+          </button>
         </div>
       </div>
     )
