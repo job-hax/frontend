@@ -44,7 +44,7 @@ class Column extends Component {
   }
 
   columnFooter (lenght) {
-    if (lenght < 4) {
+    if (lenght < 5) {
       return (
         <div>
           <div>
