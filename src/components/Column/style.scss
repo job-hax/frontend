@@ -2,11 +2,87 @@
   background-color: rgb(255, 255, 255);
   width: 24%;
   margin: 6px;
+  margin-top: 120px;
   border-radius: 0px;
   overflow-x: hidden;
-  height:  fit-content;
-  max-height: 98%;
+  height: fit-content;
+  height: -moz-fit-content;
+  max-height: 71%;
+  box-shadow: 1px 1px rgba(0,0,0,0.2);
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+
+  .column-rejectedcardsheader { 
+    height: 60px;
+    width: 19.15%;
+    position: fixed;
+    text-align: center;
+    padding-top: 20px;
+    margin-top: -0.19%;
+    border-top: solid;
+    border-top-width: 1px;
+    border-top-color: rgba(244, 229, 248, .8);
+    font-family: sans-serif;
+    color: rgb(129,131,133);
+    background-color: rgb(255, 255, 255);// rgba(226, 205, 231, 0.712);
+    box-shadow: 1px 1px rgba(0,0,0,0.2);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    
+
+    img{
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+    }
   
+  .rejected-details {
+    width: 100%;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 10pt;
+    padding-top: 2px;
+    }
+  }
+
+  .cards-margin {
+    margin-top: 0% ;
+    margin-bottom: 3%;
+  }
+
+  .column-rejectedcards {
+    background-color: rgba(188,43,255,.2)
+  }
+
+  .rejected-hidden {
+    display: none;
+  }
+
+  .rejected-bottom {
+    width: 100%;
+    position: fixed ;
+    bottom: 90px ;
+  }
+
+  .rejecteds-show-button {
+    background: transparent;
+    border: 0px;
+  }
+}
+
+.column-header-container {
+  position: fixed;
+  background-color: rgb(255, 255, 255);
+  height: 109px;
+  width: 19.15%;
+  margin-top: -7.5%;
+  font-size: 18px;
+  color: rgb(129,131,133);
+  font-family: sans-serif;
+  box-shadow: 1px 0px rgba(0,0,0,0.2);
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+
   .column-header {
     font-size: 18px;
     color: rgb(129,131,133);
@@ -16,7 +92,8 @@
   
     &.column-icon {
       margin-top: 10px;
-      margin-right: 25%;
+      margin-left: 2%;
+      width: 20%;
 
       img{
         width: 27px;
@@ -26,10 +103,11 @@
     &.column-title {
       margin-top: 15px;
       margin-left: 0%;
+      width: 70%;
     }
     &.column-details {
       margin-top: 12px;
-      margin-left: 25%;
+      width: 20%;
       cursor: pointer;
     }
   }
