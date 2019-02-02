@@ -6,7 +6,7 @@ class Header extends Component {
   render() {
     return (
       <div className="header-container">
-        <div className="jobhaxlogo">
+        <div className="jobhax-logo">
         </div>
         <div className="header-icon general">
           <img src="../../src/assets/icons/syncicon.png"></img>
