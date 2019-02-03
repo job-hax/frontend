@@ -1,36 +1,21 @@
 import React, {Component} from "react";
-import { Card} from '../Card/Card.jsx';
+import { Card, CardRejected} from '../Card/Card.jsx';
 import './style.scss'
 
 
 class Column extends Component {
-
-  constructor() {
-    super();
-    this.state = {isRejectedsShowing: false}
-
-    this.toggleLists = this.toggleLists.bind(this);
-  }
-
-  toggleLists () {
-    console.log('test : ' + this.state.isRejectedsShowing);
-    this.setState(state => ({
-      isRejectedsShowing: !state.isRejectedsShowing
-    }));
-  }
-
   renderCards() {
-    if(this.state.isRejectedsShowing){
-      return this.props.cardsRejecteds &&
-        this.props.cardsRejecteds.map(card =>
-          <Card key={card.id} card={card}/>);
-    }
-    else{
-      return this.props.cards &&
-        this.props.cards.map(card =>
-          <Card key={card.id} card={card}/>);
-    }
+    return this.props.cards &&
+      this.props.cards.map(card =>
+        <Card key={card.id} card={card}/>);
   };
+
+  renderCardsRejected() {
+    return this.props.cardsRejected &&
+      this.props.cardsRejected.map(cardRejected =>
+        <CardRejected key={cardRejected.id} cardRejected={cardRejected}/>);
+  };
+
 
   addJob() {
     return "Add Job"
@@ -45,7 +30,7 @@ class Column extends Component {
           </div>
           <div className="column-header column-title">
             {this.props.title}
-            ({this.props.totalcount})
+            ({this.props.count})
           </div>
           <div className="column-header column-details">
             {this.props.details}
@@ -57,49 +42,53 @@ class Column extends Component {
       </div>
     )
   }
- 
-  renderIndicator(message) {
-    return (
-      <div className={this.state.isRejectedsShowing ? "rejected-header" : "column-rejected-cards-header"}>
-        <div className={this.state.isRejectedsShowing ? "" : "hidden"}>
-          <button className="rejecteds-show-button" onClick={this.toggleLists} >
-            <img src="../../src/assets/icons/uparrow.png"/>
-          </button>
-        </div>
+
+  columnFooter (lenght) {
+    if (lenght < 5) {
+      return (
         <div>
-          {this.state.isRejectedsShowing ? "On Going (" + this.props.cards.length + ")" : "Rejected (" + (this.props.totalcount - this.props.cards.length) + ")"}
+          <div>
+            {this.props.rejectedsheader}
+          </div>
+          <div className="rejected-hidden" >
+            {this.renderCardsRejected()}
+          </div> 
         </div>
-        <div className="rejected-details">
-          {message}
+      ) 
+    }
+    else {
+      return (
+        <div className="rejected-bottom">
+          <div >
+            {this.props.rejectedsheader}
+          </div>
+          <div className="rejected-hidden" >
+            {this.renderCardsRejected()}
+          </div> 
         </div>
-        <div className={this.state.isRejectedsShowing ? "hidden" : ""}>
-          <button className="rejecteds-show-button" onClick={this.toggleLists} >
-            <img src="../../src/assets/icons/downarrow.png"/>
-          </button>
-        </div>
-      </div>
-    )  
+      )
+    }
+  }
+
+  rejectedShow () {
+    return (none
+    )
   }
 
   render() {
     return (
-      <div className="column-container">
-        <div>
-          {this.columnHeader()}
-        </div>
-        <div className= {this.state.isRejectedsShowing ? "column-rejected-cards-header" : ""}>
-          <div >
-            {this.state.isRejectedsShowing ? this.renderIndicator(this.props.ongoingsMessage) : ""}
+        <div className="column-container">
+          <div>
+            {this.columnHeader()}
           </div>
-          <div className= {this.state.isRejectedsShowing ? "rejected-visible" : "cards-margin" } >
+          <div className="cards-margin">
             {this.renderCards()}
-          </div> 
+          </div>
+          <div>
+            {this.columnFooter(this.props.count)}
+          </div>
         </div>
-        <div className={this.state.isRejectedsShowing ? "" : (this.props.cards.length < 6 ? "" : "rejected-bottom") }>
-          {this.state.isRejectedsShowing ? "" : this.props.title != "To Apply " ? this.renderIndicator(this.props.rejectedsMessage) : ""}
-        </div>
-      </div>
-    )
+    );
   }
 }
 

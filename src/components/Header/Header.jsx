@@ -7,7 +7,7 @@ class Header extends Component {
   render() {
     return (
       <div className="header-container">
-        <div className="jobhax-logo">
+        <div className="jobhaxlogo">
           <Link to="/">
             Back
           </Link>

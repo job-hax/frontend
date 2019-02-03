@@ -88,59 +88,69 @@ class Dashboard extends Component {
     });
   }
 
+  rejectedsheader(count, message) {
+    return (
+      <div className="column-rejectedcardsheader">
+        <div>
+          Rejected ({count})
+        </div>
+        <div className="rejected-details">
+          {message}
+        </div>
+        <div>
+          <button className="rejecteds-show-button" onClick={this.rejectedShow} >
+            <img src="../../src/assets/icons/downarrow.png"/>
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     return (
       <div className="dashboard-container">
         <Column
           icon="../../src/assets/icons/toapply.png"
           title="To Apply "
-          totalcount={this.jobsToApply.length}
+          count={this.jobsToApply.length}
           cards={this.jobsToApply}
           details="..."
         />
         <Column
           icon="../../src/assets/icons/applied2.png"
           title="Applied "
-          ongoingcount ={this.jobsApplied.length}
-          totalcount={this.jobsApplied.length + this.jobsRejectedApplied.length} 
+          count={this.jobsApplied.length}
           cards={this.jobsApplied}
-          cardsRejecteds={this.jobsRejectedApplied}
+          cardsRejected={this.jobsRejectedApplied}
           details="..."
-          rejectedsMessage=  "rejected without any interview"
-          ongoingsMessage= "ongoing before interview stage"
+          rejectedsheader={this.rejectedsheader(this.jobsRejectedApplied.length, "rejected without any interview")}
         />
         <Column
           icon="../../src/assets/icons/phonescreen.png"
           title="Phone Screen "
-          ongoingcount= {this.jobsPhoneScreen.length}
-          totalcount={this.jobsPhoneScreen.length + this.jobsRejectedPhoneScreen.length}
+          count={this.jobsPhoneScreen.length}
           cards={this.jobsPhoneScreen}
-          cardsRejecteds={this.jobsRejectedPhoneScreen}
+          cardsRejected={this.jobsRejectedPhoneScreen}
           details="..."
-          rejectedsMessage= "rejected after phone screen(s)"
-          ongoingsMessage= "ongoing application(s) at phone screen"
+          rejectedsheader={ this.rejectedsheader(this.jobsRejectedPhoneScreen.length, "rejected after phone screen(s)")}
         />
         <Column
           icon="../../src/assets/icons/onsiteinterview.png"
           title="Onsite Interview "
-          ongoingcount={this.jobsOnsiteInterview.length}
-          totalcount={this.jobsOnsiteInterview.length + this.jobsRejectedOnsiteInterview.length}
+          count={this.jobsOnsiteInterview.length}
           cards={this.jobsOnsiteInterview}
-          cardsRejecteds={this.jobsRejectedOnsiteInterview}
+          cardsRejected={this.jobsRejectedOnsiteInterview}
           details="..."
-          rejectedsMessage= "rejected after interview(s)"
-          ongoingsMessage= "ongoing application(s) at onsite interview"
+          rejectedsheader={ this.rejectedsheader(this.jobsRejectedOnsiteInterview.length, "rejected after interview(s)")}
         />
         <Column
           icon="../../src/assets/icons/offer.png"
           title="Offer "
-          ongoingcount={this.jobsOffer.length }
-          totalcount={this.jobsOffer.length + this.jobsRejectedOffer.length}
+          count={this.jobsOffer.length}
           cards={this.jobsOffer}
-          cardsRejecteds={this.jobsRejectedOffer}
+          cardsRejected={this.jobsRejectedOffer}
           details="..."
-          rejectedsMessage= "you rejected their offer"
-          ongoingsMessage= "waiting your response to offer"
+          rejectedsheader={ this.rejectedsheader(this.jobsRejectedOffer.length, "you rejected their offer")}
         />
       </div>
     );

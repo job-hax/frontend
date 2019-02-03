@@ -14,72 +14,7 @@ export const mockJobApps = {
       "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
       "applyDate": "2019-01-24T14:18:12Z",
       "source": "Linkedin.com",
-      "isRejected": true,
-    },
-    {
-      "id": 341,
-      "applicationStatus": {
-        "id": 1,
-        "value": "applied"
-      },
-      "jobTitle": "Android Engineer",
-      "company": "Adobe",
-      "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
-      "applyDate": "2019-01-25T14:18:12Z",
-      "source": "Linkedin.com",
       "isRejected": false,
-    },
-    {
-      "id": 331,
-      "applicationStatus": {
-        "id": 1,
-        "value": "applied"
-      },
-      "jobTitle": "Senior Android Engineer",
-      "company": "HP",
-      "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
-      "applyDate": "2019-01-24T14:18:12Z",
-      "source": "Linkedin.com",
-      "isRejected": false,
-    },
-    {
-      "id": 332,
-      "applicationStatus": {
-        "id": 1,
-        "value": "phonescreen"
-      },
-      "jobTitle": "Junior Android Engineer",
-      "company": "HP",
-      "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
-      "applyDate": "2019-01-24T14:18:12Z",
-      "source": "Linkedin.com",
-      "isRejected": false,
-    },
-    {
-      "id": 333,
-      "applicationStatus": {
-        "id": 1,
-        "value": "phonescreen"
-      },
-      "jobTitle": "Junior Android Engineer",
-      "company": "Adobe",
-      "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
-      "applyDate": "2019-01-24T14:18:12Z",
-      "source": "Linkedin.com",
-      "isRejected": true,
-    },
-    {
-      "id": 334,
-      "applicationStatus": {
-        "id": 1,
-        "value": "phonescreen"
-      },
-      "jobTitle": "Junior Software Engineer",
-      "company": "Acer",
-      "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
-      "applyDate": "2019-01-24T14:18:12Z",
-      "source": "Linkedin.com",
-      "isRejected": true,
     },
     {
       "id": 32,
@@ -118,7 +53,7 @@ export const mockJobApps = {
       "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
       "applyDate": "2019-01-23T14:18:12Z",
       "source": "Hired.com",
-      "isRejected": false,
+      "isRejected": true,
     },
     {
       "id": 21,
@@ -131,33 +66,7 @@ export const mockJobApps = {
       "companyLogo": "https://media.licdn.com/dms/image/C4E0BAQGHz8JwrMTQ0A/company-logo_100_100/0?e=2159024400&v=beta&t=klSj-Z-6bTQr-5Tfl4HWe8JwjnboGzei8ncYUMs56Pc",
       "applyDate": "2018-11-14T06:08:19Z",
       "source": "LinkedIn",
-      "isRejected": true,
-    },
-    {
-      "id": 211,
-      "applicationStatus": {
-        "id": 1,
-        "value": "onsiteinterview"
-      },
-      "jobTitle": "Android Intern",
-      "company": "Mozilla",
-      "companyLogo": "https://media.licdn.com/dms/image/C4E0BAQGHz8JwrMTQ0A/company-logo_100_100/0?e=2159024400&v=beta&t=klSj-Z-6bTQr-5Tfl4HWe8JwjnboGzei8ncYUMs56Pc",
-      "applyDate": "2018-11-14T06:08:19Z",
-      "source": "LinkedIn",
-      "isRejected": true,
-    },
-    {
-      "id": 212,
-      "applicationStatus": {
-        "id": 1,
-        "value": "onsiteinterview"
-      },
-      "jobTitle": "Intern (Summer 2019)",
-      "company": "Mozilla",
-      "companyLogo": "https://media.licdn.com/dms/image/C4E0BAQGHz8JwrMTQ0A/company-logo_100_100/0?e=2159024400&v=beta&t=klSj-Z-6bTQr-5Tfl4HWe8JwjnboGzei8ncYUMs56Pc",
-      "applyDate": "2018-11-14T06:08:19Z",
-      "source": "LinkedIn",
-      "isRejected": true,
+      "isRejected": false,
     },
     {
       "id": 22,
@@ -196,7 +105,7 @@ export const mockJobApps = {
       "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
       "applyDate": "2018-10-22T08:37:45Z",
       "source": "Hired.com",
-      "isRejected": true,
+      "isRejected": false,
     },
     {
       "id": 28,
@@ -209,7 +118,7 @@ export const mockJobApps = {
       "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
       "applyDate": "2018-10-19T16:17:26Z",
       "source": "Hired.com",
-      "isRejected": true,
+      "isRejected": false,
     },
     {
       "id": 29,
@@ -222,7 +131,7 @@ export const mockJobApps = {
       "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
       "applyDate": "2018-09-28T10:33:32Z",
       "source": "Hired.com",
-      "isRejected": true,
+      "isRejected": false,
     },
     {
       "id": 24,
@@ -235,7 +144,7 @@ export const mockJobApps = {
       "companyLogo": "https://media.licdn.com/dms/image/C4D0BAQFlLFOliANaJg/company-logo_100_100/0?e=2159024400&v=beta&t=wsd-p2beESpcXTtj2oi8gn4DGK3jd5JX6MQ0On6VdBU",
       "applyDate": "2018-09-24T09:21:20Z",
       "source": "LinkedIn",
-      "isRejected": true,
+      "isRejected": false,
     },
     {
       "id": 30,
@@ -261,7 +170,7 @@ export const mockJobApps = {
       "companyLogo": "https://media.licdn.com/dms/image/C560BAQHZqDVHQfhJvw/company-logo_100_100/0?e=2159024400&v=beta&t=pMfkCdUmwyyftx0YDOCSNUYGbqsARAXDMyPDwrJ3A0c",
       "applyDate": "2018-08-22T01:15:48Z",
       "source": "LinkedIn",
-      "isRejected": true,
+      "isRejected": false,
     },
     {
       "id": 26,

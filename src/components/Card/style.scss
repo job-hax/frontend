@@ -9,6 +9,10 @@
   justify-content: start;
   box-shadow: 1px 1px rgba(0,0,0,0.2);
 
+  .card-container:hover {
+    box-shadow: 3px 3px 3px 3px rgba(0,0,0,0.2);
+  }
+
   .card-company-icon {
     margin-top: 3%;
     margin-left: 2%;
@@ -59,8 +63,8 @@
   }
 }
 
-.card-rejected-container {
-  border-radius: 4px;
+.cardRejected-container {
+  border-radius: 0px;
   margin-bottom: 3%;
   margin-left: 3%;
   height: 90px;
@@ -68,8 +72,6 @@
   background-color: rgba(188,43,255,.4);
   display: flex;
   justify-content: start;
-  box-shadow: 1px 1px rgba(0,0,0,0.2);
-  text-align: left;
 
   .card-company-icon {
     margin-top: 3%;
