@@ -73,7 +73,7 @@ class Dashboard extends Component {
             this.jobsRejectedOffer.push(application)
           }
           else {
-           this.jobsOffer.push(application); 
+           this.jobsOffer.push(application);
           }
           break;
         default:

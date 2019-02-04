@@ -1,4 +1,5 @@
-import React, {Component} from "react";
+import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 
 import './style.scss'
 
@@ -7,22 +8,33 @@ class Header extends Component {
     return (
       <div className="header-container">
         <div className="jobhax-logo">
+          <Link to="/">
+            Back
+          </Link>
         </div>
         <div className="header-icon general">
-          <img src="../../src/assets/icons/syncicon.png"></img>
+          <Link to="/test1/">
+            <img src="../../src/assets/icons/syncicon.png"></img>
+          </Link>
         </div>
         <div className="header-icon general">
-          <img src="../../src/assets/icons/globe.png"></img>
+          <Link to="/test1/">
+            <img src="../../src/assets/icons/globe.png"></img>
+          </Link>
         </div>
         <div className="header-icon general">
-          <img src="../../src/assets/icons/metricsicon.png"></img>
+          <Link to="/dashboard">
+            <img src="../../src/assets/icons/metricsicon.png"></img>
+          </Link>
         </div>
         <div className="header-icon user-icon">
-          <img src="../../src/assets/icons/usericon.png"></img>
+          <Link to="/test1/">
+            <img src="../../src/assets/icons/usericon.png"></img>
+          </Link>
         </div>
       </div>
-    );
+  );
   }
-}
+  }
 
-export default Header;
+  export default Header;
