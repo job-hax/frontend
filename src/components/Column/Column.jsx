@@ -9,7 +9,6 @@ class Column extends Component {
   constructor() {
     super();
     this.state = {isRejectedsShowing: false}
-
     this.toggleLists = this.toggleLists.bind(this);
   }
 
