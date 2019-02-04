@@ -28,13 +28,18 @@
     }
   }
 
-  .jobhax-logo {
-    width: 36px;
-    cursor: pointer;
+  .jobhax-logo-container {
     margin-top: 0.5%;
     margin-right: 80%;
-    background-image: url('../../assets/icons/JobHax-logo-white.svg');
-    background-size: 100%;
-    background-repeat: no-repeat;
+
+    .jobhax-logo {
+      width: 36px;
+      height: 36px;
+      visibility: visible;
+      cursor: pointer;
+      background-image: url('../../assets/icons/JobHax-logo-white.svg');
+      background-size: 100%;
+      background-repeat: no-repeat;
+    }
   }
 }
