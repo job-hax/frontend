@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import { Card} from '../Card/Card.jsx';
-import './style.scss'
+import './style.scss';
+import {MAX_CARD_NUMBER_IN_COLUMN} from '../../utils/constants/constants.js'
 
 
 class Column extends Component {
@@ -8,12 +9,10 @@ class Column extends Component {
   constructor() {
     super();
     this.state = {isRejectedsShowing: false}
-
     this.toggleLists = this.toggleLists.bind(this);
   }
 
   toggleLists () {
-    console.log('test : ' + this.state.isRejectedsShowing);
     this.setState(state => ({
       isRejectedsShowing: !state.isRejectedsShowing
     }));
@@ -25,18 +24,16 @@ class Column extends Component {
         this.props.cardsRejecteds.map(card =>
           <Card key={card.id} card={card}/>);
     }
-    else{
-      return this.props.cards &&
-        this.props.cards.map(card =>
-          <Card key={card.id} card={card}/>);
-    }
+    return this.props.cards &&
+      this.props.cards.map(card =>
+        <Card key={card.id} card={card}/>);
   };
 
   addJob() {
     return "Add Job"
   }
 
-  columnHeader() {
+  generateColumnHeader() {
     return (
     <div className="column-header-container">
         <div className="column-header">
@@ -45,7 +42,7 @@ class Column extends Component {
           </div>
           <div className="column-header column-title">
             {this.props.title}
-            ({this.props.totalcount})
+            ({this.props.totalCount})
           </div>
           <div className="column-header column-details">
             {this.props.details}
@@ -60,23 +57,27 @@ class Column extends Component {
  
   renderIndicator(message) {
     return (
-      <div className={this.state.isRejectedsShowing ? "rejected-header" : "column-rejected-cards-header"}>
-        <div className={this.state.isRejectedsShowing ? "" : "hidden"}>
-          <button className="rejecteds-show-button" onClick={this.toggleLists} >
-            <img src="../../src/assets/icons/uparrow.png"/>
-          </button>
-        </div>
+      <div className={this.state.isRejectedsShowing ? "rejected-header" : "column-rejected-cards-header"} onClick={this.toggleLists}>
+        {this.state.isRejectedsShowing &&
+          <div className={this.state.isRejectedsShowing ? "" : "hidden"}>
+            <button className="rejecteds-show-button">
+              <img src="../../src/assets/icons/uparrow.png"/>
+            </button>
+          </div>
+        }
         <div>
-          {this.state.isRejectedsShowing ? "On Going (" + this.props.cards.length + ")" : "Rejected (" + (this.props.totalcount - this.props.cards.length) + ")"}
+          {this.state.isRejectedsShowing ? `Ongoing (${this.props.cards.length})` : `Rejected (${(this.props.totalCount - this.props.cards.length)})`}
         </div>
         <div className="rejected-details">
           {message}
         </div>
-        <div className={this.state.isRejectedsShowing ? "hidden" : ""}>
-          <button className="rejecteds-show-button" onClick={this.toggleLists} >
-            <img src="../../src/assets/icons/downarrow.png"/>
-          </button>
-        </div>
+        {!this.state.isRejectedsShowing &&
+          <div >
+            <button className="rejecteds-show-button">
+              <img src="../../src/assets/icons/downarrow.png"/>
+            </button>
+          </div>
+        }
       </div>
     )  
   }
@@ -85,7 +86,7 @@ class Column extends Component {
     return (
       <div className="column-container">
         <div>
-          {this.columnHeader()}
+          {this.generateColumnHeader()}
         </div>
         <div className= {this.state.isRejectedsShowing ? "column-rejected-cards-header" : ""}>
           <div >
@@ -95,7 +96,7 @@ class Column extends Component {
             {this.renderCards()}
           </div> 
         </div>
-        <div className={this.state.isRejectedsShowing ? "" : (this.props.cards.length < 6 ? "" : "rejected-bottom") }>
+        <div className={this.state.isRejectedsShowing ? "" : (this.props.cards.length > MAX_CARD_NUMBER_IN_COLUMN ? "rejected-bottom" : "") }>
           {this.state.isRejectedsShowing ? "" : this.props.title != "To Apply " ? this.renderIndicator(this.props.rejectedsMessage) : ""}
         </div>
       </div>

@@ -94,15 +94,15 @@ class Dashboard extends Component {
         <Column
           icon="../../src/assets/icons/toapply.png"
           title="To Apply "
-          totalcount={this.jobsToApply.length}
+          totalCount={this.jobsToApply.length}
           cards={this.jobsToApply}
           details="..."
         />
         <Column
           icon="../../src/assets/icons/applied2.png"
           title="Applied "
-          ongoingcount ={this.jobsApplied.length}
-          totalcount={this.jobsApplied.length + this.jobsRejectedApplied.length} 
+          ongoingCount ={this.jobsApplied.length}
+          totalCount={this.jobsApplied.length + this.jobsRejectedApplied.length} 
           cards={this.jobsApplied}
           cardsRejecteds={this.jobsRejectedApplied}
           details="..."
@@ -112,8 +112,8 @@ class Dashboard extends Component {
         <Column
           icon="../../src/assets/icons/phonescreen.png"
           title="Phone Screen "
-          ongoingcount= {this.jobsPhoneScreen.length}
-          totalcount={this.jobsPhoneScreen.length + this.jobsRejectedPhoneScreen.length}
+          ongoingCount= {this.jobsPhoneScreen.length}
+          totalCount={this.jobsPhoneScreen.length + this.jobsRejectedPhoneScreen.length}
           cards={this.jobsPhoneScreen}
           cardsRejecteds={this.jobsRejectedPhoneScreen}
           details="..."
@@ -123,8 +123,8 @@ class Dashboard extends Component {
         <Column
           icon="../../src/assets/icons/onsiteinterview.png"
           title="Onsite Interview "
-          ongoingcount={this.jobsOnsiteInterview.length}
-          totalcount={this.jobsOnsiteInterview.length + this.jobsRejectedOnsiteInterview.length}
+          ongoingCount={this.jobsOnsiteInterview.length}
+          totalCount={this.jobsOnsiteInterview.length + this.jobsRejectedOnsiteInterview.length}
           cards={this.jobsOnsiteInterview}
           cardsRejecteds={this.jobsRejectedOnsiteInterview}
           details="..."
@@ -134,8 +134,8 @@ class Dashboard extends Component {
         <Column
           icon="../../src/assets/icons/offer.png"
           title="Offer "
-          ongoingcount={this.jobsOffer.length }
-          totalcount={this.jobsOffer.length + this.jobsRejectedOffer.length}
+          ongoingCount={this.jobsOffer.length }
+          totalCount={this.jobsOffer.length + this.jobsRejectedOffer.length}
           cards={this.jobsOffer}
           cardsRejecteds={this.jobsRejectedOffer}
           details="..."

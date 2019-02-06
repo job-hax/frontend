@@ -27,7 +27,7 @@ export const mockJobApps = {
       "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
       "applyDate": "2019-01-25T14:18:12Z",
       "source": "Linkedin.com",
-      "isRejected": false,
+      "isRejected": true,
     },
     {
       "id": 331,
@@ -274,7 +274,7 @@ export const mockJobApps = {
       "companyLogo": "https://media.licdn.com/dms/image/C4E0BAQGUZta9AUuRDQ/company-logo_100_100/0?e=2159024400&v=beta&t=QgFzhknQiH66LEWHEIXYSTfhExFv-4Du9TvGeHt-vbo",
       "applyDate": "2018-08-22T01:14:37Z",
       "source": "LinkedIn",
-      "isRejected": true,
+      "isRejected": false,
     }
   ]
 }
