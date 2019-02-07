@@ -96,49 +96,40 @@ class Dashboard extends Component {
           title="To Apply "
           totalCount={this.jobsToApply.length}
           cards={this.jobsToApply}
-          details="..."
         />
         <Column
           icon="../../src/assets/icons/applied2.png"
           title="Applied "
-          ongoingCount ={this.jobsApplied.length}
           totalCount={this.jobsApplied.length + this.jobsRejectedApplied.length} 
           cards={this.jobsApplied}
           cardsRejecteds={this.jobsRejectedApplied}
-          details="..."
           rejectedsMessage=  "rejected without any interview"
           ongoingsMessage= "ongoing before interview stage"
         />
         <Column
           icon="../../src/assets/icons/phonescreen.png"
           title="Phone Screen "
-          ongoingCount= {this.jobsPhoneScreen.length}
           totalCount={this.jobsPhoneScreen.length + this.jobsRejectedPhoneScreen.length}
           cards={this.jobsPhoneScreen}
           cardsRejecteds={this.jobsRejectedPhoneScreen}
-          details="..."
           rejectedsMessage= "rejected after phone screen(s)"
           ongoingsMessage= "ongoing application(s) at phone screen"
         />
         <Column
           icon="../../src/assets/icons/onsiteinterview.png"
           title="Onsite Interview "
-          ongoingCount={this.jobsOnsiteInterview.length}
           totalCount={this.jobsOnsiteInterview.length + this.jobsRejectedOnsiteInterview.length}
           cards={this.jobsOnsiteInterview}
           cardsRejecteds={this.jobsRejectedOnsiteInterview}
-          details="..."
           rejectedsMessage= "rejected after interview(s)"
           ongoingsMessage= "ongoing application(s) at onsite interview"
         />
         <Column
           icon="../../src/assets/icons/offer.png"
           title="Offer "
-          ongoingCount={this.jobsOffer.length }
           totalCount={this.jobsOffer.length + this.jobsRejectedOffer.length}
           cards={this.jobsOffer}
           cardsRejecteds={this.jobsRejectedOffer}
-          details="..."
           rejectedsMessage= "you rejected their offer"
           ongoingsMessage= "waiting your response to offer"
         />
