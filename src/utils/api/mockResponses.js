@@ -85,7 +85,7 @@ export const mockJobApps = {
       "id": 32,
       "applicationStatus": {
         "id": 1,
-        "value": "applied"
+        "value": "phonescreen"
       },
       "jobTitle": "Android Engineer",
       "company": "Google",
