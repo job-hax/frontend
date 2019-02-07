@@ -85,7 +85,7 @@ export const mockJobApps = {
       "id": 32,
       "applicationStatus": {
         "id": 1,
-        "value": "toapply"
+        "value": "applied"
       },
       "jobTitle": "Android Engineer",
       "company": "Google",
@@ -235,7 +235,7 @@ export const mockJobApps = {
       "companyLogo": "https://media.licdn.com/dms/image/C4D0BAQFlLFOliANaJg/company-logo_100_100/0?e=2159024400&v=beta&t=wsd-p2beESpcXTtj2oi8gn4DGK3jd5JX6MQ0On6VdBU",
       "applyDate": "2018-09-24T09:21:20Z",
       "source": "LinkedIn",
-      "isRejected": true,
+      "isRejected": false,
     },
     {
       "id": 30,
