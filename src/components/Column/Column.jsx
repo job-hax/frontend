@@ -71,7 +71,11 @@ class Column extends Component {
         </div>
         <div className="column-header column-title">
           {this.props.title}
-          ({this.props.totalCount})
+          {this.props.totalCount > MIN_CARD_NUMBER_IN_COLUMN &&
+            <div style={{marginLeft:"4px"}}>
+              ({this.props.totalCount})  
+            </div>
+          }
         </div>        
       </div>
       <div >
