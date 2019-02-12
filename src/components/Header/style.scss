@@ -1,41 +1,74 @@
 .header-container {
   display: flex;
   justify-content: flex-end;
-  height: 50px;
-  background-color: rgba(114,73,251,.8);
-  box-shadow: 0px 2px rgba(0,0,0,0.2);
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0px 1px rgba(255, 255, 255, 0.05);
 
   .header-icon {
     width: 20px;
     margin: 0 15px;
+    opacity: 1;
     cursor: pointer;
 
     &.general {
-      font-family: sans-serif;
-      margin-top: 1%;
-      margin-bottom: 1%;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    &.search-icon {
+      margin-top: 10px;
+      margin-bottom: 10px;
     }
     
     &.user-icon {
-      margin-top: 1%;
-      margin-bottom: 1%;
-      margin-right: 2%;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      margin-right: 45px;
 
+      img {
+          width: 40px;
+          height: 40px;
+        }
     }
+
     img {
-      width: 24px;
-      height: 24px;
+      height: 20px;
     }
   }
 
+  .search-box {
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+    margin-right: 49.5%;
+    width: 420px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .search-input {
+    color:rgba(255, 255, 255, 0.8);
+    width: 100%;
+    max-height: 18px;
+    cursor: text;
+    margin-top: 10px;
+    font-family: Exo;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+  }
+  
+
   .jobhax-logo-container {
-    margin-top: 0.5%;
-    margin-right: 80%;
+    margin-top: 10px;
+    margin-right: 20px;
 
     .jobhax-logo {
-      width: 36px;
-      height: 36px;
-      visibility: visible;
+      width: 40px;
+      height: 40px;
       cursor: pointer;
       background-image: url('../../assets/icons/JobHax-logo-white.svg');
       background-size: 100%;

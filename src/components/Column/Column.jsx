@@ -42,20 +42,20 @@ class Column extends Component {
   addJob() {
     return (
       !this.state.isAddJobClicked ? 
-        <div className="column-addjob" onClick={this.toggleAddJob}>
-          Add Job
+        <div className="column-addJob" onClick={this.toggleAddJob}>
+          +
         </div>
         : 
         <div>
-          <div className="column-addjob-form">
-            <form id="addjob" >
-              <p contenteditable="true" className="addjob-company" id="company" >Enter Company Name</p>
-              <h1 contenteditable="true" className="addjob-position" id="jobTitle" >Enter Job Title</h1>
+          <div>
+            <form className="column-addJob-form" id="addJob" >
+              <h1 contenteditable="true" className="addJob-company" id="company" >Company Name</h1>
+              <h1 contenteditable="true" className="addJob-position" id="jobTitle" >Job Title</h1>
             </form>
           </div>
           <div>
-            <button className="column-addjob-button-cancel" onClick={this.toggleAddJob}>Cancel</button>
-            <button className="column-addjob-button-addjob" onClick={this.toggleAddJob}>Add Job</button>
+            <button className="column-addJob-form-button" onClick={this.toggleAddJob}>Cancel</button>
+            <button className="column-addJob-form-button addJob" onClick={this.toggleAddJob}>Add Job</button>
           </div> 
         </div>
           
@@ -64,7 +64,7 @@ class Column extends Component {
 
   generateColumnHeader() {
     return (
-    <div className="column-header-container"  style= {this.state.isAddJobClicked ? {height:180}:{}} >
+    <div className={this.props.totalCount == MIN_CARD_NUMBER_IN_COLUMN ? "column-header-container no-card" : "column-header-container"}  style= {this.state.isAddJobClicked ? {height:180}:{}} >
       <div className="column-header">
         <div className="column-header column-icon">
           <img src={this.props.icon}/>
@@ -87,23 +87,26 @@ class Column extends Component {
  
   renderIndicator(message) {
     return (
-      <div className={this.state.isRejectedsShowing ? "ongoing-indicator" : "rejected-indicator"} onClick={this.toggleLists}>
+      <div onClick={this.toggleLists}>
+        <div className="column-indicator-container">
+          <div>
+            {this.state.isRejectedsShowing ? `ONGOING (${this.props.cards.length})` : `REJECTED (${(this.props.totalCount - this.props.cards.length)})`}
+          </div>
+          {!this.state.isRejectedsShowing &&
+            <div className="column-indicator-details">
+              {message}
+            </div>
+          }
+          <img className="cards-switch-button" src="../../src/assets/icons/downarrow.png"/>
+        </div> 
         {this.state.isRejectedsShowing &&
-          <button className="cards-switch-button">
-            <img src="../../src/assets/icons/uparrow.png"/>
-          </button>
-        }
-        <div>
-          {this.state.isRejectedsShowing ? `Ongoing (${this.props.cards.length})` : `Rejected (${(this.props.totalCount - this.props.cards.length)})`}
-        </div>
-        <div className="column-indicator-details">
-          {message}
-        </div>
-        {!this.state.isRejectedsShowing &&
-          <div >
-            <button className="cards-switch-button">
-              <img src="../../src/assets/icons/downarrow.png"/>
-            </button>
+          <div className="column-indicator-container ongoing-indicator">
+            <div>
+              REJECTED ({(this.props.totalCount - this.props.cards.length)})
+            </div>
+            <div className="column-indicator-details">
+              {message}
+            </div>
           </div>
         }
       </div>
@@ -113,20 +116,26 @@ class Column extends Component {
   render() {
     return (
       <div className="column-container">
-        <div >
+        <div>
           {this.generateColumnHeader()}
         </div>
         {this.state.isRejectedsShowing &&
-          <div className="column-indicator-container">
-            {this.renderIndicator(this.props.ongoingsMessage)}
+          <div>
+            {this.renderIndicator(this.props.message)}
           </div>
         }
-        <div className={this.state.isAddJobClicked ? "column-card-container-short" : "column-card-container"} style={this.state.isRejectedsShowing ? {marginTop:"18px"} : {}}>
+        {this.state.isRejectedsShowing ?
+        <div   className={this.state.isAddJobClicked ? "column-card-container shortest" : "column-card-container short"}>
           {this.renderCards()}
         </div>
+        :
+        <div   className={this.state.isAddJobClicked ? "column-card-container middle" : "column-card-container"}>
+          {this.renderCards()}
+        </div>
+        }
         {(this.props.totalCount - this.props.cards.length) > MIN_CARD_NUMBER_IN_COLUMN &&
-          <div className="column-indicator-container">
-            {this.state.isRejectedsShowing ? "" : this.renderIndicator(this.props.rejectedsMessage)}
+          <div>
+            {!this.state.isRejectedsShowing && this.renderIndicator(this.props.message)}
           </div>
         } 
       </div>
