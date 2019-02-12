@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import { DetailsModal , toggleModal} from '../DetailsModal/DetailsModal.jsx';
 
 import './style.scss'
 
@@ -6,21 +7,22 @@ const Card = (props) => {
   const {card: {companyLogo, company, jobTitle, isRejected}} = props;
 
   return (
-    <div className="card-container" style={isRejected ? {backgroundColor: "rgba(188,43,255,.4)", textAlign: "left" } : {} }>
+    <div className={isRejected ? "card-container rejected-cards" : "card-container"} >
       <div className="card-company-icon">
-        <img className="card-company-icon" src={companyLogo} />
+        <img src={companyLogo} />
       </div>
       <div className="card-company-info">
-        <div id="company" contenteditable="true" className="card-company-name">
+        <div id="company" className="card-company-name">
           {company}
         </div>
-        <div id="jobTitle" contenteditable="true" className="card-job-position">
+        <div id="jobTitle" className="card-job-position">
           {jobTitle}
         </div>       
       </div>
       <div className="card-job-details">
-        x
-      </div>  
+        <DetailsModal></DetailsModal>  
+      </div>
+      
     </div>
   );
 };

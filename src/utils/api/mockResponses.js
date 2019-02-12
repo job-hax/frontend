@@ -101,7 +101,7 @@ export const mockJobApps = {
         "value": "applied"
       },
       "jobTitle": "Android Engineer",
-      "company": "OpenPhone ",
+      "company": "OpenPhone Long Company Name ",
       "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
       "applyDate": "2018-01-23T14:18:12Z",
       "source": "Hired.com",
@@ -165,12 +165,25 @@ export const mockJobApps = {
         "id": 1,
         "value": "applied"
       },
-      "jobTitle": "Android Developer",
+      "jobTitle": "Android Developer Long Position Name",
       "company": "Genuent",
       "companyLogo": "https://media.licdn.com/dms/image/C4D0BAQGi3Ges8PfZmA/company-logo_100_100/0?e=2159024400&v=beta&t=WjWjmAntr33wWOyPgICbdkgBhTRf0-oaFqYq-81KqRI",
       "applyDate": "2018-11-03T02:00:30Z",
       "source": "LinkedIn",
       "isRejected": false,
+    },
+    {
+      "id": 22,
+      "applicationStatus": {
+        "id": 1,
+        "value": "applied"
+      },
+      "jobTitle": "Android Developer Long Position Name",
+      "company": "Genuent",
+      "companyLogo": "https://media.licdn.com/dms/image/C4D0BAQGi3Ges8PfZmA/company-logo_100_100/0?e=2159024400&v=beta&t=WjWjmAntr33wWOyPgICbdkgBhTRf0-oaFqYq-81KqRI",
+      "applyDate": "2018-11-03T02:00:30Z",
+      "source": "LinkedIn",
+      "isRejected": true,
     },
     {
       "id": 23,
