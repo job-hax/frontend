@@ -2,8 +2,8 @@
   display: flex;
   justify-content: flex-end;
   height: 60px;
-  background-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0px 1px rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 1px rgba(0, 0, 0, 0.2);
 
   .header-icon {
     width: 20px;
@@ -43,7 +43,7 @@
     margin-right: 49.5%;
     width: 420px;
     height: 40px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.2);
     border-radius: 5px;
     display: flex;
     justify-content: flex-start;
@@ -51,14 +51,13 @@
 
   .search-input {
     color:rgba(255, 255, 255, 0.8);
-    width: 100%;
-    max-height: 18px;
+    width: 380px;
+    background-color: transparent;
+    font-size: 18px;
+    border: none;
+    height: 24px;
     cursor: text;
     margin-top: 10px;
-    font-family: Exo;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
   }
   
 

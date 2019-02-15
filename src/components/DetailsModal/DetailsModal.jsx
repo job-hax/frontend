@@ -17,6 +17,8 @@ class DetailsModal extends Component {
     }));
   }
 
+
+
   Modal() {
     return (
       <div className={this.state.isModalShowing ? 'modal display-block' : 'modal display-none' }>
