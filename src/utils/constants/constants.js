@@ -1,1 +1,1 @@
-export const MAX_CARD_NUMBER_IN_COLUMN = 5
+export const MIN_CARD_NUMBER_IN_COLUMN = 0

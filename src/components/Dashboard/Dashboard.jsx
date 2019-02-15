@@ -92,55 +92,42 @@ class Dashboard extends Component {
     return (
       <div className="dashboard-container">
         <Column
-          icon="../../src/assets/icons/toapply.png"
-          title="To Apply "
+          icon="../../src/assets/icons/ToApplyIcon@3x.png"
+          title="TO APPLY"
           totalCount={this.jobsToApply.length}
           cards={this.jobsToApply}
-          details="..."
         />
         <Column
-          icon="../../src/assets/icons/applied2.png"
-          title="Applied "
-          ongoingCount ={this.jobsApplied.length}
+          icon="../../src/assets/icons/AppliedIcon@3x.png"
+          title="APPLIED"
           totalCount={this.jobsApplied.length + this.jobsRejectedApplied.length} 
           cards={this.jobsApplied}
           cardsRejecteds={this.jobsRejectedApplied}
-          details="..."
-          rejectedsMessage=  "rejected without any interview"
-          ongoingsMessage= "ongoing before interview stage"
+          message=  "rejected without any interview"
         />
         <Column
-          icon="../../src/assets/icons/phonescreen.png"
-          title="Phone Screen "
-          ongoingCount= {this.jobsPhoneScreen.length}
+          icon="../../src/assets/icons/PhoneScreenIcon@3x.png"
+          title="PHONE SCREEN"
           totalCount={this.jobsPhoneScreen.length + this.jobsRejectedPhoneScreen.length}
           cards={this.jobsPhoneScreen}
           cardsRejecteds={this.jobsRejectedPhoneScreen}
-          details="..."
-          rejectedsMessage= "rejected after phone screen(s)"
-          ongoingsMessage= "ongoing application(s) at phone screen"
+          message= "rejected after phone screens"
         />
         <Column
-          icon="../../src/assets/icons/onsiteinterview.png"
-          title="Onsite Interview "
-          ongoingCount={this.jobsOnsiteInterview.length}
+          icon="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
+          title="ONSITE INTERVIEW"
           totalCount={this.jobsOnsiteInterview.length + this.jobsRejectedOnsiteInterview.length}
           cards={this.jobsOnsiteInterview}
           cardsRejecteds={this.jobsRejectedOnsiteInterview}
-          details="..."
-          rejectedsMessage= "rejected after interview(s)"
-          ongoingsMessage= "ongoing application(s) at onsite interview"
+          message= "rejected after interviews"
         />
         <Column
-          icon="../../src/assets/icons/offer.png"
-          title="Offer "
-          ongoingCount={this.jobsOffer.length }
+          icon="../../src/assets/icons/OffersIcon@3x.png"
+          title="OFFERS"
           totalCount={this.jobsOffer.length + this.jobsRejectedOffer.length}
           cards={this.jobsOffer}
           cardsRejecteds={this.jobsRejectedOffer}
-          details="..."
-          rejectedsMessage= "you rejected their offer"
-          ongoingsMessage= "waiting your response to offer"
+          message= "you rejected their offer"
         />
       </div>
     );
