@@ -14,7 +14,9 @@ class Header extends Component {
         </div>
         <div className="search-box" >
           <img className="header-icon search-icon" src="../../src/assets/icons/SearchIcon@3x.png"></img>
-          <div contenteditable="true" className="search-input" id="query"></div>
+          <div  >
+            <input className="search-input" id="query" onChange={(e) => {e.preventDefault()}}></input>
+          </div>
         </div>
         <div className="header-icon general">
           <Link to="/dashboard">

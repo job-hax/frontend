@@ -1,13 +1,19 @@
 import React, {Component} from "react";
-import { DetailsModal , toggleModal} from '../DetailsModal/DetailsModal.jsx';
+import classNames from 'classnames';
+// import { DetailsModal , toggleModal} from '../DetailsModal/DetailsModal.jsx';
 
 import './style.scss'
 
 const Card = (props) => {
   const {card: {companyLogo, company, jobTitle, isRejected}} = props;
 
+  const cardClass = classNames({
+    'card-container': true,
+    'rejected-cards': isRejected
+    });
+
   return (
-    <div className={isRejected ? "card-container rejected-cards" : "card-container"} >
+    <div className={cardClass}>
       <div className="card-company-icon">
         <img src={companyLogo} />
       </div>
@@ -20,7 +26,7 @@ const Card = (props) => {
         </div>       
       </div>
       <div className="card-job-details">
-        <DetailsModal></DetailsModal>  
+       {/* <DetailsModal></DetailsModal>   */}
       </div>
       
     </div>

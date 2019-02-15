@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import classNames from 'classnames';
 import {Card} from '../Card/Card.jsx';
 import './style.scss';
 import {MIN_CARD_NUMBER_IN_COLUMN} from '../../utils/constants/constants.js'
@@ -49,8 +50,8 @@ class Column extends Component {
         <div>
           <div>
             <form className="column-addJob-form" id="addJob" >
-              <h1 contenteditable="true" className="addJob-company" id="company" >Company Name</h1>
-              <h1 contenteditable="true" className="addJob-position" id="jobTitle" >Job Title</h1>
+              <h1 contentEditable="true" className="addJob-company" id="company" >Company Name</h1>
+              <h1 contentEditable="true" className="addJob-position" id="jobTitle" >Job Title</h1>
             </form>
           </div>
           <div>
@@ -63,8 +64,15 @@ class Column extends Component {
   }
 
   generateColumnHeader() {
+
+    const columnHeaderClass = classNames({
+      'column-header-container': true,
+      'no-card': this.props.totalCount === MIN_CARD_NUMBER_IN_COLUMN,
+      'add-job-height' : this.state.isAddJobClicked
+      });
+
     return (
-    <div className={this.props.totalCount == MIN_CARD_NUMBER_IN_COLUMN ? "column-header-container no-card" : "column-header-container"}  style= {this.state.isAddJobClicked ? {height:180}:{}} >
+    <div className={columnHeaderClass} >
       <div className="column-header">
         <div className="column-header column-icon">
           <img src={this.props.icon}/>
@@ -97,7 +105,7 @@ class Column extends Component {
               {message}
             </div>
           }
-          <img className="cards-switch-button" src="../../src/assets/icons/downarrow.png"/>
+          <img className="cards-switch-button" src="../../src/assets/icons/ExpandArrow@3x.png"/>
         </div> 
         {this.state.isRejectedsShowing &&
           <div className="column-indicator-container ongoing-indicator">
