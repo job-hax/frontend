@@ -1,77 +1,78 @@
 .header-container {
   display: flex;
-  justify-content: flex-end;
-  height: 60px;
-  background-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0px 1px rgba(0, 0, 0, 0.2);
+  justify-content: space-between;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
 
-  .header-icon {
-    width: 20px;
-    margin: 0 15px;
-    opacity: 1;
-    cursor: pointer;
-
-    &.general {
-      margin-top: 20px;
-      margin-bottom: 20px;
-    }
-
-    &.search-icon {
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
-    
-    &.user-icon {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      margin-right: 45px;
-
-      img {
-          width: 40px;
-          height: 40px;
-        }
-    }
-
-    img {
-      height: 20px;
-    }
+  .header-left-side-items {
+    display: flex;
+  }
+  .header-right-side-items {
+    display: flex;
   }
 
   .search-box {
-    margin-top: 10px; 
-    margin-bottom: 10px; 
-    margin-right: 49.5%;
+    margin-top: 6px;
+    margin-bottom: 6px;
     width: 420px;
-    height: 40px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
     display: flex;
-    justify-content: flex-start;
   }
 
   .search-input {
     color:rgba(255, 255, 255, 0.8);
-    width: 380px;
+    width: 370px;
     background-color: transparent;
     font-size: 18px;
     border: none;
     height: 24px;
+    margin: 2px;
     cursor: text;
-    margin-top: 10px;
   }
-  
 
   .jobhax-logo-container {
-    margin-top: 10px;
-    margin-right: 20px;
+    margin: 6px 20px;
 
     .jobhax-logo {
-      width: 40px;
-      height: 40px;
+      width: 28px;
+      height: 28px;
       cursor: pointer;
       background-image: url('../../assets/icons/JobHax-logo-white.svg');
       background-size: 100%;
       background-repeat: no-repeat;
+    }
+  }
+
+  .header-icon {
+    width: 20px;
+    margin: 0 15px;
+    cursor: pointer;
+
+    &.general {
+      margin-top: 13px;
+      margin-bottom: 13px;
+    }
+
+    &.search-icon {
+      margin-top: 7px;
+      margin-bottom: 7px;
+      width: 14px;
+    }
+
+    &.user-icon {
+      margin-top: 6px;
+      margin-bottom: 6px;
+      margin-right: 20px;
+
+      img {
+          width: 28px;
+          height: 28px;
+        }
+    }
+
+    img {
+      height: 14px;
     }
   }
 }
