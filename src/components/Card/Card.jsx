@@ -1,9 +1,8 @@
-import React, {Component} from "react";
+import React from "react";
 import PropTypes from 'prop-types';
 import {DragSource} from 'react-dnd';
 import classNames from 'classnames';
-
-
+// import { DetailsModal , toggleModal} from '../DetailsModal/DetailsModal.jsx';
 
 import './style.scss'
 
@@ -44,27 +43,28 @@ const Card = (props) => {
   } = props;
 
   const cardClass = classNames({
-    'card-rejected-container': isRejected,
-    'card-container': !isRejected,
+    'card-container': true,
+    'rejected-cards': isRejected,
     'dragging': isDragging
-  });
+    });
 
   return connectDragSource(
     <div className={cardClass}>
       <div className="card-company-icon">
-        <img className="card-company-icon" src={companyLogo}/>
+        <img src={companyLogo} />
       </div>
       <div className="card-company-info">
-        <div className="card-company-name">
+        <div id="company" className="card-company-name">
           {company}
         </div>
-        <div className="card-job-position">
+        <div id="jobTitle" className="card-job-position">
           {jobTitle}
         </div>
       </div>
       <div className="card-job-details">
-        ...
+       {/* <DetailsModal></DetailsModal>   */}
       </div>
+
     </div>
   );
 };

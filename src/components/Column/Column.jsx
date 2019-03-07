@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import PropTypes from 'prop-types';
 import {DropTarget} from "react-dnd";
 import Card from '../Card/Card.jsx';
-import {MAX_CARD_NUMBER_IN_COLUMN} from '../../utils/constants/constants.js'
+import {MIN_CARD_NUMBER_IN_COLUMN} from '../../utils/constants/constants.js'
 
 import './style.scss';
 
@@ -26,14 +26,22 @@ class Column extends Component {
   constructor() {
     super();
     this.state = {
-      isRejectedsShowing: false
-    };
+      isRejectedsShowing: false,
+      isAddJobClicked: false,
+    }
     this.toggleLists = this.toggleLists.bind(this);
+    this.toggleAddJob = this.toggleAddJob.bind(this);
   }
 
   toggleLists() {
     this.setState(state => ({
       isRejectedsShowing: !state.isRejectedsShowing
+    }));
+  }
+
+  toggleAddJob () {
+    this.setState(state => ({
+      isAddJobClicked: !state.isAddJobClicked
     }));
   }
 
@@ -56,28 +64,55 @@ class Column extends Component {
   };
 
   addJob() {
-    return "Add Job"
+    return (
+      !this.state.isAddJobClicked ?
+        <div className="column-addJob" onClick={this.toggleAddJob}>
+          +
+        </div>
+        :
+        <div>
+          <div>
+            <form className="column-addJob-form" id="addJob" >
+              <h1 contentEditable="true" className="addJob-company" id="company" >Company Name</h1>
+              <h1 contentEditable="true" className="addJob-position" id="jobTitle" >Job Title</h1>
+            </form>
+          </div>
+          <div>
+            <button className="column-addJob-form-button" onClick={this.toggleAddJob}>Cancel</button>
+            <button className="column-addJob-form-button addJob" onClick={this.toggleAddJob}>Add Job</button>
+          </div>
+        </div>
+
+    )
   }
 
   generateColumnHeader() {
+
+    const columnHeaderClass = classNames({
+      'column-header-container': true,
+      'no-card': this.props.totalCount === MIN_CARD_NUMBER_IN_COLUMN,
+      'add-job-height' : this.state.isAddJobClicked
+      });
+
     return (
-      <div className="column-header-container">
-        <div className="column-header">
-          <div className="column-header column-icon">
-            <img src={this.props.icon}/>
-          </div>
-          <div className="column-header column-title">
-            {this.props.title}
-            ({this.props.totalCount})
-          </div>
-          <div className="column-header column-details">
-            {this.props.details}
-          </div>
+    <div className={columnHeaderClass} >
+      <div className="column-header">
+        <div className="column-header column-icon">
+          <img src={this.props.icon}/>
         </div>
-        <div className="column-addjob">
-          {this.addJob()}
+        <div className="column-header column-title">
+          {this.props.title}
+          {this.props.totalCount > MIN_CARD_NUMBER_IN_COLUMN &&
+            <div style={{marginLeft:"4px"}}>
+              ({this.props.totalCount})
+            </div>
+          }
         </div>
       </div>
+      <div >
+        {this.addJob()}
+      </div>
+    </div>
     )
   }
 
@@ -90,32 +125,26 @@ class Column extends Component {
     const {isRejectedsShowing} = this.state;
 
     return (
-      <div className={isRejectedsShowing ? "rejected-header" : "column-rejected-cards-header"}
-           onClick={this.toggleLists}>
-        {
-          isRejectedsShowing &&
-          <div className={isRejectedsShowing ? "" : "hidden"}>
-            <button className="rejecteds-show-button">
-              <img src="../../src/assets/icons/uparrow.png"/>
-            </button>
-          </div>
-        }
-        <div>
-          {
-            isRejectedsShowing ?
-              `Ongoing (${cards.length})` :
-              `Rejected (${totalCount - cards.length})`
-          }
-        </div>
-        <div className="rejected-details">
-          {message}
-        </div>
-        {
-          !isRejectedsShowing &&
+      <div onClick={this.toggleLists}>
+        <div className="column-indicator-container">
           <div>
-            <button className="rejecteds-show-button">
-              <img src="../../src/assets/icons/downarrow.png"/>
-            </button>
+            {this.state.isRejectedsShowing ? `ONGOING (${this.props.cards.length})` : `REJECTED (${(this.props.totalCount - this.props.cards.length)})`}
+          </div>
+          {!this.state.isRejectedsShowing &&
+            <div className="column-indicator-details">
+              {message}
+            </div>
+          }
+          <img className="cards-switch-button" src="../../src/assets/icons/ExpandArrow@3x.png"/>
+        </div>
+        {this.state.isRejectedsShowing &&
+          <div className="column-indicator-container ongoing-indicator">
+            <div>
+              REJECTED ({(this.props.totalCount - this.props.cards.length)})
+            </div>
+            <div className="column-indicator-details">
+              {message}
+            </div>
           </div>
         }
       </div>
@@ -141,27 +170,25 @@ class Column extends Component {
         <div>
           {this.generateColumnHeader()}
         </div>
-        <div className={isRejectedsShowing ? "column-rejected-cards-header" : ""}>
+        {this.state.isRejectedsShowing &&
           <div>
-            {isRejectedsShowing ? this.renderIndicator(ongoingsMessage) : ""}
+            {this.renderIndicator(this.props.message)}
           </div>
-          <div className={isRejectedsShowing ? "rejected-visible" : "cards-margin"}>
-            {this.renderCards()}
+        }
+        {this.state.isRejectedsShowing ?
+        <div   className={this.state.isAddJobClicked ? "column-card-container shortest" : "column-card-container short"}>
+          {this.renderCards()}
+        </div>
+        :
+        <div   className={this.state.isAddJobClicked ? "column-card-container middle" : "column-card-container"}>
+          {this.renderCards()}
+        </div>
+        }
+        {(this.props.totalCount - this.props.cards.length) > MIN_CARD_NUMBER_IN_COLUMN &&
+          <div>
+            {!this.state.isRejectedsShowing && this.renderIndicator(this.props.message)}
           </div>
-        </div>
-        <div
-          className={
-            isRejectedsShowing ? "" :
-              (cards.length > MAX_CARD_NUMBER_IN_COLUMN ?
-                "rejected-bottom" : "")
-          }>
-          {
-            isRejectedsShowing ? "" :
-              title !== "To Apply " ?
-                this.renderIndicator(rejectedsMessage) :
-                ""
-          }
-        </div>
+        }
       </div>
     )
   }

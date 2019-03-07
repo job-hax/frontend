@@ -85,7 +85,7 @@ export const mockJobApps = {
       "id": 32,
       "applicationStatus": {
         "id": 1,
-        "value": "toapply"
+        "value": "phonescreen"
       },
       "jobTitle": "Android Engineer",
       "company": "Google",
@@ -101,7 +101,7 @@ export const mockJobApps = {
         "value": "applied"
       },
       "jobTitle": "Android Engineer",
-      "company": "OpenPhone ",
+      "company": "OpenPhone Long Company Name ",
       "companyLogo": "../../src/assets/icons/JobHax-logo-black.svg",
       "applyDate": "2018-01-23T14:18:12Z",
       "source": "Hired.com",
@@ -165,12 +165,25 @@ export const mockJobApps = {
         "id": 1,
         "value": "applied"
       },
-      "jobTitle": "Android Developer",
+      "jobTitle": "Android Developer Long Position Name",
       "company": "Genuent",
       "companyLogo": "https://media.licdn.com/dms/image/C4D0BAQGi3Ges8PfZmA/company-logo_100_100/0?e=2159024400&v=beta&t=WjWjmAntr33wWOyPgICbdkgBhTRf0-oaFqYq-81KqRI",
       "applyDate": "2018-11-03T02:00:30Z",
       "source": "LinkedIn",
       "isRejected": false,
+    },
+    {
+      "id": 22,
+      "applicationStatus": {
+        "id": 1,
+        "value": "applied"
+      },
+      "jobTitle": "Android Developer Long Position Name",
+      "company": "Genuent",
+      "companyLogo": "https://media.licdn.com/dms/image/C4D0BAQGi3Ges8PfZmA/company-logo_100_100/0?e=2159024400&v=beta&t=WjWjmAntr33wWOyPgICbdkgBhTRf0-oaFqYq-81KqRI",
+      "applyDate": "2018-11-03T02:00:30Z",
+      "source": "LinkedIn",
+      "isRejected": true,
     },
     {
       "id": 23,
@@ -235,7 +248,7 @@ export const mockJobApps = {
       "companyLogo": "https://media.licdn.com/dms/image/C4D0BAQFlLFOliANaJg/company-logo_100_100/0?e=2159024400&v=beta&t=wsd-p2beESpcXTtj2oi8gn4DGK3jd5JX6MQ0On6VdBU",
       "applyDate": "2018-09-24T09:21:20Z",
       "source": "LinkedIn",
-      "isRejected": true,
+      "isRejected": false,
     },
     {
       "id": 30,
