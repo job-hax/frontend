@@ -1,154 +1,161 @@
 .column-container {
-  background-color: rgb(255, 255, 255);
-  width: 24%;
-  margin: 6px;
-  margin-top: 120px;
-  border-radius: 0px;
-  overflow-x: hidden;
-  height: fit-content;
-  height: -moz-fit-content;
-  max-height: 73%;
-  box-shadow: 1px 1px rgba(0,0,0,0.2);
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+  margin-left: 15px;
+  margin-top: 15px;
+  width: 270px;
 
-  &.column-active {
-    opacity: 0.5;
-  }
-
-  .column-rejected-cards-header { 
-    height: 60px;
-    width: 19.15%;
-    position: fixed;
-    text-align: center;
-    padding-top: 20px;
-    margin-top: -0.19%;
-    border-top: 1px solid rgba(244, 229, 248, .8);
-    font-family: sans-serif;
-    color: rgb(129,131,133);
-    background-color: rgb(255, 255, 255);// rgba(226, 205, 231, 0.712);
-    box-shadow: 1px 1px rgba(0,0,0,0.2);
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    
-
-    img{
-      cursor: pointer;
-      width: 20px;
-      height: 20px;
-    }
-  
-  .rejected-details {
-    width: 100%;
-    text-align: center;
-    font-family: sans-serif;
-    font-size: 10pt;
-    padding-top: 2px;
-    }
-  }
-
-  .cards-margin {
-    margin-top: 0% ;
-    margin-bottom: 3%;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  .rejected-visible {
-    border-top: 6px solid rgb(255, 255, 255);
-    border-bottom: 6px solid rgb(255, 255, 255);
-    position: fixed;
-    overflow-x: hidden;
-    max-height: 65%;
-    top: 245px;
-    width: 19.15%;
-    box-shadow: 1px 1px rgba(0,0,0,0.2);
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-  }
-
-  .rejected-header {
-    height: 60px;
-    width: 19.15%;
-    position: fixed;
-    text-align: center;
-    margin-top: -21px;
-    padding-bottom: 16px;
-    border-top: 1px solid (244, 229, 248, .8);
-    border-bottom: 1px solid rgba(244, 229, 248, .8);
-    font-family: sans-serif;
-    color: rgb(129,131,133);
-    background-color: rgb(255, 255, 255);// rgba(226, 205, 231, 0.712);
-  }
-
-  .rejected-bottom {
-    width: 100%;
-    position: fixed ;
-    bottom: 90px ;
-  }
-
-  .rejecteds-show-button {
-    background: transparent;
-    border: 0px;
-  }
-}
-
-.column-header-container {
-  position: fixed;
-  background-color: rgb(255, 255, 255);
-  height: 109px;
-  width: 19.15%;
-  margin-top: -7.5%;
-  font-size: 18px;
-  color: rgb(129,131,133);
-  font-family: sans-serif;
-  box-shadow: 1px 0px rgba(0,0,0,0.2);
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-
-  .column-header {
+  .column-header-container {
+    background-color: rgb(228, 220, 255);
     font-size: 18px;
-    color: rgb(129,131,133);
-    font-family: sans-serif;
-    display: flex;
-    justify-content: center ;
-  
-    &.column-icon {
-      margin-top: 10px;
-      margin-left: 2%;
-      width: 20%;
+    box-shadow: 1px 1px rgba(0,0,0,0.2);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding-bottom: 15px;
 
-      img{
-        width: 27px;
-        height: 27px;
+    &.no-card {
+      border-radius: 4px;  
+    }
+
+    &.add-job-height {
+      height: 180px;  
+    }
+    
+    .column-header {
+      font-size: 18px;
+      font-weight: 600;
+      color: rgb(132, 100, 239);
+      display: flex;
+      justify-content: center;
+    
+      &.column-icon {
+        margin-top: 30px;
+
+        img{
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      &.column-title {
+        margin-top: 30px;
+        margin-left: 8px;
       }
     }
 
-    &.column-title {
-      margin-top: 15px;
-      margin-left: 0%;
-      width: 70%;
+    .column-addJob {
+      margin-top: 30px;
+      margin-left: 15px;
+      width: 240px;
+      height: 30px;
+      border-radius: 4px;
+      background-color: rgb(221, 170, 255);
+      color: rgb(132, 100, 239);
+      text-align: center;
+      padding-top: 3%;
+      cursor: pointer;
     }
 
-    &.column-details {
-      margin-top: 12px;
-      width: 20%;
+    .column-addJob-form {
+      margin-left: 15px;
+      margin-top: 30px;
+      width: 240px;
+      height: 70px;
+      border: 1px solid rgb(255, 255, 255);
+      border-radius: 4px;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+      background-color: rgb(255, 255, 255);
+      color: rgb(219, 208, 255);
+
+      .addJob-company {
+        border: none;  
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 15px;
+        margin-left: 15px;
+      }
+
+      .addJob-position {
+        margin-top: -8px;
+        font-size: 12px;
+        font-weight: normal;
+        margin-left: 15px;
+      }
+    }
+
+
+    .column-addJob-form-button {
+      border: none;
+      background-color: rgb(228, 220, 255);  
+      font-size: 18px;
+      color: rgb(132, 100, 239);
+      margin-top: 4px;
+      margin-left: 8px;
       cursor: pointer;
+
+      &.addJob {
+        margin-left: 36%;
+        font-weight: bold;
+      }
     }
   }
 
-  .column-addjob {
-    margin-top: 5%;
-    margin-left: 5%;
-    border: 2px rgb(63, 65, 66) dashed;
-    color: rgb(129,131,133);
-    height: 30px;
-    width: 90%;
-    font-family: sans-serif;
+  .column-card-container {
+    background-color: rgb(228, 220, 255);
+    max-height: 65.4%;
+    overflow-x: hidden;
+    height: fit-content;
+    height: -moz-fit-content;
+    box-shadow: 1px 1px rgba(0,0,0,0.2);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    &.middle {
+      max-height: 57%;
+    }
+
+    &.short {
+      max-height: 57.4%;
+    }
+
+    &.shortest {
+      max-height: 49%;
+    }
+  }
+
+  .column-indicator-container {
     text-align: center;
-    padding-top: 3%;
-    cursor: pointer;
+    background-color: rgb(228, 220, 255);
+    text-align: center;
+    font-size: 18px;
+    font-weight: 300;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    margin-top: -2px;
+    padding-top: 15px;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
+
+    img{
+      width: 12px;
+      height: 6px;
+      margin-bottom: 4px;
+    }
+    
+    .column-indicator-details {
+      font-size: 12px;
+      font-weight: normal;
+    } 
+
+    &.ongoing-indicator {
+      border-radius: 0px;
+      padding-bottom: 15px;
+    }
+
+    &.rejected-indicator {
+      margin-top: -2px;
+    }
+
+    .cards-switch-button {
+      background-color: rgb(228, 220, 255);
+      border: 0px;
+    }
   }
 }
