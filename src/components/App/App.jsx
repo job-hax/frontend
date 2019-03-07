@@ -1,5 +1,8 @@
 import React, {Component} from "react";
 import {BrowserRouter as Router, Route} from "react-router-dom";
+import {DragDropContext} from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
 import Header from '../Header/Header.jsx';
 import Dashboard from '../Dashboard/Dashboard.jsx';
 import Home from '../Home/Home.jsx';
@@ -27,4 +30,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default DragDropContext(HTML5Backend)(App);

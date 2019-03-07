@@ -1,32 +1,58 @@
 import React, {Component} from "react";
-import { Card} from '../Card/Card.jsx';
-import './style.scss';
+import PropTypes from 'prop-types';
+import {DropTarget} from "react-dnd";
+import Card from '../Card/Card.jsx';
 import {MAX_CARD_NUMBER_IN_COLUMN} from '../../utils/constants/constants.js'
 
+import './style.scss';
+
+const columnSpec = {
+  drop() {
+    return {
+      name: 'column'
+    }
+  }
+};
+
+let collect = (connect, monitor) => {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isCardOverColumn: monitor.isOver(),
+    canDropCardInColumn: monitor.canDrop()
+  }
+};
 
 class Column extends Component {
-
   constructor() {
     super();
-    this.state = {isRejectedsShowing: false}
+    this.state = {
+      isRejectedsShowing: false
+    };
     this.toggleLists = this.toggleLists.bind(this);
   }
 
-  toggleLists () {
+  toggleLists() {
     this.setState(state => ({
       isRejectedsShowing: !state.isRejectedsShowing
     }));
   }
 
   renderCards() {
-    if(this.state.isRejectedsShowing){
-      return this.props.cardsRejecteds &&
-        this.props.cardsRejecteds.map(card =>
-          <Card key={card.id} card={card}/>);
+    const {
+      cardsRejecteds,
+      cards
+    } = this.props;
+
+    if (this.state.isRejectedsShowing) {
+      return cardsRejecteds &&
+        cardsRejecteds.map(card =>
+          <Card key={card.id} card={card}/>
+        );
     }
-    return this.props.cards &&
-      this.props.cards.map(card =>
-        <Card key={card.id} card={card}/>);
+    return cards &&
+      cards.map(card =>
+        <Card key={card.id} card={card}/>
+      );
   };
 
   addJob() {
@@ -35,7 +61,7 @@ class Column extends Component {
 
   generateColumnHeader() {
     return (
-    <div className="column-header-container">
+      <div className="column-header-container">
         <div className="column-header">
           <div className="column-header column-icon">
             <img src={this.props.icon}/>
@@ -46,7 +72,7 @@ class Column extends Component {
           </div>
           <div className="column-header column-details">
             {this.props.details}
-          </div>          
+          </div>
         </div>
         <div className="column-addjob">
           {this.addJob()}
@@ -54,54 +80,97 @@ class Column extends Component {
       </div>
     )
   }
- 
+
   renderIndicator(message) {
+    const {
+      cards,
+      totalCount
+    } = this.props;
+
+    const {isRejectedsShowing} = this.state;
+
     return (
-      <div className={this.state.isRejectedsShowing ? "rejected-header" : "column-rejected-cards-header"} onClick={this.toggleLists}>
-        {this.state.isRejectedsShowing &&
-          <div className={this.state.isRejectedsShowing ? "" : "hidden"}>
+      <div className={isRejectedsShowing ? "rejected-header" : "column-rejected-cards-header"}
+           onClick={this.toggleLists}>
+        {
+          isRejectedsShowing &&
+          <div className={isRejectedsShowing ? "" : "hidden"}>
             <button className="rejecteds-show-button">
               <img src="../../src/assets/icons/uparrow.png"/>
             </button>
           </div>
         }
         <div>
-          {this.state.isRejectedsShowing ? `Ongoing (${this.props.cards.length})` : `Rejected (${(this.props.totalCount - this.props.cards.length)})`}
+          {
+            isRejectedsShowing ?
+              `Ongoing (${cards.length})` :
+              `Rejected (${totalCount - cards.length})`
+          }
         </div>
         <div className="rejected-details">
           {message}
         </div>
-        {!this.state.isRejectedsShowing &&
-          <div >
+        {
+          !isRejectedsShowing &&
+          <div>
             <button className="rejecteds-show-button">
               <img src="../../src/assets/icons/downarrow.png"/>
             </button>
           </div>
         }
       </div>
-    )  
+    )
   }
 
   render() {
-    return (
-      <div className="column-container">
+    const {isRejectedsShowing} = this.state;
+    const {
+      canDropCardInColumn,
+      cards,
+      connectDropTarget,
+      isCardOverColumn,
+      ongoingsMessage,
+      rejectedsMessage,
+      title
+    } = this.props;
+
+    const isColumnActive = canDropCardInColumn && isCardOverColumn;
+
+    return connectDropTarget(
+      <div className={`column-container ${isColumnActive && 'column-active'}`}>
         <div>
           {this.generateColumnHeader()}
         </div>
-        <div className= {this.state.isRejectedsShowing ? "column-rejected-cards-header" : ""}>
-          <div >
-            {this.state.isRejectedsShowing ? this.renderIndicator(this.props.ongoingsMessage) : ""}
+        <div className={isRejectedsShowing ? "column-rejected-cards-header" : ""}>
+          <div>
+            {isRejectedsShowing ? this.renderIndicator(ongoingsMessage) : ""}
           </div>
-          <div className= {this.state.isRejectedsShowing ? "rejected-visible" : "cards-margin" } >
+          <div className={isRejectedsShowing ? "rejected-visible" : "cards-margin"}>
             {this.renderCards()}
-          </div> 
+          </div>
         </div>
-        <div className={this.state.isRejectedsShowing ? "" : (this.props.cards.length > MAX_CARD_NUMBER_IN_COLUMN ? "rejected-bottom" : "") }>
-          {this.state.isRejectedsShowing ? "" : this.props.title != "To Apply " ? this.renderIndicator(this.props.rejectedsMessage) : ""}
+        <div
+          className={
+            isRejectedsShowing ? "" :
+              (cards.length > MAX_CARD_NUMBER_IN_COLUMN ?
+                "rejected-bottom" : "")
+          }>
+          {
+            isRejectedsShowing ? "" :
+              title !== "To Apply " ?
+                this.renderIndicator(rejectedsMessage) :
+                ""
+          }
         </div>
       </div>
     )
   }
 }
 
-export default Column;
+Column.propTypes = {
+  connectDropTarget: PropTypes.func.isRequired,
+  isCardOverColumn: PropTypes.bool.isRequired,
+  canDropCardInColumn: PropTypes.bool.isRequired
+};
+
+export default DropTarget('snacks', columnSpec, collect)(Column);
