@@ -9,6 +9,10 @@
   justify-content: start;
   box-shadow: 1px 1px rgba(0,0,0,0.2);
 
+  &.--isDragging {
+    background-color: blue;
+  }
+
   .card-company-icon {
     margin-top: 3%;
     margin-left: 2%;

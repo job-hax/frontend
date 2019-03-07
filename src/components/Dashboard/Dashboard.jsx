@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import Column from '../Column/Column.jsx';
 import {fetchApi} from '../../utils/api/fetch_api'
+import {GET_JOB_APPS} from '../../utils/constants/endpoints.js';
 
 import './style.scss'
 
@@ -32,10 +33,15 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    fetchApi()
-      .then(response => {
-        this.sortApplications(response);
-      });
+    const config = {
+      url: GET_JOB_APPS,
+      method: 'GET'
+    };
+    fetchApi(config);
+      // .then(response => {
+      //   console.log('RESPONSE', response);
+        // this.sortApplications(response);
+      // });
   }
 
   sortApplications(applications) {
@@ -73,7 +79,7 @@ class Dashboard extends Component {
             this.jobsRejectedOffer.push(application)
           }
           else {
-           this.jobsOffer.push(application);
+            this.jobsOffer.push(application);
           }
           break;
         default:
@@ -101,24 +107,24 @@ class Dashboard extends Component {
         <Column
           icon="../../src/assets/icons/applied2.png"
           title="Applied "
-          ongoingCount ={this.jobsApplied.length}
-          totalCount={this.jobsApplied.length + this.jobsRejectedApplied.length} 
+          ongoingCount={this.jobsApplied.length}
+          totalCount={this.jobsApplied.length + this.jobsRejectedApplied.length}
           cards={this.jobsApplied}
           cardsRejecteds={this.jobsRejectedApplied}
           details="..."
-          rejectedsMessage=  "rejected without any interview"
-          ongoingsMessage= "ongoing before interview stage"
+          rejectedsMessage="rejected without any interview"
+          ongoingsMessage="ongoing before interview stage"
         />
         <Column
           icon="../../src/assets/icons/phonescreen.png"
           title="Phone Screen "
-          ongoingCount= {this.jobsPhoneScreen.length}
+          ongoingCount={this.jobsPhoneScreen.length}
           totalCount={this.jobsPhoneScreen.length + this.jobsRejectedPhoneScreen.length}
           cards={this.jobsPhoneScreen}
           cardsRejecteds={this.jobsRejectedPhoneScreen}
           details="..."
-          rejectedsMessage= "rejected after phone screen(s)"
-          ongoingsMessage= "ongoing application(s) at phone screen"
+          rejectedsMessage="rejected after phone screen(s)"
+          ongoingsMessage="ongoing application(s) at phone screen"
         />
         <Column
           icon="../../src/assets/icons/onsiteinterview.png"
@@ -128,19 +134,19 @@ class Dashboard extends Component {
           cards={this.jobsOnsiteInterview}
           cardsRejecteds={this.jobsRejectedOnsiteInterview}
           details="..."
-          rejectedsMessage= "rejected after interview(s)"
-          ongoingsMessage= "ongoing application(s) at onsite interview"
+          rejectedsMessage="rejected after interview(s)"
+          ongoingsMessage="ongoing application(s) at onsite interview"
         />
         <Column
           icon="../../src/assets/icons/offer.png"
           title="Offer "
-          ongoingCount={this.jobsOffer.length }
+          ongoingCount={this.jobsOffer.length}
           totalCount={this.jobsOffer.length + this.jobsRejectedOffer.length}
           cards={this.jobsOffer}
           cardsRejecteds={this.jobsRejectedOffer}
           details="..."
-          rejectedsMessage= "you rejected their offer"
-          ongoingsMessage= "waiting your response to offer"
+          rejectedsMessage="you rejected their offer"
+          ongoingsMessage="waiting your response to offer"
         />
       </div>
     );
