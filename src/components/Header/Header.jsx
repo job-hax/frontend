@@ -8,14 +8,20 @@ class Header extends Component {
     return (
       <div className="header-container">
         <div className="jobhax-logo-container">
-          <Link  to="/">
+          <Link to="/">
             <div className="jobhax-logo"></div>
           </Link>
         </div>
-        <div className="search-box" >
+        <div className="search-box">
           <img className="header-icon search-icon" src="../../src/assets/icons/SearchIcon@3x.png"></img>
-          <div  >
-            <input className="search-input" id="query" onChange={(e) => {e.preventDefault()}}></input>
+          <div>
+            <input
+              className="search-input"
+              id="query"
+              onChange={e => {
+                e.preventDefault()
+              }}>
+            </input>
           </div>
         </div>
         <div className="header-icon general">
@@ -38,9 +44,14 @@ class Header extends Component {
             <img src="../../src/assets/icons/SeyfoIcon@3x.png"></img>
           </Link>
         </div>
+        <div className="header-icon user-icon">
+          <span onClick={() => this.props.googleAuth.signOut()}>
+            LOGOUT
+          </span>
+        </div>
       </div>
-  );
+    );
   }
-  }
+}
 
-  export default Header;
+export default Header;
