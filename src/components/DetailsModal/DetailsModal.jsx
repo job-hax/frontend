@@ -11,26 +11,24 @@ class DetailsModal extends Component {
     this.toggleModal = this.toggleModal.bind(this);
   }
 
-  toggleModal () {
+  toggleModal() {
     this.setState(state => ({
       isModalShowing: !state.isModalShowing
     }));
   }
 
-
-
   Modal() {
     return (
-      <div className={this.state.isModalShowing ? 'modal display-block' : 'modal display-none' }>
+      <div className={this.state.isModalShowing ? 'modal display-block' : 'modal display-none'}>
         <section className='modal-main'>
           <div className='modal-header'>
             <div className="modal-company-icon">
               <img className="modal-company-icon" src="../../src/assets/icons/JobHax-logo-black.svg"></img>
-            </div> 
-            <div >
+            </div>
+            <div>
               <div className="modal-header company-name">
                 Company Name
-              </div >
+              </div>
               <div className="modal-header job-title">
                 Job Title
               </div>
@@ -73,5 +71,5 @@ class DetailsModal extends Component {
   }
 }
 
-export  { DetailsModal , toggleModal};
+export default DetailsModal;
 

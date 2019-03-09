@@ -37,11 +37,10 @@ class Dashboard extends Component {
       url: GET_JOB_APPS,
       method: 'GET'
     };
-    fetchApi(config);
-      // .then(response => {
-      //   console.log('RESPONSE', response);
-        // this.sortApplications(response);
-      // });
+    fetchApi(config)
+      .then(response => {
+        this.sortApplications(response);
+      });
   }
 
   sortApplications(applications) {
@@ -106,10 +105,10 @@ class Dashboard extends Component {
         <Column
           icon="../../src/assets/icons/AppliedIcon@3x.png"
           title="APPLIED"
-          totalCount={this.jobsApplied.length + this.jobsRejectedApplied.length} 
+          totalCount={this.jobsApplied.length + this.jobsRejectedApplied.length}
           cards={this.jobsApplied}
           cardsRejecteds={this.jobsRejectedApplied}
-          message=  "rejected without any interview"
+          message="rejected without any interview"
         />
         <Column
           icon="../../src/assets/icons/PhoneScreenIcon@3x.png"
@@ -117,7 +116,7 @@ class Dashboard extends Component {
           totalCount={this.jobsPhoneScreen.length + this.jobsRejectedPhoneScreen.length}
           cards={this.jobsPhoneScreen}
           cardsRejecteds={this.jobsRejectedPhoneScreen}
-          message= "rejected after phone screens"
+          message="rejected after phone screens"
         />
         <Column
           icon="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
@@ -125,7 +124,7 @@ class Dashboard extends Component {
           totalCount={this.jobsOnsiteInterview.length + this.jobsRejectedOnsiteInterview.length}
           cards={this.jobsOnsiteInterview}
           cardsRejecteds={this.jobsRejectedOnsiteInterview}
-          message= "rejected after interviews"
+          message="rejected after interviews"
         />
         <Column
           icon="../../src/assets/icons/OffersIcon@3x.png"
@@ -133,7 +132,7 @@ class Dashboard extends Component {
           totalCount={this.jobsOffer.length + this.jobsRejectedOffer.length}
           cards={this.jobsOffer}
           cardsRejecteds={this.jobsRejectedOffer}
-          message= "you rejected their offer"
+          message="you rejected their offer"
         />
       </div>
     );

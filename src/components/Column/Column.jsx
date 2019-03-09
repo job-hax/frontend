@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import {DropTarget} from "react-dnd";
 import Card from '../Card/Card.jsx';
 import {MIN_CARD_NUMBER_IN_COLUMN} from '../../utils/constants/constants.js'
@@ -28,7 +29,7 @@ class Column extends Component {
     this.state = {
       isRejectedsShowing: false,
       isAddJobClicked: false,
-    }
+    };
     this.toggleLists = this.toggleLists.bind(this);
     this.toggleAddJob = this.toggleAddJob.bind(this);
   }
@@ -73,7 +74,7 @@ class Column extends Component {
         <div>
           <div>
             <form className="column-addJob-form" id="addJob" >
-              <h1 contentEditable="true" className="addJob-company" id="company" >Company Name</h1>
+              <h1 contentEditable="true" className="addJob-company" id="company">Company Name</h1>
               <h1 contentEditable="true" className="addJob-position" id="jobTitle" >Job Title</h1>
             </form>
           </div>
@@ -87,7 +88,6 @@ class Column extends Component {
   }
 
   generateColumnHeader() {
-
     const columnHeaderClass = classNames({
       'column-header-container': true,
       'no-card': this.props.totalCount === MIN_CARD_NUMBER_IN_COLUMN,
