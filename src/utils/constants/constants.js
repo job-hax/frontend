@@ -1,1 +1,1 @@
-export const MIN_CARD_NUMBER_IN_COLUMN = 0
+export const MIN_CARD_NUMBER_IN_COLUMN = 0;

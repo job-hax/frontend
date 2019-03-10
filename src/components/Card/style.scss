@@ -8,10 +8,14 @@
   justify-content: start;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
   background-color: rgb(255, 255, 255);
-  
+
   &.rejected-cards {
     opacity: 0.6;
-    text-align: left; 
+    text-align: left;
+  }
+
+  &.--isDragging {
+    background-color: blue;
   }
 
   .card-company-icon {
@@ -22,7 +26,7 @@
     height: 40px;
     border-radius: 4px;
     box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
-    
+
     img {
       margin: 1px;
       width: 38px;
@@ -47,7 +51,7 @@
       font-weight: normal;
     }
   }
-  
+
   .card-job-details {
     padding-top: 2%;
     margin-right: 2%;
