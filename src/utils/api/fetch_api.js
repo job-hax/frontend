@@ -1,28 +1,23 @@
 import {mockJobApps} from './mockResponses';
 import {IS_MOCKING} from '../../config/config.js';
 
-export function fetchApi(config) {
+export function fetchApi(url, config) {
   return new Promise(resolve => {
     if (IS_MOCKING) {
       resolve(mockJobApps.data);
     }
-    fetch(config.url, {
-      method: config.method,
-      mode: "cors",
-      cache: "no-cache",
-      headers: {
-        // "Content-Type": "application/json",
-        "Authorization": "Bearer 4NmE64ideNk22bXe9DytMvQbGI7BOq",
-        "Access-Control-Allow-Origin": "*"
-      },
-    })
+    fetch(url, config)
       .then(response => {
-        // console.log('1 response', response);
-        resolve(response);
+        if (response.ok) {
+          response.json()
+            .then(json => resolve({ok: true, json}));
+        } else {
+          response.json()
+            .then(json => resolve({ok: false, json}));
+        }
       })
       .catch(error => {
-        // console.log('error', error);
-        resolve(error);
+        resolve({ok: false, error})
       });
   });
 }

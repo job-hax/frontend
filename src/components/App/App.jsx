@@ -27,7 +27,7 @@ class App extends Component {
     window.gapi.load('client:auth2', () => {
       window.gapi.client.init({
         clientId: googleClientId,
-        scope: 'email'
+        scope: 'email https://www.googleapis.com/auth/gmail.readonly'
       })
         .then(() => {
           this.googleAuth = window.gapi.auth2.getAuthInstance();
@@ -52,7 +52,8 @@ class App extends Component {
       (<Router>
         <div className="main-container">
           <Header googleAuth={this.googleAuth}/>
-          <Route exact path="/dashboard" component={Dashboard}/>
+          <Route exact path="/dashboard" render={() => <Dashboard googleAuth={this.googleAuth}/>}/>
+          <Route exact path="/" component={Home}/>
           <Route exact path="/modal" component={DetailsModal}/>
         </div>
       </Router>)
