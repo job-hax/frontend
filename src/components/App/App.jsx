@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import Header from '../Header/Header.jsx';
+import Footer from '../Footer/Footer.jsx';
 import Dashboard from '../Dashboard/Dashboard.jsx';
 import Home from '../Home/Home.jsx';
 import DetailsModal from '../DetailsModal/DetailsModal.jsx';
