@@ -1,7 +1,11 @@
 import React, {Component} from "react";
 import Column from '../Column/Column.jsx';
 import {fetchApi} from '../../utils/api/fetch_api'
-import {GET_JOB_APPS} from '../../utils/constants/endpoints.js';
+import {
+  authenticateRequest,
+  getJobAppsRequest,
+  syncUserEmailsRequest
+} from '../../utils/api/requests.js'
 
 import './style.scss'
 
@@ -33,19 +37,43 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    const config = {
-      url: GET_JOB_APPS,
-      method: 'GET'
-    };
-    fetchApi(config)
+    const {url, config} = authenticateRequest;
+    config.body.token = this.props.googleAuth.currentUser.get().getAuthResponse().access_token;
+    config.body = JSON.stringify(config.body);
+    fetchApi(url, config)
       .then(response => {
-        this.sortApplications(response);
-      });
+        if (response.ok) {
+          return response.json;
+        }
+      })
+      .then(response => {
+        const {url, config} = syncUserEmailsRequest;
+        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
+        fetchApi(url, config)
+          .then(response => {
+            return {
+              ok: response.ok,
+              token: config.headers.Authorization
+            }
+          })
+          .then(({ok, token}) => {
+            if (ok) {
+              const {url, config} = getJobAppsRequest;
+              config.headers.Authorization = token;
+              fetchApi(url, config)
+                .then(response => {
+                  if (response.ok) {
+                    this.sortApplications(response.json.data);
+                  }
+                });
+            }
+          });
+      })
   }
 
   sortApplications(applications) {
     for (let application of applications) {
-      switch (application.applicationStatus.value) {
+      switch (application.applicationStatus.value.toLowerCase()) {
         case 'toapply':
           this.jobsToApply.push(application);
           break;
