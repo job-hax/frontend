@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import Column from '../Column/Column.jsx';
 import {fetchApi} from '../../utils/api/fetch_api'
+import {GET_JOB_APPS} from '../../utils/constants/endpoints.js';
 
 import './style.scss'
 
@@ -32,7 +33,11 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    fetchApi()
+    const config = {
+      url: GET_JOB_APPS,
+      method: 'GET'
+    };
+    fetchApi(config)
       .then(response => {
         this.sortApplications(response);
       });
@@ -73,7 +78,7 @@ class Dashboard extends Component {
             this.jobsRejectedOffer.push(application)
           }
           else {
-           this.jobsOffer.push(application);
+            this.jobsOffer.push(application);
           }
           break;
         default:
@@ -100,10 +105,10 @@ class Dashboard extends Component {
         <Column
           icon="../../src/assets/icons/AppliedIcon@3x.png"
           title="APPLIED"
-          totalCount={this.jobsApplied.length + this.jobsRejectedApplied.length} 
+          totalCount={this.jobsApplied.length + this.jobsRejectedApplied.length}
           cards={this.jobsApplied}
           cardsRejecteds={this.jobsRejectedApplied}
-          message=  "rejected without any interview"
+          message="rejected without any interview"
         />
         <Column
           icon="../../src/assets/icons/PhoneScreenIcon@3x.png"
@@ -111,7 +116,7 @@ class Dashboard extends Component {
           totalCount={this.jobsPhoneScreen.length + this.jobsRejectedPhoneScreen.length}
           cards={this.jobsPhoneScreen}
           cardsRejecteds={this.jobsRejectedPhoneScreen}
-          message= "rejected after phone screens"
+          message="rejected after phone screens"
         />
         <Column
           icon="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
@@ -119,7 +124,7 @@ class Dashboard extends Component {
           totalCount={this.jobsOnsiteInterview.length + this.jobsRejectedOnsiteInterview.length}
           cards={this.jobsOnsiteInterview}
           cardsRejecteds={this.jobsRejectedOnsiteInterview}
-          message= "rejected after interviews"
+          message="rejected after interviews"
         />
         <Column
           icon="../../src/assets/icons/OffersIcon@3x.png"
@@ -127,7 +132,7 @@ class Dashboard extends Component {
           totalCount={this.jobsOffer.length + this.jobsRejectedOffer.length}
           cards={this.jobsOffer}
           cardsRejecteds={this.jobsRejectedOffer}
-          message= "you rejected their offer"
+          message="you rejected their offer"
         />
       </div>
     );
