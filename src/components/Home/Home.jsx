@@ -1,9 +1,20 @@
 import React, {Component} from 'react';
 import Footer from '../Footer/Footer.jsx';
+import {Link} from 'react-router-dom';
 
 import './style.scss'
 
 class Home extends Component {
+
+  generateLogin(){
+    return(
+      <div >
+        <Link to="/login">
+          <button>Login</button>
+        </Link>
+      </div>
+    )
+  }
 
   generateIntro() {
     return (
@@ -122,6 +133,7 @@ class Home extends Component {
   render() {
     return (
       <div className="home-container">
+        {this.generateLogin()}
         {this.generateIntro()}
         {this.generateFeatureArea()}
         {this.generateInteriorArea()}

@@ -4,42 +4,41 @@ import {Link} from 'react-router-dom';
 import './style.scss'
 
 class Footer extends Component {
-  render() {
-    return (
-        <div className="footer-container">
-            <div className="footer-content footer-inside-links">
-                <div>
-                    <Link to="/dashboard">
-                        <t style={{margin: "4px" , color: "white"}}>About Us</t>
-                    </Link>
-                    <Link to="/dashboard">
-                        <t style={{margin: "4px" , color: "white"}}>FAQ</t>
-                    </Link>
-                    <Link to="/dashboard">
-                        <t style={{margin: "4px" , color: "white"}}>Legal</t>
-                    </Link>
+    render() {
+        return (
+            <div className="footer-container">
+                <div className="footer-content footer-inside-links">
+                    <div>
+                        <Link to="/dashboard">
+                            <span style={{margin: "4px" , color: "white"}}>About Us</span>
+                        </Link>
+                        <Link to="/dashboard">
+                            <span style={{margin: "4px" , color: "white"}}>FAQ</span>
+                        </Link>
+                        <Link to="/dashboard">
+                            <span style={{margin: "4px" , color: "white"}}>Legal</span>
+                        </Link>
+                    </div>
                 </div>
-            </div>
-            <div className="footer-content footer-notation">
-                <t>JobHax 2019<br />All Rights Reserved</t>
-            </div>
-           <div className="footer-content footer-social-links">
-                <div >
-                    <a href="https://github.com/job-hax">
-                        <t >GitHub</t>
-                    </a>
-                    <a href="https://github.com/job-hax">
-                        <t >Slack</t>
-                    </a>
-                    <a href="https://github.com/job-hax">
-                        <t >LinkedIn</t>
-                    </a>
+                <div className="footer-content footer-notation">
+                    <span>JobHax 2019<br />All Rights Reserved</span>
                 </div>
-            </div> 
-        </div>
-      
-  );
-  }
-  }
+                <div className="footer-content footer-social-links">
+                    <div >
+                        <a href="https://github.com/job-hax">
+                            <span >GitHub</span>
+                        </a>
+                        <a href="https://github.com/job-hax">
+                            <span >Slack</span>
+                        </a>
+                        <a href="https://github.com/job-hax">
+                            <span >LinkedIn</span>
+                        </a>
+                    </div>
+                </div> 
+            </div>   
+        );
+    }
+}
 
-  export default Footer;
+export default Footer;

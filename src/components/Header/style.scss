@@ -1,9 +1,20 @@
 .header-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   height: 60px;
+  width: 100%;
   background-color: rgba(0, 0, 0, 0.1);
   box-shadow: 0px 1px rgba(0, 0, 0, 0.2);
+
+  .left-container {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .right-container {
+    display: flex;
+    justify-content: flex-end;
+  }
 
   .header-icon {
     width: 20px;
@@ -40,7 +51,6 @@
   .search-box {
     margin-top: 10px; 
     margin-bottom: 10px; 
-    margin-right: 49.5%;
     width: 420px;
     height: 40px;
     background-color: rgba(255, 255, 255, 0.2);
@@ -64,6 +74,7 @@
   .jobhax-logo-container {
     margin-top: 10px;
     margin-right: 20px;
+    margin-left: 20px;
 
     .jobhax-logo {
       width: 40px;
