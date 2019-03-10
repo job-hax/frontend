@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import {DragSource} from 'react-dnd';
 import classNames from 'classnames';
+import defaultLogo from '../../assets/icons/JobHax-logo-black.svg';
 // import { DetailsModal , toggleModal} from '../DetailsModal/DetailsModal.jsx';
 
 import './style.scss'
@@ -51,7 +52,7 @@ const Card = (props) => {
   return connectDragSource(
     <div className={cardClass}>
       <div className="card-company-icon">
-        <img src={companyLogo} />
+        <img src={companyLogo || defaultLogo} />
       </div>
       <div className="card-company-info">
         <div id="company" className="card-company-name">
