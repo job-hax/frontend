@@ -9,29 +9,25 @@ import './style.scss'
 
 const cardSpec = {
   beginDrag(props) {
-    return {
-      jobTitle: props.jobTitle
-    };
+    return props.card;
   },
 
   endDrag(props, monitor) {
-    const dragItem = monitor.getItem();
-    const dropResult = monitor.getDropResult();
-
-    if (dropResult) {
-      console.log(`You dropped ${dragItem.jobTitle} into ${dropResult.name}`);
+    if (monitor.didDrop()) {
+      return props.updateApplications(props.card, props.columnName, monitor.getDropResult().name);
     }
   }
 };
 
-let collectDrag = (connect, monitor) => {
+function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging()
   };
-};
+}
 
-const Card = (props) => {
+function renderCard(props) {
   const {
     card: {
       companyLogo,
@@ -39,20 +35,19 @@ const Card = (props) => {
       jobTitle,
       isRejected
     },
-    connectDragSource,
     isDragging
   } = props;
 
   const cardClass = classNames({
     'card-container': true,
     'rejected-cards': isRejected,
-    'dragging': isDragging
-    });
+    '--is_dragging': isDragging
+  });
 
-  return connectDragSource(
+  return (
     <div className={cardClass}>
       <div className="card-company-icon">
-        <img src={companyLogo || defaultLogo} />
+        <img src={companyLogo || defaultLogo}/>
       </div>
       <div className="card-company-info">
         <div id="company" className="card-company-name">
@@ -63,10 +58,25 @@ const Card = (props) => {
         </div>
       </div>
       <div className="card-job-details">
-       {/* <DetailsModal></DetailsModal>   */}
+        {/* <DetailsModal></DetailsModal>   */}
       </div>
-
     </div>
+  );
+}
+
+const Card = (props) => {
+  const {
+    card: {
+      isRejected
+    },
+    connectDragSource,
+  } = props;
+
+  if (isRejected) {
+    return renderCard(props);
+  }
+  return connectDragSource(
+    renderCard(props)
   );
 };
 
@@ -75,4 +85,4 @@ Card.propTypes = {
   isDragging: PropTypes.bool.isRequired,
 };
 
-export default DragSource('snack', cardSpec, collectDrag)(Card);
+export default DragSource('item', cardSpec, collect)(Card);

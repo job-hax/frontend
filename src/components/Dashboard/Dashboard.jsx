@@ -1,4 +1,7 @@
 import React, {Component} from "react";
+import {DragDropContext} from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
 import Column from '../Column/Column.jsx';
 import {fetchApi} from '../../utils/api/fetch_api'
 import {
@@ -6,6 +9,8 @@ import {
   getJobAppsRequest,
   syncUserEmailsRequest
 } from '../../utils/api/requests.js'
+import {IS_MOCKING} from '../../config/config.js';
+import {mockJobApps} from '../../utils/api/mockResponses.js'
 
 import './style.scss'
 
@@ -34,9 +39,15 @@ class Dashboard extends Component {
     this.jobsRejectedPhoneScreen = [];
     this.jobsRejectedOnsiteInterview = [];
     this.jobsRejectedOffer = [];
+
+    this.updateApplications = this.updateApplications.bind(this);
   }
 
   componentDidMount() {
+    if (IS_MOCKING) {
+      this.sortApplications(mockJobApps.data);
+      return;
+    }
     const {url, config} = authenticateRequest;
     config.body.token = this.props.googleAuth.currentUser.get().getAuthResponse().access_token;
     config.body = JSON.stringify(config.body);
@@ -112,54 +123,83 @@ class Dashboard extends Component {
         default:
       }
     }
+    this.refreshJobs();
+  }
+
+  refreshJobs() {
     this.setState({
       jobsToApply: this.jobsToApply,
       jobsApplied: this.jobsApplied,
-      jobsInterview: this.jobsPhoneScreen,
-      jobsRejected: this.jobsOnsiteInterview,
+      jobsPhoneScreen: this.jobsPhoneScreen,
+      jobsOnsiteInterview: this.jobsOnsiteInterview,
       jobsOffer: this.jobsOffer,
     });
+  }
+
+  updateApplications(card, dragColumnName, dropColumnName) {
+    const removedItemColumn = this.state[dragColumnName]
+      .filter(job => {
+        return job.id !== card.id;
+      });
+
+    let insertedItemColumn = this.state[dropColumnName].slice();
+    insertedItemColumn.unshift(card);
+
+    this.setState(() => ({
+      [dragColumnName]: removedItemColumn,
+      [dropColumnName]: insertedItemColumn
+    }));
   }
 
   render() {
     return (
       <div className="dashboard-container">
         <Column
+          name="jobsToApply"
+          updateApplications={this.updateApplications}
           icon="../../src/assets/icons/ToApplyIcon@3x.png"
           title="TO APPLY"
-          totalCount={this.jobsToApply.length}
-          cards={this.jobsToApply}
+          totalCount={this.state.jobsToApply.length}
+          cards={this.state.jobsToApply}
         />
         <Column
+          name="jobsApplied"
+          updateApplications={this.updateApplications}
           icon="../../src/assets/icons/AppliedIcon@3x.png"
           title="APPLIED"
-          totalCount={this.jobsApplied.length + this.jobsRejectedApplied.length}
-          cards={this.jobsApplied}
-          cardsRejecteds={this.jobsRejectedApplied}
+          totalCount={this.state.jobsApplied.length + this.state.jobsRejectedApplied.length}
+          cards={this.state.jobsApplied}
+          cardsRejecteds={this.state.jobsRejectedApplied}
           message="rejected without any interview"
         />
         <Column
+          name="jobsPhoneScreen"
+          updateApplications={this.updateApplications}
           icon="../../src/assets/icons/PhoneScreenIcon@3x.png"
           title="PHONE SCREEN"
-          totalCount={this.jobsPhoneScreen.length + this.jobsRejectedPhoneScreen.length}
-          cards={this.jobsPhoneScreen}
-          cardsRejecteds={this.jobsRejectedPhoneScreen}
+          totalCount={this.state.jobsPhoneScreen.length + this.state.jobsRejectedPhoneScreen.length}
+          cards={this.state.jobsPhoneScreen}
+          cardsRejecteds={this.state.jobsRejectedPhoneScreen}
           message="rejected after phone screens"
         />
         <Column
+          name="jobsOnsiteInterview"
+          updateApplications={this.updateApplications}
           icon="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
           title="ONSITE INTERVIEW"
-          totalCount={this.jobsOnsiteInterview.length + this.jobsRejectedOnsiteInterview.length}
-          cards={this.jobsOnsiteInterview}
-          cardsRejecteds={this.jobsRejectedOnsiteInterview}
+          totalCount={this.state.jobsOnsiteInterview.length + this.state.jobsRejectedOnsiteInterview.length}
+          cards={this.state.jobsOnsiteInterview}
+          cardsRejecteds={this.state.jobsRejectedOnsiteInterview}
           message="rejected after interviews"
         />
         <Column
+          name="jobsOffer"
+          updateApplications={this.updateApplications}
           icon="../../src/assets/icons/OffersIcon@3x.png"
           title="OFFERS"
-          totalCount={this.jobsOffer.length + this.jobsRejectedOffer.length}
-          cards={this.jobsOffer}
-          cardsRejecteds={this.jobsRejectedOffer}
+          totalCount={this.state.jobsOffer.length + this.state.jobsRejectedOffer.length}
+          cards={this.state.jobsOffer}
+          cardsRejecteds={this.state.jobsRejectedOffer}
           message="you rejected their offer"
         />
       </div>
@@ -167,4 +207,5 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+export default DragDropContext(HTML5Backend)(Dashboard);
+
