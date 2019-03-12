@@ -14,8 +14,8 @@
     text-align: left;
   }
 
-  &.--isDragging {
-    background-color: blue;
+  &.--is_dragging {
+    opacity: 0;
   }
 
   .card-company-icon {
