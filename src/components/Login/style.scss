@@ -6,7 +6,7 @@
     bottom: 80px;
     left: 0;
     width: 352px;
-    height: 288px;
+    height: 392px;
     background-color: rgb(228, 220, 255);
     border-radius: 4px;
     box-shadow: 0 2px 4px 0 rgba(190, 190, 190, 0.5);
@@ -19,13 +19,13 @@
     .form-container {
         margin:8px;
         text-align: start;
-        margin-left: 32px;
         font-weight: bold;
 
         .form-element-container {
             display: flex;
             justify-content: space-between;
             height: 32px;
+            margin-left: 32px;
             width: 270px;
 
             .input-box {
@@ -38,15 +38,19 @@
                 color: rgb(38, 18, 104);
             }
         }
+
+        .form-button {
+            margin-top:16px;
+            margin-left:14px;
+        }
     }
 
     .social-buttons-container {
-        padding:16px;
+        padding-bottom:16px;
     }
 
     .social-buttons {
         background-color: rgb(221, 170, 255);
-        margin: 4px;
         box-shadow: none;
         border: none;
         border-radius: 4px;

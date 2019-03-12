@@ -63,6 +63,7 @@ class Dashboard extends Component {
               fetchApi(url, config)
                 .then(response => {
                   if (response.ok) {
+                    console.log(response.json.data);
                     this.sortApplications(response.json.data);
                   }
                 });
