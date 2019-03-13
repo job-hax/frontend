@@ -74,6 +74,7 @@ class Dashboard extends Component {
               fetchApi(url, config)
                 .then(response => {
                   if (response.ok) {
+                    console.log(response.json.data);
                     this.sortApplications(response.json.data);
                   }
                 });
@@ -133,6 +134,10 @@ class Dashboard extends Component {
       jobsPhoneScreen: this.jobsPhoneScreen,
       jobsOnsiteInterview: this.jobsOnsiteInterview,
       jobsOffer: this.jobsOffer,
+      jobsRejectedApplied: this.jobsRejectedApplied,
+      jobsRejectedOffer: this.jobsRejectedOffer,
+      jobsRejectedOnsiteInterview: this.jobsRejectedOnsiteInterview,
+      jobsRejectedPhoneScreen: this.jobsRejectedPhoneScreen,
     });
   }
 
