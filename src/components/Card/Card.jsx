@@ -33,7 +33,7 @@ function renderCard(props) {
       companyLogo,
       company,
       jobTitle,
-      isRejected
+      isRejected,
     },
     isDragging
   } = props;
