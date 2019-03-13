@@ -134,6 +134,10 @@ class Dashboard extends Component {
       jobsPhoneScreen: this.jobsPhoneScreen,
       jobsOnsiteInterview: this.jobsOnsiteInterview,
       jobsOffer: this.jobsOffer,
+      jobsRejectedApplied: this.jobsRejectedApplied,
+      jobsRejectedOffer: this.jobsRejectedOffer,
+      jobsRejectedOnsiteInterview: this.jobsRejectedOnsiteInterview,
+      jobsRejectedPhoneScreen: this.jobsRejectedPhoneScreen,
     });
   }
 
