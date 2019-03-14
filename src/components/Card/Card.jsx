@@ -1,9 +1,9 @@
-import React from "react";
+import React, {PureComponent} from "react";
 import PropTypes from 'prop-types';
 import {DragSource} from 'react-dnd';
 import classNames from 'classnames';
 import defaultLogo from '../../assets/icons/JobHax-logo-black.svg';
-// import { DetailsModal , toggleModal} from '../DetailsModal/DetailsModal.jsx';
+import CardModal from '../CardModal/CardModal.jsx';
 
 import './style.scss'
 
@@ -27,57 +27,80 @@ function collect(connect, monitor) {
   };
 }
 
-function renderCard(props) {
-  const {
-    card: {
-      companyLogo,
-      company,
-      jobTitle,
-      isRejected
-    },
-    isDragging
-  } = props;
-
-  const cardClass = classNames({
-    'card-container': true,
-    'rejected-cards': isRejected,
-    '--is_dragging': isDragging
-  });
-
-  return (
-    <div className={cardClass}>
-      <div className="card-company-icon">
-        <img src={companyLogo || defaultLogo}/>
-      </div>
-      <div className="card-company-info">
-        <div id="company" className="card-company-name">
-          {company}
-        </div>
-        <div id="jobTitle" className="card-job-position">
-          {jobTitle}
-        </div>
-      </div>
-      <div className="card-job-details">
-        {/* <DetailsModal></DetailsModal>   */}
-      </div>
-    </div>
-  );
-}
-
-const Card = (props) => {
-  const {
-    card: {
-      isRejected
-    },
-    connectDragSource,
-  } = props;
-
-  if (isRejected) {
-    return renderCard(props);
+class Card extends PureComponent {
+  constructor() {
+    super();
+    this.state = {
+      showModal: false
+    };
+    this.toggleModal = this.toggleModal.bind(this);
   }
-  return connectDragSource(
-    renderCard(props)
-  );
+
+  toggleModal() {
+    this.setState(({showModal}) => ({
+      showModal: !showModal
+    }));
+  }
+
+  renderCard() {
+    const {
+      card: {
+        companyLogo,
+        company,
+        jobTitle,
+        isRejected
+      },
+      isDragging
+    } = this.props;
+
+    const {showModal} = this.state;
+
+    const cardClass = classNames({
+      'card-container': true,
+      'rejected-cards': isRejected,
+      '--is_dragging': isDragging
+    });
+
+    return (
+      <div>
+        {
+          showModal &&
+          <CardModal {...this.props} toggleModal={this.toggleModal}/>
+        }
+        <div className={cardClass} onClick={this.toggleModal}>
+          <div className="card-company-icon">
+            <img src={companyLogo || defaultLogo}/>
+          </div>
+          <div className="card-company-info">
+            <div id="company" className="card-company-name">
+              {company}
+            </div>
+            <div id="jobTitle" className="card-job-position">
+              {jobTitle}
+            </div>
+          </div>
+          <div className="card-job-details">
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const {
+      card: {
+        isRejected
+      },
+      connectDragSource,
+    } = this.props;
+
+    if (isRejected) {
+      return this.renderCard();
+    }
+    return connectDragSource(
+      this.renderCard()
+    );
+  }
 };
 
 Card.propTypes = {

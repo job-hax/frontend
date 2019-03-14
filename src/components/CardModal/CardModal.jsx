@@ -1,40 +1,31 @@
-import React, {Component} from "react";
+import React from "react";
+import ReactDOM from "react-dom";
 
 import './style.scss';
 
-class DetailsModal extends Component {
-  constructor() {
-    super();
-    this.state = {
-      isModalShowing: false,
-    }
-    this.toggleModal = this.toggleModal.bind(this);
-  }
+const CardModal = props => {
+  const {
+    toggleModal,
+    card
+  } = props;
 
-  toggleModal() {
-    this.setState(state => ({
-      isModalShowing: !state.isModalShowing
-    }));
-  }
-
-  Modal() {
-    return (
-      <div className={this.state.isModalShowing ? 'modal display-block' : 'modal display-none'}>
-        <section className='modal-main'>
+  return ReactDOM.createPortal(
+    <React.Fragment>
+      <div className='modal' onClick={toggleModal}>
+        <section className='modal-main' onClick={e => {
+          e.stopPropagation()
+        }}>
           <div className='modal-header'>
             <div className="modal-company-icon">
-              <img className="modal-company-icon" src="../../src/assets/icons/JobHax-logo-black.svg"></img>
+              <img className="modal-company-icon" src={card.companyLogo}/>
             </div>
             <div>
               <div className="modal-header company-name">
-                Company Name
+                {card.company}
               </div>
               <div className="modal-header job-title">
-                Job Title
+                {card.jobTitle}
               </div>
-            </div>
-            <div className="modal-header close" onClick={this.toggleModal}>
-              x
             </div>
           </div>
           <div className="modal-body">
@@ -53,23 +44,14 @@ class DetailsModal extends Component {
               </div>
             </div>
             <div className="modal-body main">
-
             </div>
           </div>
         </section>
       </div>
-    );
-  }
+    </React.Fragment>,
+    document.querySelector('#modal')
+  );
+};
 
-  render() {
-    return (
-      <main>
-        {this.Modal()}
-        <div className="show-modal-button" onClick={this.toggleModal}>x</div>
-      </main>
-    )
-  }
-}
-
-export default DetailsModal;
+export default CardModal;
 
