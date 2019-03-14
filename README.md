@@ -2,32 +2,43 @@
 
 ## Prerequisites
 1. Download nodejs version 10x:
-```
-https://nodejs.org/en/download/
-```
+	```
+	https://nodejs.org/en/download/
+	```
 2. Install yarn package manager for JavaScript: 
-```
-npm i -g yarn
-```
+	```
+	npm i -g yarn
+	```
 ## Installation
 1. Clone current repository:
-```
-git clone https://github.com/job-hax/frontend.git
-```
+	```
+	git clone https://github.com/job-hax/frontend.git
+	```
 
 2. Install project dependencies via yarn:
-```
-yarn install
-```
+	```
+	yarn install
+	```
 
-3. Run:
+3. Create config/config.js in src/ if non-existant with the following contents:
+	```
+	export const IS_MOCKING = false;
 
-a) for local development:
-```
-yarn dev
-```
-b) for production build:
-```
-yarn build
-```
+	export const googleClientId = '[TODO]';
+
+	export const jobHaxClientId = '[TODO]';
+
+	export const jobHaxClientSecret = '[TODO]';
+	```
+
+4. Run:
+
+	a) for local development:
+		```
+		yarn dev
+		```
+	b) for production build:
+		```
+		yarn build
+		```
 Note: Starting file: './src/index.js'
