@@ -45,7 +45,7 @@ class Dashboard extends Component {
 
   componentDidMount() {
     if (IS_MOCKING) {
-      this.sortApplications(mockJobApps.data);
+      this.sortJobApplications(mockJobApps.data);
       return;
     }
     const {url, config} = authenticateRequest;
@@ -74,7 +74,7 @@ class Dashboard extends Component {
               fetchApi(url, config)
                 .then(response => {
                   if (response.ok) {
-                    this.sortApplications(response.json.data);
+                    this.sortJobApplications(response.json.data);
                   }
                 });
             }
@@ -82,7 +82,7 @@ class Dashboard extends Component {
       })
   }
 
-  sortApplications(applications) {
+  sortJobApplications(applications) {
     for (let application of applications) {
       switch (application.applicationStatus.value.toLowerCase()) {
         case 'toapply':

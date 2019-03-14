@@ -4,7 +4,6 @@ import {BrowserRouter as Router, Route} from "react-router-dom";
 import Header from '../Header/Header.jsx';
 import Dashboard from '../Dashboard/Dashboard.jsx';
 import Home from '../Home/Home.jsx';
-import DetailsModal from '../DetailsModal/DetailsModal.jsx';
 import Login from '../Login/Login.jsx';
 
 import {googleClientId} from "../../config/config.js";
@@ -51,7 +50,6 @@ class App extends Component {
           <Header googleAuth={this.googleAuth}/>
           <Route exact path="/dashboard" render={() => <Dashboard googleAuth={this.googleAuth}/>}/>
           <Route exact path="/" component={Home}/>
-          <Route exact path="/modal" component={DetailsModal}/>
         </div>
       </Router>)
       : <Login googleAuth={this.googleAuth}/>
