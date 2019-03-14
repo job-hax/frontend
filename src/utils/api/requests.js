@@ -1,7 +1,8 @@
 import {
   AUTHENTICATE,
   GET_JOB_APPS,
-  SYNC_USER_EMAILS
+  SYNC_USER_EMAILS,
+  REGISTER_USER,
 } from '../constants/endpoints.js';
 
 import {
@@ -47,6 +48,18 @@ export const syncUserEmailsRequest = {
     headers: {
       "Content-Type": "application/json"
     }
+  }
+};
+
+export const registerUserRequest = {
+  url: REGISTER_USER,
+  config: {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    headers: {
+      "Content-Type": "application/json"
+    },
   }
 };
 

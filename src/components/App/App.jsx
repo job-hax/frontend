@@ -5,6 +5,7 @@ import Header from '../Header/Header.jsx';
 import Dashboard from '../Dashboard/Dashboard.jsx';
 import Home from '../Home/Home.jsx';
 import Login from '../Login/Login.jsx';
+import Footer from '../Footer/Footer.jsx';
 
 import {googleClientId} from "../../config/config.js";
 
@@ -52,7 +53,13 @@ class App extends Component {
           <Route exact path="/" component={Home}/>
         </div>
       </Router>)
-      : <Login googleAuth={this.googleAuth}/>
+      :
+      (<Router>
+        <div className="main-container">
+          <Route exact path="/" component={Home}/>
+          <Route exact path="/login" render={ () => <Login googleAuth={this.googleAuth}/>}/>
+        </div>
+      </Router>)
   }
 }
 
