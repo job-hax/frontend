@@ -16,10 +16,8 @@ class Login extends Component {
   }
 
   handleSignUp(event) {
-    event.preventDefault()
-    console.log(event.target[0].value)
-    console.log(event.target[1].value)
-    registerUserRequest.body={
+    event.preventDefault();
+    registerUserRequest.body = {
       first_name: event.target[0].value,
       last_name: event.target[1].value,
       username: event.target[2].value,
@@ -56,13 +54,13 @@ class Login extends Component {
           <label>Re-enter Password</label>
           <input className="input-box"></input>
         </div>
-        <button className="social-buttons form-button" >Sign Up </button>
+        <button className="social-buttons form-button">Sign Up</button>
       </form>
     )
   }
 
   generateLogin() {
-    return(
+    return (
       <div className="login-container">
         <div className="content-container">
           <h1>Register</h1>
@@ -81,11 +79,11 @@ class Login extends Component {
     return (
       <div>
         {this.generateLogin()}
-        <div  className="bottom-fixed-footer">
+        <div className="bottom-fixed-footer">
           <Footer/>
-        </div> 
+        </div>
       </div>
-      
+
     )
   }
 }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {DropTarget} from "react-dnd";
 import Card from '../Card/Card.jsx';
+import JobInput from '../JobInput/JobInput.jsx';
 import {MIN_CARD_NUMBER_IN_COLUMN} from '../../utils/constants/constants.js'
 
 import './style.scss';
@@ -74,29 +75,6 @@ class Column extends Component {
       );
   };
 
-  addJob() {
-    return (
-      !this.state.isAddJobClicked ?
-        <div className="column-addJob" onClick={this.toggleAddJob}>
-          +
-        </div>
-        :
-        <div>
-          <div>
-            <form className="column-addJob-form" id="addJob">
-              <h1 contentEditable="true" className="addJob-company" id="company">Company Name</h1>
-              <h1 contentEditable="true" className="addJob-position" id="jobTitle">Job Title</h1>
-            </form>
-          </div>
-          <div>
-            <button className="column-addJob-form-button" onClick={this.toggleAddJob}>Cancel</button>
-            <button className="column-addJob-form-button addJob" onClick={this.toggleAddJob}>Add Job</button>
-          </div>
-        </div>
-
-    )
-  }
-
   generateColumnHeader() {
     const {
       title,
@@ -128,7 +106,9 @@ class Column extends Component {
           </div>
         </div>
         <div>
-          {this.addJob()}
+          {
+            <JobInput showInput={this.state.isAddJobClicked}/>
+          }
         </div>
       </div>
     )
