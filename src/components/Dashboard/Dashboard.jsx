@@ -53,6 +53,7 @@ class Dashboard extends Component {
     config.body = JSON.stringify(config.body);
     fetchApi(url, config)
       .then(response => {
+        console.log(response.json());
         if (response.ok) {
           return response.json;
         }
