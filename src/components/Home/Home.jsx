@@ -10,10 +10,10 @@ class Home extends Component {
     return (
       <div className="top_buttons">
         <Link to="/aboutus">
-          <button>About Us</button>
+          <button>About us</button>
         </Link>
         <Link to="/signup">
-          <button>Sign Up</button>
+          <button>Sign up</button>
         </Link>
         <Link to="/signin">
           <button>Sign in</button>

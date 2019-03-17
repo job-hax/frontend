@@ -1,3 +1,10 @@
+.sign_up-background {
+    background-image: linear-gradient(124deg, rgb(138, 87, 252), rgb(136, 64, 252));
+    height: 100%;
+    margin-top: -2%;
+}
+
+
 .sign_up-container {
     position: absolute;
     margin: auto;
@@ -65,7 +72,7 @@
     .redirect-buttons-container {
         padding-top:16px;
         border-top: 1px solid;
-        border-color: linear-gradient(124deg, rgb(121, 4, 204), rgb(92, 39, 195));
+        border-color: rgb(200, 176, 223);
     }
 }
 
@@ -81,6 +88,7 @@
     border: none;
     border-radius: 50px;
     padding: 15px 35px;
+    margin-top: 2.3%;
     cursor: pointer;
     }  
 }

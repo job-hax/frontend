@@ -33,7 +33,7 @@ class Header extends Component {
             </Link>
           </div>
           <div className="header-icon general">
-            <Link to="/modal">
+            <Link to="/metrics">
               <img src="../../src/assets/icons/StatsIcon@3x.png"></img>
             </Link>
           </div>
@@ -45,6 +45,11 @@ class Header extends Component {
           <div className="header-icon user-icon">
             <Link to="/test1/">
               <img src="../../src/assets/icons/SeyfoIcon@3x.png"></img>
+            </Link>
+          </div>
+          <div className="header-icon sign_out">
+            <Link to="/">
+              <img onClick={() => this.props.googleAuth.signOut()} src="../../src/assets/icons/sign_out.png"></img>
             </Link>
           </div>
         </div>

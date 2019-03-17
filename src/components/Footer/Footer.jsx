@@ -12,10 +12,10 @@ class Footer extends Component {
                         <Link to="/aboutus">
                             <span style={{margin: "4px" , color: "white"}}>About Us</span>
                         </Link>
-                        <Link to="/dashboard">
+                        <Link to="/underconstruction">
                             <span style={{margin: "4px" , color: "white"}}>FAQ</span>
                         </Link>
-                        <Link to="/dashboard">
+                        <Link to="/underconstruction">
                             <span style={{margin: "4px" , color: "white"}}>Legal</span>
                         </Link>
                     </div>

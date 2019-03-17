@@ -43,6 +43,20 @@
         }
     }
 
+
+    &.sign_out {
+      margin-top: 15px;
+      margin-bottom: 15px;
+      margin-right: 45px;
+      margin-left: -5px;
+
+      img{
+        background: transparent;
+        width: 30px;
+        height: 30px;
+      }
+    }
+
     img {
       height: 20px;
     }
