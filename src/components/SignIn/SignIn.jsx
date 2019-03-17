@@ -74,7 +74,7 @@ class SignIn extends Component {
 
   render() {
     return (
-      <div>
+      <div className="sign_in-background">
         {this.generateTopButtons()}
         {this.generateSignIn()}
         <div  className="bottom-fixed-footer">
