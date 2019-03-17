@@ -53,7 +53,9 @@ class Dashboard extends Component {
     config.body = JSON.stringify(config.body)
     fetchApi(url, config)
       .then(response => {
+
         console.log("authenticateRequest");
+
         console.log(response);
         if (response.ok) {
           return response.json;
@@ -64,7 +66,9 @@ class Dashboard extends Component {
         config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
         fetchApi(url, config)
           .then(response => {
+
             console.log("syncUserEmailsRequest");
+
             console.log(response);
             return {
               ok: response.ok,
@@ -72,6 +76,7 @@ class Dashboard extends Component {
             }
           })
           .then(({ok, token}) => {
+
             const {url, config} = getJobAppsRequest;
             config.headers.Authorization = token;
             fetchApi(url, config)
@@ -82,6 +87,7 @@ class Dashboard extends Component {
                   this.sortJobApplications(response.json.data);
                 }
               });
+
           });
       })
   }
