@@ -1,0 +1,58 @@
+.home-container{
+    background: white;
+    font-family: Exo;
+    color: #261268;
+}
+a:active{
+    color: rgb(170, 0, 255);
+}
+
+.header_area, .feature_area, .how_it_works_area{
+    padding-left: 75px;
+    padding-right: 75px;
+}
+
+.header_area{
+    background-image: linear-gradient(124deg, rgb(170, 0, 255), rgb(92, 39, 195));
+    color: white;
+    padding-top: 20px;
+    padding-bottom: 80px;
+    .top_buttons{
+        text-align: right;
+        margin-bottom: 15px;
+    }
+    h2{
+        font-size: 48pt;
+        font-weight: bold;
+        margin-top: 0;
+    }
+    p{
+        font-size: 16pt;
+        margin-top: -40px;
+        margin-bottom: 90px;
+    }
+    .how_it_works_btn{
+        padding: 25px 60px;
+        background: white;
+        text-decoration: none;
+        font-size: 18pt;
+        font-weight: bold;
+        border-radius: 8px;
+    }
+    button{
+        color: white;
+        font-family: Exo;
+        font-size: 12pt;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        border-radius: 50px;
+        padding: 15px 35px;
+        cursor: pointer;
+    }
+}
+
+.feature_area{
+}
+
+.how_it_works_area{
+}

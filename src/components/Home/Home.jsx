@@ -6,36 +6,20 @@ import './style.scss'
 
 class Home extends Component {
 
-  generateLogin(){
+  generateHeaderArea(){
     return(
-      <div >
-        <Link to="/login">
-          <button>Login</button>
-        </Link>
-      </div>
-    )
-  }
-
-  generateIntro() {
-    return (
-        <section className="home_banner_area" id="home">
-          <div className="banner_inner">
-            <div className="container">
-              <div className="row banner_content">
-                <div className="col-lg-9">
-                  <h2>Simplify your <br />job hunt!</h2>
-                  <p>Improve your job search experience in<br /> a seamless & intuitive way</p>
-                  <a className="banner_btn" href="#howitworks">How It Works</a>
-                </div>
-                <div className="col-lg-3" >
-                  <div className="banner_map_img">
-                    <img src="" alt=""></img>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+      <section className="header_area" id="home">
+        <div className="top_buttons">
+          <Link to="/login">
+            <button>Sign in</button>
+          </Link>
+        </div>
+        <div className="intro">
+          <h2>Simplify your job hunt!</h2>
+          <p>Improve your job search experience in a seamless & intuitive way</p>
+          <a className="how_it_works_btn" href="#howitworks">How It Works</a>
+        </div>
+      </section>
     )
   }
 
@@ -53,7 +37,7 @@ class Home extends Component {
 
   generateFeatureArea() {
     return (
-      <section className="feature_area p_120" id="feature">
+      <section className="feature_area" id="feature">
           <div className="container">
             <div className="main_title">
               <h2>Unique Features</h2>
@@ -107,9 +91,9 @@ class Home extends Component {
     )
   }
 
-  generateInteriorArea() {
+  generateHowItWorksArea() {
     return (
-      <div id="howitworks">
+      <div class="how_it_works_area" id="howitworks">
         {this.generateInteriorItem(
           "../../static/images/apply_to_jobs.jpg",
           "Apply to jobs & have them all automatically tracked",
@@ -133,10 +117,9 @@ class Home extends Component {
   render() {
     return (
       <div className="home-container">
-        {this.generateLogin()}
-        {this.generateIntro()}
+        {this.generateHeaderArea()}
         {this.generateFeatureArea()}
-        {this.generateInteriorArea()}
+        {this.generateHowItWorksArea()}
         <Footer/>
       </div>
     );
