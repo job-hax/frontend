@@ -4,8 +4,9 @@ import {BrowserRouter as Router, Route} from "react-router-dom";
 import Header from '../Header/Header.jsx';
 import Dashboard from '../Dashboard/Dashboard.jsx';
 import Home from '../Home/Home.jsx';
-import Login from '../Login/Login.jsx';
-import Footer from '../Footer/Footer.jsx';
+import AboutUs from '../AboutUs/AboutUs.jsx';
+import SignIn from '../SignIn/SignIn.jsx';
+import SignUp from '../SignUp/SignUp.jsx';
 
 import {googleClientId} from "../../config/config.js";
 
@@ -57,7 +58,9 @@ class App extends Component {
       (<Router>
         <div className="main-container">
           <Route exact path="/" component={Home}/>
-          <Route exact path="/login" render={ () => <Login googleAuth={this.googleAuth}/>}/>
+          <Route exact path="/aboutus" component={AboutUs}/>
+          <Route exact path="/signin" render={ () => <SignIn googleAuth={this.googleAuth}/>}/>
+          <Route exact path="/signup" render={ () => <SignUp googleAuth={this.googleAuth}/>}/>
         </div>
       </Router>)
   }
