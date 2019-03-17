@@ -6,7 +6,7 @@ import './style.scss'
 
 class Home extends Component {
 
-  generateTopButtons(){
+  generateTopButtons() {
     return (
       <div className="top_buttons">
         <Link to="/aboutus">
@@ -22,27 +22,30 @@ class Home extends Component {
     )
   }
 
-  generateHeaderArea(){
+  generateHeaderArea() {
     return(
       <section className="header_area" id="home">
+      <div className="top_buttons_and_logo">
+        <a href="#home">
+          <img class="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
+        </a>
         {this.generateTopButtons()}
-        <div className="intro">
-          <h2>Simplify your job hunt!</h2>
-          <p>Improve your job search experience in a seamless & intuitive way</p>
-          <a className="how_it_works_btn" href="#howitworks">How It Works</a>
-        </div>
+      </div>
+      <div className="intro">
+        <h2>Simplify your job hunt!</h2>
+        <p>Improve your job search experience in a seamless & intuitive way</p>
+        <a className="how_it_works_btn" href="#howitworks">How It Works</a>
+      </div>
       </section>
     )
   }
 
   generateFeatureInfo(imageLink,header,body) {
     return (
-      <div className="col-lg-3 col-md-6">
-        <div className="feature_item">
-          <img src={imageLink} styleName="width:90%; height: 90%" alt=""></img>
-          <h4 styleName="padding-top: 30px">{header}</h4>
-          <p>{body}</p>
-        </div>
+      <div className="feature">
+        <img src={imageLink} alt=""></img>
+        <h4>{header}</h4>
+        <p className="small-text">{body}</p>
       </div>
     )
   }
@@ -50,35 +53,33 @@ class Home extends Component {
   generateFeatureArea() {
     return (
       <section className="feature_area" id="feature">
-          <div className="container">
-            <div className="main_title">
-              <h2>Unique Features</h2>
-              <p>No more messy spreadsheets or digging through emails to see the status of your job applications!</p>
-            </div>
-            <div className="feature_inner row">
-              {this.generateFeatureInfo(
-                "/static/images/emailtracking1.jpg",
-                "Email Tracking",
-                "Too many job app emails to dig through? We can identify & automatically track those jobs on our dashboard!"
-              )}
-              {this.generateFeatureInfo(
-                "/static/images/metrics2.png",
-                "Metrics",
-                "'We can only improve what we measure', that's why we analyze your data & give you insightful metrics to analyze."
-              )}
-              {this.generateFeatureInfo(
-                "/static/images/share.png",
-                "Upcoming: Sharing",
-                "This upcoming feature will allow you to share your job search progress & seek advice with someone like your career advisor."
-              )}
-              {this.generateFeatureInfo(
-                "/static/images/predictions.png",
-                "Upcoming: Predictions & Notifications",
-                "We can do things like remind you of upcoming interviews & suggest jobs!"
-              )}
-            </div>
-          </div>
-        </section>
+        <div className="title">
+          <h2>Unique Features</h2>
+          <p className="small-text">No more messy spreadsheets or digging through emails to see the status of your job applications!</p>
+        </div>
+        <div className="features">
+          {this.generateFeatureInfo(
+            "src/assets/icons/featureEmail.png",
+            "Email Tracking",
+            "Too many job app emails to dig through? We can identify & automatically track those jobs on our dashboard!"
+          )}
+          {this.generateFeatureInfo(
+            "src/assets/icons/featureMetrics.png",
+            "Metrics",
+            "'We can only improve what we measure', that's why we analyze your data & give you insightful metrics to analyze."
+          )}
+          {this.generateFeatureInfo(
+            "src/assets/icons/featureSharing.png",
+            "Upcoming: Sharing",
+            "This upcoming feature will allow you to share your job search progress & seek advice with someone like your career advisor."
+          )}
+          {this.generateFeatureInfo(
+            "src/assets/icons/featurePredictions.png",
+            "Upcoming: Predictions & Notifications",
+            "We can do things like remind you of upcoming interviews & suggest jobs!"
+          )}
+        </div>
+      </section>
     )
   }
 
