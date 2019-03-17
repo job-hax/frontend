@@ -3,8 +3,10 @@ import {BrowserRouter as Router, Route} from "react-router-dom";
 
 import Header from '../Header/Header.jsx';
 import Dashboard from '../Dashboard/Dashboard.jsx';
+import Metrics from '../Metrics/Metrics.jsx';
 import Home from '../Home/Home.jsx';
 import AboutUs from '../AboutUs/AboutUs.jsx';
+import UnderConstruction from '../UnderConstruction/UnderConstruction.jsx';
 import SignIn from '../SignIn/SignIn.jsx';
 import SignUp from '../SignUp/SignUp.jsx';
 
@@ -51,6 +53,7 @@ class App extends Component {
         <div className="main-container">
           <Header googleAuth={this.googleAuth}/>
           <Route exact path="/dashboard" render={() => <Dashboard googleAuth={this.googleAuth}/>}/>
+          <Route exact path="/metrics" render={() => <Metrics googleAuth={this.googleAuth}/>}/>
           <Route exact path="/" component={Home}/>
         </div>
       </Router>)
@@ -59,6 +62,7 @@ class App extends Component {
         <div className="main-container">
           <Route exact path="/" component={Home}/>
           <Route exact path="/aboutus" component={AboutUs}/>
+          <Route exact path="/underconstruction" component={UnderConstruction}/>
           <Route exact path="/signin" render={ () => <SignIn googleAuth={this.googleAuth}/>}/>
           <Route exact path="/signup" render={ () => <SignUp googleAuth={this.googleAuth}/>}/>
         </div>
