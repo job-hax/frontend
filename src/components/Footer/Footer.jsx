@@ -9,7 +9,7 @@ class Footer extends Component {
             <div className="footer-container">
                 <div className="footer-content footer-inside-links">
                     <div>
-                        <Link to="/dashboard">
+                        <Link to="/aboutus">
                             <span style={{margin: "4px" , color: "white"}}>About Us</span>
                         </Link>
                         <Link to="/dashboard">
