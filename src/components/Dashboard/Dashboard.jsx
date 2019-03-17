@@ -50,9 +50,11 @@ class Dashboard extends Component {
     }
     const {url, config} = authenticateRequest;
     config.body.token = this.props.googleAuth.currentUser.get().getAuthResponse().access_token;
-    config.body = JSON.stringify(config.body);
+    config.body = JSON.stringify(config.body)
     fetchApi(url, config)
       .then(response => {
+        console.log("authenticateRequest");
+        console.log(response);
         if (response.ok) {
           return response.json;
         }
@@ -62,22 +64,24 @@ class Dashboard extends Component {
         config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
         fetchApi(url, config)
           .then(response => {
+            console.log("syncUserEmailsRequest");
+            console.log(response);
             return {
               ok: response.ok,
               token: config.headers.Authorization
             }
           })
           .then(({ok, token}) => {
-            if (ok) {
-              const {url, config} = getJobAppsRequest;
-              config.headers.Authorization = token;
-              fetchApi(url, config)
-                .then(response => {
-                  if (response.ok) {
-                    this.sortJobApplications(response.json.data);
-                  }
-                });
-            }
+            const {url, config} = getJobAppsRequest;
+            config.headers.Authorization = token;
+            fetchApi(url, config)
+              .then(response => {
+                console.log("getJobAppsRequest");
+                console.log(response);
+                if (response.ok) {
+                  this.sortJobApplications(response.json.data);
+                }
+              });
           });
       })
   }

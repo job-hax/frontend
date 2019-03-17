@@ -48,7 +48,9 @@ class Card extends PureComponent {
         companyLogo,
         company,
         jobTitle,
-        isRejected
+        isRejected,
+        applyDate,
+        source,
       },
       isDragging
     } = this.props;
