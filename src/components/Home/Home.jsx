@@ -6,14 +6,26 @@ import './style.scss'
 
 class Home extends Component {
 
+  generateTopButtons(){
+    return (
+      <div className="top_buttons">
+        <Link to="/aboutus">
+          <button>About Us</button>
+        </Link>
+        <Link to="/signup">
+          <button>Sign Up</button>
+        </Link>
+        <Link to="/signin">
+          <button>Sign in</button>
+        </Link>
+      </div>
+    )
+  }
+
   generateHeaderArea(){
     return(
       <section className="header_area" id="home">
-        <div className="top_buttons">
-          <Link to="/login">
-            <button>Sign in</button>
-          </Link>
-        </div>
+        {this.generateTopButtons()}
         <div className="intro">
           <h2>Simplify your job hunt!</h2>
           <p>Improve your job search experience in a seamless & intuitive way</p>

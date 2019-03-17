@@ -5,17 +5,17 @@ import {registerUserRequest} from '../../utils/api/requests.js';
 
 import './style.scss'
 
-class Login extends Component {
+class SignUp extends Component {
   constructor(props) {
     super(props);
-    this.handleLogin = this.handleLogin.bind(this);
+    this.handleSignUp = this.handleSignUp.bind(this);
   }
 
-  handleLogin() {
+  handleSignUp() {
     this.props.googleAuth.signIn();
   }
 
-  handleSignUp(event) {
+  handleSubmit(event) {
     event.preventDefault()
     console.log(event.target[0].value)
     console.log(event.target[1].value)
@@ -29,9 +29,19 @@ class Login extends Component {
     }
   }
 
+  generateTopButtons(){
+    return (
+      <div className="home-button">
+        <Link to="/">
+          <button>Home</button>
+        </Link>
+      </div>
+    )
+  }
+
   generateForm() {
     return (
-      <form onSubmit={this.handleSignUp} className="form-container">
+      <form onSubmit={this.handleSubmit} className="form-container">
         <div className="form-element-container">
           <label>First Name</label>
           <input className="input-box"></input>
@@ -56,21 +66,26 @@ class Login extends Component {
           <label>Re-enter Password</label>
           <input className="input-box"></input>
         </div>
-        <button className="social-buttons form-button" >Sign Up </button>
+        <button className="social-buttons form-button" >Sign up </button>
       </form>
     )
   }
 
-  generateLogin() {
+  generateSignUp() {
     return(
-      <div className="login-container">
+      <div className="sign_up-container">
         <div className="content-container">
-          <h1>Register</h1>
+          <h1>Sign up</h1>
           {this.generateForm()}
         </div>
         <div className="social-buttons-container">
           <Link to="/dashboard">
-            <button className="social-buttons" onClick={this.handleLogin}>Sign Up With GOOGLE</button>
+            <button className="social-buttons" onClick={this.handleSignUp}>Sign up with GOOGLE</button>
+          </Link>
+        </div>
+        <div className="redirect-buttons-container">
+          <Link to="/signin">
+            <button className="social-buttons">Sign in!</button>
           </Link>
         </div>
       </div>
@@ -80,7 +95,8 @@ class Login extends Component {
   render() {
     return (
       <div>
-        {this.generateLogin()}
+        {this.generateTopButtons()}
+        {this.generateSignUp()}
         <div  className="bottom-fixed-footer">
           <Footer/>
         </div> 
@@ -90,4 +106,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default SignUp;
