@@ -147,6 +147,9 @@ class Dashboard extends Component {
   }
 
   updateApplications(card, dragColumnName, dropColumnName) {
+    if (dragColumnName === dropColumnName) {
+      return;
+    }
     const removedItemColumn = this.state[dragColumnName]
       .filter(job => {
         return job.id !== card.id;
