@@ -94,7 +94,7 @@ class SignUp extends Component {
 
   render() {
     return (
-      <div>
+      <div className="sign_up-background">
         {this.generateTopButtons()}
         {this.generateSignUp()}
         <div  className="bottom-fixed-footer">
