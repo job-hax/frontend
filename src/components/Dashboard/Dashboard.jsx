@@ -72,18 +72,16 @@ class Dashboard extends Component {
             }
           })
           .then(({ok, token}) => {
-            if (ok) {
-              const {url, config} = getJobAppsRequest;
-              config.headers.Authorization = token;
-              fetchApi(url, config)
-                .then(response => {
-                  console.log("getJobAppsRequest");
-                  console.log(response);
-                  if (response.ok) {
-                    this.sortJobApplications(response.json.data);
-                  }
-                });
-            }
+            const {url, config} = getJobAppsRequest;
+            config.headers.Authorization = token;
+            fetchApi(url, config)
+              .then(response => {
+                console.log("getJobAppsRequest");
+                console.log(response);
+                if (response.ok) {
+                  this.sortJobApplications(response.json.data);
+                }
+              });
           });
       })
   }
