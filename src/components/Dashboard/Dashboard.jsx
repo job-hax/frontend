@@ -53,28 +53,38 @@ class Dashboard extends Component {
     config.body = JSON.stringify(config.body)
     fetchApi(url, config)
       .then(response => {
-
         console.log("authenticateRequest");
-
         console.log(response);
         if (response.ok) {
           return response.json;
         }
       })
       .then(response => {
-        const {url, config} = getJobAppsRequest;
+        const {url, config} = syncUserEmailsRequest;
         config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
         fetchApi(url, config)
           .then(response => {
-            console.log('request');
-            console.log(getJobAppsRequest);
-            console.log("getJobAppsRequest");
+            console.log("syncUserEmailsRequest");
             console.log(response);
-            if (response.ok) {
-              this.sortJobApplications(response.json.data);
+            return {
+              ok: response.ok,
+              token: config.headers.Authorization
             }
+          })
+          .then(({ok, token}) => {
+            const {url, config} = getJobAppsRequest;
+            config.headers.Authorization = token;
+            fetchApi(url, config)
+              .then(response => {
+                console.log("getJobAppsRequest");
+                console.log(response);
+                if (response.ok) {
+                  this.sortJobApplications(response.json.data);
+                }
+              });
+
           });
-      });
+      })
   }
 
   sortJobApplications(applications) {
@@ -198,7 +208,7 @@ class Dashboard extends Component {
           name="jobsOffer"
           updateApplications={this.updateApplications}
           icon="../../src/assets/icons/OffersIcon@3x.png"
-          title="OFFERS"
+          title="OFFER"
           totalCount={this.state.jobsOffer.length + this.state.jobsRejectedOffer.length}
           cards={this.state.jobsOffer}
           cardsRejecteds={this.state.jobsRejectedOffer}
