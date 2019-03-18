@@ -1,4 +1,11 @@
-.login-container {
+.sign_up-background {
+    background-image: linear-gradient(124deg, rgb(138, 87, 252), rgb(136, 64, 252));
+    height: 100%;
+    margin-top: -2%;
+}
+
+
+.sign_up-container {
     position: absolute;
     margin: auto;
     top: 0;
@@ -6,7 +13,7 @@
     bottom: 80px;
     left: 0;
     width: 352px;
-    height: 392px;
+    height: 458px;
     background-color: rgb(228, 220, 255);
     border-radius: 4px;
     box-shadow: 0 2px 4px 0 rgba(190, 190, 190, 0.5);
@@ -46,7 +53,7 @@
     }
 
     .social-buttons-container {
-        padding-bottom:16px;
+        padding-bottom: 20px;
     }
 
     .social-buttons {
@@ -61,6 +68,29 @@
         color: rgb(38, 18, 104);
         font-size: 12pt;
     }
+
+    .redirect-buttons-container {
+        padding-top:16px;
+        border-top: 1px solid;
+        border-color: rgb(200, 176, 223);
+    }
+}
+
+.home-button {
+    text-align: right;
+    margin: 20px 90px;
+
+    button{
+    color: white;
+    font-family: Exo;
+    font-size: 12pt;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 50px;
+    padding: 15px 35px;
+    margin-top: 2.3%;
+    cursor: pointer;
+    }  
 }
 
 .bottom-fixed-footer {

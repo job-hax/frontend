@@ -1,0 +1,139 @@
+.about_us-container{
+    background-color: white;
+    height: 96vh;
+    font-family: Exo;
+    color: #261268;
+  
+    .header_area{
+    background-image: url('../../assets/images/homebanner.jpg');
+    background-size: 100%;
+    color: white;
+    height: 32vh;
+    padding-top: 20px;
+    padding-bottom: 80px;
+
+    button{
+        color: white;
+        font-family: Exo;
+        font-size: 12pt;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        border-radius: 50px;
+        padding: 15px 35px;
+        cursor: pointer;
+    }
+    }  
+
+    .animation {
+    
+    .content__container {
+        font-weight: 900;
+        font-size: 200%;
+        text-align: center;
+        overflow: hidden;
+        height: 60px;
+        width: 1230px;
+        margin-top: 9vh;
+    }
+    .content__container__list {
+        margin-top: 0;
+        padding-left: 0px;
+        text-align: center;
+        list-style: none;
+        animation-name: change;
+        animation-duration: 10s;
+        animation-iteration-count: infinite;
+    }
+    .content__container__list__item {
+        line-height: 60px;
+    }
+    
+    @-webkit-keyframes opacity {
+        0%, 100% {
+        opacity: 0;
+        }
+        50% {
+        opacity: 1;
+        }
+    }
+    @-webkit-keyframes change {
+        0%, 12.66%, 100% {
+        -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+        }
+        16.66%, 29.32% {
+        -webkit-transform: translate3d(0, -25%, 0);
+                transform: translate3d(0, -25%, 0);
+        }
+        33.32%,45.98% {
+        -webkit-transform: translate3d(0, -50%, 0);
+                transform: translate3d(0, -50%, 0);
+        }
+        49.98%,62.64% {
+        -webkit-transform: translate3d(0, -75%, 0);
+                transform: translate3d(0, -75%, 0);
+        }
+        66.64%,79.3% {
+        -webkit-transform: translate3d(0, -50%, 0);
+                transform: translate3d(0, -50%, 0);
+        }
+        83.3%,95.96% {
+        -webkit-transform: translate3d(0, -25%, 0);
+                transform: translate3d(0, -25%, 0);
+        }
+    }
+    @keyframes opacity {
+        0%, 100% {
+        opacity: 0;
+        }
+        50% {
+        opacity: 1;
+        }
+    }
+    @keyframes change {
+        0%, 12.66%, 100% {
+        -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+        }
+        16.66%, 29.32% {
+        -webkit-transform: translate3d(0, -25%, 0);
+                transform: translate3d(0, -25%, 0);
+        }
+        33.32%,45.98% {
+        -webkit-transform: translate3d(0, -50%, 0);
+                transform: translate3d(0, -50%, 0);
+        }
+        49.98%,62.64% {
+        -webkit-transform: translate3d(0, -75%, 0);
+                transform: translate3d(0, -75%, 0);
+        }
+        66.64%,79.3% {
+        -webkit-transform: translate3d(0, -50%, 0);
+                transform: translate3d(0, -50%, 0);
+        }
+        83.3%,95.96% {
+        -webkit-transform: translate3d(0, -25%, 0);
+                transform: translate3d(0, -25%, 0);
+        }
+    }
+    }
+
+    .info-area {
+        text-align: center;
+
+        h2{
+            font-weight: bold;
+            margin-top: 40px;
+        }
+
+        p{
+            margin-top: 20px;
+        }
+    }
+}
+
+.footer-bottom {
+    position: absolute ;
+    width: 100%;
+    bottom: 0%;
+}

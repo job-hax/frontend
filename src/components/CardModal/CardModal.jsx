@@ -44,6 +44,12 @@ const CardModal = props => {
               </div>
             </div>
             <div className="modal-body main">
+              <div>
+                {card.applyDate}
+              </div>
+              <div>
+                {card.source}
+              </div>
             </div>
           </div>
         </section>
