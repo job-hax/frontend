@@ -60,30 +60,19 @@ class Dashboard extends Component {
         }
       })
       .then(response => {
-        const {url, config} = syncUserEmailsRequest;
+        const {url, config} = getJobAppsRequest;
         config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
         fetchApi(url, config)
           .then(response => {
-            console.log("syncUserEmailsRequest");
+            console.log('request');
+            console.log(getJobAppsRequest);
+            console.log("getJobAppsRequest");
             console.log(response);
-            return {
-              ok: response.ok,
-              token: config.headers.Authorization
+            if (response.ok) {
+              this.sortJobApplications(response.json.data);
             }
-          })
-          .then(({ok, token}) => {
-            const {url, config} = getJobAppsRequest;
-            config.headers.Authorization = token;
-            fetchApi(url, config)
-              .then(response => {
-                console.log("getJobAppsRequest");
-                console.log(response);
-                if (response.ok) {
-                  this.sortJobApplications(response.json.data);
-                }
-              });
           });
-      })
+      });
   }
 
   sortJobApplications(applications) {
