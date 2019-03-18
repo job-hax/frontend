@@ -41,6 +41,7 @@ class Dashboard extends Component {
     this.jobsRejectedOffer = [];
 
     this.updateApplications = this.updateApplications.bind(this);
+    this.addNewApplication = this.addNewApplication.bind(this);
   }
 
   componentDidMount() {
@@ -96,32 +97,28 @@ class Dashboard extends Component {
         case 'applied':
           if (application.isRejected) {
             this.jobsRejectedApplied.push(application)
-          }
-          else {
+          } else {
             this.jobsApplied.push(application);
           }
           break;
         case 'phonescreen':
           if (application.isRejected) {
             this.jobsRejectedPhoneScreen.push(application)
-          }
-          else {
+          } else {
             this.jobsPhoneScreen.push(application);
           }
           break;
         case 'onsiteinterview':
           if (application.isRejected) {
             this.jobsRejectedOnsiteInterview.push(application)
-          }
-          else {
+          } else {
             this.jobsOnsiteInterview.push(application);
           }
           break;
         case 'offer':
           if (application.isRejected) {
             this.jobsRejectedOffer.push(application)
-          }
-          else {
+          } else {
             this.jobsOffer.push(application);
           }
           break;
@@ -163,12 +160,25 @@ class Dashboard extends Component {
     }));
   }
 
+  addNewApplication({name, title}) {
+  // addNewApplication(card, columnName) {
+    // let insertedItemColumn = this.state[columnName].slice();
+    // insertedItemColumn.unshift(card);
+
+    // this.setState(() => ({
+    //   [columnName]: insertedItemColumn
+    // }));
+
+    console.log(name, title);
+  }
+
   render() {
     return (
       <div className="dashboard-container">
         <Column
           name="jobsToApply"
           updateApplications={this.updateApplications}
+          addNewApplication={this.addNewApplication}
           icon="../../src/assets/icons/ToApplyIcon@3x.png"
           title="TO APPLY"
           totalCount={this.state.jobsToApply.length}
@@ -177,6 +187,7 @@ class Dashboard extends Component {
         <Column
           name="jobsApplied"
           updateApplications={this.updateApplications}
+          addNewApplication={this.addNewApplication}
           icon="../../src/assets/icons/AppliedIcon@3x.png"
           title="APPLIED"
           totalCount={this.state.jobsApplied.length + this.state.jobsRejectedApplied.length}
@@ -187,6 +198,7 @@ class Dashboard extends Component {
         <Column
           name="jobsPhoneScreen"
           updateApplications={this.updateApplications}
+          addNewApplication={this.addNewApplication}
           icon="../../src/assets/icons/PhoneScreenIcon@3x.png"
           title="PHONE SCREEN"
           totalCount={this.state.jobsPhoneScreen.length + this.state.jobsRejectedPhoneScreen.length}
@@ -197,6 +209,7 @@ class Dashboard extends Component {
         <Column
           name="jobsOnsiteInterview"
           updateApplications={this.updateApplications}
+          addNewApplication={this.addNewApplication}
           icon="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
           title="ONSITE INTERVIEW"
           totalCount={this.state.jobsOnsiteInterview.length + this.state.jobsRejectedOnsiteInterview.length}
@@ -207,6 +220,7 @@ class Dashboard extends Component {
         <Column
           name="jobsOffer"
           updateApplications={this.updateApplications}
+          addNewApplication={this.addNewApplication}
           icon="../../src/assets/icons/OffersIcon@3x.png"
           title="OFFER"
           totalCount={this.state.jobsOffer.length + this.state.jobsRejectedOffer.length}

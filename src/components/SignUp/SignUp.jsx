@@ -16,10 +16,8 @@ class SignUp extends Component {
   }
 
   handleSubmit(event) {
-    event.preventDefault()
-    console.log(event.target[0].value)
-    console.log(event.target[1].value)
-    registerUserRequest.body={
+    event.preventDefault();
+    registerUserRequest.body = {
       first_name: event.target[0].value,
       last_name: event.target[1].value,
       username: event.target[2].value,
@@ -29,7 +27,7 @@ class SignUp extends Component {
     }
   }
 
-  generateTopButtons(){
+  generateTopButtons() {
     return (
       <div className="home-button">
         <Link to="/">
@@ -66,13 +64,13 @@ class SignUp extends Component {
           <label>Re-enter Password</label>
           <input className="input-box"></input>
         </div>
-        <button className="social-buttons form-button" >Sign up </button>
+        <button className="social-buttons form-button">Sign up</button>
       </form>
     )
   }
 
   generateSignUp() {
-    return(
+    return (
       <div className="sign_up-container">
         <div className="content-container">
           <h1>Sign up</h1>
@@ -97,11 +95,11 @@ class SignUp extends Component {
       <div className="sign_up-background">
         {this.generateTopButtons()}
         {this.generateSignUp()}
-        <div  className="bottom-fixed-footer">
+        <div className="bottom-fixed-footer">
           <Footer/>
-        </div> 
+        </div>
       </div>
-      
+
     )
   }
 }
