@@ -23,10 +23,20 @@ class Metrics extends Component {
         super(props);
     
         this.state = {
-          response: [],
+          totalAppsCountRequest: [],
+          appsCountByMonthRequest: [],
+          appsCountByMonthWithTotalRequest: [],
+          countByJobtitleAndStatusesRequest: [],
+          countByStatusesRequest: [],
+          wordCountRequest: [],
         };
     
-        this.response = [];
+        this.totalAppsCountRequest = [];
+        this.appsCountByMonthRequest = [];
+        this.appsCountByMonthWithTotalRequest = [];
+        this.countByJobtitleAndStatusesRequest = [];
+        this.countByStatusesRequest = [];
+        this.wordCountRequest = [];
     }
 
     componentDidMount() {
@@ -46,40 +56,212 @@ class Metrics extends Component {
                 }
             })
             .then(response => {
-                const {url, config} = getJobAppsRequest;
+                const {url, config} = getTotalAppsCountRequest;
                 config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
                 fetchApi(url, config)
                 .then(response => {
-                    console.log('request');
-                    console.log(getJobAppsRequest);
-                    console.log("getJobAppsRequest");
-                    console.log(response);
+                    console.log('getTotalAppsCountRequest');
+                    console.log(getTotalAppsCountRequest);
                     if (response.ok) {
-                    this.dataSaver(response.json.data);
+                    this.totalAppsCountRequest = (response.json.data);
+                    console.log('getTotalAppsCountRequest.response.json.data');
+                    console.log(this.totalAppsCountRequest);
+                    this.setState({
+                        totalAppsCountRequest: this.totalAppsCountRequest,
+                      });
                     }
                 });
-        });
+                return response;
+            })
+            .then(response => {
+                const {url, config} = getAppsCountByMonthRequest;
+                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
+                fetchApi(url, config)
+                .then(response => {
+                    console.log('getAppsCountByMonthRequest');
+                    console.log(getAppsCountByMonthRequest);
+                    if (response.ok) {
+                    this.appsCountByMonthRequest = (response.json.data);
+                    console.log('getAppsCountByMonthRequest.response.json.data');
+                    console.log(this.appsCountByMonthRequest);
+                    this.setState({
+                        appsCountByMonthRequest: this.appsCountByMonthRequest,
+                      });
+                    }
+                });
+                return response;
+            })
+            .then(response => {
+                const {url, config} = getAppsCountByMonthWithTotalRequest;
+                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
+                fetchApi(url, config)
+                .then(response => {
+                    console.log('getAppsCountByMonthWithTotalRequest');
+                    console.log(getAppsCountByMonthWithTotalRequest);
+                    if (response.ok) {
+                    this.appsCountByMonthWithTotalRequest = (response.json.data);
+                    console.log('getAppsCountByMonthWithTotalRequest.response.json.data');
+                    console.log(this.appsCountByMonthWithTotalRequest);
+                    this.setState({
+                        appsCountByMonthWithTotalRequest: this.appsCountByMonthWithTotalRequest,
+                      });
+                    }
+                });
+                return response;
+            })
+            .then(response => {
+                const {url, config} = getCountByJobtitleAndStatusesRequest;
+                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
+                fetchApi(url, config)
+                .then(response => {
+                    console.log('getCountByJobtitleAndStatusesRequest');
+                    console.log(getCountByJobtitleAndStatusesRequest);
+                    if (response.ok) {
+                    this.countByJobtitleAndStatusesRequest = (response.json.data);
+                    console.log('getCountByJobtitleAndStatusesRequest.response.json.data');
+                    console.log(this.countByJobtitleAndStatusesRequest);
+                    this.setState({
+                        countByJobtitleAndStatusesRequest: this.countByJobtitleAndStatusesRequest,
+                      });
+                    }
+                });
+                return response;
+            })
+            .then(response => {
+                const {url, config} = getCountByStatusesRequest;
+                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
+                fetchApi(url, config)
+                .then(response => {
+                    console.log('getCountByStatusesRequest');
+                    console.log(getCountByStatusesRequest);
+                    if (response.ok) {
+                    this.countByStatusesRequest = (response.json.data);
+                    console.log('getCountByStatusesRequest.response.json.data');
+                    console.log(this.countByStatusesRequest);
+                    this.setState({
+                        countByStatusesRequest: this.countByStatusesRequest,
+                      });
+                    }
+                });
+                return response;
+            })
+            .then(response => {
+                const {url, config} = getWordCountRequest;
+                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
+                fetchApi(url, config)
+                .then(response => {
+                    console.log('getWordCountRequest');
+                    console.log(getWordCountRequest);
+                    if (response.ok) {
+                    this.wordCountRequest = (response.json.data);
+                    console.log('getWordCountRequest.response.json.data');
+                    console.log(this.wordCountRequest);
+                    this.setState({
+                        wordCountRequest: this.wordCountRequest,
+                      });
+                    }
+                });
+                return response;
+            })
     }
 
-    dataSaver(data) {
-        this.response = JSON.stringify(data);
-        this.refreshData();
+    mapData (data) {
+        switch (data) {
+            case 'appsCountByMonthRequest': 
+                return(
+                    <div>
+                        {this.state.appsCountByMonthRequest.map((item) =>(
+                            <p> {item.source} - {item.data[10]}</p>
+                        ))}
+                    </div>
+                )
+            case 'appsCountByMonthWithTotalRequest': 
+                return(
+                    <div>
+                        {this.state.appsCountByMonthWithTotalRequest.map((item) =>(
+                            <p> {item.source}</p>
+                        ))}
+                    </div>
+                )
+            case 'countByJobtitleAndStatusesRequest': 
+                return(
+                    <div>
+                        {this.state.countByJobtitleAndStatusesRequest.map((item) =>(
+                            <p> {item.source} </p>
+                        ))}
+                    </div>
+                )
+            case 'countByStatusesRequest': 
+                return(
+                    <div>
+                        {this.state.countByStatusesRequest.map((item) =>(
+                            <p> {item.source}</p>
+                        ))}
+                    </div>
+                )
+            case 'wordCountRequest': 
+                return(
+                    <div>
+                        {this.state.wordCountRequest.map((item) =>(
+                            <p> {item.source}</p>
+                        ))}
+                    </div>
+                )
+            default:
+        } 
     }
 
-    refreshData(){
-        this.setState({
-          response: this.response,
-        });
-    }
+    generateFeatureInfo(imageLink,header,body) {
+        return (
+          <div className="feature">
+            <img src={imageLink} alt=""></img>
+            <h4>{header}</h4>
+            <p className="small-text">{body}</p>
+          </div>
+        )
+      }
+    
+      generateFeatureArea() {
+        return (
+          <section className="metrics_feature_area" id="feature">
+            <div className="title">
+              <h2>Evaluate Your Process in a Unique Way</h2>
+              <p className="small-text">Analysing your job application history provides you a priceless perspective to understand and iprove your strategy!</p>
+              <p className="small-text">You have total {this.state.totalAppsCountRequest.count} job applications so far! That means you have already taken {this.state.totalAppsCountRequest.count} steps towards your perfect job!</p>
+            </div>
+            <div className="features">
+              {this.generateFeatureInfo(
+                "src/assets/icons/featureEmail.png",
+                "Monthly Application",
+                "You can easily track how many applications you have made each month!"
+              )}
+              {this.generateFeatureInfo(
+                "src/assets/icons/featureMetrics.png",
+                "Application Trend",
+                "You can easily track the trend of your applications"
+              )}
+              {this.generateFeatureInfo(
+                "src/assets/icons/featureSharing.png",
+                "Application Stages",
+                "You can easily track how many of your applications at which stage"
+              )}
+              {this.generateFeatureInfo(
+                "src/assets/icons/featurePredictions.png",
+                "Stages in Positions",
+                "You can easily track how many of your applications for each position at which stage"
+              )}
+            </div>
+          </section>
+        )
+      }
 
     render() {
-        console.log(JSON.parse(this.state.response));
         return(
-            <div className="metrics-container">
-                <h2>aa</h2>
-                {this.state.response[0]}
+            <div >
+                {this.generateFeatureArea()}
+                {this.mapData('appsCountByMonthRequest')}
             </div>
-        )
+        );
     }
 }
 
