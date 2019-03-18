@@ -76,9 +76,11 @@
     }
 }
 
-.home-button {
-    text-align: right;
+.top-buttons {
+    display: flex;
+    justify-content: space-between;
     margin: 20px 90px;
+    padding-top: 88px;
 
     button{
     color: white;
@@ -91,6 +93,10 @@
     margin-top: 7.8%;
     cursor: pointer;
     }  
+    
+    .logo {
+        width: 90px;
+    }
 }
 
 .bottom-fixed-footer {
