@@ -1,63 +1,61 @@
-.card-container {
-  border-radius: 4px;
-  margin-bottom: 15px;
+.column-addJob {
+  margin-top: 30px;
   margin-left: 15px;
-  min-height: 70px;
   width: 240px;
-  display: flex;
-  justify-content: start;
+  height: 30px;
+  border-radius: 4px;
+  background-color: rgb(221, 170, 255);
+  color: rgb(132, 100, 239);
+  text-align: center;
+  padding-top: 3%;
+  cursor: pointer;
+}
+
+.column-addJob-form {
+  margin-left: 15px;
+  margin-top: 30px;
+  width: 240px;
+  height: 70px;
+  border: 1px solid rgb(255, 255, 255);
+  border-radius: 4px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
   background-color: rgb(255, 255, 255);
-  cursor: pointer;
+  color: rgb(219, 208, 255);
 
-  &.rejected-cards {
-    opacity: 0.6;
-    text-align: left;
-  }
-
-  &.--is_dragging {
-    opacity: 0;
-  }
-
-  .card-company-icon {
-    margin-top: 15px;
-    margin-bottom: 15px;
+  .input-add-job {
+    border: none;
+    outline: none;
+    width: 85%;
     margin-left: 15px;
-    width: 40px;
-    height: 40px;
-    border-radius: 4px;
-    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
 
-    img {
-      margin: 1px;
-      width: 38px;
-      height: 38px;
+    &.--company {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    &.--position {
+      margin-top: -8px;
+      font-size: 12px;
     }
   }
+  .column-addJob-form-button {
+    border: none;
+    background-color: rgb(228, 220, 255);
+    font-size: 18px;
+    color: rgb(132, 100, 239);
+    //margin-top: 4px;
+    //margin-left: 8px;
+    cursor: pointer;
 
-  .card-company-info {
-    width: 80%;
-    margin-left: 10px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    height: fit-content;
-
-    .card-company-name {
-      font-size: 18px;
+    &.--addJob {
+      margin-left: 36%;
       font-weight: bold;
     }
 
-    .card-job-position {
-      font-size: 12px;
-      font-weight: normal;
+    &.--button-disabled {
+      opacity: 0.3;
+      cursor: default;
     }
-  }
-
-  .card-job-details {
-    padding-top: 2%;
-    margin-right: 2%;
-    height: 5px;
-    font-size: 80%;
-    cursor: pointer;
   }
 }

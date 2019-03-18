@@ -65,7 +65,10 @@ class Card extends PureComponent {
       <div>
         {
           showModal &&
-          <CardModal {...this.props} toggleModal={this.toggleModal}/>
+          <CardModal
+            toggleModal={this.toggleModal}
+            {...this.props}
+          />
         }
         <div className={cardClass} onClick={this.toggleModal}>
           <div className="card-company-icon">
