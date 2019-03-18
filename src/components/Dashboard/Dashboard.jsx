@@ -78,7 +78,7 @@ class Dashboard extends Component {
             fetchApi(url, config)
               .then(response => {
                 console.log("getJobAppsRequest");
-                console.log(response);
+                console.log(response.json.data);
                 if (response.ok) {
                   this.sortJobApplications(response.json.data);
                 }
@@ -90,32 +90,32 @@ class Dashboard extends Component {
 
   sortJobApplications(applications) {
     for (let application of applications) {
-      switch (application.applicationStatus.value.toLowerCase()) {
-        case 'toapply':
+      switch (application.applicationStatus.id) {
+        case 2:
           this.jobsToApply.push(application);
           break;
-        case 'applied':
+        case 1:
           if (application.isRejected) {
             this.jobsRejectedApplied.push(application)
           } else {
             this.jobsApplied.push(application);
           }
           break;
-        case 'phonescreen':
+        case 3:
           if (application.isRejected) {
             this.jobsRejectedPhoneScreen.push(application)
           } else {
             this.jobsPhoneScreen.push(application);
           }
           break;
-        case 'onsiteinterview':
+        case 4:
           if (application.isRejected) {
             this.jobsRejectedOnsiteInterview.push(application)
           } else {
             this.jobsOnsiteInterview.push(application);
           }
           break;
-        case 'offer':
+        case 5:
           if (application.isRejected) {
             this.jobsRejectedOffer.push(application)
           } else {
