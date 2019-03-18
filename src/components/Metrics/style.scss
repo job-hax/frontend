@@ -1,12 +1,8 @@
-.metrics-container {
-    margin: 32px;
-    color: white;    
-}
-
 .metrics_feature_area{
     background-color: white;
     color: #261268;
     padding-top: 32px;
+    height:600px;
 
     .title{
         text-align: center;
@@ -39,8 +35,45 @@
             p{
                 max-width: 380px;
                 margin: auto;
-                // text-align: left;
+            }
+            a{
+                color: #261268;
+                text-decoration: none;;
             }
         }
     }
 } 
+
+.graph-container-dark-background {
+    height: 700px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: transparent;
+
+    .graph {
+        margin-top: 100px;
+        height: 500px;
+        width: 800px;
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 5px 5px 40px rgba(255, 255, 255, 0.3);
+    }
+}
+
+.graph-container-light-background {
+    height: 700px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: white;
+
+    .graph-dark {
+        margin-top: 100px;
+        height: 500px;
+        width: 800px;
+        background-color: rgb(92, 39, 195);
+        border-radius: 20px;
+        box-shadow: 5px 5px 40px rgba(0, 0, 0, 0.6);
+    }
+}
