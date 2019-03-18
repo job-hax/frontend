@@ -1,11 +1,13 @@
+@import url('https://fonts.googleapis.com/css?family=Exo:400,500,600,700');
+
 .home-container{
     background: white;
-    font-family: Exo;
+    font-family: 'Exo', sans-serif;
     color: #261268;
     font-size: 16pt;
+    font-weight: 400;
     .small-text{
         font-size: 12pt;
-        font-weight: bold;
     }
 }
 a:active{
@@ -40,8 +42,8 @@ a:active{
         width: 90px;
     }
     h2{
-        font-size: 48pt;
-        font-weight: bold;
+        font-size: 56pt;
+        font-weight: 600;
         margin-top: 0;
     }
     p{
@@ -52,12 +54,12 @@ a:active{
         padding: 25px 60px;
         background: white;
         text-decoration: none;
-        font-weight: bold;
+        font-weight: 400;
         border-radius: 8px;
     }
     button{
         color: white;
-        font-family: Exo;
+        font-family: 'Exo', sans-serif;
         font-size: 12pt;
         background: rgba(255, 255, 255, 0.05);
         border: none;
@@ -74,6 +76,7 @@ a:active{
         margin-bottom: 25px;
         h2{
             font-size: 24pt;
+            font-weight: 700;
             margin-bottom: 0;
         }
     }
@@ -135,6 +138,7 @@ a:active{
     }
     h4{
         font-size: 24pt;
+        font-weight: 600;
         margin: 0;
     }
     p{
