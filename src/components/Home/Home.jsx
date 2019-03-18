@@ -86,19 +86,27 @@ class Home extends Component {
   generateInteriorItem(imageLink,header,body) {
     return (
       <section className="interior_area">
-        <div className="container">
-          <div className="interior_inner row">
-            <div className="col-lg-6">
-              <img className="img-fluid" src={imageLink} alt=""></img>
-            </div>
-            <div className="col-lg-5 offset-lg-1">
-              <div className="interior_text">
-                <h4>{header}</h4>
-                <p>{body}</p>
-                {/* <a className="main_btn" href="#">See Details</a> */}
-              </div>
-            </div>
+        <div className="row">
+          <img src={imageLink} alt=""></img>
+          <div className="text-group">
+            <h4>{header}</h4>
+            <p className="small-text">{body}</p>
+            {/* <a className="main_btn" href="#">See Details</a> */}
           </div>
+        </div>
+      </section>
+    )
+  }
+  generateInteriorItemFlipLR(imageLink,header,body) {
+    return (
+      <section className="interior_area">
+        <div className="row flipLR">
+          <div className="text-group">
+            <h4>{header}</h4>
+              <p className="small-text">{body}</p>
+              {/* <a className="main_btn" href="#">See Details</a> */}
+            </div>
+          <img src={imageLink} alt=""></img>
         </div>
       </section>
     )
@@ -108,17 +116,17 @@ class Home extends Component {
     return (
       <div class="how_it_works_area" id="howitworks">
         {this.generateInteriorItem(
-          "../../static/images/apply_to_jobs.jpg",
+          "src/assets/images/hiw-apply.jpg",
           "Apply to jobs & have them all automatically tracked",
           "Anytime you apply for a job, we track it automatically! When we see job application emails in your inbox, we add it to your jobs dashboard. Of course, you can also manually add jobs you are interested in to have it tracked."
         )}
-        {this.generateInteriorItem(
-          "../../static/images/organize_jobs.jpg",
+        {this.generateInteriorItemFlipLR(
+          "src/assets/images/hiw-organize.jpg",
           "See your progression & organize your job search",
           "Once you have applied to jobs you are interested in, we want you to easily visualize and organize your job search. You can quickly see the status of all your job applications, add new information, keep all your contacts & relevant details like dates, tasks, salaries, etc. linked to your job card."
         )}
         {this.generateInteriorItem(
-          "../../static/images/metrics.jpg",
+          "src/assets/images/hiw-predictions.jpg",
           "Get metrics & analytics on your job search",
           "As you progress through your job search, we make it easy to identify problem areas so that you can constantly make improvements. For example, we can provide you with metrics on common attributes (skills, position, experience, etc.) among jobs which you are being rejected for so you can make changes to your resume."
         )}
