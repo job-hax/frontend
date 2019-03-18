@@ -98,12 +98,46 @@ a:active{
                 max-width: 180px;
             }
             p{
-                max-width: 350px;
+                max-width: 380px;
                 margin: auto;
+                // text-align: left;
             }
         }
     }
 }   
 
 .how_it_works_area{
+    margin-bottom: 80px;
+    .row{
+        display: flex;
+        align-items: center;
+        margin-top: 80px;
+    }
+    img{
+        border-radius: 20px;
+        margin-right: 60px;
+        width: 50%;
+        flex-grow: 1;
+    }
+    .flipLR{
+        text-align: right;
+        img{
+            margin-left: 60px;
+            margin-right: 0;
+        }
+        p{
+            margin-left: auto;
+        }
+    }
+    .text-group{
+        width: 50%;
+        flex-grow: 1;
+    }
+    h4{
+        font-size: 24pt;
+        margin: 0;
+    }
+    p{
+        max-width: 700px;
+    }
 }
