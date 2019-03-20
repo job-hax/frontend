@@ -12,7 +12,13 @@ class AboutUs extends Component {
         <Link to="/">
           <button>Home</button>
         </Link>
-      </div>
+        <Link to="/signup">
+          <button>Sign up</button>
+        </Link>
+        <Link to="/signin">
+          <button>Sign in</button>
+        </Link>
+    </div>
     )
   }
 
@@ -34,7 +40,12 @@ class AboutUs extends Component {
   generateHeaderArea(questions){
     return(
       <section className="header_area">
-        {this.generateTopButtons()}
+        <div className="top_buttons_and_logo">
+          <a href="/">
+            <img class="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
+          </a>
+          {this.generateTopButtons()}
+        </div>
         {this.generateAnimation(questions[0],questions[1],questions[2],questions[3])}
       </section>
     )
