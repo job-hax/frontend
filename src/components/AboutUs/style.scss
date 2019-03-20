@@ -1,51 +1,65 @@
+@import url('https://fonts.googleapis.com/css?family=Exo:400,500,600,700');
+
 .about_us-container{
     background-color: white;
     height: 96vh;
-    font-family: Exo;
+    font-family: 'Exo', sans-serif;
     color: #261268;
   
     .header_area{
     background-image: url('../../assets/images/homebanner.jpg');
-    background-size: 100%;
+    background-size: cover;
     color: white;
     height: 32vh;
-    padding-top: 20px;
+    padding-top: 65px;
     padding-bottom: 80px;
-
-    button{
-        color: white;
-        font-family: Exo;
-        font-size: 12pt;
-        background: rgba(255, 255, 255, 0.05);
-        border: none;
-        border-radius: 50px;
-        padding: 15px 35px;
-        cursor: pointer;
-    }
+        button{
+            color: white;
+            font-family: Exo;
+            font-size: 12pt;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 35px;
+            cursor: pointer;
+        }
+        .top_buttons_and_logo{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 45px;
+        }
+        .top_buttons{
+            text-align: right;
+            button{
+                margin-left: 30px;
+            }
+        }
     }  
 
     .animation {
     
-    .content__container {
-        font-weight: 900;
-        font-size: 200%;
-        text-align: center;
-        overflow: hidden;
-        height: 60px;
-        width: 1230px;
-        margin-top: 9vh;
-    }
-    .content__container__list {
-        margin-top: 0;
-        padding-left: 0px;
-        text-align: center;
-        list-style: none;
-        animation-name: change;
-        animation-duration: 10s;
-        animation-iteration-count: infinite;
-    }
-    .content__container__list__item {
-        line-height: 60px;
+        .content__container {
+            font-weight: 700;
+            font-size: 200%;
+            text-align: center;
+            overflow: hidden;
+            height: 60px;
+            width: 900px;
+            margin: auto;
+            margin-top: 9vh;
+        }
+        .content__container__list {
+            margin-top: 0;
+            padding-left: 0px;
+            text-align: center;
+            list-style: none;
+            animation-name: change;
+            animation-duration: 10s;
+            animation-iteration-count: infinite;
+        }
+        .content__container__list__item {
+            line-height: 60px;
     }
     
     @-webkit-keyframes opacity {
