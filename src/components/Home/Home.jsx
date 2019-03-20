@@ -25,17 +25,17 @@ class Home extends Component {
   generateHeaderArea() {
     return(
       <section className="header_area" id="home">
-      <div className="top_buttons_and_logo">
-        <a href="#home">
-          <img class="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
-        </a>
-        {this.generateTopButtons()}
-      </div>
-      <div className="intro">
-        <h2>Simplify your job hunt!</h2>
-        <p>Improve your job search experience in a seamless & intuitive way</p>
-        <a className="how_it_works_btn" href="#howitworks">How It Works</a>
-      </div>
+        <div className="top_buttons_and_logo">
+          <a href="#home">
+            <img class="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
+          </a>
+          {this.generateTopButtons()}
+        </div>
+        <div className="intro">
+          <h2>Simplify your job hunt!</h2>
+          <p>Improve your job search experience in a seamless & intuitive way</p>
+          <a className="how_it_works_btn" href="#howitworks">How It Works</a>
+        </div>
       </section>
     )
   }
