@@ -42,7 +42,7 @@ class AboutUs extends Component {
       <section className="header_area">
         <div className="top_buttons_and_logo">
           <a href="/">
-            <img class="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
+            <img className="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
           </a>
           {this.generateTopButtons()}
         </div>

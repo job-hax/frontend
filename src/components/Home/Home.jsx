@@ -27,7 +27,7 @@ class Home extends Component {
       <section className="header_area" id="home">
         <div className="top_buttons_and_logo">
           <a href="#home">
-            <img class="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
+            <img className="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
           </a>
           {this.generateTopButtons()}
         </div>
@@ -114,7 +114,7 @@ class Home extends Component {
 
   generateHowItWorksArea() {
     return (
-      <div class="how_it_works_area" id="howitworks">
+      <div className="how_it_works_area" id="howitworks">
         {this.generateInteriorItem(
           "src/assets/images/hiw-apply.jpg",
           "Apply to jobs & have them all automatically tracked",

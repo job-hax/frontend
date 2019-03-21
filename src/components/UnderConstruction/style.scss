@@ -10,25 +10,37 @@
     color: white;
     height: 32vh;
     text-align: center;
+    border: 1px solid black; 
     padding-top: 20px;
     padding-bottom: 80px;
 
-    h2{
-        font-weight: bolder;
-        margin-top: 80px;
-    }
+        h2{
+            font-weight: bolder;
+            margin-top: 0px;
+        }
 
-    button{
-        color: white;
-        font-family: Exo;
-        font-size: 12pt;
-        background: rgba(255, 255, 255, 0.05);
-        border: none;
-        border-radius: 50px;
-        padding: 15px 35px;
-        cursor: pointer;
-    }
+        .top-buttons {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 36px;
+
+            button{
+            color: white;
+            font-family: Exo;
+            font-size: 12pt;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 35px;
+            margin-top: 7.8%;
+            cursor: pointer;
+            } 
+        }
     }  
+  
+    .logo {
+        width: 90px;
+    }
 }
 
 .info-area {
