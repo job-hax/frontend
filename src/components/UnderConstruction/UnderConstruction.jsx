@@ -8,14 +8,17 @@ class UnderConstruction extends Component {
 
   generateTopButtons(){
     return (
-      <div className="top_buttons">
+      <div className="top-buttons">
+        <Link to="/">
+          <img className="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
+        </Link>
         <Link to="/">
           <button>Home</button>
         </Link>
       </div>
     )
   }
-
+  
   generateHeaderArea(){
     return(
       <section className="header_area">
