@@ -11,6 +11,14 @@
     border-top-right-radius: 4px;
     padding-bottom: 15px;
 
+    &.--column-active {
+      background-color: rgba(228, 220, 255, 1);
+    }
+
+    &.--column-dropable {
+      background-color: rgba(228, 220, 255, 0.6);
+    }
+
     &.no-card {
       border-radius: 4px;
     }
@@ -52,11 +60,11 @@
     border-bottom-right-radius: 5px;
 
     &.--column-active {
-      border: 3px solid blue;
+      background-color: rgba(228, 220, 255, 1);
     }
 
     &.--column-dropable {
-      border: 3px solid red;
+      background-color: rgba(228, 220, 255, 0.6);
     }
 
     &.middle {
@@ -94,6 +102,14 @@
       font-weight: normal;
     }
 
+    &.--column-active {
+      background-color: rgba(228, 220, 255, 1);
+    }
+
+    &.--column-dropable {
+      background-color: rgba(228, 220, 255, 0.6);
+    }
+
     &.ongoing-indicator {
       border-radius: 0;
       padding-bottom: 15px;
@@ -104,7 +120,6 @@
     }
 
     .cards-switch-button {
-      background-color: rgb(228, 220, 255);
       border: 0;
     }
   }

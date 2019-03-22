@@ -45,7 +45,7 @@ export const mockJobApps = {
     {
       "id": 332,
       "applicationStatus": {
-        "id": 1,
+        "id": 3,
         "value": "phonescreen"
       },
       "jobTitle": "Junior Android Engineer",
@@ -58,7 +58,7 @@ export const mockJobApps = {
     {
       "id": 333,
       "applicationStatus": {
-        "id": 1,
+        "id": 3,
         "value": "phonescreen"
       },
       "jobTitle": "Junior Android Engineer",
@@ -71,7 +71,7 @@ export const mockJobApps = {
     {
       "id": 334,
       "applicationStatus": {
-        "id": 1,
+        "id": 3,
         "value": "phonescreen"
       },
       "jobTitle": "Junior Software Engineer",
@@ -84,7 +84,7 @@ export const mockJobApps = {
     {
       "id": 32,
       "applicationStatus": {
-        "id": 1,
+        "id": 3,
         "value": "phonescreen"
       },
       "jobTitle": "Android Engineer",
@@ -136,7 +136,7 @@ export const mockJobApps = {
     {
       "id": 211,
       "applicationStatus": {
-        "id": 1,
+        "id": 4,
         "value": "onsiteinterview"
       },
       "jobTitle": "Android Intern",
@@ -149,7 +149,7 @@ export const mockJobApps = {
     {
       "id": 212,
       "applicationStatus": {
-        "id": 1,
+        "id": 4,
         "value": "onsiteinterview"
       },
       "jobTitle": "Intern (Summer 2019)",
@@ -188,7 +188,7 @@ export const mockJobApps = {
     {
       "id": 23,
       "applicationStatus": {
-        "id": 1,
+        "id": 4,
         "value": "onsiteinterview"
       },
       "jobTitle": "Android Developer",
@@ -201,7 +201,7 @@ export const mockJobApps = {
     {
       "id": 27,
       "applicationStatus": {
-        "id": 1,
+        "id": 4,
         "value": "onsiteinterview"
       },
       "jobTitle": "Android Engineer",
@@ -214,7 +214,7 @@ export const mockJobApps = {
     {
       "id": 28,
       "applicationStatus": {
-        "id": 1,
+        "id": 4,
         "value": "onsiteinterview"
       },
       "jobTitle": "Android",
@@ -227,7 +227,7 @@ export const mockJobApps = {
     {
       "id": 29,
       "applicationStatus": {
-        "id": 1,
+        "id": 4,
         "value": "onsiteinterview"
       },
       "jobTitle": "Android Engineer",
@@ -240,7 +240,7 @@ export const mockJobApps = {
     {
       "id": 24,
       "applicationStatus": {
-        "id": 1,
+        "id": 5,
         "value": "offer"
       },
       "jobTitle": "Software Engineer Intern",
