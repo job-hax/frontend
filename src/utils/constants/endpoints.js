@@ -1,4 +1,4 @@
-const apiRoot = 'https://backend.jobhax.com/';
+const apiRoot = "https://backend.jobhax.com/";
 
 export const SYNC_USER_EMAILS = `${apiRoot}api/users/sync_user_emails`;
 
@@ -18,6 +18,8 @@ export const GET_APPLICATION_COUNT_BY_MONTH_WITH_TOTAL = `${apiRoot}api/metrics/
 
 export const GET_COUNT_BY_STATUSES = `${apiRoot}api/metrics/get_count_by_statuses`;
 
-export const GET_COUNT_BY_JOBTITLE_AND_STATUSES = `${apiRoot}api/metrics/get_count_by_jobtitle_and_statuses`; 
+export const GET_COUNT_BY_JOBTITLE_AND_STATUSES = `${apiRoot}api/metrics/get_count_by_jobtitle_and_statuses`;
 
-export const GET_WORD_COUNT = `${apiRoot}api/metrics/get_word_count`; 
+export const GET_WORD_COUNT = `${apiRoot}api/metrics/get_word_count`;
+
+export const UPDATE_JOB_STATUS = `${apiRoot}api/jobapps/update_jobapp`;
