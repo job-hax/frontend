@@ -58,12 +58,11 @@
     color: black;
 
     &.navigation {
-      //border-right: 1px solid rgba(197, 197, 197, 0.8);
       width: 100px;
-      margin-top: 40px;//margin-top: 30px;
+      margin-top: 40px;
       margin-left: 20px;
       display: table;
-      text-align: left;//text-align: end;
+      text-align: left;
 
       &.subheaders {
         border: none;
