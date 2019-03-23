@@ -130,17 +130,20 @@
             width: 12px;
             margin-left: 4px;
             margin-top: 8px;
+            background: transparent;
 
-            button {
-              width: 20px;
-              height: 20px;
+            button{
+              background: transparent;
+              border: none;
+
+            }
+
+            img {
+              width: 16px;
+              height: 16px;
               margin: 0px;
               padding: 0px;
-              font-family: exo;
-              background-color: rgb(92, 39, 195);
-              color: white;
-              font-weight: lighter;
-              border-radius: 10px;
+              background: transparent;
             }
           }
         }

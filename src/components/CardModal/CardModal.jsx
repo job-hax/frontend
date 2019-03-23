@@ -3,11 +3,11 @@ import ReactDOM from "react-dom";
 import defaultLogo from '../../assets/icons/JobHax-logo-black.svg';
 import { fetchApi, postData } from "../../utils/api/fetch_api";
 import {
-  authenticateRequest,
   updateNote,
   addNote,
   deleteNote,
-  getNotes
+  getNotes,
+  deleteJob
 } from "../../utils/api/requests.js";
 
 import './style.scss';
@@ -71,29 +71,20 @@ class CardModal extends PureComponent {
   
   getNotes(){
     const { card, token } = this.props;
-    const { url, config } = authenticateRequest;
-    fetchApi(url, config)
-      .then(response => {
-        if (response.ok) {
-          return response.json;
-        }
-      })
-      .then(response => {
-        let { url, config } = getNotes;
-        url = url + '?jopapp_id=' + card.id;
-        console.log('URL with params\n',url)
-        console.log('token\n',token)
-        config.headers.Authorization = token;
-        fetchApi(url, config).then(response => {
-          if (response.ok) {
-            this.notes = (response.json.data);
-            console.log('getNotes.response.json.data\n',this.notes);
-            this.setState({
-              notes: this.notes,
-            });
-          }
+    let { url, config } = getNotes;
+    url = url + '?jopapp_id=' + card.id;
+    console.log('URL with params\n',url)
+    console.log('token\n',token)
+    config.headers.Authorization = token;
+    fetchApi(url, config).then(response => {
+      if (response.ok) {
+        this.notes = (response.json.data);
+        console.log('getNotes.response.json.data\n',this.notes);
+        this.setState({
+          notes: this.notes,
         });
-      });
+      }
+    });
   }
 
   onChange(e) {
@@ -139,14 +130,24 @@ class CardModal extends PureComponent {
     } else {
       return(
         this.state.notes.map((item) =>(
-          <div className="note-container">
+          <div key = {item.id} className="note-container">
             <div className="text-container">
               <p className="note"> {item.description}</p>
               <p className="date"> {this.makeTimeBeautiful(item.created_date, 'dateandtime')}</p>
             </div>
             <div className="button-container">
-              <button value={item.id} onClick={() => this.deleteNote(item.id)}>x</button>
-              <button value={item} onClick={() => this.setCurrentNote(item)} >!</button>
+              <button 
+              value={item.id} 
+              onClick={() => this.deleteNote(item.id)} 
+              >
+                <img src="../../src/assets/icons/DeleteIconInBtn@3x.png"/>
+              </button>
+              <button 
+              value={item} 
+              onClick={() => this.setCurrentNote(item)} 
+              >
+                <img src="../../src/assets/icons/edit@3x.png"/>
+              </button>
             </div>
           </div>
         ))
@@ -164,26 +165,27 @@ class CardModal extends PureComponent {
     console.log('delete request body\n',body)
     postData(url, config, body)
     .then(response => {
-      console.log('delete request responseasil\n',response)
+      console.log('delete request response\n',response)
       if (response.ok) {
         this.getNotes()
       } 
     })
   }
 
-  deleteJob(){
-    const { card, token } = this.props;
+  deleteJobFunction(){
+    const { card, token, deleteJobFromList, columnName } = this.props;
     const body = {
       jobapp_id: card.id,
     };
-    let { url, config } = deleteNote;
+    let { url, config } = deleteJob;
     config.headers.Authorization = token;
     console.log('delete job request body\n',body)
     postData(url, config, body)
     .then(response => {
-      console.log('delete job request responseasil\n',response)
+      console.log('delete job request response\n',response,card)
       if (response.ok) {
-        console.log(response)
+          console.log('function ', columnName, card.id);
+          deleteJobFromList(columnName, card.id, card.isRejected);
       } 
     })
   }
@@ -243,7 +245,7 @@ class CardModal extends PureComponent {
                 </div>
               </div>
               <div className="modal-header delete-button">
-                <button onClick={this.deleteJob}>
+                <button onClick={() => this.deleteJobFunction()}>
                   delete
                 </button>
               </div>
