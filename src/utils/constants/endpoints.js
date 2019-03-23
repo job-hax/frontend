@@ -23,3 +23,12 @@ export const GET_COUNT_BY_JOBTITLE_AND_STATUSES = `${apiRoot}api/metrics/get_cou
 export const GET_WORD_COUNT = `${apiRoot}api/metrics/get_word_count`;
 
 export const UPDATE_JOB_STATUS = `${apiRoot}api/jobapps/update_jobapp`;
+
+export const UPDATE_NOTE = `${apiRoot}api/jobapps/update_jobapp_note`;
+
+export const ADD_NOTE = `${apiRoot}api/jobapps/add_jobapp_note`;
+
+export const DELETE_NOTE = `${apiRoot}api/jobapps/delete_jobapp_note`;
+
+export const GET_NOTES = `${apiRoot}api/jobapps/get_jobapp_notes`;
+

@@ -17,18 +17,20 @@ export function fetchApi(url, config) {
 }
 
 export function postData(url = ``, config, data = {}) {
-  return fetch(url, {
-    ...config,
-    body: JSON.stringify(data)
-  })
-    .then(response => {
-      if (response.ok) {
-        response.json().then(json => resolve({ ok: true, json }));
-      } else {
-        response.json().then(json => resolve({ ok: false, json }));
-      }
-    })
-    .catch(error => {
-      console.log({ ok: false, error });
-    });
+  return new Promise(resolve => {
+    fetch(url, {
+      ...config
+      ,body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (response.ok) {
+          response.json().then(json => resolve({ ok: true, json }));
+        } else {
+          response.json().then(json => resolve({ ok: false, json }));
+        }
+      })
+      .catch(error => {
+        console.log({ ok: false, error });
+      });
+  });
 }
