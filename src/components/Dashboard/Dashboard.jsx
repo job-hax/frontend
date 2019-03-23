@@ -7,10 +7,13 @@ import {fetchApi} from '../../utils/api/fetch_api'
 import {
   authenticateRequest,
   getJobAppsRequest,
+  addJobAppsRequest,
   syncUserEmailsRequest
 } from '../../utils/api/requests.js'
 import {IS_MOCKING} from '../../config/config.js';
-import {mockJobApps} from '../../utils/api/mockResponses.js'
+import {mockJobApps} from '../../utils/api/mockResponses.js';
+import {COLUMN_IDs} from '../../utils/constants/constants.js';
+import {generateCurrentDate} from '../../utils/helpers/helperFunctions.js';
 
 import './style.scss'
 
@@ -51,7 +54,7 @@ class Dashboard extends Component {
     }
     const {url, config} = authenticateRequest;
     config.body.token = this.props.googleAuth.currentUser.get().getAuthResponse().access_token;
-    config.body = JSON.stringify(config.body)
+    config.body = JSON.stringify(config.body);
     fetchApi(url, config)
       .then(response => {
         console.log("authenticateRequest");
@@ -62,19 +65,19 @@ class Dashboard extends Component {
       })
       .then(response => {
         const {url, config} = syncUserEmailsRequest;
-        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
+        this.token = `${response.data.token_type} ${response.data.access_token}`;
+        config.headers.Authorization = this.token;
         fetchApi(url, config)
           .then(response => {
             console.log("syncUserEmailsRequest");
             console.log(response);
             return {
               ok: response.ok,
-              token: config.headers.Authorization
             }
           })
-          .then(({ok, token}) => {
+          .then(({ok}) => {
             const {url, config} = getJobAppsRequest;
-            config.headers.Authorization = token;
+            config.headers.Authorization = this.token;
             fetchApi(url, config)
               .then(response => {
                 console.log("getJobAppsRequest");
@@ -83,7 +86,6 @@ class Dashboard extends Component {
                   this.sortJobApplications(response.json.data);
                 }
               });
-
           });
       })
   }
@@ -160,16 +162,29 @@ class Dashboard extends Component {
     }));
   }
 
-  addNewApplication({name, title}) {
-  // addNewApplication(card, columnName) {
-    // let insertedItemColumn = this.state[columnName].slice();
-    // insertedItemColumn.unshift(card);
+  addNewApplication({name, title, columnId}) {
+    const {url, config} = addJobAppsRequest;
+    config.headers.Authorization = this.token;
+    config.body = {
+      job_title: title,
+      status_id: columnId,
+      company: name,
+      application_date: generateCurrentDate(),
+      source: ''
+    };
+    config.body = JSON.stringify(config.body);
+    fetchApi(url, config)
+      .then(response => {
+        if(response.ok) {
+          const columnName = COLUMN_IDs[columnId];
+          let insertedItemColumn = this.state[columnName].slice();
+          insertedItemColumn.unshift(response.json.data);
 
-    // this.setState(() => ({
-    //   [columnName]: insertedItemColumn
-    // }));
-
-    console.log(name, title);
+          this.setState(() => ({
+            [columnName]: insertedItemColumn
+          }));
+        }
+      });
   }
 
   render() {
@@ -183,6 +198,7 @@ class Dashboard extends Component {
           title="TO APPLY"
           totalCount={this.state.jobsToApply.length}
           cards={this.state.jobsToApply}
+          columnId={2}
         />
         <Column
           name="jobsApplied"
@@ -194,6 +210,7 @@ class Dashboard extends Component {
           cards={this.state.jobsApplied}
           cardsRejecteds={this.state.jobsRejectedApplied}
           message="rejected without any interview"
+          columnId={1}
         />
         <Column
           name="jobsPhoneScreen"
@@ -205,6 +222,7 @@ class Dashboard extends Component {
           cards={this.state.jobsPhoneScreen}
           cardsRejecteds={this.state.jobsRejectedPhoneScreen}
           message="rejected after phone screens"
+          columnId={3}
         />
         <Column
           name="jobsOnsiteInterview"
@@ -216,6 +234,7 @@ class Dashboard extends Component {
           cards={this.state.jobsOnsiteInterview}
           cardsRejecteds={this.state.jobsRejectedOnsiteInterview}
           message="rejected after interviews"
+          columnId={4}
         />
         <Column
           name="jobsOffer"
@@ -227,6 +246,7 @@ class Dashboard extends Component {
           cards={this.state.jobsOffer}
           cardsRejecteds={this.state.jobsRejectedOffer}
           message="you rejected their offer"
+          columnId={5}
         />
       </div>
     );

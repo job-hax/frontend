@@ -1,6 +1,7 @@
 import {
   AUTHENTICATE,
   GET_JOB_APPS,
+  ADD_JOB_APPS,
   SYNC_USER_EMAILS,
   REGISTER_USER,
   GET_TOTAL_APPLICATION_COUNT,
@@ -37,6 +38,18 @@ export const getJobAppsRequest = {
   url: GET_JOB_APPS,
   config: {
     method: 'GET',
+    mode: 'cors',
+    cache: 'no-cache',
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const addJobAppsRequest = {
+  url: ADD_JOB_APPS,
+  config: {
+    method: 'POST',
     mode: 'cors',
     cache: 'no-cache',
     headers: {
