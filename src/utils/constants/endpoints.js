@@ -34,3 +34,5 @@ export const DELETE_NOTE = `${apiRoot}api/jobapps/delete_jobapp_note`;
 
 export const GET_NOTES = `${apiRoot}api/jobapps/get_jobapp_notes`;
 
+export const DELETE_JOB = `${apiRoot}api/jobapps/delete_jobapp`;
+

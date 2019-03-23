@@ -53,27 +53,32 @@ class Column extends Component {
       cardsRejecteds,
       name,
       updateApplications,
-      token
+      token,
+      deleteJobFromList
     } = this.props;
 
     if (this.state.showRejectedCards) {
       return cardsRejecteds &&
         cardsRejecteds.map(card =>
           <Card
+            token={token}
             key={card.id}
             card={card}
-            token = {token}
+            columnName={name}
+            deleteJobFromList={deleteJobFromList}
           />
         );
     }
     return cards &&
       cards.map(card =>
         <Card
+          token={token}
           columnName={name}
           key={card.id}
           card={card}
+          columnName={name}
           updateApplications={updateApplications}
-          token = {token}
+          deleteJobFromList={deleteJobFromList}
         />
       );
   };

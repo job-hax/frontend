@@ -28,3 +28,11 @@ export const UPDATE_APPLICATION_STATUS = {
     value: "OFFER"
   }
 };
+
+export const FIND_APPLICATION_STATUS_LIST_NAME = {
+  1:[APPLIED],
+  2:[TOAPPLY],
+  3:[PHONESCREEN],
+  4:[ONSITEINTERVIEW],
+  5:[OFFER]
+};
