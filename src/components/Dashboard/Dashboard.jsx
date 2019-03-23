@@ -182,7 +182,7 @@ class Dashboard extends Component {
         status_id: UPDATE_APPLICATION_STATUS[columnName].id,
         company: name,
         application_date: generateCurrentDate(),
-        source: ''
+        source: 'N/A'
       });
 
       fetchApi(url, config)
