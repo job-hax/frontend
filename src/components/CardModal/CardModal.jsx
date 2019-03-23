@@ -3,11 +3,11 @@ import ReactDOM from "react-dom";
 import defaultLogo from '../../assets/icons/JobHax-logo-black.svg';
 import { fetchApi, postData } from "../../utils/api/fetch_api";
 import {
-  authenticateRequest,
   updateNote,
   addNote,
   deleteNote,
-  getNotes
+  getNotes,
+  deleteJob
 } from "../../utils/api/requests.js";
 
 import './style.scss';
@@ -70,29 +70,21 @@ class CardModal extends PureComponent {
   }
   
   getNotes(){
-    const { card } = this.props;
-    const { url, config } = authenticateRequest;
-    fetchApi(url, config)
-      .then(response => {
-        if (response.ok) {
-          return response.json;
-        }
-      })
-      .then(response => {
-        let { url, config } = getNotes;
-        url = url + '?jopapp_id=' + card.id;
-        console.log('URL with params\n',url)
-        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token.trim()}`;
-        fetchApi(url, config).then(response => {
-          if (response.ok) {
-            this.notes = (response.json.data);
-            console.log('getNotes.response.json.data\n',this.notes);
-            this.setState({
-              notes: this.notes,
-            });
-          }
+    const { card, token } = this.props;
+    let { url, config } = getNotes;
+    url = url + '?jopapp_id=' + card.id;
+    console.log('URL with params\n',url)
+    console.log('token\n',token)
+    config.headers.Authorization = token;
+    fetchApi(url, config).then(response => {
+      if (response.ok) {
+        this.notes = (response.json.data);
+        console.log('getNotes.response.json.data\n',this.notes);
+        this.setState({
+          notes: this.notes,
         });
-      });
+      }
+    });
   }
 
   onChange(e) {
@@ -103,40 +95,31 @@ class CardModal extends PureComponent {
 
   addNote(e) {
     e.preventDefault();
-    const { card } = this.props;
+    const { card, token } = this.props;
     const { addNoteForm } = this.state;
     if (addNoteForm.trim().length == 0) return
-    const { url, config } = authenticateRequest;
-    fetchApi(url, config)
-      .then(response => {
-        if (response.ok) {
-          return response.json;
-        }
-      })
-      .then(response => {
-        const reqBody = this.currentNote == null ?
-          {
-            jobapp_id: card.id,
-            description: addNoteForm,
-          }
-          :
-          {
-            jobapp_note_id: this.currentNote.id,
-            description: addNoteForm,
-          };
-        let {url, config } = this.currentNote == null ? addNote : updateNote;
-        console.log('request body\n',reqBody)
-        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token.trim()}`;
-        postData(url, config, reqBody).catch(error => console.error(error))
-        .then(response => {
-          if (response.ok) {
-            this.setState(state => ({
-              showNotePad: !state.showNotePad
-            }));
-            this.getNotes()
-          }
-        });
-      });
+    const reqBody = this.currentNote == null ?
+      {
+        jobapp_id: card.id,
+        description: addNoteForm,
+      }
+      :
+      {
+        jobapp_note_id: this.currentNote.id,
+        description: addNoteForm,
+      };
+    let {url, config } = this.currentNote == null ? addNote : updateNote;
+    console.log('request body\n',reqBody)
+    config.headers.Authorization = token;
+    postData(url, config, reqBody).catch(error => console.error(error))
+    .then(response => {
+      if (response.ok) {
+        this.setState(state => ({
+          showNotePad: !state.showNotePad
+        }));
+        this.getNotes()
+      }
+    });
   }
 
   noteContainerGenerate() {
@@ -147,14 +130,24 @@ class CardModal extends PureComponent {
     } else {
       return(
         this.state.notes.map((item) =>(
-          <div className="note-container">
+          <div key = {item.id} className="note-container">
             <div className="text-container">
               <p className="note"> {item.description}</p>
               <p className="date"> {this.makeTimeBeautiful(item.created_date, 'dateandtime')}</p>
             </div>
             <div className="button-container">
-              <button value={item.id} onClick={() => this.deleteNote(item.id)}>x</button>
-              <button value={item} onClick={() => this.setCurrentNote(item)} >!</button>
+              <button 
+              value={item.id} 
+              onClick={() => this.deleteNote(item.id)} 
+              >
+                <img src="../../src/assets/icons/DeleteIconInBtn@3x.png"/>
+              </button>
+              <button 
+              value={item} 
+              onClick={() => this.setCurrentNote(item)} 
+              >
+                <img src="../../src/assets/icons/edit@3x.png"/>
+              </button>
             </div>
           </div>
         ))
@@ -163,28 +156,38 @@ class CardModal extends PureComponent {
   }
 
   deleteNote (id) {
+    const { token } = this.props;
     const body = {
       jobapp_note_id: id,
     };
-    const { url, config } = authenticateRequest;
-    fetchApi(url, config)
-      .then(response => {
-        if (response.ok) {
-          return response.json;
-        }
-      })
-      .then(response => {
-        let { url, config } = deleteNote;
-        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token.trim()}`;
-        console.log('delete request body\n',body)
-        postData(url, config, body)
-        .then(response => {
-          console.log('delete request responseasil\n',response)
-          if (response.ok) {
-            this.getNotes()
-          } 
-        })
-      });
+    let { url, config } = deleteNote;
+    config.headers.Authorization = token;
+    console.log('delete request body\n',body)
+    postData(url, config, body)
+    .then(response => {
+      console.log('delete request response\n',response)
+      if (response.ok) {
+        this.getNotes()
+      } 
+    })
+  }
+
+  deleteJobFunction(){
+    const { card, token, deleteJobFromList, columnName } = this.props;
+    const body = {
+      jobapp_id: card.id,
+    };
+    let { url, config } = deleteJob;
+    config.headers.Authorization = token;
+    console.log('delete job request body\n',body)
+    postData(url, config, body)
+    .then(response => {
+      console.log('delete job request response\n',response,card)
+      if (response.ok) {
+          console.log('function ', columnName, card.id);
+          deleteJobFromList(columnName, card.id, card.isRejected);
+      } 
+    })
   }
 
   generateNotes() {
@@ -240,6 +243,11 @@ class CardModal extends PureComponent {
                 <div className="modal-header job-title">
                   {card.jobTitle}
                 </div>
+              </div>
+              <div className="modal-header delete-button">
+                <button onClick={() => this.deleteJobFunction()}>
+                  delete
+                </button>
               </div>
             </div>
             <div className="modal-body">

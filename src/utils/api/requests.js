@@ -14,7 +14,8 @@ import {
   UPDATE_NOTE,
   ADD_NOTE,
   DELETE_NOTE,
-  GET_NOTES
+  GET_NOTES,
+  DELETE_JOB
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from '../../config/config.js';
@@ -211,6 +212,18 @@ export const getNotes = {
   url: GET_NOTES,
   config: {
     method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const deleteJob = {
+  url: DELETE_JOB,
+  config: {
+    method: "POST",
     mode: "cors",
     cache: "no-cache",
     headers: {
