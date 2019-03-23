@@ -76,11 +76,55 @@
 
     &.main {
       font-size: 90%;
-      width: 300px;
+      width: 390px;
       margin-top: 44px;//margin-top: 30px;
       margin-left: 0px;
       display: table;
       text-align: start;//text-align: end;
+
+      .notesShowing {
+        height: fit-content;
+        height: -moz-fit-content;
+        max-height: 180px;
+        overflow-x: hidden;
+        width: 390px;
+
+        .note-container {
+          display: flex;
+          justify-content: start;
+          width: 390px;
+          border-bottom: 1px solid rgba(32, 32, 32, 0.1);
+
+          .text-container {
+            width: 350px;
+
+            .date {
+              text-align: end;
+              margin-top: 0px;
+              margin-right: 8px;
+              font-size: 90%;
+              color: rgba(0, 0, 0, 0.4);
+            }
+
+            .note {
+              margin-top: 8px;
+              margin-bottom: 0px;
+            }
+          }
+
+          .button-container {
+            width: 20px;
+            margin-left: 4px;
+            margin-top: 8px;
+
+            button {
+              width: 10px;
+              margin: 0px;
+              padding: 0px;
+            }
+          }
+        }
+      }
 
       &.data {
         padding-bottom: 25px;
@@ -94,21 +138,32 @@
         .notepad-buttons {
           display: flex; 
           justify-content: end;
+          margin-top: 8px;
+
+          &.textarea {
+            margin-right: 44px;
+          }
         }
 
         textarea {
           font-family: exo;
           font-size: 90%;
-          width: 290px;
+          width: 340px;
           height: 100px;
+          max-width: 340px;
+          max-height: 100px; 
+          min-width: 340px;
+          min-height: 100px; 
         }
       }
     }
 
     .modal-company-icon {
+      position:absolute;
       margin-top: 26px;
       width: 60px;
       height: 60px;
+      margin-left: -100px;
       border-radius: 4px;
       background-color: white;
 

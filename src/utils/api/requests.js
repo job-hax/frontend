@@ -9,7 +9,11 @@ import {
   GET_COUNT_BY_JOBTITLE_AND_STATUSES,
   GET_COUNT_BY_STATUSES,
   GET_WORD_COUNT,
-  UPDATE_JOB_STATUS
+  UPDATE_JOB_STATUS,
+  UPDATE_NOTE,
+  ADD_NOTE,
+  DELETE_NOTE,
+  GET_NOTES
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -143,6 +147,55 @@ export const getCountByJobtitleAndStatusesRequest = {
 
 export const getWordCountRequest = {
   url: GET_WORD_COUNT,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//NOTE REQUESTS//
+export const updateNote = {
+  url: UPDATE_NOTE,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const addNote = {
+  url: ADD_NOTE,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const deleteNote = {
+  url: DELETE_NOTE,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const getNotes = {
+  url: GET_NOTES,
   config: {
     method: "GET",
     mode: "cors",
