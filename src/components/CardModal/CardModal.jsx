@@ -53,11 +53,11 @@ class CardModal extends PureComponent {
     var beautiful_time = '';
     var dateFull = (time).toString().split('T');
     var datePart = dateFull[0].split('-');
-    var time_part = dateFull[1].split(':')
     var beautifulDatePart = datePart[1]+'.'+datePart[2]+'.'+datePart[0]
     if (type == 'date') {
       beautiful_time = beautifulDatePart
     } if (type == 'dateandtime') {
+      var time_part = dateFull[1].split(':')
       beautiful_time = beautifulDatePart+' at '+time_part[0]+':'+time_part[1]
     } else {
       beautiful_time = beautiful_time
