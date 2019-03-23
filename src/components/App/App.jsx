@@ -65,7 +65,6 @@ class App extends Component {
           <Route exact path="/underconstruction" component={UnderConstruction}/>
           <Route exact path="/signin" render={() => <SignIn googleAuth={this.googleAuth}/>}/>
           <Route exact path="/signup" render={() => <SignUp googleAuth={this.googleAuth}/>}/>
-          <Route path="*" component={Home}/>
         </div>
       </Router>)
   }
