@@ -1,8 +1,10 @@
-const apiRoot = "https://backend.jobhax.com/";
+const apiRoot = 'https://backend.jobhax.com/';
 
 export const SYNC_USER_EMAILS = `${apiRoot}api/users/sync_user_emails`;
 
 export const GET_JOB_APPS = `${apiRoot}api/jobapps/get_jobapps`;
+
+export const ADD_JOB_APPS = `${apiRoot}api/jobapps/add_jobapp`;
 
 export const GET_STATUS = `${apiRoot}api/api/jobapps/get_statuses`;
 

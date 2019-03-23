@@ -1,18 +1,22 @@
-import React, { Component } from "react";
-import { DragDropContext } from "react-dnd";
-import HTML5Backend from "react-dnd-html5-backend";
-import Column from "../Column/Column.jsx";
-import { fetchApi, postData } from "../../utils/api/fetch_api";
+import React, {Component} from 'react';
+import {DragDropContext} from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
+import Column from '../Column/Column.jsx';
+import {fetchApi} from '../../utils/api/fetch_api'
 import {
+  addJobAppsRequest,
   authenticateRequest,
   getJobAppsRequest,
   syncUserEmailsRequest,
   updateJobStatusRequest
-} from "../../utils/api/requests.js";
-import { IS_MOCKING } from "../../config/config.js";
-import { mockJobApps } from "../../utils/api/mockResponses.js";
-import { UPDATE_APPLICATION_STATUS } from "../../utils/constants";
-import "./style.scss";
+} from '../../utils/api/requests.js'
+import {IS_MOCKING} from '../../config/config.js';
+import {mockJobApps} from '../../utils/api/mockResponses.js';
+import {UPDATE_APPLICATION_STATUS} from '../../utils/constants/constants.js';
+import {generateCurrentDate} from '../../utils/helpers/helperFunctions.js';
+
+import './style.scss'
 
 class Dashboard extends Component {
   constructor(props) {
@@ -49,38 +53,36 @@ class Dashboard extends Component {
       this.sortJobApplications(mockJobApps.data);
       return;
     }
-    const { url, config } = authenticateRequest;
+    const {url, config} = authenticateRequest;
     config.body.token = this.props.googleAuth.currentUser
       .get()
       .getAuthResponse().access_token;
     config.body = JSON.stringify(config.body);
     fetchApi(url, config)
       .then(response => {
-        console.log('authenticateRequest\n',response);
         if (response.ok) {
           return response.json;
         }
       })
       .then(response => {
-        const { url, config } = syncUserEmailsRequest;
-        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
+        const {url, config} = syncUserEmailsRequest;
+        this.token = `${response.data.token_type} ${response.data.access_token.trim()}`;
+        config.headers.Authorization = this.token;
         fetchApi(url, config)
           .then(response => {
-            console.log('syncUserEmailsRequest\n',response);
             return {
               ok: response.ok,
-              token: config.headers.Authorization
-            };
+            }
           })
-          .then(({ ok, token }) => {
-            const { url, config } = getJobAppsRequest;
-            config.headers.Authorization = token;
-            fetchApi(url, config).then(response => {
-              console.log('getJobAppsRequest\n',response);
-              if (response.ok) {
-                this.sortJobApplications(response.json.data);
-              }
-            });
+          .then(({ok}) => {
+            const {url, config} = getJobAppsRequest;
+            config.headers.Authorization = this.token;
+            fetchApi(url, config)
+              .then(response => {
+                if (response.ok) {
+                  this.sortJobApplications(response.json.data);
+                }
+              });
           });
       });
   }
@@ -88,31 +90,31 @@ class Dashboard extends Component {
   sortJobApplications(applications) {
     for (let application of applications) {
       switch (application.applicationStatus.value.toLowerCase()) {
-        case "to apply":
+        case 'to apply':
           this.toapply.push(application);
           break;
-        case "applied":
+        case 'applied':
           if (application.isRejected) {
             this.jobsRejectedApplied.push(application);
           } else {
             this.applied.push(application);
           }
           break;
-        case "phone screen":
+        case 'phone screen':
           if (application.isRejected) {
             this.jobsRejectedPhoneScreen.push(application);
           } else {
             this.phonescreen.push(application);
           }
           break;
-        case "onsite interview":
+        case 'onsite interview':
           if (application.isRejected) {
             this.jobsRejectedOnsiteInterview.push(application);
           } else {
             this.onsiteinterview.push(application);
           }
           break;
-        case "offer":
+        case 'offer':
           if (application.isRejected) {
             this.jobsRejectedOffer.push(application);
           } else {
@@ -143,47 +145,60 @@ class Dashboard extends Component {
     if (dragColumnName === dropColumnName) {
       return;
     }
-    const removedItemColumn = this.state[dragColumnName].filter(job => {
-      return job.id !== card.id;
-    });
+    const removedItemColumn = this.state[dragColumnName]
+      .filter(job => {
+        return job.id !== card.id;
+      });
 
     card.applicationStatus = UPDATE_APPLICATION_STATUS[dropColumnName];
     let insertedItemColumn = this.state[dropColumnName].slice();
     insertedItemColumn.unshift(card);
 
-    this.setState(() => ({
-      [dragColumnName]: removedItemColumn,
-      [dropColumnName]: insertedItemColumn
-    }));
-    const reqBody = {
+    let {url, config} = updateJobStatusRequest;
+    config.body = JSON.stringify({
       jobapp_id: card.id,
       status_id: card.applicationStatus.id,
       rejected: false
-    };
-    const { url, config } = authenticateRequest;
+    });
+    config.headers.Authorization = this.token;
+
     fetchApi(url, config)
       .then(response => {
         if (response.ok) {
-          return response.json;
+          this.setState(() => ({
+            [dragColumnName]: removedItemColumn,
+            [dropColumnName]: insertedItemColumn
+          }));
         }
-      })
-      .then(response => {
-        let { url, config } = updateJobStatusRequest;
-        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token.trim()}`;
-        postData(url, config, reqBody).catch(error => console.error(error));
       });
   }
 
-  addNewApplication({ name, title }) {
-    // addNewApplication(card, columnName) {
-    // let insertedItemColumn = this.state[columnName].slice();
-    // insertedItemColumn.unshift(card);
+  addNewApplication({name, title, columnName}) {
+    return new Promise(resolve => {
+      const {url, config} = addJobAppsRequest;
+      config.headers.Authorization = this.token;
+      config.body = JSON.stringify({
+        job_title: title,
+        status_id: UPDATE_APPLICATION_STATUS[columnName].id,
+        company: name,
+        application_date: generateCurrentDate(),
+        source: ''
+      });
 
-    // this.setState(() => ({
-    //   [columnName]: insertedItemColumn
-    // }));
+      fetchApi(url, config)
+        .then(response => {
+          if (response.ok) {
+            let insertedItemColumn = this.state[columnName].slice();
+            insertedItemColumn.unshift(response.json.data);
 
-    console.log(name, title);
+            this.setState(() => ({
+              [columnName]: insertedItemColumn
+            }));
+
+            resolve({ok: true});
+          }
+        });
+    });
   }
 
   render() {
@@ -205,7 +220,8 @@ class Dashboard extends Component {
           icon="../../src/assets/icons/AppliedIcon@3x.png"
           title="APPLIED"
           totalCount={
-            this.state.applied.length + this.state.jobsRejectedApplied.length
+            this.state.applied.length +
+            this.state.jobsRejectedApplied.length
           }
           cards={this.state.applied}
           cardsRejecteds={this.state.jobsRejectedApplied}

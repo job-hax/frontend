@@ -78,10 +78,11 @@ class Column extends Component {
   generateColumnHeader() {
     const {
       addNewApplication,
-      title,
-      totalCount,
+      canDropCardInColumn,
       isCardOverColumn,
-      canDropCardInColumn
+      name,
+      title,
+      totalCount
     } = this.props;
 
     const {showJobInput} = this.state;
@@ -113,8 +114,9 @@ class Column extends Component {
         <div>
           <JobInput
             addNewApplication={addNewApplication}
-            showInput={this.state.showJobInput}
+            showInput={showJobInput}
             toggleJobInput={this.toggleJobInput}
+            columnName={name}
           />
         </div>
       </div>
