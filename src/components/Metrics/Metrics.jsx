@@ -25,18 +25,22 @@ class Metrics extends PureComponent {
           appsCountByMonthRequest: [],
           appsMonthSources: [],
           appsCountByMonthWithTotalRequest: [],
+          appsMonthSourcesWithTotal: [],
           countByJobtitleAndStatusesRequest: [],
           countByStatusesRequest: [],
           wordCountRequest: [],
+          currentmonthsoflastyear: [],
         };
     
         this.totalAppsCountRequest = [];
         this.appsCountByMonthRequest = [];
         this.appsMonthSources= [];
         this.appsCountByMonthWithTotalRequest = [];
+        this.appsMonthSourcesWithTotal = [];
         this.countByJobtitleAndStatusesRequest = [];
         this.countByStatusesRequest = [];
         this.wordCountRequest = [];
+        this.currentmonthsoflastyear = [];
     }
 
     componentDidMount() {
@@ -56,12 +60,10 @@ class Metrics extends PureComponent {
                 config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
                 fetchApi(url, config)
                 .then(response => {
-                    console.log('getTotalAppsCountRequest');
-                    console.log(getTotalAppsCountRequest);
+                    console.log('getTotalAppsCountRequest\n',getTotalAppsCountRequest);
                     if (response.ok) {
                     this.totalAppsCountRequest = (response.json.data);
-                    console.log('getTotalAppsCountRequest.response.json.data');
-                    console.log(this.totalAppsCountRequest);
+                    console.log('getTotalAppsCountRequest.response.json.data\n',this.totalAppsCountRequest);
                     this.setState({
                         totalAppsCountRequest: this.totalAppsCountRequest,
                       });
@@ -74,28 +76,29 @@ class Metrics extends PureComponent {
                 config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
                 fetchApi(url, config)
                 .then(response => {
-                    console.log('getAppsCountByMonthRequest');
-                    console.log(getAppsCountByMonthRequest);
+                    console.log('getAppsCountByMonthRequest\n',getAppsCountByMonthRequest);
                     if (response.ok) {
-                    this.appsCountByMonthRequest = (response.json.data);
+                    this.appsCountByMonthRequest = (response.json.data[0]);
                     this.appsCountByMonthRequest.forEach(element => {
                         element["name"] = element["source"];
                         delete element["source"];
                         element["type"] = "bar";
                         element["stack"] = "Company";
                     });
-                    console.log('getAppsCountByMonthRequest.response.json.data');
-                    console.log(this.appsCountByMonthRequest);
+                    this.currentmonthsoflastyear = (response.json.data[1]);
+                    console.log('last 12 months\n',this.currentmonthsoflastyear);
+                    console.log('getAppsCountByMonthRequest.response.json.data\n',this.appsCountByMonthRequest);
                     this.setState({
                         appsCountByMonthRequest: this.appsCountByMonthRequest,
+                        currentmonthsoflastyear: this.currentmonthsoflastyear,
                       });
                     this.state.appsCountByMonthRequest.map((item) =>(
-                        this.appsMonthSources.push(item.source)
+                        this.appsMonthSources.push(item.name)
                     ))
                     this.setState({
                         appsMonthSources: this.appsMonthSources,
                     });
-                    console.log('statuses for monthly graph',this.state.appsMonthSources)
+                    console.log('statuses for monthly graph\n',this.state.appsMonthSources)
                     }
                 });
                 return response;
@@ -105,20 +108,25 @@ class Metrics extends PureComponent {
                 config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
                 fetchApi(url, config)
                 .then(response => {
-                    console.log('getAppsCountByMonthWithTotalRequest');
-                    console.log(getAppsCountByMonthWithTotalRequest);
+                    console.log('getAppsCountByMonthWithTotalRequest\n',getAppsCountByMonthWithTotalRequest);
                     if (response.ok) {
-                    this.appsCountByMonthWithTotalRequest = (response.json.data);
+                    this.appsCountByMonthWithTotalRequest = (response.json.data[0]);
                     this.appsCountByMonthWithTotalRequest.forEach(element => {
                         element["name"] = element["source"];
                         delete element["source"];
                         element["type"] = "line";
                     });
-                    console.log('getAppsCountByMonthWithTotalRequest.response.json.data');
-                    console.log(this.appsCountByMonthWithTotalRequest);
+                    console.log('getAppsCountByMonthWithTotalRequest.response.json.data\n',this.appsCountByMonthWithTotalRequest);
                     this.setState({
                         appsCountByMonthWithTotalRequest: this.appsCountByMonthWithTotalRequest,
                       });
+                    this.state.appsCountByMonthWithTotalRequest.map((item) =>(
+                        this.appsMonthSourcesWithTotal.push(item.name)
+                    ))
+                    this.setState({
+                        appsMonthSourcesWithTotal: this.appsMonthSourcesWithTotal,
+                    });
+                    console.log('statuses for monthly graph with total\n',this.state.appsMonthSourcesWithTotal)
                     }
                 });
                 return response;
@@ -128,16 +136,14 @@ class Metrics extends PureComponent {
                 config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
                 fetchApi(url, config)
                 .then(response => {
-                    console.log('getCountByJobtitleAndStatusesRequest');
-                    console.log(getCountByJobtitleAndStatusesRequest);
+                    console.log('getCountByJobtitleAndStatusesRequest\n',getCountByJobtitleAndStatusesRequest);
                     if (response.ok) {
                     this.countByJobtitleAndStatusesRequest = (response.json.data);
                     this.countByJobtitleAndStatusesRequest.data.forEach(element => {
                         element["type"] = "bar";
                         element["stack"] = "Company";
                     });
-                    console.log('getCountByJobtitleAndStatusesRequest.response.json.data');
-                    console.log(this.countByJobtitleAndStatusesRequest);
+                    console.log('getCountByJobtitleAndStatusesRequest.response.json.data\n',this.countByJobtitleAndStatusesRequest);
                     this.setState({
                         countByJobtitleAndStatusesRequest: this.countByJobtitleAndStatusesRequest,
                       });
@@ -150,12 +156,10 @@ class Metrics extends PureComponent {
                 config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
                 fetchApi(url, config)
                 .then(response => {
-                    console.log('getCountByStatusesRequest');
-                    console.log(getCountByStatusesRequest);
+                    console.log('getCountByStatusesRequest\n',getCountByStatusesRequest);
                     if (response.ok) {
                     this.countByStatusesRequest = (response.json.data);
-                    console.log('getCountByStatusesRequest.response.json.data');
-                    console.log(this.countByStatusesRequest);
+                    console.log('getCountByStatusesRequest.response.json.data\n',this.countByStatusesRequest);
                     this.setState({
                         countByStatusesRequest: this.countByStatusesRequest,
                       });
@@ -168,12 +172,10 @@ class Metrics extends PureComponent {
                 config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
                 fetchApi(url, config)
                 .then(response => {
-                    console.log('getWordCountRequest');
-                    console.log(getWordCountRequest);
+                    console.log('getWordCountRequest\n',getWordCountRequest);
                     if (response.ok) {
                     this.wordCountRequest = (response.json.data);
-                    console.log('getWordCountRequest.response.json.data');
-                    console.log(this.wordCountRequest);
+                    console.log('getWordCountRequest.response.json.data\n',this.wordCountRequest);
                     this.setState({
                         wordCountRequest: this.wordCountRequest,
                       });
@@ -192,7 +194,7 @@ class Metrics extends PureComponent {
                 this.setState({
                     appsMonthSources: this.appsMonthSources,
                 });
-                console.log('statuses for monthly graph',this.appsMonthSources)
+                console.log('statuses for monthly graph\n',this.appsMonthSources)
             case 'appsCountByMonthWithTotalRequest': 
                 return(
                     <div>
@@ -413,6 +415,7 @@ class Metrics extends PureComponent {
             legend: {
                 data: this.state.appsMonthSources,
                 x:'right',
+                top: '28px',
             },
             grid: {
                 left: '3%',
@@ -423,7 +426,7 @@ class Metrics extends PureComponent {
             xAxis : [
                 {
                     type : 'category',
-                    data : ['January','February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                    data : this.currentmonthsoflastyear
                 }
             ],
             yAxis : [
@@ -448,8 +451,9 @@ class Metrics extends PureComponent {
                 trigger: 'axis'
             },
             legend: {
-                data: this.state.appsMonthSources,
-                x: 'right'
+                data: this.state.appsMonthSourcesWithTotal,
+                x: 'right',
+                top: '28px',
             },
             grid: {
                 left: '3%',
@@ -460,7 +464,7 @@ class Metrics extends PureComponent {
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: ['January','February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                data: this.currentmonthsoflastyear
             },
             yAxis: {
                 type: 'value'

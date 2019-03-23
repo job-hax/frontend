@@ -56,21 +56,17 @@ class Dashboard extends Component {
     config.body = JSON.stringify(config.body);
     fetchApi(url, config)
       .then(response => {
-        console.log("authenticateRequest");
-        console.log(response);
+        console.log('authenticateRequest\n',response);
         if (response.ok) {
           return response.json;
         }
       })
       .then(response => {
         const { url, config } = syncUserEmailsRequest;
-        config.headers.Authorization = `${response.data.token_type} ${
-          response.data.access_token
-        }`;
+        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
         fetchApi(url, config)
           .then(response => {
-            console.log("syncUserEmailsRequest");
-            console.log(response);
+            console.log('syncUserEmailsRequest\n',response);
             return {
               ok: response.ok,
               token: config.headers.Authorization
@@ -80,8 +76,7 @@ class Dashboard extends Component {
             const { url, config } = getJobAppsRequest;
             config.headers.Authorization = token;
             fetchApi(url, config).then(response => {
-              console.log("getJobAppsRequest");
-              console.log(response);
+              console.log('getJobAppsRequest\n',response);
               if (response.ok) {
                 this.sortJobApplications(response.json.data);
               }
@@ -174,7 +169,7 @@ class Dashboard extends Component {
       })
       .then(response => {
         let { url, config } = updateJobStatusRequest;
-        config.headers.Authorization = `Bearer ${response.data.access_token.trim()}`;
+        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token.trim()}`;
         postData(url, config, reqBody).catch(error => console.error(error));
       });
   }
