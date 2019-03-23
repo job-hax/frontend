@@ -70,7 +70,7 @@ class CardModal extends PureComponent {
   }
   
   getNotes(){
-    const { card } = this.props;
+    const { card, token } = this.props;
     const { url, config } = authenticateRequest;
     fetchApi(url, config)
       .then(response => {
@@ -82,7 +82,8 @@ class CardModal extends PureComponent {
         let { url, config } = getNotes;
         url = url + '?jopapp_id=' + card.id;
         console.log('URL with params\n',url)
-        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token.trim()}`;
+        console.log('token\n',token)
+        config.headers.Authorization = token;
         fetchApi(url, config).then(response => {
           if (response.ok) {
             this.notes = (response.json.data);
@@ -103,40 +104,31 @@ class CardModal extends PureComponent {
 
   addNote(e) {
     e.preventDefault();
-    const { card } = this.props;
+    const { card, token } = this.props;
     const { addNoteForm } = this.state;
     if (addNoteForm.trim().length == 0) return
-    const { url, config } = authenticateRequest;
-    fetchApi(url, config)
-      .then(response => {
-        if (response.ok) {
-          return response.json;
-        }
-      })
-      .then(response => {
-        const reqBody = this.currentNote == null ?
-          {
-            jobapp_id: card.id,
-            description: addNoteForm,
-          }
-          :
-          {
-            jobapp_note_id: this.currentNote.id,
-            description: addNoteForm,
-          };
-        let {url, config } = this.currentNote == null ? addNote : updateNote;
-        console.log('request body\n',reqBody)
-        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token.trim()}`;
-        postData(url, config, reqBody).catch(error => console.error(error))
-        .then(response => {
-          if (response.ok) {
-            this.setState(state => ({
-              showNotePad: !state.showNotePad
-            }));
-            this.getNotes()
-          }
-        });
-      });
+    const reqBody = this.currentNote == null ?
+      {
+        jobapp_id: card.id,
+        description: addNoteForm,
+      }
+      :
+      {
+        jobapp_note_id: this.currentNote.id,
+        description: addNoteForm,
+      };
+    let {url, config } = this.currentNote == null ? addNote : updateNote;
+    console.log('request body\n',reqBody)
+    config.headers.Authorization = token;
+    postData(url, config, reqBody).catch(error => console.error(error))
+    .then(response => {
+      if (response.ok) {
+        this.setState(state => ({
+          showNotePad: !state.showNotePad
+        }));
+        this.getNotes()
+      }
+    });
   }
 
   noteContainerGenerate() {
@@ -163,28 +155,37 @@ class CardModal extends PureComponent {
   }
 
   deleteNote (id) {
+    const { token } = this.props;
     const body = {
       jobapp_note_id: id,
     };
-    const { url, config } = authenticateRequest;
-    fetchApi(url, config)
-      .then(response => {
-        if (response.ok) {
-          return response.json;
-        }
-      })
-      .then(response => {
-        let { url, config } = deleteNote;
-        config.headers.Authorization = `${response.data.token_type} ${response.data.access_token.trim()}`;
-        console.log('delete request body\n',body)
-        postData(url, config, body)
-        .then(response => {
-          console.log('delete request responseasil\n',response)
-          if (response.ok) {
-            this.getNotes()
-          } 
-        })
-      });
+    let { url, config } = deleteNote;
+    config.headers.Authorization = token;
+    console.log('delete request body\n',body)
+    postData(url, config, body)
+    .then(response => {
+      console.log('delete request responseasil\n',response)
+      if (response.ok) {
+        this.getNotes()
+      } 
+    })
+  }
+
+  deleteJob(){
+    const { card, token } = this.props;
+    const body = {
+      jobapp_id: card.id,
+    };
+    let { url, config } = deleteNote;
+    config.headers.Authorization = token;
+    console.log('delete job request body\n',body)
+    postData(url, config, body)
+    .then(response => {
+      console.log('delete job request responseasil\n',response)
+      if (response.ok) {
+        console.log(response)
+      } 
+    })
   }
 
   generateNotes() {
@@ -240,6 +241,11 @@ class CardModal extends PureComponent {
                 <div className="modal-header job-title">
                   {card.jobTitle}
                 </div>
+              </div>
+              <div className="modal-header delete-button">
+                <button onClick={this.deleteJob}>
+                  delete
+                </button>
               </div>
             </div>
             <div className="modal-body">

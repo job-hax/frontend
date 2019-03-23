@@ -51,6 +51,7 @@ class Card extends PureComponent {
         isRejected,
         applyDate,
         source,
+        token
       },
       isDragging
     } = this.props;
@@ -69,6 +70,7 @@ class Card extends PureComponent {
           showModal &&
           <CardModal
             toggleModal={this.toggleModal}
+            token = {token}
             {...this.props}
           />
         }
