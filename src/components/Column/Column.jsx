@@ -78,6 +78,7 @@ class Column extends Component {
   generateColumnHeader() {
     const {
       addNewApplication,
+      columnId,
       title,
       totalCount
     } = this.props;
@@ -109,8 +110,9 @@ class Column extends Component {
         <div>
           <JobInput
             addNewApplication={addNewApplication}
-            showInput={this.state.showJobInput}
+            showInput={showJobInput}
             toggleJobInput={this.toggleJobInput}
+            columnId={columnId}
           />
         </div>
       </div>

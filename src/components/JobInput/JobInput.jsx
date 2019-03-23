@@ -10,8 +10,8 @@ class JobInput extends PureComponent {
       companyNameValidated: false,
       jobTitleValidated: false
     };
-    this.handleInputChange = this.handleInputChange.bind(this)
-    this.handleAddNewApplication = this.handleAddNewApplication.bind(this)
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleAddNewApplication = this.handleAddNewApplication.bind(this);
   }
 
   handleInputChange(e) {
@@ -39,11 +39,15 @@ class JobInput extends PureComponent {
   }
 
   handleAddNewApplication(e) {
+    const {
+      columnId
+    } = this.props;
     e.preventDefault();
     this.props.addNewApplication({
+      columnId,
       name: e.target[0].value,
       title: e.target[1].value,
-    });
+    })
   }
 
   render() {
