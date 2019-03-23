@@ -10,28 +10,26 @@ import {
   GET_COUNT_BY_JOBTITLE_AND_STATUSES,
   GET_COUNT_BY_STATUSES,
   GET_WORD_COUNT,
+  UPDATE_JOB_STATUS
 } from '../constants/endpoints.js';
 
-import {
-  jobHaxClientId,
-  jobHaxClientSecret
-} from '../../config/config.js';
+import { jobHaxClientId, jobHaxClientSecret } from '../../config/config.js';
 
 export const authenticateRequest = {
   url: AUTHENTICATE,
   config: {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     },
     body: {
       client_id: jobHaxClientId,
       client_secret: jobHaxClientSecret,
-      provider: "google-oauth2"
+      provider: 'google-oauth2'
     }
-  },
+  }
 };
 
 export const getJobAppsRequest = {
@@ -41,7 +39,7 @@ export const getJobAppsRequest = {
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     }
   }
 };
@@ -53,7 +51,7 @@ export const addJobAppsRequest = {
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     }
   }
 };
@@ -65,7 +63,19 @@ export const syncUserEmailsRequest = {
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
+    }
+  }
+};
+
+export const updateJobStatusRequest = {
+  url: UPDATE_JOB_STATUS,
+  config: {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json'
     }
   }
 };
@@ -77,8 +87,8 @@ export const registerUserRequest = {
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
-    },
+      'Content-Type': 'application/json'
+    }
   }
 };
 
@@ -91,7 +101,7 @@ export const getTotalAppsCountRequest = {
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     }
   }
 };
@@ -103,7 +113,7 @@ export const getAppsCountByMonthRequest = {
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     }
   }
 };
@@ -115,7 +125,7 @@ export const getAppsCountByMonthWithTotalRequest = {
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     }
   }
 };
@@ -127,7 +137,7 @@ export const getCountByStatusesRequest = {
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     }
   }
 };
@@ -139,7 +149,7 @@ export const getCountByJobtitleAndStatusesRequest = {
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     }
   }
 };
@@ -151,7 +161,7 @@ export const getWordCountRequest = {
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     }
   }
 };

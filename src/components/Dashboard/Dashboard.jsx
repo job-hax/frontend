@@ -1,18 +1,19 @@
-import React, {Component} from "react";
+import React, {Component} from 'react';
 import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import Column from '../Column/Column.jsx';
 import {fetchApi} from '../../utils/api/fetch_api'
 import {
+  addJobAppsRequest,
   authenticateRequest,
   getJobAppsRequest,
-  addJobAppsRequest,
-  syncUserEmailsRequest
+  syncUserEmailsRequest,
+  updateJobStatusRequest
 } from '../../utils/api/requests.js'
 import {IS_MOCKING} from '../../config/config.js';
 import {mockJobApps} from '../../utils/api/mockResponses.js';
-import {COLUMN_IDs} from '../../utils/constants/constants.js';
+import {UPDATE_APPLICATION_STATUS} from '../../utils/constants/constants.js';
 import {generateCurrentDate} from '../../utils/helpers/helperFunctions.js';
 
 import './style.scss'
@@ -22,22 +23,22 @@ class Dashboard extends Component {
     super(props);
 
     this.state = {
-      jobsToApply: [],
-      jobsApplied: [],
-      jobsPhoneScreen: [],
-      jobsOnsiteInterview: [],
-      jobsOffer: [],
+      toapply: [],
+      applied: [],
+      phonescreen: [],
+      onsiteinterview: [],
+      offer: [],
       jobsRejectedApplied: [],
       jobsRejectedPhoneScreen: [],
       jobsRejectedOnsiteInterview: [],
-      jobsRejectedOffer: [],
+      jobsRejectedOffer: []
     };
 
-    this.jobsToApply = [];
-    this.jobsApplied = [];
-    this.jobsPhoneScreen = [];
-    this.jobsOnsiteInterview = [];
-    this.jobsOffer = [];
+    this.toapply = [];
+    this.applied = [];
+    this.phonescreen = [];
+    this.onsiteinterview = [];
+    this.offer = [];
     this.jobsRejectedApplied = [];
     this.jobsRejectedPhoneScreen = [];
     this.jobsRejectedOnsiteInterview = [];
@@ -53,24 +54,22 @@ class Dashboard extends Component {
       return;
     }
     const {url, config} = authenticateRequest;
-    config.body.token = this.props.googleAuth.currentUser.get().getAuthResponse().access_token;
+    config.body.token = this.props.googleAuth.currentUser
+      .get()
+      .getAuthResponse().access_token;
     config.body = JSON.stringify(config.body);
     fetchApi(url, config)
       .then(response => {
-        console.log("authenticateRequest");
-        console.log(response);
         if (response.ok) {
           return response.json;
         }
       })
       .then(response => {
         const {url, config} = syncUserEmailsRequest;
-        this.token = `${response.data.token_type} ${response.data.access_token}`;
+        this.token = `${response.data.token_type} ${response.data.access_token.trim()}`;
         config.headers.Authorization = this.token;
         fetchApi(url, config)
           .then(response => {
-            console.log("syncUserEmailsRequest");
-            console.log(response);
             return {
               ok: response.ok,
             }
@@ -80,48 +79,46 @@ class Dashboard extends Component {
             config.headers.Authorization = this.token;
             fetchApi(url, config)
               .then(response => {
-                console.log("getJobAppsRequest");
-                console.log(response.json.data);
                 if (response.ok) {
                   this.sortJobApplications(response.json.data);
                 }
               });
           });
-      })
+      });
   }
 
   sortJobApplications(applications) {
     for (let application of applications) {
-      switch (application.applicationStatus.id) {
-        case 2:
-          this.jobsToApply.push(application);
+      switch (application.applicationStatus.value.toLowerCase()) {
+        case 'to apply':
+          this.toapply.push(application);
           break;
-        case 1:
+        case 'applied':
           if (application.isRejected) {
-            this.jobsRejectedApplied.push(application)
+            this.jobsRejectedApplied.push(application);
           } else {
-            this.jobsApplied.push(application);
+            this.applied.push(application);
           }
           break;
-        case 3:
+        case 'phone screen':
           if (application.isRejected) {
-            this.jobsRejectedPhoneScreen.push(application)
+            this.jobsRejectedPhoneScreen.push(application);
           } else {
-            this.jobsPhoneScreen.push(application);
+            this.phonescreen.push(application);
           }
           break;
-        case 4:
+        case 'onsite interview':
           if (application.isRejected) {
-            this.jobsRejectedOnsiteInterview.push(application)
+            this.jobsRejectedOnsiteInterview.push(application);
           } else {
-            this.jobsOnsiteInterview.push(application);
+            this.onsiteinterview.push(application);
           }
           break;
-        case 5:
+        case 'offer':
           if (application.isRejected) {
-            this.jobsRejectedOffer.push(application)
+            this.jobsRejectedOffer.push(application);
           } else {
-            this.jobsOffer.push(application);
+            this.offer.push(application);
           }
           break;
         default:
@@ -132,15 +129,15 @@ class Dashboard extends Component {
 
   refreshJobs() {
     this.setState({
-      jobsToApply: this.jobsToApply,
-      jobsApplied: this.jobsApplied,
-      jobsPhoneScreen: this.jobsPhoneScreen,
-      jobsOnsiteInterview: this.jobsOnsiteInterview,
-      jobsOffer: this.jobsOffer,
+      toapply: this.toapply,
+      applied: this.applied,
+      phonescreen: this.phonescreen,
+      onsiteinterview: this.onsiteinterview,
+      offer: this.offer,
       jobsRejectedApplied: this.jobsRejectedApplied,
       jobsRejectedOffer: this.jobsRejectedOffer,
       jobsRejectedOnsiteInterview: this.jobsRejectedOnsiteInterview,
-      jobsRejectedPhoneScreen: this.jobsRejectedPhoneScreen,
+      jobsRejectedPhoneScreen: this.jobsRejectedPhoneScreen
     });
   }
 
@@ -153,30 +150,43 @@ class Dashboard extends Component {
         return job.id !== card.id;
       });
 
+    card.applicationStatus = UPDATE_APPLICATION_STATUS[dropColumnName];
     let insertedItemColumn = this.state[dropColumnName].slice();
     insertedItemColumn.unshift(card);
 
-    this.setState(() => ({
-      [dragColumnName]: removedItemColumn,
-      [dropColumnName]: insertedItemColumn
-    }));
+    let {url, config} = updateJobStatusRequest;
+    config.body = JSON.stringify({
+      jobapp_id: card.id,
+      status_id: card.applicationStatus.id,
+      rejected: false
+    });
+    config.headers.Authorization = this.token;
+
+    fetchApi(url, config)
+      .then(response => {
+        if (response.ok) {
+          this.setState(() => ({
+            [dragColumnName]: removedItemColumn,
+            [dropColumnName]: insertedItemColumn
+          }));
+        }
+      });
   }
 
-  addNewApplication({name, title, columnId}) {
+  addNewApplication({name, title, columnName}) {
     const {url, config} = addJobAppsRequest;
     config.headers.Authorization = this.token;
-    config.body = {
+    config.body = JSON.stringify({
       job_title: title,
-      status_id: columnId,
+      status_id: UPDATE_APPLICATION_STATUS[columnName].id,
       company: name,
       application_date: generateCurrentDate(),
       source: ''
-    };
-    config.body = JSON.stringify(config.body);
+    });
+
     fetchApi(url, config)
       .then(response => {
-        if(response.ok) {
-          const columnName = COLUMN_IDs[columnId];
+        if (response.ok) {
           let insertedItemColumn = this.state[columnName].slice();
           insertedItemColumn.unshift(response.json.data);
 
@@ -191,62 +201,68 @@ class Dashboard extends Component {
     return (
       <div className="dashboard-container">
         <Column
-          name="jobsToApply"
+          name="toapply"
           updateApplications={this.updateApplications}
           addNewApplication={this.addNewApplication}
           icon="../../src/assets/icons/ToApplyIcon@3x.png"
           title="TO APPLY"
-          totalCount={this.state.jobsToApply.length}
-          cards={this.state.jobsToApply}
-          columnId={2}
+          totalCount={this.state.toapply.length}
+          cards={this.state.toapply}
         />
         <Column
-          name="jobsApplied"
+          name="applied"
           updateApplications={this.updateApplications}
           addNewApplication={this.addNewApplication}
           icon="../../src/assets/icons/AppliedIcon@3x.png"
           title="APPLIED"
-          totalCount={this.state.jobsApplied.length + this.state.jobsRejectedApplied.length}
-          cards={this.state.jobsApplied}
+          totalCount={
+            this.state.applied.length +
+            this.state.jobsRejectedApplied.length
+          }
+          cards={this.state.applied}
           cardsRejecteds={this.state.jobsRejectedApplied}
           message="rejected without any interview"
-          columnId={1}
         />
         <Column
-          name="jobsPhoneScreen"
+          name="phonescreen"
           updateApplications={this.updateApplications}
           addNewApplication={this.addNewApplication}
           icon="../../src/assets/icons/PhoneScreenIcon@3x.png"
           title="PHONE SCREEN"
-          totalCount={this.state.jobsPhoneScreen.length + this.state.jobsRejectedPhoneScreen.length}
-          cards={this.state.jobsPhoneScreen}
+          totalCount={
+            this.state.phonescreen.length +
+            this.state.jobsRejectedPhoneScreen.length
+          }
+          cards={this.state.phonescreen}
           cardsRejecteds={this.state.jobsRejectedPhoneScreen}
           message="rejected after phone screens"
-          columnId={3}
         />
         <Column
-          name="jobsOnsiteInterview"
+          name="onsiteinterview"
           updateApplications={this.updateApplications}
           addNewApplication={this.addNewApplication}
           icon="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
           title="ONSITE INTERVIEW"
-          totalCount={this.state.jobsOnsiteInterview.length + this.state.jobsRejectedOnsiteInterview.length}
-          cards={this.state.jobsOnsiteInterview}
+          totalCount={
+            this.state.onsiteinterview.length +
+            this.state.jobsRejectedOnsiteInterview.length
+          }
+          cards={this.state.onsiteinterview}
           cardsRejecteds={this.state.jobsRejectedOnsiteInterview}
           message="rejected after interviews"
-          columnId={4}
         />
         <Column
-          name="jobsOffer"
+          name="offer"
           updateApplications={this.updateApplications}
           addNewApplication={this.addNewApplication}
           icon="../../src/assets/icons/OffersIcon@3x.png"
-          title="OFFER"
-          totalCount={this.state.jobsOffer.length + this.state.jobsRejectedOffer.length}
-          cards={this.state.jobsOffer}
+          title="OFFERS"
+          totalCount={
+            this.state.offer.length + this.state.jobsRejectedOffer.length
+          }
+          cards={this.state.offer}
           cardsRejecteds={this.state.jobsRejectedOffer}
           message="you rejected their offer"
-          columnId={5}
         />
       </div>
     );
@@ -254,4 +270,3 @@ class Dashboard extends Component {
 }
 
 export default DragDropContext(HTML5Backend)(Dashboard);
-

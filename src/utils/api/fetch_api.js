@@ -1,5 +1,3 @@
-import {mockJobApps} from './mockResponses';
-
 export function fetchApi(url, config) {
   return new Promise(resolve => {
     fetch(url, config)
@@ -12,8 +10,6 @@ export function fetchApi(url, config) {
             .then(json => resolve({ok: false, json}));
         }
       })
-      .catch(error => {
-        resolve({ok: false, error})
-      });
+      .catch(error => resolve({ok: false, error}));
   });
 }

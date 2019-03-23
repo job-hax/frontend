@@ -40,11 +40,11 @@ class JobInput extends PureComponent {
 
   handleAddNewApplication(e) {
     const {
-      columnId
+      columnName
     } = this.props;
     e.preventDefault();
     this.props.addNewApplication({
-      columnId,
+      columnName,
       name: e.target[0].value,
       title: e.target[1].value,
     })

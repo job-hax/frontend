@@ -78,7 +78,9 @@ class Column extends Component {
   generateColumnHeader() {
     const {
       addNewApplication,
-      columnId,
+      canDropCardInColumn,
+      isCardOverColumn,
+      name,
       title,
       totalCount
     } = this.props;
@@ -88,7 +90,9 @@ class Column extends Component {
     const columnHeaderClass = classNames({
       'column-header-container': true,
       'no-card': totalCount === MIN_CARD_NUMBER_IN_COLUMN,
-      'add-job-height': showJobInput
+      'add-job-height': showJobInput,
+      '--column-dropable': canDropCardInColumn && !isCardOverColumn,
+      '--column-active': canDropCardInColumn && isCardOverColumn,
     });
 
     return (
@@ -112,7 +116,7 @@ class Column extends Component {
             addNewApplication={addNewApplication}
             showInput={showJobInput}
             toggleJobInput={this.toggleJobInput}
-            columnId={columnId}
+            columnName={name}
           />
         </div>
       </div>
@@ -122,14 +126,26 @@ class Column extends Component {
   renderIndicator(message) {
     const {
       cards,
-      totalCount
+      totalCount,
+      isCardOverColumn,
+      canDropCardInColumn
     } = this.props;
 
     const {showRejectedCards} = this.state;
 
+    const columnHeaderClass = classNames({
+      'column-indicator-container': true,
+      '--column-dropable': canDropCardInColumn && !isCardOverColumn,
+      '--column-active': canDropCardInColumn && isCardOverColumn,
+    });
+
+    const columnHeaderOngoingIndicatorClass = classNames({
+      'column-indicator-container ongoing-indicator': true,
+    });
+
     return (
       <div onClick={this.toggleLists}>
-        <div className="column-indicator-container">
+        <div className={columnHeaderClass}>
           <div>
             {
               showRejectedCards ?
@@ -146,7 +162,7 @@ class Column extends Component {
           <img className="cards-switch-button" src="../../src/assets/icons/ExpandArrow@3x.png"/>
         </div>
         {showRejectedCards &&
-        <div className="column-indicator-container ongoing-indicator">
+        <div className={columnHeaderOngoingIndicatorClass}>
           <div>
             REJECTED ({(totalCount - cards.length)})
           </div>
@@ -187,7 +203,7 @@ class Column extends Component {
     const columnRejectedCardContainerClass = classNames({
       'column-card-container': true,
       'shortest': showJobInput,
-      'short': !showJobInput
+      'short': !showJobInput,
     });
 
     return connectDropTarget(

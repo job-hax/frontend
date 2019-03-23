@@ -1,9 +1,30 @@
 export const MIN_CARD_NUMBER_IN_COLUMN = 0;
 
-export const COLUMN_IDs = {
-  1: 'jobsApplied',
-  2: 'jobsToApply',
-  3: 'jobsPhoneScreen',
-  4: 'jobsOnsiteInterview',
-  5: 'jobsOffer',
+export const TOAPPLY = "toapply";
+export const APPLIED = "applied";
+export const PHONESCREEN = "phonescreen";
+export const ONSITEINTERVIEW = "onsiteinterview";
+export const OFFER = "offer";
+
+export const UPDATE_APPLICATION_STATUS = {
+  [APPLIED]: {
+    id: 1,
+    value: "APPLIED"
+  },
+  [TOAPPLY]: {
+    id: 2,
+    value: "TO APPLY"
+  },
+  [PHONESCREEN]: {
+    id: 3,
+    value: "PHONE SCREEN"
+  },
+  [ONSITEINTERVIEW]: {
+    id: 4,
+    value: "ONSITE INTERVIEW"
+  },
+  [OFFER]: {
+    id: 5,
+    value: "OFFER"
+  }
 };
