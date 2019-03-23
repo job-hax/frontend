@@ -174,27 +174,31 @@ class Dashboard extends Component {
   }
 
   addNewApplication({name, title, columnName}) {
-    const {url, config} = addJobAppsRequest;
-    config.headers.Authorization = this.token;
-    config.body = JSON.stringify({
-      job_title: title,
-      status_id: UPDATE_APPLICATION_STATUS[columnName].id,
-      company: name,
-      application_date: generateCurrentDate(),
-      source: ''
-    });
-
-    fetchApi(url, config)
-      .then(response => {
-        if (response.ok) {
-          let insertedItemColumn = this.state[columnName].slice();
-          insertedItemColumn.unshift(response.json.data);
-
-          this.setState(() => ({
-            [columnName]: insertedItemColumn
-          }));
-        }
+    return new Promise(resolve => {
+      const {url, config} = addJobAppsRequest;
+      config.headers.Authorization = this.token;
+      config.body = JSON.stringify({
+        job_title: title,
+        status_id: UPDATE_APPLICATION_STATUS[columnName].id,
+        company: name,
+        application_date: generateCurrentDate(),
+        source: ''
       });
+
+      fetchApi(url, config)
+        .then(response => {
+          if (response.ok) {
+            let insertedItemColumn = this.state[columnName].slice();
+            insertedItemColumn.unshift(response.json.data);
+
+            this.setState(() => ({
+              [columnName]: insertedItemColumn
+            }));
+
+            resolve({ok: true});
+          }
+        });
+    });
   }
 
   render() {
