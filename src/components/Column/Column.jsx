@@ -52,7 +52,8 @@ class Column extends Component {
       cards,
       cardsRejecteds,
       name,
-      updateApplications
+      updateApplications,
+      token
     } = this.props;
 
     if (this.state.showRejectedCards) {
@@ -61,6 +62,7 @@ class Column extends Component {
           <Card
             key={card.id}
             card={card}
+            token = {token}
           />
         );
     }
@@ -71,6 +73,7 @@ class Column extends Component {
           key={card.id}
           card={card}
           updateApplications={updateApplications}
+          token = {token}
         />
       );
   };
