@@ -47,19 +47,21 @@
 
   .column-addJob-form-button {
     border: none;
-    background-color: rgb(228, 220, 255);
+    background-color: transparent;
     font-size: 18px;
     color: rgb(132, 100, 239);
     cursor: pointer;
     outline: none;
 
     &.--addJob {
-      margin-left: 36%;
+      margin-left: 80px;
       font-weight: bold;
+      color: rgb(132, 100, 239);
+      background-color: transparent;
     }
 
     &.--button-disabled {
-      opacity: 0.3;
+      opacity: 0.5;
       cursor: none;
       pointer-events: none;
     }
