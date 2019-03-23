@@ -2,7 +2,8 @@
     background-color: white;
     color: #261268;
     padding-top: 32px;
-    height:600px;
+    min-height:600px;
+    height: auto;
 
     .title{
         text-align: center;
@@ -17,6 +18,7 @@
         flex-direction: row;
         margin-left: 30px;
         margin-right: 30px;
+
         .feature{
             margin: 30px;
             background: white;
