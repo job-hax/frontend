@@ -7,47 +7,37 @@ class JobInput extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      companyNameValidated: false,
-      jobTitleValidated: false
+      companyName: '',
+      jobTitle: ''
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleAddNewApplication = this.handleAddNewApplication.bind(this);
   }
 
-  handleInputChange(e) {
-    let {
-      companyNameValidated,
-      jobTitleValidated
-    } = this.state;
-    if (e.target.value.trim().length > 0) {
-      if (e.target.name === 'company') {
-        companyNameValidated = true;
-      } else {
-        jobTitleValidated = true;
-      }
-    } else {
-      if (e.target.name === 'company') {
-        companyNameValidated = false;
-      } else {
-        jobTitleValidated = false;
-      }
-    }
-    this.setState({
-      companyNameValidated,
-      jobTitleValidated
+  handleInputChange(stateKey) {
+    return e => this.setState({
+      [stateKey]: e.target.value.trim()
     })
   }
 
   handleAddNewApplication(e) {
+    e.preventDefault();
     const {
       columnName
     } = this.props;
-    e.preventDefault();
     this.props.addNewApplication({
       columnName,
       name: e.target[0].value,
       title: e.target[1].value,
     })
+      .then(({ok}) => {
+        if (ok) {
+          this.setState({
+            companyName: '',
+            jobTitle: '',
+          })
+        }
+      })
   }
 
   render() {
@@ -57,14 +47,14 @@ class JobInput extends PureComponent {
     } = this.props;
 
     const {
-      companyNameValidated,
-      jobTitleValidated
+      companyName,
+      jobTitle
     } = this.state;
 
     const addJobButtonClass = classNames({
       'column-addJob-form-button': true,
       '--addJob': true,
-      '--button-disabled': !companyNameValidated || !jobTitleValidated
+      '--button-disabled': companyName.length < 1 || jobTitle.length < 1
     });
     return (
       showInput ?
@@ -74,13 +64,15 @@ class JobInput extends PureComponent {
               name="company"
               className="input-add-job --company"
               placeholder="Company Name"
-              onChange={this.handleInputChange}
+              onChange={this.handleInputChange('companyName')}
+              value={companyName}
             />
             <input
               name="title"
               className="input-add-job --position"
               placeholder="Job Title"
-              onChange={this.handleInputChange}
+              onChange={this.handleInputChange('jobTitle')}
+              value={jobTitle}
             />
             <div>
               <button
