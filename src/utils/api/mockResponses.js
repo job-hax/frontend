@@ -46,7 +46,7 @@ export const mockJobApps = {
       "id": 332,
       "applicationStatus": {
         "id": 3,
-        "value": "phonescreen"
+        "value": "phoneScreen"
       },
       "jobTitle": "Junior Android Engineer",
       "company": "HP",
@@ -59,7 +59,7 @@ export const mockJobApps = {
       "id": 333,
       "applicationStatus": {
         "id": 3,
-        "value": "phonescreen"
+        "value": "phoneScreen"
       },
       "jobTitle": "Junior Android Engineer",
       "company": "Adobe",
@@ -72,7 +72,7 @@ export const mockJobApps = {
       "id": 334,
       "applicationStatus": {
         "id": 3,
-        "value": "phonescreen"
+        "value": "phoneScreen"
       },
       "jobTitle": "Junior Software Engineer",
       "company": "Acer",
@@ -85,7 +85,7 @@ export const mockJobApps = {
       "id": 32,
       "applicationStatus": {
         "id": 3,
-        "value": "phonescreen"
+        "value": "phoneScreen"
       },
       "jobTitle": "Android Engineer",
       "company": "Google",
@@ -137,7 +137,7 @@ export const mockJobApps = {
       "id": 211,
       "applicationStatus": {
         "id": 4,
-        "value": "onsiteinterview"
+        "value": "onsiteInterview"
       },
       "jobTitle": "Android Intern",
       "company": "Mozilla",
@@ -150,7 +150,7 @@ export const mockJobApps = {
       "id": 212,
       "applicationStatus": {
         "id": 4,
-        "value": "onsiteinterview"
+        "value": "onsiteInterview"
       },
       "jobTitle": "Intern (Summer 2019)",
       "company": "Mozilla",
@@ -189,7 +189,7 @@ export const mockJobApps = {
       "id": 23,
       "applicationStatus": {
         "id": 4,
-        "value": "onsiteinterview"
+        "value": "onsiteInterview"
       },
       "jobTitle": "Android Developer",
       "company": "American Technology Consulting - ATC",
@@ -202,7 +202,7 @@ export const mockJobApps = {
       "id": 27,
       "applicationStatus": {
         "id": 4,
-        "value": "onsiteinterview"
+        "value": "onsiteInterview"
       },
       "jobTitle": "Android Engineer",
       "company": "Earnin ",
@@ -215,7 +215,7 @@ export const mockJobApps = {
       "id": 28,
       "applicationStatus": {
         "id": 4,
-        "value": "onsiteinterview"
+        "value": "onsiteInterview"
       },
       "jobTitle": "Android",
       "company": "Houseparty ",
@@ -228,7 +228,7 @@ export const mockJobApps = {
       "id": 29,
       "applicationStatus": {
         "id": 4,
-        "value": "onsiteinterview"
+        "value": "onsiteInterview"
       },
       "jobTitle": "Android Engineer",
       "company": "Twenty ",

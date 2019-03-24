@@ -13,7 +13,7 @@ import {
 } from '../../utils/api/requests.js'
 import {IS_MOCKING} from '../../config/config.js';
 import {mockJobApps} from '../../utils/api/mockResponses.js';
-import {UPDATE_APPLICATION_STATUS, FIND_APPLICATION_STATUS_LIST_NAME} from '../../utils/constants/constants.js';
+import {UPDATE_APPLICATION_STATUS} from '../../utils/constants/constants.js';
 import {generateCurrentDate} from '../../utils/helpers/helperFunctions.js';
 
 import './style.scss'
@@ -23,10 +23,10 @@ class Dashboard extends Component {
     super(props);
 
     this.state = {
-      toapply: [],
+      toApply: [],
       applied: [],
-      phonescreen: [],
-      onsiteinterview: [],
+      phoneScreen: [],
+      onsiteInterview: [],
       offer: [],
       appliedRejected: [],
       phoneScreenRejected: [],
@@ -34,10 +34,10 @@ class Dashboard extends Component {
       offerRejected: []
     };
 
-    this.toapply = [];
+    this.toApply = [];
     this.applied = [];
-    this.phonescreen = [];
-    this.onsiteinterview = [];
+    this.phoneScreen = [];
+    this.onsiteInterview = [];
     this.offer = [];
     this.appliedRejected = [];
     this.phoneScreenRejected = [];
@@ -47,6 +47,7 @@ class Dashboard extends Component {
     this.updateApplications = this.updateApplications.bind(this);
     this.addNewApplication = this.addNewApplication.bind(this);
     this.deleteJobFromList = this.deleteJobFromList.bind(this);
+    this.moveToRejected = this.moveToRejected.bind(this);
   }
 
   componentDidMount() {
@@ -92,7 +93,7 @@ class Dashboard extends Component {
     for (let application of applications) {
       switch (application.applicationStatus.value.toLowerCase()) {
         case 'to apply':
-          this.toapply.push(application);
+          this.toApply.push(application);
           break;
         case 'applied':
           if (application.isRejected) {
@@ -105,14 +106,14 @@ class Dashboard extends Component {
           if (application.isRejected) {
             this.phoneScreenRejected.push(application);
           } else {
-            this.phonescreen.push(application);
+            this.phoneScreen.push(application);
           }
           break;
         case 'onsite interview':
           if (application.isRejected) {
             this.onsiteInterviewRejected.push(application);
           } else {
-            this.onsiteinterview.push(application);
+            this.onsiteInterview.push(application);
           }
           break;
         case 'offer':
@@ -130,10 +131,10 @@ class Dashboard extends Component {
 
   refreshJobs() {
     this.setState({
-      toapply: this.toapply,
+      toApply: this.toApply,
       applied: this.applied,
-      phonescreen: this.phonescreen,
-      onsiteinterview: this.onsiteinterview,
+      phoneScreen: this.phoneScreen,
+      onsiteInterview: this.onsiteInterview,
       offer: this.offer,
       appliedRejected: this.appliedRejected,
       offerRejected: this.offerRejected,
@@ -202,9 +203,29 @@ class Dashboard extends Component {
     });
   }
 
+  moveToRejected(columnName, card, isRejected) {
+    if (isRejected) {
+      var listToAdd = columnName+'Rejected';
+      var listToRemove = columnName;
+    } else {
+      var listToAdd = columnName;
+      var listToRemove = columnName+'Rejected';
+    }
+    card.isRejected = !card.isRejected
+    const removedItemColumn = this.state[listToRemove]
+      .filter(job => {
+        return job.id !== card.id;
+      });
+    let insertedItemColumn = this.state[listToAdd].slice();
+    insertedItemColumn.unshift(card);
+    this.setState(() => ({
+        [listToRemove]: removedItemColumn,
+        [listToAdd]: insertedItemColumn
+      }),
+      );
+  }
+
   deleteJobFromList(columnName, cardId, isRejected) {
-    console.log('yoyo', columnName, cardId)
-    console.log('yayii', this.state)
     if (isRejected) {
       columnName = columnName+'Rejected'
     }
@@ -221,14 +242,14 @@ class Dashboard extends Component {
     return (
       <div className="dashboard-container">
         <Column
-          name="toapply"
+          name="toApply"
           updateApplications={this.updateApplications}
           addNewApplication={this.addNewApplication}
           deleteJobFromList = {this.deleteJobFromList}
           icon="../../src/assets/icons/ToApplyIcon@3x.png"
           title="TO APPLY"
-          totalCount={this.state.toapply.length}
-          cards={this.state.toapply}
+          totalCount={this.state.toApply.length}
+          cards={this.state.toApply}
           token = {this.token}
         />
         <Column
@@ -236,6 +257,7 @@ class Dashboard extends Component {
           updateApplications={this.updateApplications}
           addNewApplication={this.addNewApplication}
           deleteJobFromList = {this.deleteJobFromList}
+          moveToRejected = {this.moveToRejected}
           icon="../../src/assets/icons/AppliedIcon@3x.png"
           title="APPLIED"
           totalCount={
@@ -248,33 +270,35 @@ class Dashboard extends Component {
           token = {this.token}
         />
         <Column
-          name="phonescreen"
+          name="phoneScreen"
           updateApplications={this.updateApplications}
           addNewApplication={this.addNewApplication}
           deleteJobFromList = {this.deleteJobFromList}
+          moveToRejected = {this.moveToRejected}
           icon="../../src/assets/icons/PhoneScreenIcon@3x.png"
           title="PHONE SCREEN"
           totalCount={
-            this.state.phonescreen.length +
+            this.state.phoneScreen.length +
             this.state.phoneScreenRejected.length
           }
-          cards={this.state.phonescreen}
+          cards={this.state.phoneScreen}
           cardsRejecteds={this.state.phoneScreenRejected}
           message="rejected after phone screens"
           token = {this.token}
         />
         <Column
-          name="onsiteinterview"
+          name="onsiteInterview"
           updateApplications={this.updateApplications}
           addNewApplication={this.addNewApplication}
           deleteJobFromList = {this.deleteJobFromList}
+          moveToRejected = {this.moveToRejected}
           icon="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
           title="ONSITE INTERVIEW"
           totalCount={
-            this.state.onsiteinterview.length +
+            this.state.onsiteInterview.length +
             this.state.onsiteInterviewRejected.length
           }
-          cards={this.state.onsiteinterview}
+          cards={this.state.onsiteInterview}
           cardsRejecteds={this.state.onsiteInterviewRejected}
           message="rejected after interviews"
           token = {this.token}
@@ -284,6 +308,7 @@ class Dashboard extends Component {
           updateApplications={this.updateApplications}
           addNewApplication={this.addNewApplication}
           deleteJobFromList = {this.deleteJobFromList}
+          moveToRejected = {this.moveToRejected}
           icon="../../src/assets/icons/OffersIcon@3x.png"
           title="OFFERS"
           totalCount={
