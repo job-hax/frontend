@@ -172,7 +172,7 @@ export const getWordCountRequest = {
 };
 
 //NOTE REQUESTS//
-export const updateNote = {
+export const updateNoteRequest = {
   url: UPDATE_NOTE,
   config: {
     method: "POST",
@@ -184,7 +184,7 @@ export const updateNote = {
   }
 };
 
-export const addNote = {
+export const addNoteRequest = {
   url: ADD_NOTE,
   config: {
     method: "POST",
@@ -196,7 +196,7 @@ export const addNote = {
   }
 };
 
-export const deleteNote = {
+export const deleteNoteRequest = {
   url: DELETE_NOTE,
   config: {
     method: "POST",
@@ -208,7 +208,7 @@ export const deleteNote = {
   }
 };
 
-export const getNotes = {
+export const getNotesRequest = {
   url: GET_NOTES,
   config: {
     method: "GET",
@@ -220,7 +220,7 @@ export const getNotes = {
   }
 };
 
-export const deleteJob = {
+export const deleteJobRequest = {
   url: DELETE_JOB,
   config: {
     method: "POST",
