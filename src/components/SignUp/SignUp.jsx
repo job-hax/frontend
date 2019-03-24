@@ -1,14 +1,22 @@
 import React, {Component} from "react";
-import {Link} from 'react-router-dom';
+import {
+  Link,
+  Redirect
+} from 'react-router-dom';
 import Footer from '../Footer/Footer.jsx';
 import {registerUserRequest} from '../../utils/api/requests.js';
+import {fetchApi} from '../../utils/api/fetch_api'
 
 import './style.scss'
 
 class SignUp extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      toDashboard: false
+    };
     this.handleSignUp = this.handleSignUp.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSignUp() {
@@ -17,14 +25,22 @@ class SignUp extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    registerUserRequest.body = {
-      first_name: event.target[0].value,
-      last_name: event.target[1].value,
-      username: event.target[2].value,
-      email: event.target[3].value,
-      password: event.target[4].value,
-      password2: event.target[5].value
-    }
+    let {url, config} = registerUserRequest;
+    config.body.first_name = event.target[0].value;
+    config.body.last_name = event.target[1].value;
+    config.body.username = event.target[2].value;
+    config.body.email = event.target[3].value;
+    config.body.password = event.target[4].value;
+    config.body.password2 = event.target[5].value;
+    config.body = JSON.stringify(config.body);
+    fetchApi(url, config)
+      .then(response => {
+        if (response.ok) {
+          this.setState({
+            toDashboard: true
+          });
+        }
+      });
   }
 
   generateTopButtons() {
@@ -94,6 +110,9 @@ class SignUp extends Component {
   }
 
   render() {
+    if (this.state.toDashboard) {
+      return <Redirect to="/dashboard"/>
+    }
     return (
       <div className="sign_up-background">
         {this.generateTopButtons()}
