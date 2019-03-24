@@ -6,8 +6,7 @@ export function fetchApi(url, config) {
           response.json()
             .then(json => resolve({ok: true, json}));
         } else {
-          response.json()
-            .then(json => resolve({ok: false, json}));
+          resolve({ok: false, json: response.status});
         }
       })
       .catch(error => resolve({ok: false, error}));
@@ -18,17 +17,17 @@ export function postData(url = ``, config, data = {}) {
   return new Promise(resolve => {
     fetch(url, {
       ...config
-      ,body: JSON.stringify(data)
-      })
+      , body: JSON.stringify(data)
+    })
       .then(response => {
         if (response.ok) {
-          response.json().then(json => resolve({ ok: true, json }));
+          response.json().then(json => resolve({ok: true, json}));
         } else {
-          response.json().then(json => resolve({ ok: false, json }));
+          response.json().then(json => resolve({ok: false, json}));
         }
       })
       .catch(error => {
-        console.log({ ok: false, error });
+        console.log({ok: false, error});
       });
   });
 }
