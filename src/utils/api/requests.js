@@ -1,21 +1,22 @@
 import {
-  AUTHENTICATE,
-  GET_JOB_APPS,
   ADD_JOB_APPS,
-  SYNC_USER_EMAILS,
-  REGISTER_USER,
-  GET_TOTAL_APPLICATION_COUNT,
+  ADD_NOTE,
+  AUTHENTICATE,
+  DELETE_JOB,
+  DELETE_NOTE,
   GET_APPLICATION_COUNT_BY_MONTH,
   GET_APPLICATION_COUNT_BY_MONTH_WITH_TOTAL,
   GET_COUNT_BY_JOBTITLE_AND_STATUSES,
   GET_COUNT_BY_STATUSES,
-  GET_WORD_COUNT,
-  UPDATE_JOB_STATUS,
-  UPDATE_NOTE,
-  ADD_NOTE,
-  DELETE_NOTE,
+  GET_JOB_APPS,
   GET_NOTES,
-  DELETE_JOB
+  GET_TOTAL_APPLICATION_COUNT,
+  GET_WORD_COUNT,
+  LOGIN_USER,
+  REGISTER_USER,
+  SYNC_USER_EMAILS,
+  UPDATE_JOB_STATUS,
+  UPDATE_NOTE
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from '../../config/config.js';
@@ -81,6 +82,22 @@ export const updateJobStatusRequest = {
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json'
+    }
+  }
+};
+
+export const loginUserRequest = {
+  url: LOGIN_USER,
+  config: {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret,
     }
   }
 };
