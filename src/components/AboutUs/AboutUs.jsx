@@ -82,8 +82,11 @@ class AboutUs extends Component {
               'Our Team',
               'Team of passioned engineers with same core values, driving for impact everyday'
             )}
+            <img className="team-diagram"
+              src="../../src/assets/images/schoolTeamDiagram.png"
+            ></img>
         </div>
-        <div className="footer-bottom">
+        <div className="footer">
             <Footer/>
         </div>
       </div>
