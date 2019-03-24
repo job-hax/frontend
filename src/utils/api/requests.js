@@ -110,6 +110,10 @@ export const registerUserRequest = {
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json'
+    },
+    body: {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret,
     }
   }
 };
