@@ -53,7 +53,11 @@ class Card extends PureComponent {
         source,
         token,
         columnName,
-        deleteJobFromList
+        deleteJobFromList,
+        moveToRejected,
+        updateApplications,
+        icon,
+        title
       },
       isDragging
     } = this.props;
@@ -75,6 +79,10 @@ class Card extends PureComponent {
             columnName={columnName}
             toggleModal={this.toggleModal}
             deleteJobFromList = {deleteJobFromList}
+            moveToRejected = {moveToRejected}
+            updateApplications = {updateApplications}
+            icon = {icon}
+            title = {title}
             {...this.props}
           />
         }
