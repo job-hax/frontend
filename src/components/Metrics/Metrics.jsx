@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import ReactEcharts from 'echarts-for-react';
 import echarts from 'echarts';
 
+import Header from '../Header/Header.jsx';
 import {fetchApi} from '../../utils/api/fetch_api'
 import {
   authenticateRequest,
@@ -496,6 +497,7 @@ class Metrics extends PureComponent {
     render() {
         return(
             <div >
+                <Header googleAuth={this.googleAuth}/>  
                 {this.generateFeatureArea()}
                 <div className="graph-container-dark-background" id="monthlyapplication">
                     <div className="graph">

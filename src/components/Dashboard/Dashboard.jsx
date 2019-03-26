@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
+import Header from '../Header/Header.jsx';
 import Column from '../Column/Column.jsx';
 import {fetchApi} from '../../utils/api/fetch_api'
 import {
@@ -240,86 +241,90 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div className="dashboard-container">
-        <Column
-          name="toApply"
-          updateApplications={this.updateApplications}
-          addNewApplication={this.addNewApplication}
-          deleteJobFromList = {this.deleteJobFromList}
-          icon="../../src/assets/icons/ToApplyIcon@3x.png"
-          title="TO APPLY"
-          totalCount={this.state.toApply.length}
-          cards={this.state.toApply}
-          token = {this.token}
-        />
-        <Column
-          name="applied"
-          updateApplications={this.updateApplications}
-          addNewApplication={this.addNewApplication}
-          deleteJobFromList = {this.deleteJobFromList}
-          moveToRejected = {this.moveToRejected}
-          icon="../../src/assets/icons/AppliedIcon@3x.png"
-          title="APPLIED"
-          totalCount={
-            this.state.applied.length +
-            this.state.appliedRejected.length
-          }
-          cards={this.state.applied}
-          cardsRejecteds={this.state.appliedRejected}
-          message="rejected without any interview"
-          token = {this.token}
-        />
-        <Column
-          name="phoneScreen"
-          updateApplications={this.updateApplications}
-          addNewApplication={this.addNewApplication}
-          deleteJobFromList = {this.deleteJobFromList}
-          moveToRejected = {this.moveToRejected}
-          icon="../../src/assets/icons/PhoneScreenIcon@3x.png"
-          title="PHONE SCREEN"
-          totalCount={
-            this.state.phoneScreen.length +
-            this.state.phoneScreenRejected.length
-          }
-          cards={this.state.phoneScreen}
-          cardsRejecteds={this.state.phoneScreenRejected}
-          message="rejected after phone screens"
-          token = {this.token}
-        />
-        <Column
-          name="onsiteInterview"
-          updateApplications={this.updateApplications}
-          addNewApplication={this.addNewApplication}
-          deleteJobFromList = {this.deleteJobFromList}
-          moveToRejected = {this.moveToRejected}
-          icon="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
-          title="ONSITE INTERVIEW"
-          totalCount={
-            this.state.onsiteInterview.length +
-            this.state.onsiteInterviewRejected.length
-          }
-          cards={this.state.onsiteInterview}
-          cardsRejecteds={this.state.onsiteInterviewRejected}
-          message="rejected after interviews"
-          token = {this.token}
-        />
-        <Column
-          name="offer"
-          updateApplications={this.updateApplications}
-          addNewApplication={this.addNewApplication}
-          deleteJobFromList = {this.deleteJobFromList}
-          moveToRejected = {this.moveToRejected}
-          icon="../../src/assets/icons/OffersIcon@3x.png"
-          title="OFFERS"
-          totalCount={
-            this.state.offer.length + this.state.offerRejected.length
-          }
-          cards={this.state.offer}
-          cardsRejecteds={this.state.offerRejected}
-          message="you rejected their offer"
-          token = {this.token}
-        />
+      <div>
+        <Header googleAuth={this.googleAuth}/>
+        <div className="dashboard-container">
+          <Column
+            name="toApply"
+            updateApplications={this.updateApplications}
+            addNewApplication={this.addNewApplication}
+            deleteJobFromList = {this.deleteJobFromList}
+            icon="../../src/assets/icons/ToApplyIcon@3x.png"
+            title="TO APPLY"
+            totalCount={this.state.toApply.length}
+            cards={this.state.toApply}
+            token = {this.token}
+          />
+          <Column
+            name="applied"
+            updateApplications={this.updateApplications}
+            addNewApplication={this.addNewApplication}
+            deleteJobFromList = {this.deleteJobFromList}
+            moveToRejected = {this.moveToRejected}
+            icon="../../src/assets/icons/AppliedIcon@3x.png"
+            title="APPLIED"
+            totalCount={
+              this.state.applied.length +
+              this.state.appliedRejected.length
+            }
+            cards={this.state.applied}
+            cardsRejecteds={this.state.appliedRejected}
+            message="rejected without any interview"
+            token = {this.token}
+          />
+          <Column
+            name="phoneScreen"
+            updateApplications={this.updateApplications}
+            addNewApplication={this.addNewApplication}
+            deleteJobFromList = {this.deleteJobFromList}
+            moveToRejected = {this.moveToRejected}
+            icon="../../src/assets/icons/PhoneScreenIcon@3x.png"
+            title="PHONE SCREEN"
+            totalCount={
+              this.state.phoneScreen.length +
+              this.state.phoneScreenRejected.length
+            }
+            cards={this.state.phoneScreen}
+            cardsRejecteds={this.state.phoneScreenRejected}
+            message="rejected after phone screens"
+            token = {this.token}
+          />
+          <Column
+            name="onsiteInterview"
+            updateApplications={this.updateApplications}
+            addNewApplication={this.addNewApplication}
+            deleteJobFromList = {this.deleteJobFromList}
+            moveToRejected = {this.moveToRejected}
+            icon="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
+            title="ONSITE INTERVIEW"
+            totalCount={
+              this.state.onsiteInterview.length +
+              this.state.onsiteInterviewRejected.length
+            }
+            cards={this.state.onsiteInterview}
+            cardsRejecteds={this.state.onsiteInterviewRejected}
+            message="rejected after interviews"
+            token = {this.token}
+          />
+          <Column
+            name="offer"
+            updateApplications={this.updateApplications}
+            addNewApplication={this.addNewApplication}
+            deleteJobFromList = {this.deleteJobFromList}
+            moveToRejected = {this.moveToRejected}
+            icon="../../src/assets/icons/OffersIcon@3x.png"
+            title="OFFERS"
+            totalCount={
+              this.state.offer.length + this.state.offerRejected.length
+            }
+            cards={this.state.offer}
+            cardsRejecteds={this.state.offerRejected}
+            message="you rejected their offer"
+            token = {this.token}
+          />
+        </div>
       </div>
+      
     );
   }
 }
