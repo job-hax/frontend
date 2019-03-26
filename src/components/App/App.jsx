@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import {BrowserRouter as Router, Route} from "react-router-dom";
 
-import Header from '../Header/Header.jsx';
 import Dashboard from '../Dashboard/Dashboard.jsx';
 import Metrics from '../Metrics/Metrics.jsx';
 import Home from '../Home/Home.jsx';
@@ -51,7 +50,6 @@ class App extends Component {
     return isUserLoggedIn ?
       (<Router>
         <div className="main-container">
-          <Header googleAuth={this.googleAuth}/>
           <Route exact path="/dashboard" render={() => <Dashboard googleAuth={this.googleAuth}/>}/>
           <Route exact path="/metrics" render={() => <Metrics googleAuth={this.googleAuth}/>}/>
           <Route exact path="/" component={Home}/>
