@@ -28,8 +28,8 @@
     }
 
     &.search-icon {
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin-top: 7px;
+      margin-bottom: 15px;
     }
     
     &.user-icon {
@@ -84,7 +84,51 @@
     margin-top: 10px;
   }
   
+  .svg_ics{
+    fill: white;
+  }
 
+
+  .header-icon.tooltips {
+    position: relative;
+    display: inline;
+    span {
+      position: absolute;
+      width: 140px;
+      color: #FFF;
+      background: #525252;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      visibility: hidden;
+      border-radius: 6px;
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -8px;
+        width: 0;
+        height: 0;
+        border-bottom: 8px solid #525252;
+        border-right: 8px solid transparent;
+        border-left: 8px solid transparent;
+      }
+    }
+  }
+  .header-icon {
+    &:hover.tooltips {
+      span {
+        visibility: visible;
+        opacity: 0.7;
+        top: 40px;
+        left: 50%;
+        margin-left: -66px;
+        z-index: 999;
+      }
+    }
+  }
+  
   .jobhax-logo-container {
     margin-top: 10px;
     margin-right: 20px;
