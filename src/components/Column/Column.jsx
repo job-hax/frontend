@@ -57,7 +57,7 @@ class Column extends Component {
       deleteJobFromList,
       moveToRejected,
       icon,
-      title
+      id
     } = this.props;
 
     if (this.state.showRejectedCards) {
@@ -72,7 +72,7 @@ class Column extends Component {
             moveToRejected = {moveToRejected}
             updateApplications = {updateApplications}
             icon = {icon}
-            title = {title}
+            id={id}
           />
         );
     }
@@ -88,7 +88,7 @@ class Column extends Component {
           moveToRejected = {moveToRejected}
           updateApplications = {updateApplications}
           icon = {icon}
-          title = {title}
+          id={id}
         />
       );
   };
