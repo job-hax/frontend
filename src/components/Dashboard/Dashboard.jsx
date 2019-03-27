@@ -246,6 +246,7 @@ class Dashboard extends Component {
         <div className="dashboard-container">
           <Column
             name="toApply"
+            id= "2"
             updateApplications={this.updateApplications}
             addNewApplication={this.addNewApplication}
             deleteJobFromList = {this.deleteJobFromList}
@@ -257,6 +258,7 @@ class Dashboard extends Component {
           />
           <Column
             name="applied"
+            id= "1"
             updateApplications={this.updateApplications}
             addNewApplication={this.addNewApplication}
             deleteJobFromList = {this.deleteJobFromList}
@@ -274,6 +276,7 @@ class Dashboard extends Component {
           />
           <Column
             name="phoneScreen"
+            id= "3"
             updateApplications={this.updateApplications}
             addNewApplication={this.addNewApplication}
             deleteJobFromList = {this.deleteJobFromList}
@@ -291,6 +294,7 @@ class Dashboard extends Component {
           />
           <Column
             name="onsiteInterview"
+            id= "4"
             updateApplications={this.updateApplications}
             addNewApplication={this.addNewApplication}
             deleteJobFromList = {this.deleteJobFromList}
@@ -308,6 +312,7 @@ class Dashboard extends Component {
           />
           <Column
             name="offer"
+            id= "5"
             updateApplications={this.updateApplications}
             addNewApplication={this.addNewApplication}
             deleteJobFromList = {this.deleteJobFromList}

@@ -249,8 +249,8 @@ class CardModal extends PureComponent {
                 defaultValue = {currentValue}
               ></textarea>
               <div className="notepad-buttons textarea">
-                <button onClick={this.toggleNotes}>Cancel</button>
-                <button type="submit">Save</button>
+                <button onClick={this.toggleNotes}>cancel</button>
+                <button type="submit">save</button>
               </div>
             </form>
           </div>
@@ -270,8 +270,8 @@ class CardModal extends PureComponent {
         value={item.id}
         onClick={() => this.updateCardStatusToOtherStatuses(item.id)}
         >
-          <img src={item.icon}></img>
-          {item.name}
+          <img src={item.icon.toString().split('@')[0]+'InBtn@3x.png'}></img>
+          <p>{item.name}</p>
         </div>
       ))
     )
@@ -284,37 +284,44 @@ class CardModal extends PureComponent {
     } = this.props;
     if (this.state.showOptions) {
       return (
-        <div 
-        className="options-container" 
-        onMouseLeave={this.toggleOptions}
-        >
+        <div className="options-container" >
           <div className="explanation">
-            Move to:
+            MOVE TO:
           </div>
-          <div 
-            className="options"
-            onClick={() => this.updateAsRejected()}
-          >
           {
-            card.isRejected ? 
-            <div>
-              <img src={icon}></img>
-              ongoing
-            </div>
-            : 
-            <div>
-              <img src={"../../src/assets/icons/RejectedIconInBtn@3x.png"}></img>
-              rejected
-            </div>
+            card.applicationStatus.id != 2 ?
+              <div 
+                className="options"
+                onClick={() => this.updateAsRejected()}
+              >
+                {
+                  card.isRejected ? 
+                  <div className="ongoing-option">
+                    <img src={icon.toString().split('@')[0]+'InBtn@3x.png'}></img>
+                    <p >Ongoing</p>
+                  </div>
+                  : 
+                  <div className="rejected-option">
+                    <img src={"../../src/assets/icons/RejectedIconInBtn@3x.png"}>
+                    </img>
+                    <p>Rejected</p>
+                  </div>
+                }
+              </div>
+            :
+              <div className="unable">
+                <img src={"../../src/assets/icons/RejectedIconInBtn@3x.png"}>
+                </img>
+                Rejected
+              </div>
           }
-          </div>
           {this.otherApplicationStatusesGenerator()}
           <div 
             className="delete-option" 
             onClick={() => this.deleteJobFunction()}
           >
             <img src="../../src/assets/icons/DeleteIconInBtn@3x.png"/>
-            Delete
+            <p>Delete</p>
           </div>
         </div>
       )
@@ -328,7 +335,7 @@ class CardModal extends PureComponent {
       toggleModal,
       card,
       icon,
-      title
+      id
     } = this.props;
 
     return ReactDOM.createPortal(
@@ -346,13 +353,16 @@ class CardModal extends PureComponent {
                   {card.jobTitle}
                 </div>
               </div>
-              <div className="modal-header options">
+              <div 
+                className="modal-header options"
+                onMouseEnter={this.toggleOptions}
+                onMouseLeave={this.toggleOptions}
+                >
                 <div 
                 className="current-status"
-                onMouseEnter={this.toggleOptions}
                 >
-                  <img src={icon}/>
-                  {title}
+                  <img src={icon.toString().split('@')[0]+'White@3x.png'}/>
+                  {APPLICATION_STATUSES_IN_ORDER[(parseInt(id)-1)]['name']}
                 </div>
                 {this.moveToOptionsGenerator()}
               </div>

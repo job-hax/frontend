@@ -57,7 +57,7 @@ class Card extends PureComponent {
         moveToRejected,
         updateApplications,
         icon,
-        title
+        id
       },
       isDragging
     } = this.props;
@@ -82,7 +82,7 @@ class Card extends PureComponent {
             moveToRejected = {moveToRejected}
             updateApplications = {updateApplications}
             icon = {icon}
-            title = {title}
+            id={id}
             {...this.props}
           />
         }
