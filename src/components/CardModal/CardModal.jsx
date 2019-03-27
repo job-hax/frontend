@@ -141,24 +141,31 @@ class CardModal extends PureComponent {
       return(
         this.state.notes.map((item) =>(
           <div key = {item.id} className="note-container">
-            <div className="text-container">
+            <div 
+            className="text-container"
+            value={item} 
+            onClick={() => this.setCurrentNote(item)}
+            >
               <p className="note"> {item.description}</p>
               <p className="date"> {this.makeTimeBeautiful(item.created_date, 'dateandtime')}</p>
             </div>
-            <div className="button-container">
-              <button 
-              value={item.id} 
-              onClick={() => this.deleteNote(item.id)} 
-              >
-                <img src="../../src/assets/icons/DeleteIconInBtn@3x.png"/>
-              </button>
-              <button 
-              value={item} 
-              onClick={() => this.setCurrentNote(item)} 
-              >
-                <img src="../../src/assets/icons/edit@3x.png"/>
-              </button>
+            <div className="button-container-parent">
+              <div className="button-container-child">
+                <button 
+                value={item.id} 
+                onClick={() => this.deleteNote(item.id)} 
+                >
+                  <img src="../../src/assets/icons/DeleteIconInBtn@3x.png"/>
+                </button>
+                <button 
+                value={item} 
+                onClick={() => this.setCurrentNote(item)} 
+                >
+                  <img src="../../src/assets/icons/edit@3x.png"/>
+                </button>
+              </div>
             </div>
+            
           </div>
         ))
       )
@@ -242,14 +249,22 @@ class CardModal extends PureComponent {
         :
           <div>
             <form onSubmit={this.addNote}>
-              <textarea
-                name="addNoteForm"
-                placeholder="enter your note here..."
-                onChange={this.onChange}
-                defaultValue = {currentValue}
-              ></textarea>
+              <div>
+                <textarea
+                  name="addNoteForm"
+                  placeholder="+ Add note"
+                  onChange={this.onChange}
+                  defaultValue = {currentValue}
+                ></textarea>
+              </div>
+              <div 
+                className="cancel-button">
+                <img 
+                onClick={this.toggleNotes}
+                src={"../../src/assets/icons/RejectedIconInBtn@1x.png"}
+                ></img>
+              </div>
               <div className="notepad-buttons textarea">
-                <button onClick={this.toggleNotes}>cancel</button>
                 <button type="submit">save</button>
               </div>
             </form>
@@ -270,7 +285,7 @@ class CardModal extends PureComponent {
         value={item.id}
         onClick={() => this.updateCardStatusToOtherStatuses(item.id)}
         >
-          <img src={item.icon.toString().split('@')[0]+'InBtn@3x.png'}></img>
+          <img src={item.icon.toString().split('@')[0]+'InBtn@1x.png'}></img>
           <p>{item.name}</p>
         </div>
       ))
@@ -297,12 +312,12 @@ class CardModal extends PureComponent {
                 {
                   card.isRejected ? 
                   <div className="ongoing-option">
-                    <img src={icon.toString().split('@')[0]+'InBtn@3x.png'}></img>
+                    <img src={icon.toString().split('@')[0]+'InBtn@1x.png'}></img>
                     <p >Ongoing</p>
                   </div>
                   : 
                   <div className="rejected-option">
-                    <img src={"../../src/assets/icons/RejectedIconInBtn@3x.png"}>
+                    <img src={"../../src/assets/icons/RejectedIconInBtn@1x.png"}>
                     </img>
                     <p>Rejected</p>
                   </div>
@@ -310,7 +325,7 @@ class CardModal extends PureComponent {
               </div>
             :
               <div className="unable">
-                <img src={"../../src/assets/icons/RejectedIconInBtn@3x.png"}>
+                <img src={"../../src/assets/icons/RejectedIconInBtn@1x.png"}>
                 </img>
                 Rejected
               </div>
