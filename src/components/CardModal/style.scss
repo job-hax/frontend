@@ -59,7 +59,7 @@
         width: 160px;
         height: 28px;
         color: white;
-        background-color:rgb(92, 39, 195);
+        background-color:rgba(132, 100, 239, 1);
         border-radius: 32px;
         box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
         text-align: center;
@@ -98,7 +98,7 @@
           p {
             margin-left: 10px;
             padding-top: 10px;
-            border-top: 0.5px solid #8464ef;
+            border-top: 0.5px solid rgba(132, 100, 239, 0.4);
             margin-top: -32px;
           }
 
@@ -148,7 +148,7 @@
           margin-top: -4px;
           margin-left: -16px;
           width: 160px;
-          border-top: 0.5px solid #8464ef;
+          border-top: 0.5px solid rgba(132, 100, 239, 0.6);
           padding-top: 12px;
           cursor: pointer;
 
@@ -189,7 +189,7 @@
           padding-top: 10px;
           font-size: 90%;
           height: 26px;
-          border-bottom: 0.5px solid #8464ef;
+          border-bottom: 0.5px solid rgba(132, 100, 239, 0.6);
           font-weight: 500;
 
         }
@@ -259,7 +259,7 @@
 
           .button-container {
             width: 12px;
-            margin-left: 4px;
+            margin-left: -2px;
             margin-top: 8px;
             background: transparent;
 
@@ -296,24 +296,21 @@
 
           button{
             font-family: exo;
-            background-color: rgb(92, 39, 195);
+            background-color: rgba(132, 100, 239, 1);
             color: white;
             font-weight: lighter;
-            border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+            border-radius: 24px;
+            height: 24px;
+            padding: 4px;
+            padding-right: 8px;
+            padding-left: 8px;
+            border: none;
+            margin-left: 4px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
           }
 
           &.textarea {
             margin-right: 44px;
-
-          button{
-            font-family: exo;
-            background-color: rgb(92, 39, 195);
-            color: white;
-            font-weight: lighter;
-            border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
-          }
           }
         }
 
