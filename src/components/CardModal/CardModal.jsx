@@ -155,13 +155,13 @@ class CardModal extends PureComponent {
                 value={item.id} 
                 onClick={() => this.deleteNote(item.id)} 
                 >
-                  <img src="../../src/assets/icons/DeleteIconInBtn@3x.png"/>
+                  <img src="../../src/assets/icons/DeleteIconInBtn@1x.png"/>
                 </button>
                 <button 
                 value={item} 
                 onClick={() => this.setCurrentNote(item)} 
                 >
-                  <img src="../../src/assets/icons/edit@3x.png"/>
+                  <img src="../../src/assets/icons/edit.png"/>
                 </button>
               </div>
             </div>
@@ -335,7 +335,7 @@ class CardModal extends PureComponent {
             className="delete-option" 
             onClick={() => this.deleteJobFunction()}
           >
-            <img src="../../src/assets/icons/DeleteIconInBtn@3x.png"/>
+            <img src="../../src/assets/icons/DeleteIconInBtn@1x.png"/>
             <p>Delete</p>
           </div>
         </div>
@@ -376,8 +376,8 @@ class CardModal extends PureComponent {
                 <div 
                 className="current-status"
                 >
-                  <img src={icon.toString().split('@')[0]+'White@3x.png'}/>
-                  {APPLICATION_STATUSES_IN_ORDER[(parseInt(id)-1)]['name']}
+                  <img src={icon.toString().split('@')[0]+'White@1x.png'}/>
+                  <p>{APPLICATION_STATUSES_IN_ORDER[(parseInt(id)-1)]['name']}</p>
                 </div>
                 {this.moveToOptionsGenerator()}
               </div>

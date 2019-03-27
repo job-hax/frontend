@@ -50,14 +50,16 @@
       border: none;
 
       img {
-        width: 16px;
         height: 16px;
+        width: auto;
         margin-right: 8px;
       }
 
       .current-status {
         width: 160px;
         height: 28px;
+        display: flex;
+        justify-content: center;
         color: white;
         background-color:rgba(132, 100, 239, 1);
         border-radius: 32px;
@@ -66,6 +68,16 @@
         margin-top: 28px;
         padding-top: 8px;
         cursor: pointer;
+
+        img {
+          height: 16px;
+          width: auto;
+          margin-top: 2px;
+        }
+
+        p {
+          margin-top: 0px;
+        }
       }
 
       .options-container {
@@ -80,8 +92,6 @@
         z-index: 100;
 
         img {
-          width: 16px;
-          height: 16px;
           cursor: pointer;
         }
 
@@ -103,8 +113,6 @@
           }
 
           img {
-            width: 16px;
-            height: 16px;
             padding-top: 8px;
             margin-left: -18px;
             cursor: pointer;
@@ -164,7 +172,9 @@
           }
 
           img {
-            margin-left: 10px;
+            height: 16px;
+            width: auto;
+            margin-left: 14px;
             cursor: pointer;
           }
         }
