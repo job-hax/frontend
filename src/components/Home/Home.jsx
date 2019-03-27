@@ -2,12 +2,58 @@ import React, {Component} from 'react';
 import Footer from '../Footer/Footer.jsx';
 import {Link} from 'react-router-dom';
 
+import {googleClientId} from "../../config/config.js";
+
 import './style.scss'
 
 class Home extends Component {
 
+  constructor(props){
+    super(props)
+    this.state = {
+      isUserLoggedIn: false
+    };
+    this.onAuthUpdate = this.onAuthUpdate.bind(this);
+  }
+  
+  componentDidMount() {
+    window.gapi.load('client:auth2', () => {
+      window.gapi.client.init({
+        clientId: googleClientId,
+        scope: 'email https://www.googleapis.com/auth/gmail.readonly'
+      })
+        .then(() => {
+          this.googleAuth = window.gapi.auth2.getAuthInstance();
+          this.setState(() => ({
+            isUserLoggedIn: this.googleAuth.isSignedIn.get()
+          }));
+          this.googleAuth.isSignedIn.listen(this.onAuthUpdate)
+        })
+    });
+  }
+
+  onAuthUpdate() {
+    this.setState(() => ({
+      isUserLoggedIn: this.googleAuth.isSignedIn.get()
+    }));
+  }
+
   generateTopButtons() {
-    return (
+    const {isUserLoggedIn} = this.state;
+
+    return isUserLoggedIn ?
+    (
+      <div className="top_buttons">
+       <Link to="/dashboard">
+          <button>Dashboard</button>
+        </Link>
+        <Link to="/aboutus">
+          <button>About us</button>
+        </Link>
+      </div>
+    )
+    : 
+    (
       <div className="top_buttons">
         <Link to="/aboutus">
           <button>About us</button>
