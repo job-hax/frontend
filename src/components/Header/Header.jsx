@@ -27,11 +27,11 @@ class Header extends Component {
           </div>
         </div>
         <div className="right-container">
-        <div className="header-icon general tooltips">
-            <Link to={window.location.pathname}>
+          <div className="header-icon general tooltips">
+            <Link to="/dashboard">
               <img src="../../src/assets/icons/SyncIcon@3x.png"></img>
             </Link>
-            <span>Refresh</span>
+            <span>Dashboard</span>
           </div>
           <div className="header-icon general tooltips">
             <Link to="/metrics">
