@@ -249,8 +249,8 @@ class CardModal extends PureComponent {
                 defaultValue = {currentValue}
               ></textarea>
               <div className="notepad-buttons textarea">
-                <button onClick={this.toggleNotes}>Cancel</button>
-                <button type="submit">Save</button>
+                <button onClick={this.toggleNotes}>cancel</button>
+                <button type="submit">save</button>
               </div>
             </form>
           </div>
