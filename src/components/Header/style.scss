@@ -38,8 +38,8 @@
       margin-right: 45px;
 
       img {
-          width: 40px;
           height: 40px;
+          width: auto;
         }
     }
 
@@ -52,13 +52,14 @@
 
       img{
         background: transparent;
-        width: 30px;
         height: 30px;
+        width: auto;
       }
     }
 
     img {
       height: 20px;
+      width: auto;
     }
   }
 
