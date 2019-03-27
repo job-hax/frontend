@@ -497,7 +497,7 @@ class Metrics extends PureComponent {
     render() {
         return(
             <div >
-                <Header googleAuth={this.googleAuth}/>  
+                <Header googleAuth={this.props.googleAuth}/>
                 {this.generateFeatureArea()}
                 <div className="graph-container-dark-background" id="monthlyapplication">
                     <div className="graph">

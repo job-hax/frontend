@@ -242,7 +242,7 @@ class Dashboard extends Component {
   render() {
     return (
       <div>
-        <Header googleAuth={this.googleAuth}/>
+        <Header googleAuth={this.props.googleAuth}/>
         <div className="dashboard-container">
           <Column
             name="toApply"
