@@ -9,8 +9,8 @@ class Header extends Component {
       <div className="header-container">
         <div className="left-container">
           <div className="jobhax-logo-container">
-            <Link to="/">
-              <div className="jobhax-logo" onClick={() => this.props.googleAuth.signOut()}></div>
+            <Link to="/dashboard">
+              <div className="jobhax-logo"></div>
             </Link>
           </div>
           <div className="search-box">
@@ -27,19 +27,22 @@ class Header extends Component {
           </div>
         </div>
         <div className="right-container">
-          <div className="header-icon general">
-            <Link to="/dashboard">
+        <div className="header-icon general tooltips">
+            <Link to={window.location.pathname}>
               <img src="../../src/assets/icons/SyncIcon@3x.png"></img>
             </Link>
+            <span>Refresh</span>
           </div>
-          <div className="header-icon general">
+          <div className="header-icon general tooltips">
             <Link to="/metrics">
               <img src="../../src/assets/icons/StatsIcon@3x.png"></img>
+              <span>Metrics</span>
             </Link>
           </div>
-          <div className="header-icon general">
+          <div className="header-icon general tooltips">
             <Link to="/test1">
               <img src="../../src/assets/icons/NotifIcon@3x.png"></img>
+              <span>Notifications</span>
             </Link>
           </div>
           <div className="header-icon user-icon">
@@ -47,10 +50,11 @@ class Header extends Component {
               <img src="../../src/assets/icons/SeyfoIcon@3x.png"></img>
             </Link>
           </div>
-          <div className="header-icon sign_out">
+          <div className="header-icon sign_out tooltips">
             <Link to="/">
               <img onClick={() => this.props.googleAuth.signOut()} src="../../src/assets/icons/sign_out.png"></img>
             </Link>
+            <span>Sign out</span>
           </div>
         </div>
       </div>
