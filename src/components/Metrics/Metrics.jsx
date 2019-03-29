@@ -45,130 +45,102 @@ class Metrics extends PureComponent {
     }
 
     componentDidMount() {
-        const {url, config} = authenticateRequest;
-        config.body.token = this.props.googleAuth.currentUser.get().getAuthResponse().access_token;
-        config.body = JSON.stringify(config.body)
-        fetchApi(url, config)
+        new Promise(resolve => setTimeout(resolve,500)) 
+        .then(() =>{
+            console.log('metrics token:',this.props.token);
+            console.log('active?',this.props.active);
+            getTotalAppsCountRequest.config.headers.Authorization = this.props.token;
+            console.log(getTotalAppsCountRequest.config);
+            fetchApi(getTotalAppsCountRequest.url, getTotalAppsCountRequest.config)
             .then(response => {
-                console.log("authenticateRequest");
-                console.log(response);
                 if (response.ok) {
-                return response.json;
+                this.totalAppsCountRequest = (response.json.data);
+                this.setState({
+                    totalAppsCountRequest: this.totalAppsCountRequest,
+                });
                 }
-            })
+            });
+            console.log('yoyo',getAppsCountByMonthRequest.config);
+            getAppsCountByMonthRequest.config.headers.Authorization = this.props.token;
+            fetchApi(getAppsCountByMonthRequest.url, getAppsCountByMonthRequest.config)
             .then(response => {
-                const {url, config} = getTotalAppsCountRequest;
-                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
-                fetchApi(url, config)
-                .then(response => {
-                    if (response.ok) {
-                    this.totalAppsCountRequest = (response.json.data);
-                    this.setState({
-                        totalAppsCountRequest: this.totalAppsCountRequest,
-                      });
-                    }
+                if (response.ok) {
+                this.appsCountByMonthRequest = (response.json.data[0]);
+                this.appsCountByMonthRequest.forEach(element => {
+                    element["name"] = element["source"];
+                    delete element["source"];
+                    element["type"] = "bar";
+                    element["stack"] = "Company";
                 });
-                return response;
-            })
-            .then(response => {
-                const {url, config} = getAppsCountByMonthRequest;
-                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
-                fetchApi(url, config)
-                .then(response => {
-                    if (response.ok) {
-                    this.appsCountByMonthRequest = (response.json.data[0]);
-                    this.appsCountByMonthRequest.forEach(element => {
-                        element["name"] = element["source"];
-                        delete element["source"];
-                        element["type"] = "bar";
-                        element["stack"] = "Company";
+                this.currentmonthsoflastyear = (response.json.data[1]);
+                this.setState({
+                    appsCountByMonthRequest: this.appsCountByMonthRequest,
+                    currentmonthsoflastyear: this.currentmonthsoflastyear,
                     });
-                    this.currentmonthsoflastyear = (response.json.data[1]);
-                    this.setState({
-                        appsCountByMonthRequest: this.appsCountByMonthRequest,
-                        currentmonthsoflastyear: this.currentmonthsoflastyear,
-                      });
-                    this.state.appsCountByMonthRequest.map((item) =>(
-                        this.appsMonthSources.push(item.name)
-                    ))
-                    this.setState({
-                        appsMonthSources: this.appsMonthSources,
-                    });
-                    }
+                this.state.appsCountByMonthRequest.map((item) =>(
+                    this.appsMonthSources.push(item.name)
+                ))
+                this.setState({
+                    appsMonthSources: this.appsMonthSources,
                 });
-                return response;
-            })
+                }
+            });
+            getAppsCountByMonthWithTotalRequest.config.headers.Authorization = this.props.token;
+            fetchApi(getAppsCountByMonthWithTotalRequest.url, getAppsCountByMonthWithTotalRequest.config)
             .then(response => {
-                const {url, config} = getAppsCountByMonthWithTotalRequest;
-                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
-                fetchApi(url, config)
-                .then(response => {
-                    if (response.ok) {
-                    this.appsCountByMonthWithTotalRequest = (response.json.data[0]);
-                    this.appsCountByMonthWithTotalRequest.forEach(element => {
-                        element["name"] = element["source"];
-                        delete element["source"];
-                        element["type"] = "line";
-                    });
-                    this.setState({
-                        appsCountByMonthWithTotalRequest: this.appsCountByMonthWithTotalRequest,
-                      });
-                    this.state.appsCountByMonthWithTotalRequest.map((item) =>(
-                        this.appsMonthSourcesWithTotal.push(item.name)
-                    ))
-                    this.setState({
-                        appsMonthSourcesWithTotal: this.appsMonthSourcesWithTotal,
-                    });
-                    }
+                if (response.ok) {
+                this.appsCountByMonthWithTotalRequest = (response.json.data[0]);
+                this.appsCountByMonthWithTotalRequest.forEach(element => {
+                    element["name"] = element["source"];
+                    delete element["source"];
+                    element["type"] = "line";
                 });
-                return response;
-            })
+                this.setState({
+                    appsCountByMonthWithTotalRequest: this.appsCountByMonthWithTotalRequest,
+                });
+                this.state.appsCountByMonthWithTotalRequest.map((item) =>(
+                    this.appsMonthSourcesWithTotal.push(item.name)
+                ))
+                this.setState({
+                    appsMonthSourcesWithTotal: this.appsMonthSourcesWithTotal,
+                });
+                }
+            });
+            getCountByJobtitleAndStatusesRequest.config.headers.Authorization = this.props.token;
+            fetchApi(getCountByJobtitleAndStatusesRequest.url, getCountByJobtitleAndStatusesRequest.config)
             .then(response => {
-                const {url, config} = getCountByJobtitleAndStatusesRequest;
-                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
-                fetchApi(url, config)
-                .then(response => {
-                    if (response.ok) {
-                    this.countByJobtitleAndStatusesRequest = (response.json.data);
-                    this.countByJobtitleAndStatusesRequest.data.forEach(element => {
-                        element["type"] = "bar";
-                        element["stack"] = "Company";
-                    });
-                    this.setState({
-                        countByJobtitleAndStatusesRequest: this.countByJobtitleAndStatusesRequest,
-                      });
-                    }
+                if (response.ok) {
+                this.countByJobtitleAndStatusesRequest = (response.json.data);
+                this.countByJobtitleAndStatusesRequest.data.forEach(element => {
+                    element["type"] = "bar";
+                    element["stack"] = "Company";
                 });
-                return response;
-            })
+                this.setState({
+                    countByJobtitleAndStatusesRequest: this.countByJobtitleAndStatusesRequest,
+                });
+                }
+            });
+            getCountByStatusesRequest.config.headers.Authorization = this.props.token;
+            fetchApi(getCountByStatusesRequest.url, getCountByStatusesRequest.config)
             .then(response => {
-                const {url, config} = getCountByStatusesRequest;
-                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
-                fetchApi(url, config)
-                .then(response => {
-                    if (response.ok) {
-                    this.countByStatusesRequest = (response.json.data);
-                    this.setState({
-                        countByStatusesRequest: this.countByStatusesRequest,
-                      });
-                    }
+                if (response.ok) {
+                this.countByStatusesRequest = (response.json.data);
+                this.setState({
+                    countByStatusesRequest: this.countByStatusesRequest,
                 });
-                return response;
-            })
+                }
+            });
+            getWordCountRequest.config.headers.Authorization = this.props.token;
+            fetchApi(getWordCountRequest.url, getWordCountRequest.config)
             .then(response => {
-                const {url, config} = getWordCountRequest;
-                config.headers.Authorization = `${response.data.token_type} ${response.data.access_token}`;
-                fetchApi(url, config)
-                .then(response => {
-                    if (response.ok) {
-                    this.wordCountRequest = (response.json.data);
-                    this.setState({
-                        wordCountRequest: this.wordCountRequest,
-                      });
-                    }
+                if (response.ok) {
+                this.wordCountRequest = (response.json.data);
+                this.setState({
+                    wordCountRequest: this.wordCountRequest,
                 });
-                return response;
-            })
+                }
+            });    
+        })     
     }
 
     mapData (data) {
@@ -495,6 +467,7 @@ class Metrics extends PureComponent {
     };
 
     render() {
+        console.log('metrics token',this.props.token);
         return(
             <div >
                 <Header googleAuth={this.props.googleAuth}/>
