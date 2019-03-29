@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import {Redirect} from 'react-router-dom';
 
 import Header from '../Header/Header.jsx';
 import Column from '../Column/Column.jsx';
@@ -56,21 +57,13 @@ class Dashboard extends Component {
       this.sortJobApplications(mockJobApps.data);
       return;
     }
-    const {url, config} = authenticateRequest;
-    config.body.token = this.props.googleAuth.currentUser
-      .get()
-      .getAuthResponse().access_token;
-    config.body = JSON.stringify(config.body);
-    fetchApi(url, config)
-      .then(response => {
-        if (response.ok) {
-          return response.json;
-        }
-      })
-      .then(response => {
+    new Promise(resolve => setTimeout(resolve, 500)) 
+    .then(() =>{
+      console.log('dashboard token',this.props.token);
+      console.log('dashboard active?',this.props.active);
+      if(this.props.active){
         const {url, config} = syncUserEmailsRequest;
-        this.token = `${response.data.token_type} ${response.data.access_token.trim()}`;
-        config.headers.Authorization = this.token;
+        config.headers.Authorization = this.props.token;
         fetchApi(url, config)
           .then(response => {
             return {
@@ -79,7 +72,7 @@ class Dashboard extends Component {
           })
           .then(({ok}) => {
             const {url, config} = getJobAppsRequest;
-            config.headers.Authorization = this.token;
+            config.headers.Authorization = this.props.token;
             fetchApi(url, config)
               .then(response => {
                 if (response.ok) {
@@ -87,7 +80,8 @@ class Dashboard extends Component {
                 }
               });
           });
-      });
+      }
+    });
   }
 
   sortJobApplications(applications) {
