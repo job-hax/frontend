@@ -15,12 +15,7 @@ class SignUp extends Component {
     this.state = {
       toDashboard: false
     };
-    this.handleSignUp = this.handleSignUp.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleSignUp() {
-    this.props.googleAuth.signIn();
   }
 
   handleSubmit(event) {
@@ -96,11 +91,11 @@ class SignUp extends Component {
           {this.generateForm()}
         </div>
         <div className="social-buttons-container">
-          <Link to="/dashboard">
-            <button className="social-buttons" onClick={this.handleSignUp}>Sign up with GOOGLE</button>
+          <Link to="/loading">
+            <button className="social-buttons" onClick={this.props.handleGoogleSignIn}>Sign up with GOOGLE</button>
           </Link>
         </div>
-        <div className="redirect-buttons-container">
+        <div className="Loading-buttons-container">
           <Link to="/signin">
             <button className="social-buttons">Sign in!</button>
           </Link>

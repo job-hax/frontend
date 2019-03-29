@@ -6,8 +6,22 @@ import './style.scss'
 
 class AboutUs extends Component {
 
-  generateTopButtons(){
-    return (
+  generateTopButtons() {
+    const {isUserAuthenticated} = this.props;
+
+    return isUserAuthenticated ?
+    (
+      <div className="top_buttons">
+        <Link to="/dashboard">
+          <button>Dashboard</button>
+        </Link>
+       <Link to="/">
+          <button>Home</button>
+        </Link>
+      </div>
+    )
+    : 
+    (
       <div className="top_buttons">
         <Link to="/">
           <button>Home</button>
@@ -18,9 +32,10 @@ class AboutUs extends Component {
         <Link to="/signin">
           <button>Sign in</button>
         </Link>
-    </div>
+      </div>
     )
   }
+
 
   generateAnimation (question1,question2,question3,question4) {
     return (
