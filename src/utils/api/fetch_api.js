@@ -2,6 +2,7 @@ export function fetchApi(url, config) {
   return new Promise(resolve => {
     fetch(url, config)
       .then(response => {
+        console.log('Request : ', url, ' Params : ', config, ' Response : ', response);
         if (response.ok) {
           response.json()
             .then(json => resolve({ok: true, json}));

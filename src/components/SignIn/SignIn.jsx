@@ -16,12 +16,7 @@ class SignIn extends Component {
     this.state = {
       toDashboard: false,
     };
-    this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleSignIn() {
-    this.props.googleAuth.signIn();
   }
 
   handleSubmit(event) {
@@ -78,10 +73,10 @@ class SignIn extends Component {
         </div>
         <div className="social-buttons-container">
           <Link to="/dashboard">
-            <button className="social-buttons" onClick={this.handleSignIn}>Sign in with GOOGLE</button>
+            <button className="social-buttons" onClick={this.props.handleGoogleSignIn}>Sign in with GOOGLE</button>
           </Link>
         </div>
-        <div className="redirect-buttons-container">
+        <div className="Loading-buttons-container">
           <Link to="/signup">
             <button className="social-buttons">Sign up!</button>
           </Link>
@@ -92,6 +87,7 @@ class SignIn extends Component {
 
   render() {
     if (this.state.toDashboard) {
+
       return <Redirect to='/dashboard'/>
     }
     return (
