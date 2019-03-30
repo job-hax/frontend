@@ -54,6 +54,12 @@ module.exports = {
     })
   ],
   devServer: {
-    historyApiFallback: true
+    historyApiFallback: true,
+//     inline: false,
+//     host: '0.0.0.0',
+// allowedHosts: [
+//       '.jobhax.com',
+//       'backend.jobhax.com'
+//     ]
   }
 };
