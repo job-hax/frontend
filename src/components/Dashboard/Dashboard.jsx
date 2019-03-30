@@ -157,7 +157,7 @@ class Dashboard extends Component {
       status_id: card.applicationStatus.id,
       rejected: false
     });
-    config.headers.Authorization = this.token;
+    config.headers.Authorization = this.props.token;
 
     fetchApi(url, config)
       .then(response => {
@@ -173,7 +173,7 @@ class Dashboard extends Component {
   addNewApplication({name, title, columnName}) {
     return new Promise(resolve => {
       const {url, config} = addJobAppsRequest;
-      config.headers.Authorization = this.token;
+      config.headers.Authorization = this.props.token;
       config.body = JSON.stringify({
         job_title: title,
         status_id: UPDATE_APPLICATION_STATUS[columnName].id,
