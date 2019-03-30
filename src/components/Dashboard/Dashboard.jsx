@@ -248,7 +248,7 @@ class Dashboard extends Component {
             title="TO APPLY"
             totalCount={this.state.toApply.length}
             cards={this.state.toApply}
-            token = {this.token}
+            token = {this.props.token}
           />
           <Column
             name="applied"
@@ -266,7 +266,7 @@ class Dashboard extends Component {
             cards={this.state.applied}
             cardsRejecteds={this.state.appliedRejected}
             message="rejected without any interview"
-            token = {this.token}
+            token = {this.props.token}
           />
           <Column
             name="phoneScreen"
@@ -284,7 +284,7 @@ class Dashboard extends Component {
             cards={this.state.phoneScreen}
             cardsRejecteds={this.state.phoneScreenRejected}
             message="rejected after phone screens"
-            token = {this.token}
+            token = {this.props.token}
           />
           <Column
             name="onsiteInterview"
@@ -302,7 +302,7 @@ class Dashboard extends Component {
             cards={this.state.onsiteInterview}
             cardsRejecteds={this.state.onsiteInterviewRejected}
             message="rejected after interviews"
-            token = {this.token}
+            token = {this.props.token}
           />
           <Column
             name="offer"
@@ -319,7 +319,7 @@ class Dashboard extends Component {
             cards={this.state.offer}
             cardsRejecteds={this.state.offerRejected}
             message="you rejected their offer"
-            token = {this.token}
+            token = {this.props.token}
           />
         </div>
       </div>
