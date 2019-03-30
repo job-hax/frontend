@@ -1,14 +1,12 @@
 import React, {Component} from 'react';
 import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import {Redirect} from 'react-router-dom';
 
 import Header from '../Header/Header.jsx';
 import Column from '../Column/Column.jsx';
 import {fetchApi} from '../../utils/api/fetch_api'
 import {
   addJobAppsRequest,
-  authenticateRequest,
   getJobAppsRequest,
   syncUserEmailsRequest,
   updateJobStatusRequest
@@ -157,7 +155,7 @@ class Dashboard extends Component {
       status_id: card.applicationStatus.id,
       rejected: false
     });
-    config.headers.Authorization = this.token;
+    config.headers.Authorization = this.props.token;
 
     fetchApi(url, config)
       .then(response => {
@@ -173,7 +171,7 @@ class Dashboard extends Component {
   addNewApplication({name, title, columnName}) {
     return new Promise(resolve => {
       const {url, config} = addJobAppsRequest;
-      config.headers.Authorization = this.token;
+      config.headers.Authorization = this.props.token;
       config.body = JSON.stringify({
         job_title: title,
         status_id: UPDATE_APPLICATION_STATUS[columnName].id,
@@ -234,9 +232,10 @@ class Dashboard extends Component {
   }
 
   render() {
+    console.log('Dashboard opened!');
     return (
       <div>
-        <Header googleAuth={this.props.googleAuth}/>
+        <Header handleSignOut={this.props.handleSignOut}/>
         <div className="dashboard-container">
           <Column
             name="toApply"
@@ -248,7 +247,7 @@ class Dashboard extends Component {
             title="TO APPLY"
             totalCount={this.state.toApply.length}
             cards={this.state.toApply}
-            token = {this.token}
+            token = {this.props.token}
           />
           <Column
             name="applied"
@@ -266,7 +265,7 @@ class Dashboard extends Component {
             cards={this.state.applied}
             cardsRejecteds={this.state.appliedRejected}
             message="rejected without any interview"
-            token = {this.token}
+            token = {this.props.token}
           />
           <Column
             name="phoneScreen"
@@ -284,7 +283,7 @@ class Dashboard extends Component {
             cards={this.state.phoneScreen}
             cardsRejecteds={this.state.phoneScreenRejected}
             message="rejected after phone screens"
-            token = {this.token}
+            token = {this.props.token}
           />
           <Column
             name="onsiteInterview"
@@ -302,7 +301,7 @@ class Dashboard extends Component {
             cards={this.state.onsiteInterview}
             cardsRejecteds={this.state.onsiteInterviewRejected}
             message="rejected after interviews"
-            token = {this.token}
+            token = {this.props.token}
           />
           <Column
             name="offer"
@@ -319,7 +318,7 @@ class Dashboard extends Component {
             cards={this.state.offer}
             cardsRejecteds={this.state.offerRejected}
             message="you rejected their offer"
-            token = {this.token}
+            token = {this.props.token}
           />
         </div>
       </div>

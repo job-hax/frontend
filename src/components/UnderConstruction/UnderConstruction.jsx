@@ -12,9 +12,19 @@ class UnderConstruction extends Component {
         <Link to="/">
           <img className="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
         </Link>
-        <Link to="/">
-          <button>Home</button>
-        </Link>
+          {this.props.isUserLoggedIn ?
+            <Link to="/dashboard">
+              <button>
+                <p>Dashboard</p>
+              </button>
+            </Link>
+              :
+            <Link to="/">
+              <button>
+                <p>Home</p>
+              </button>
+            </Link>
+          }
       </div>
     )
   }
