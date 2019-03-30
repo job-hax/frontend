@@ -14,6 +14,8 @@ export const REGISTER_USER = `${apiRoot}api/users/register`;
 
 export const LOGIN_USER = `${apiRoot}api/users/login`;
 
+export const LOGOUT_USER = `${apiRoot}api/users/logout`;
+
 export const GET_TOTAL_APPLICATION_COUNT = `${apiRoot}api/metrics/get_total_application_count`;
 
 export const GET_APPLICATION_COUNT_BY_MONTH = `${apiRoot}api/metrics/get_application_count_by_month`;
