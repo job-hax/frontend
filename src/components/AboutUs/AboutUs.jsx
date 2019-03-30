@@ -7,9 +7,9 @@ import './style.scss'
 class AboutUs extends Component {
 
   generateTopButtons() {
-    const {isUserAuthenticated} = this.props;
+    const {isUserLoggedIn} = this.props;
 
-    return isUserAuthenticated ?
+    return isUserLoggedIn ?
     (
       <div className="top_buttons">
         <Link to="/dashboard">
