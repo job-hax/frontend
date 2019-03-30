@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import {DragSource} from 'react-dnd';
 import classNames from 'classnames';
 import defaultLogo from '../../assets/icons/JobHax-logo-black.svg';
+import linkedInLogo from '../../assets/icons/linkedInLogo.png';
+import hiredComLogo from '../../assets/icons/hiredComLogo.png';
+import indeedLogo from '../../assets/icons/indeedLogo.png';
+import vetteryLogo from '../../assets/icons/vetteryLogo.jpg';
 import CardModal from '../CardModal/CardModal.jsx';
 
 import './style.scss'
@@ -40,6 +44,33 @@ class Card extends PureComponent {
     this.setState(({showModal}) => ({
       showModal: !showModal
     }));
+  }
+
+  sourceLogoSelector(source) {
+    if (source=='Hired.com') {
+      console.log(this.props.source);
+      return(
+        <img src={hiredComLogo}></img>
+      )
+    }
+    if (source=='LinkedIn') {
+      console.log(this.props.source);
+      return(
+        <img src={linkedInLogo}></img>
+      )
+    }
+    if (source=='Indeed') {
+      console.log(this.props.source);
+      return(
+        <img src={indeedLogo}></img>
+      )
+    } 
+    if (source=='Vettery') {
+      console.log(this.props.source);
+      return(
+        <img src={vetteryLogo}></img>
+      )
+    }
   }
 
   renderCard() {
@@ -99,6 +130,7 @@ class Card extends PureComponent {
             </div>
           </div>
           <div className="card-job-details">
+            {this.sourceLogoSelector(source)}
           </div>
         </div>
       </div>

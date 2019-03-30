@@ -14,6 +14,9 @@ import {fetchApi} from '../../utils/api/fetch_api'
 import {googleClientId} from "../../config/config.js";
 import {
   authenticateRequest,
+  registerUserRequest,
+  loginUserRequest,
+  logOutUserRequest,
 } from '../../utils/api/requests.js';
 
 import './style.scss'
@@ -24,14 +27,24 @@ class App extends Component {
     this.state = {
       isUserAuthenticated: false,
       token: '',
-      active:false,
-      shallRequestToken:false,
+      active: false,
+      shallRequestToken: false,
+      toDashboard: false,
+      toSignIn: false,
+      isUserLoggedIn: false,
     };
     this.token = '',
-    this.active=false,
-    this.isUserAuthenticated= false,
+    this.active = false,
+    this.isUserAuthenticated = false,
+    this.isUserLoggedIn = false,
+    this.toDashboard = false,
     this.onAuthUpdate = this.onAuthUpdate.bind(this);
     this.handleGoogleSignIn = this.handleGoogleSignIn.bind(this);
+    this.generateSignUpForm = this.generateSignUpForm.bind(this);
+    this.handleSignUp = this.handleSignUp.bind(this);
+    this.generateSignInForm = this.generateSignInForm.bind(this);
+    this.handleSignIn = this.handleSignIn.bind(this);
+    this.handleSignOut = this.handleSignOut.bind(this);
   }
 
   componentDidMount() {
@@ -57,10 +70,11 @@ class App extends Component {
               if (response.ok) {
                 this.token = `${response.json.data.token_type} ${response.json.data.access_token.trim()}`;
                 console.log(this.token);
-                this.active=!this.active;
+                this.active=true;
                 this.setState({
                     token: this.token,
-                    active: this.active
+                    active: this.active,
+                    isUserLoggedIn: true,
                 });
               }
             })
@@ -69,53 +83,179 @@ class App extends Component {
     });
   }
 
-
-
   onAuthUpdate() {
     this.setState(() => ({
       isUserAuthenticated: this.googleAuth.isSignedIn.get()
     }));
   }
 
-  handleGoogleSignIn() {
-    this.googleAuth.signIn().then((response) =>{
-      console.log('signIn response',response.Zi.token_type)
-      if (response.Zi.token_type=='Bearer'){
-        console.log('google access_token:',response.Zi.access_token);
-        this.setState({
-          shallRequestToken: true,
+  handleGoogleSignIn() { 
+    window.gapi.load('client:auth2', () => {
+    window.gapi.client.init({
+      clientId: googleClientId,
+      scope: 'email https://www.googleapis.com/auth/gmail.readonly'
+    })
+      .then(() => {
+        this.googleAuth = window.gapi.auth2.getAuthInstance();
+        this.setState(() => ({
+          isUserAuthenticated: this.googleAuth.isSignedIn.get(),
+        }));
+        this.googleAuth.isSignedIn.listen(this.onAuthUpdate)
+        this.googleAuth.signIn().then((response) =>{
+          console.log('signIn response',response.Zi.token_type)
+          if (response.Zi.token_type=='Bearer'){
+            console.log('google access_token:',response.Zi.access_token);
+            this.setState({
+              shallRequestToken: true,
+            });
+            console.log('shallRequestToken in handle signIn:',this.state.shallRequestToken);
+            if (this.state.shallRequestToken) {
+              console.log('shallRequestToken inside condition in app:',this.state.shallRequestToken);
+              const {url, config} = authenticateRequest;
+              config.body.token = this.googleAuth.currentUser
+                .get()
+                .getAuthResponse().access_token;
+              config.body = JSON.stringify(config.body);
+              fetchApi(url, config)
+                .then(response => {
+                  if (response.ok) {
+                    this.token = `${response.json.data.token_type} ${response.json.data.access_token.trim()}`;
+                    console.log(this.token);
+                    this.active=true;
+                    this.setState({
+                        token: this.token,
+                        active: this.active,
+                        isUserLoggedIn: true,
+                    });
+                  }
+                })
+              config.body = JSON.parse(config.body);
+            }
+          }
         });
-        console.log('shallRequestToken in handle signIn:',this.state.shallRequestToken);
-        if (this.state.shallRequestToken) {
-          console.log('shallRequestToken inside condition in app:',this.state.shallRequestToken);
-          const {url, config} = authenticateRequest;
-          config.body.token = this.googleAuth.currentUser
-            .get()
-            .getAuthResponse().access_token;
-          config.body = JSON.stringify(config.body);
-          fetchApi(url, config)
-            .then(response => {
-              if (response.ok) {
-                this.token = `${response.json.data.token_type} ${response.json.data.access_token.trim()}`;
-                console.log(this.token);
-                this.active=!this.active;
-                this.setState({
-                    token: this.token,
-                    active: this.active
-                });
-              }
-            })
-          config.body = JSON.parse(config.body);
-        }
-      }
+      });
     });
   }
 
+  handleSignUp(event) {
+    console.log('handle sign up first');
+    event.preventDefault();
+    registerUserRequest.config.body.first_name = event.target[0].value;
+    registerUserRequest.config.body.last_name = event.target[1].value;
+    registerUserRequest.config.body.username = event.target[2].value;
+    registerUserRequest.config.body.email = event.target[3].value;
+    registerUserRequest.config.body.password = event.target[4].value;
+    registerUserRequest.config.body.password2 = event.target[5].value;
+    console.log('handle sign up config body',registerUserRequest.config.body);
+    registerUserRequest.config.body = JSON.stringify(registerUserRequest.config.body);
+    fetchApi(registerUserRequest.url, registerUserRequest.config)
+      .then(response => {
+        if (response.ok) {
+          this.setState({
+            toSigIn: true,
+          });
+          console.log('handle sign up state set',this.state.toSigIn);
+        }
+      });
+    registerUserRequest.config.body = JSON.parse(registerUserRequest.config.body);
+  }
+
+  generateSignUpForm() {
+    return (
+      <form onSubmit={this.handleSignUp} className="form-container">
+        <div className="form-element-container">
+          <label>First Name</label>
+          <input className="input-box"></input>
+        </div>
+        <div className="form-element-container">
+          <label>Last Name</label>
+          <input className="input-box"></input>
+        </div>
+        <div className="form-element-container">
+          <label>User Name</label>
+          <input className="input-box"></input>
+        </div>
+        <div className="form-element-container">
+          <label>Email</label>
+          <input className="input-box"></input>
+        </div>
+        <div className="form-element-container">
+          <label>Password</label>
+          <input type='password' className="input-box"></input>
+        </div>
+        <div className="form-element-container">
+          <label>Re-enter Password</label>
+          <input type='password' className="input-box"></input>
+        </div>
+        <button className="social-buttons form-button">Sign up</button>
+      </form>
+    )
+  }
+
+  handleSignIn(event) {
+    console.log('handle sign in first');
+    event.preventDefault();
+    loginUserRequest.config.body.username = event.target[0].value;
+    loginUserRequest.config.body.password = event.target[1].value;
+    console.log('handle sign in config body',loginUserRequest.config.body);
+    loginUserRequest.config.body = JSON.stringify(loginUserRequest.config.body);
+    fetchApi(loginUserRequest.url, loginUserRequest.config)
+      .then(response => {
+        if (response.ok) {
+          this.token = `${response.json.data.token_type} ${response.json.data.access_token.trim()}`;
+          console.log(this.token);
+          this.setState({
+            isUserLoggedIn: true,
+            toDashboard: true,
+            token: this.token,
+            active: true,
+          });
+          console.log('handle signIn isUserLoggedIn',this.state.isUserLoggedIn, '\n--redirect to Dashboard',this.state.toDashboard, '\n--token',this.state.token,'\n--active?', this.state.active);
+        }
+      });
+      loginUserRequest.config.body = JSON.parse(loginUserRequest.config.body);
+  }
+
+  generateSignInForm() {
+    return (
+      <form onSubmit={this.handleSignIn} className="form-container">
+        <div className="form-element-container">
+          <label>Username</label>
+          <input className="input-box"></input>
+        </div>
+        <div className="form-element-container">
+          <label>Password</label>
+          <input type='password' className="input-box"></input>
+        </div>
+        <button className="social-buttons form-button">Sign in</button>
+      </form>
+    )
+  }
+
+  handleSignOut() {
+    console.log('handle signout first');
+    event.preventDefault();
+    console.log('handle signout config body',logOutUserRequest.config.body);
+    logOutUserRequest.config.body.token = this.state.token;
+    logOutUserRequest.config.body = JSON.stringify(logOutUserRequest.config.body);
+    fetchApi(logOutUserRequest.url, logOutUserRequest.config)
+      .then(response => {
+        if (response.ok) {
+          this.googleAuth.signOut();
+          this.setState({
+            isUserLoggedIn: false,
+            isUserAuthenticated: false,
+          });
+          console.log('handle signOut isUserLoggedIn',this.state.isUserLoggedIn);
+        }
+      });
+    logOutUserRequest.config.body = JSON.parse(logOutUserRequest.config.body);
+  }
+
   render() {
-    const {isUserAuthenticated} = this.state;
-    console.log('token app:',this.state.token);
-    console.log('active? app:',this.state.active);
-    return isUserAuthenticated ?
+    const {isUserLoggedIn, isUserAuthenticated} = this.state;
+    console.log('app isUserLoggedIn',isUserLoggedIn,'\n--token',this.state.token,'\n--active?',this.state.active);
+    return isUserLoggedIn||isUserAuthenticated ?
       (<Router>
         <div className="main-container">
           <Route exact path="/loading" component={Loading}/>
@@ -123,34 +263,60 @@ class App extends Component {
           <Dashboard 
             active={this.state.active}
             token={this.state.token}
-            googleAuth={this.googleAuth}
+            handleSignOut={this.handleSignOut}
           />}/>
           <Route exact path="/metrics" render={() => 
           <Metrics 
             active={this.state.active}
             token={this.state.token}
-            googleAuth={this.googleAuth}
+            hansleSignOut={this.handleSignOut}
           />}/>
-          <Route exact path="/" render={() => <Home isUserAuthenticated={this.state.isUserAuthenticated}/>}/>
-          <Route exact path="/aboutus" render={() => <AboutUs isUserAuthenticated={this.state.isUserAuthenticated}/>}/>
+          <Route exact path="/signin" render={() =>
+            <SignIn
+              googleAuth={this.googleAuth}
+              handleGoogleSignIn={this.handleGoogleSignIn}
+              generateSignInForm={this.generateSignInForm}
+              toDashboard={this.state.toDashboard}
+          />}/>
+          <Route exact path="/signup" render={() =>
+            <SignIn
+              googleAuth={this.googleAuth}
+              handleGoogleSignIn={this.handleGoogleSignIn}
+              generateSignInForm={this.generateSignInForm}
+              toDashboard={this.state.toDashboard}
+          />}/>
+          <Route exact path="/" render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn}/>}/>
+          <Route exact path="/aboutus" render={() => <AboutUs isUserLoggedIn={this.state.isUserLoggedIn}/>}/>
+          <Route exact path="/underconstruction" render={() => <UnderConstruction isUserLoggedIn={this.state.isUserLoggedIn}/>}/>
         </div>
       </Router>)
       :
       (<Router>
         <div className="main-container">
-          <Route exact path="/" render={() => <Home isUserAuthenticated={this.state.isUserAuthenticated}/>}/>
-          <Route exact path="/aboutus" render={() => <AboutUs isUserAuthenticated={this.state.isUserAuthenticated}/>}/>
-          <Route exact path="/underconstruction" component={UnderConstruction}/>
+          <Route exact path="/" render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn}/>}/>
+          <Route exact path="/aboutus" render={() => <AboutUs isUserLoggedIn={this.state.isUserLoggedIn}/>}/>
+          <Route exact path="/underconstruction" render={() => <UnderConstruction isUserLoggedIn={this.state.isUserLoggedIn}/>}/>
           <Route exact path="/loading" component={Loading}/>
+          <Route exact path="/dashboard" render={() =>
+            <SignIn
+              googleAuth={this.googleAuth}
+              handleGoogleSignIn={this.handleGoogleSignIn}
+              generateSignInForm={this.generateSignInForm}
+              toDashboard={this.state.toDashboard}
+          />}/>
           <Route exact path="/signin" render={() =>
             <SignIn
               googleAuth={this.googleAuth}
               handleGoogleSignIn={this.handleGoogleSignIn}
-              />}/>
+              generateSignInForm={this.generateSignInForm}
+              toDashboard={this.state.toDashboard}
+          />}/>
           <Route exact path="/signup" render={() => 
             <SignUp 
               googleAuth={this.googleAuth}
               handleGoogleSignIn={this.handleGoogleSignIn}
+              generateSignUpForm={this.generateSignUpForm}
+              toSigIn={this.state.toSigIn}
             />}
           />
         </div>

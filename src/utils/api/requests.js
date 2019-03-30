@@ -13,6 +13,7 @@ import {
   GET_TOTAL_APPLICATION_COUNT,
   GET_WORD_COUNT,
   LOGIN_USER,
+  LOGOUT_USER,
   REGISTER_USER,
   SYNC_USER_EMAILS,
   UPDATE_JOB_STATUS,
@@ -104,6 +105,22 @@ export const loginUserRequest = {
 
 export const registerUserRequest = {
   url: REGISTER_USER,
+  config: {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret,
+    }
+  }
+};
+
+export const logOutUserRequest = {
+  url: LOGOUT_USER,
   config: {
     method: 'POST',
     mode: 'cors',

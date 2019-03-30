@@ -470,7 +470,7 @@ class Metrics extends PureComponent {
         console.log('metrics token',this.props.token);
         return(
             <div >
-                <Header googleAuth={this.props.googleAuth}/>
+                <Header handleSignOut={this.props.handleSignOut}/>
                 {this.generateFeatureArea()}
                 <div className="graph-container-dark-background" id="monthlyapplication">
                     <div className="graph">

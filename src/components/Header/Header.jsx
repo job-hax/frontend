@@ -40,19 +40,19 @@ class Header extends Component {
             </Link>
           </div>
           <div className="header-icon general tooltips">
-            <Link to="/test1">
+            <Link to="/underconstruction">
               <img src="../../src/assets/icons/NotifIcon@3x.png"></img>
               <span>Notifications</span>
             </Link>
           </div>
           <div className="header-icon user-icon">
-            <Link to="/test1/">
+            <Link to="/underconstruction">
               <img src="../../src/assets/icons/SeyfoIcon@3x.png"></img>
             </Link>
           </div>
           <div className="header-icon sign_out tooltips">
             <Link to="/">
-              <img onClick={() => this.props.googleAuth.signOut()} src="../../src/assets/icons/sign_out.png"></img>
+              <img onClick={() => this.props.handleSignOut()} src="../../src/assets/icons/sign_out.png"></img>
             </Link>
             <span>Sign out</span>
           </div>

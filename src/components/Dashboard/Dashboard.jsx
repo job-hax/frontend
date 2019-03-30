@@ -1,14 +1,12 @@
 import React, {Component} from 'react';
 import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import {Redirect} from 'react-router-dom';
 
 import Header from '../Header/Header.jsx';
 import Column from '../Column/Column.jsx';
 import {fetchApi} from '../../utils/api/fetch_api'
 import {
   addJobAppsRequest,
-  authenticateRequest,
   getJobAppsRequest,
   syncUserEmailsRequest,
   updateJobStatusRequest
@@ -234,9 +232,10 @@ class Dashboard extends Component {
   }
 
   render() {
+    console.log('Dashboard opened!');
     return (
       <div>
-        <Header googleAuth={this.props.googleAuth}/>
+        <Header handleSignOut={this.props.handleSignOut}/>
         <div className="dashboard-container">
           <Column
             name="toApply"

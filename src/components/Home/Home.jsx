@@ -7,9 +7,9 @@ import './style.scss'
 class Home extends Component {
 
   generateTopButtons() {
-    const {isUserAuthenticated} = this.props;
+    const {isUserLoggedIn} = this.props;
 
-    return isUserAuthenticated ?
+    return isUserLoggedIn ?
     (
       <div className="top_buttons">
        <Link to="/dashboard">
@@ -48,7 +48,7 @@ class Home extends Component {
         <div className="intro">
           <h2>Simplify your job hunt!</h2>
           <p>Improve your job search experience in a seamless & intuitive way</p>
-          <a className="how_it_works_btn" href="#howitworks">How It Works</a>
+          <a className="how_it_works_btn" href="https://docs.jobhax.com/">How It Works</a>
         </div>
       </section>
     )
