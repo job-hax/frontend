@@ -272,18 +272,16 @@ class App extends Component {
             hansleSignOut={this.handleSignOut}
           />}/>
           <Route exact path="/signin" render={() =>
-            <SignIn
-              googleAuth={this.googleAuth}
-              handleGoogleSignIn={this.handleGoogleSignIn}
-              generateSignInForm={this.generateSignInForm}
-              toDashboard={this.state.toDashboard}
+            <Dashboard 
+              active={this.state.active}
+              token={this.state.token}
+              handleSignOut={this.handleSignOut}
           />}/>
           <Route exact path="/signup" render={() =>
-            <SignIn
-              googleAuth={this.googleAuth}
-              handleGoogleSignIn={this.handleGoogleSignIn}
-              generateSignInForm={this.generateSignInForm}
-              toDashboard={this.state.toDashboard}
+            <Dashboard 
+              active={this.state.active}
+              token={this.state.token}
+              handleSignOut={this.handleSignOut}
           />}/>
           <Route exact path="/" render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn}/>}/>
           <Route exact path="/aboutus" render={() => <AboutUs isUserLoggedIn={this.state.isUserLoggedIn}/>}/>
