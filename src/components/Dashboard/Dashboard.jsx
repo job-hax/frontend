@@ -319,6 +319,7 @@ class Dashboard extends Component {
             cardsRejecteds={this.state.offerRejected}
             message="you rejected their offer"
             token = {this.props.token}
+            isLastColumn = {true}
           />
         </div>
       </div>
