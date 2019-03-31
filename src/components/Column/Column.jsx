@@ -208,7 +208,8 @@ class Column extends Component {
       ongoingsMessage,
       rejectedsMessage,
       title,
-      totalCount
+      totalCount,
+      isLastColumn
     } = this.props;
 
     const columnCardContainerClass = classNames({
@@ -224,8 +225,13 @@ class Column extends Component {
       'short': !showJobInput,
     });
 
+    const columnContainerClass = classNames({
+      'column-container': true,
+      'add-margin': isLastColumn,
+    });
+
     return connectDropTarget(
-      <div className="column-container">
+      <div className={columnContainerClass}>
         <div>
           {this.generateColumnHeader()}
         </div>

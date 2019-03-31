@@ -12,9 +12,9 @@ class Footer extends Component {
                         <Link to="/aboutus">
                             <span>About Us</span>
                         </Link>
-                        <Link to="/underconstruction">
-                            <span>FAQ</span>
-                        </Link>
+                        <a href="https://docs.jobhax.com">
+                            <span>Docs</span>
+                        </a>
                         <Link to="/underconstruction">
                             <span>Legal</span>
                         </Link>

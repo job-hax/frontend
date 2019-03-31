@@ -74,7 +74,7 @@ class JobInput extends PureComponent {
               onChange={this.handleInputChange('jobTitle')}
               value={jobTitle}
             />
-            <div>
+            <div className="column-addJob-form-buttons-container">
               <button
                 className="column-addJob-form-button"
                 onClick={toggleJobInput}

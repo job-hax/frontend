@@ -8,12 +8,10 @@
 
   .left-container {
     display: flex;
-    justify-content: flex-start;
   }
 
   .right-container {
     display: flex;
-    justify-content: flex-end;
   }
 
   .header-icon {
@@ -35,7 +33,7 @@
     &.user-icon {
       margin-top: 10px;
       margin-bottom: 10px;
-      margin-right: 45px;
+      margin-right: 30px;
 
       img {
           height: 40px;
@@ -45,16 +43,9 @@
 
 
     &.sign_out {
-      margin-top: 15px;
-      margin-bottom: 15px;
-      margin-right: 45px;
-      margin-left: -5px;
-
-      img{
-        background: transparent;
-        height: 30px;
-        width: auto;
-      }
+      margin-top: 20px;
+      margin-bottom: 20px;
+      margin-right: 40px;
     }
 
     img {
