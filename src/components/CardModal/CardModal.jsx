@@ -22,7 +22,9 @@ class CardModal extends PureComponent {
       showNotePad: false,
       showOptions: false,
       addNoteForm: '',
+      updateNoteForm: '',
       notes: [],
+      textareaHeight: 16,
     };
     this.notes = [];
     this.currentNote= null;
@@ -48,12 +50,24 @@ class CardModal extends PureComponent {
   }
 
   saveNotes() {
-    this.getNotes()
-    this.toggleNotes()
+    if (this.state.showNotePad) {
+      this.getNotes()
+      this.toggleNotes()
+      this.setState(({
+        updateNoteForm: '',
+      }));
+    } else {
+      this.getNotes();
+      this.setState(({
+        addNoteForm: '',
+      }));
+    }
+      console.log('after save \n--addNoteForm',this.state.addNoteForm,'\n--updateNoteForm',this.state.updateNoteForm);
   }
 
   setCurrentNote(item) {
     this.currentNote = item;
+    console.log('set current note\n',this.currentNote);
     this.setState(state => ({
       showNotePad: !state.showNotePad,
     }));
@@ -91,7 +105,7 @@ class CardModal extends PureComponent {
         this.notes = (response.json.data);
         console.log('getNotes.response.json.data\n',this.notes);
         this.setState({
-          notes: this.notes,
+          notes: this.notes.reverse(),
         });
       }
     });
@@ -99,15 +113,21 @@ class CardModal extends PureComponent {
 
   onChange(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
+    console.log('value',e.target.value);
   } 
 
   addNote(e) {
+    console.log('add note requested!', e.target.value);
     e.preventDefault();
+    var resetValue = this.refs.addNoteFormDefault; 
+    resetValue.value = "";
     const { card, token } = this.props;
-    const { addNoteForm } = this.state;
-    if (addNoteForm.trim().length == 0) return
+    const { addNoteForm, updateNoteForm } = this.state;
+    console.log('addNote \n--add note form',addNoteForm, '\n--update note form', updateNoteForm, '\n--value', e.target.value);
+    console.log('addnoteform currentNote',this.currentNote);
+    if (addNoteForm.trim().length == 0 & updateNoteForm.trim().length == 0) return
     const reqBody = this.currentNote == null ?
       {
         jobapp_id: card.id,
@@ -116,7 +136,7 @@ class CardModal extends PureComponent {
       :
       {
         jobapp_note_id: this.currentNote.id,
-        description: addNoteForm,
+        description: updateNoteForm,
       };
     let {url, config } = this.currentNote == null ? addNoteRequest : updateNoteRequest;
     console.log('request body\n',reqBody)
@@ -124,48 +144,93 @@ class CardModal extends PureComponent {
     postData(url, config, reqBody).catch(error => console.error(error))
     .then(response => {
       if (response.ok) {
-        this.setState(state => ({
-          showNotePad: !state.showNotePad
-        }));
-        this.getNotes()
+        this.saveNotes();
       }
     });
   }
 
+  handleKeyUp(evt) {
+    if (this.state.textareaHeight != 48) {
+      this.setState({
+        textareaHeight: 48,
+      });
+    } else {
+      this.setState({
+        textareaHeight: 16,
+      });
+    }
+  }
+
   noteContainerGenerate() {
+    let textareaStyle = { height: this.state.textareaHeight };
+    console.log('notecontainergenerator currentNote?',this.currentNote);
     if (this.state.notes.length == 0) {
       return (
-        <p style={{color:"rgba(32,32,32,0.6)"}}>You don't have any notes at the moment.</p>
+        <p style={{color:"rgba(32,32,32,0.6)", marginTop:"16px"}}>You don't have any notes at the moment.</p>
       ) 
     } else {
       return(
         this.state.notes.map((item) =>(
-          <div key = {item.id} className="note-container">
-            <div 
-            className="text-container"
-            value={item} 
-            onClick={() => this.setCurrentNote(item)}
-            >
-              <p className="note"> {item.description}</p>
-              <p className="date"> {this.makeTimeBeautiful(item.created_date, 'dateandtime')}</p>
-            </div>
-            <div className="button-container-parent">
-              <div className="button-container-child">
-                <button 
-                value={item.id} 
-                onClick={() => this.deleteNote(item.id)} 
-                >
-                  <img src="../../src/assets/icons/DeleteIconInBtn@1x.png"/>
-                </button>
-                <button 
+          <div key = {item.id} >
+            <div>
+            {this.currentNote != item ?
+              <div className="note-container">
+                <div
+                className="text-container"
                 value={item} 
-                onClick={() => this.setCurrentNote(item)} 
+                onClick={() => this.setCurrentNote(item)}
                 >
-                  <img src="../../src/assets/icons/edit.png"/>
-                </button>
+                  <p className="note"> {item.description}</p>
+                  {item.update_date == null ?
+                    <p className="date"> {this.makeTimeBeautiful(item.created_date, 'dateandtime')}</p>
+                  :
+                    <p className="date">updated on {this.makeTimeBeautiful(item.update_date, 'dateandtime')}</p>
+                  }
+                </div>
+                <div className="button-container-parent">
+                  <div className="button-container-child">
+                    <button 
+                    value={item.id} 
+                    onClick={() => this.deleteNote(item.id)} 
+                    >
+                      <img src="../../src/assets/icons/DeleteIconInBtn@1x.png"/>
+                    </button>
+                    <button 
+                    value={item} 
+                    onClick={() => this.setCurrentNote(item)} 
+                    >
+                      <img src="../../src/assets/icons/edit.png"/>
+                    </button>
+                  </div>
+                </div>
               </div>
+            :
+              <form className="note-container" onSubmit={this.addNote}>
+                <div>
+                  <textarea 
+                  name="updateNoteForm"
+                  onChange={this.onChange}
+                  defaultValue={item.description}
+                  onDoubleClick={this.handleKeyUp.bind(this)} 
+                  style={textareaStyle}
+                  ></textarea>
+                </div>
+                <div className="button-container-parent">
+                  <div className="button-container-child">
+                    <button 
+                    value={item.id} 
+                    onClick={() => this.deleteNote(item.id)} 
+                    >
+                      <img src="../../src/assets/icons/DeleteIconInBtn@1x.png"/>
+                    </button>
+                    <button type="submit">
+                      <img src="../../src/assets/icons/edit.png"/>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            }
             </div>
-            
           </div>
         ))
       )
@@ -234,42 +299,28 @@ class CardModal extends PureComponent {
   }
 
   generateNotes() {
-    const currentValue = this.currentNote == null ? '' : this.currentNote.description;
     return (
       <div >
-        {!this.state.showNotePad ?
+        <div>
+          <form onSubmit={this.addNote}>
+            <div>
+              <textarea
+                name="addNoteForm"
+                placeholder="+ Add note"
+                onChange={this.onChange}
+                ref="addNoteFormDefault"
+              ></textarea>
+            </div>
+            <div className="notepad-buttons textarea">
+              <button type="submit">save</button>
+            </div>
+          </form>
           <div >
             <div className="notesShowing">
               {this.noteContainerGenerate()}
             </div>
-            <div className="notepad-buttons">
-              <button onClick={this.toggleNotes}>add a note</button>
-            </div>
           </div>
-        :
-          <div>
-            <form onSubmit={this.addNote}>
-              <div>
-                <textarea
-                  name="addNoteForm"
-                  placeholder="+ Add note"
-                  onChange={this.onChange}
-                  defaultValue = {currentValue}
-                ></textarea>
-              </div>
-              <div 
-                className="cancel-button">
-                <img 
-                onClick={this.toggleNotes}
-                src={"../../src/assets/icons/RejectedIconInBtn@1x.png"}
-                ></img>
-              </div>
-              <div className="notepad-buttons textarea">
-                <button type="submit">save</button>
-              </div>
-            </form>
-          </div>
-        }
+        </div>
       </div>
     )
   }
@@ -361,7 +412,10 @@ class CardModal extends PureComponent {
           }}>
             <div className='modal-header'>
               <div>
-                <div className="modal-header company-name" style={{marginLeft:'80px'}}>
+                <div >
+                  <img className="modal-company-icon" src={card.companyLogo || defaultLogo}/>
+                </div>
+                <div className="modal-header company-name" style={{marginLeft:'140px', marginTop:'40px'}}>
                   Job Details
                 </div>
                 <div className="modal-header job-title">
@@ -416,9 +470,6 @@ class CardModal extends PureComponent {
                 <div className="modal-body main data">
                   {this.generateNotes()}
                 </div>
-              </div>
-              <div >
-                <img className="modal-company-icon" src={card.companyLogo || defaultLogo}/>
               </div>
             </div>
           </section>

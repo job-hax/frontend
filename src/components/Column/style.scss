@@ -1,7 +1,13 @@
 .column-container {
   margin-left: 15px;
   margin-top: 15px;
-  width: 270px;
+  width: 19%;
+  max-width: 300px;
+  min-width: 240px;
+
+  &.add-margin {
+    margin-right: 15px;
+  }
 
   .column-header-container {
     background-color: rgb(228, 220, 255);
