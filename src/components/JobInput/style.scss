@@ -2,7 +2,7 @@
   margin-top: 30px;
   margin-left: 15px;
   margin-right: 15px;
-  width: 240px;
+  width: 90%;
   height: 30px;
   border-radius: 4px;
   background-color: rgb(221, 170, 255);
@@ -14,8 +14,9 @@
 
 .column-addJob-form {
   margin-left: 15px;
+  margin-right: 15px;
   margin-top: 30px;
-  width: 240px;
+  width: 90%;
   height: 70px;
   border: 1px solid rgb(255, 255, 255);
   border-radius: 4px;
@@ -45,25 +46,31 @@
     margin-top: 13px;
   }
 
-  .column-addJob-form-button {
-    border: none;
-    background-color: transparent;
-    font-size: 18px;
-    color: rgb(132, 100, 239);
-    cursor: pointer;
-    outline: none;
+  .column-addJob-form-buttons-container{
+    display: flex;
+    justify-content: space-between;
 
-    &.--addJob {
-      margin-left: 80px;
-      font-weight: bold;
-      color: rgb(132, 100, 239);
+    .column-addJob-form-button {
+      border: none;
       background-color: transparent;
-    }
+      font-size: 18px;
+      color: rgb(132, 100, 239);
+      cursor: pointer;
+      outline: none;
 
-    &.--button-disabled {
-      opacity: 0.5;
-      cursor: none;
-      pointer-events: none;
+      &.--addJob {
+        font-weight: bold;
+        color: rgb(132, 100, 239);
+        background-color: transparent;
+      }
+
+      &.--button-disabled {
+        opacity: 0.5;
+        cursor: none;
+        pointer-events: none;
+      }
     }
   }
+
+
 }

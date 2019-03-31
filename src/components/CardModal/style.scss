@@ -26,6 +26,24 @@
     display: flex; 
     justify-content: space-between;
 
+    .modal-company-icon {
+      position:absolute;
+      margin-top: 26px;
+      width: 60px;
+      height: 60px;
+      margin-left: 32px;
+      border-radius: 4px;
+      background-color: white;
+
+      img {
+        margin-top: 5px;
+        margin-left: 5px;
+        width: 50px;
+        height: 50px;
+        border-radius: 4px;
+      }
+    }
+
     &.company-name {
       margin-left: 16px;
       margin-top: 30px;
@@ -240,7 +258,7 @@
       .notesShowing {
         height: fit-content;
         height: -moz-fit-content;
-        max-height: 180px;
+        max-height: 144px;
         overflow-x: hidden;
         width: 390px;
 
@@ -250,6 +268,12 @@
           width: 390px;
           height: auto;
           border-bottom: 1px solid rgba(32, 32, 32, 0.1);
+
+          textarea {
+            width: 334px;
+            min-width: 334px;
+            max-width:334px;
+          }
 
           .text-container {
             width: 350px;
@@ -285,8 +309,8 @@
               }
 
               img {
-                width: 16px;
-                height: 16px;
+                width: 12px;
+                height: 12px;
                 margin: 0px;
                 padding: 0px;
                 background: transparent;
@@ -327,18 +351,18 @@
           }
 
           &.textarea {
-            margin-right: 48px;
+            position: absolute;
+            margin-left: 314px;
             margin-top: -36px;
           }
         }
 
         .cancel-button {
-          display: flex;
-          justify-content: flex-end;
-          width: 340px;
+          position: absolute;
+          margin-left: 344px;
+          margin-top: -62px;
 
           img {
-            margin-top: -108px;
             height: 8px;
             width: 8px;
             cursor: pointer;
@@ -348,34 +372,16 @@
         textarea {
           font-family: exo;
           font-size: 90%;
-          width: 340px;
-          height: 100px;
-          max-width: 340px;
-          max-height: 100px; 
-          min-width: 340px;
-          min-height: 100px; 
+          width: 356px;
+          height: 24px;
+          max-width: 356px;
+          max-height: 60px; 
+          min-width: 356px;
+          min-height: 24px; 
           border: 1px solid rgba(132, 100, 239, 1);
           border-radius: 4px;
           padding: 8px;
         }
-      }
-    }
-
-    .modal-company-icon {
-      position:absolute;
-      margin-top: 26px;
-      width: 60px;
-      height: 60px;
-      margin-left: -100px;
-      border-radius: 4px;
-      background-color: white;
-
-      img {
-        margin-top: 5px;
-        margin-left: 5px;
-        width: 50px;
-        height: 50px;
-        border-radius: 4px;
       }
     }
   }

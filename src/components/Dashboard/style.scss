@@ -1,5 +1,7 @@
 .dashboard-container {
   background-color:rgba(250, 250, 250, 0.1);
   height: 92vh;
+  width: 100%;
   display: flex;
+  overflow-y: hidden;
 }

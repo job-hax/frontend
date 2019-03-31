@@ -13,7 +13,7 @@ class Header extends Component {
               <div className="jobhax-logo"></div>
             </Link>
           </div>
-          <div className="search-box">
+          {/*<div className="search-box">
             <img className="header-icon search-icon" src="../../src/assets/icons/SearchIcon@3x.png"></img>
             <div>
               <input
@@ -24,7 +24,7 @@ class Header extends Component {
                 }}>
               </input>
             </div>
-          </div>
+              </div>*/}       
         </div>
         <div className="right-container">
           <div className="header-icon general tooltips">
@@ -50,11 +50,10 @@ class Header extends Component {
               <img src="../../src/assets/icons/SeyfoIcon@3x.png"></img>
             </Link>
           </div>
-          <div className="header-icon sign_out tooltips">
+          <div className="header-icon sign_out">
             <Link to="/">
               <img onClick={() => this.props.handleSignOut()} src="../../src/assets/icons/sign_out.png"></img>
             </Link>
-            <span>Sign out</span>
           </div>
         </div>
       </div>
