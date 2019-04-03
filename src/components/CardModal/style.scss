@@ -255,25 +255,31 @@
       display: table;
       text-align: start;//text-align: end;
 
-      .notesShowing {
+      &.data {
+        padding-bottom: 25px;
+        margin-top: 0px;
+        height: auto;
+        p {
+          margin-top: 0px;
+        }
+      }
+
+      .notes-showing {
         height: fit-content;
         height: -moz-fit-content;
-        max-height: 144px;
+        max-height: 172px;
         overflow-x: hidden;
         width: 390px;
+
+        &.--short {
+          max-height: 100px;
+        }
 
         .note-container {
           display: flex;
           justify-content: start;
-          width: 390px;
           height: auto;
           border-bottom: 1px solid rgba(32, 32, 32, 0.1);
-
-          textarea {
-            width: 334px;
-            min-width: 334px;
-            max-width:334px;
-          }
 
           .text-container {
             width: 350px;
@@ -322,25 +328,39 @@
         }
       }
 
-      &.data {
-        padding-bottom: 25px;
-        margin-top: 0px;
-        height: auto;
+      .add-note-area {
+        width: 356px;
+        margin-bottom: 2px;
 
-        p {
-          margin-top: 0px;
+        textarea {
+          font-family: exo;
+          font-size: 90%;
+          height: 60px;
+          max-width: 356px;
+          max-height: 60px; 
+          min-width: 356px;
+          min-height: 24px; 
+          border: 1px solid rgba(132, 100, 239, 1);
+          border-radius: 4px;
+          padding: 8px;
+
+          &.--height-min {
+            height: 16px;
+            min-height: 16px;
+            max-height: 16px;
+          }
         }
 
         .notepad-buttons {
           display: flex; 
           justify-content: flex-end;
-          margin-top: 8px;
+          width: 356px;
+          height: 28px;
 
           button{
             font-family: exo;
-            background-color: rgba(132, 100, 239, 1);
             color: white;
-            font-weight: lighter;
+            width: auto;
             height: 24px;
             padding: 4px;
             padding-right: 8px;
@@ -350,37 +370,21 @@
             margin-left: 4px;
           }
 
-          &.textarea {
-            position: absolute;
-            margin-left: 314px;
-            margin-top: -36px;
+          &.save {
+            position: relative;
+            margin-left: 8px;
+            background-color: rgba(132, 100, 239, 1);
+            font-weight: lighter;
           }
-        }
 
-        .cancel-button {
-          position: absolute;
-          margin-left: 344px;
-          margin-top: -62px;
-
-          img {
-            height: 8px;
-            width: 8px;
-            cursor: pointer;
+          &.cancel {
+            margin-left: -32px;
+            position: relative;
+            color: rgba(132, 100, 239, 0.6);
+            font-weight: bold;
+            font-size: 110%;
+            background: transparent;
           }
-        }
-
-        textarea {
-          font-family: exo;
-          font-size: 90%;
-          width: 356px;
-          height: 24px;
-          max-width: 356px;
-          max-height: 60px; 
-          min-width: 356px;
-          min-height: 24px; 
-          border: 1px solid rgba(132, 100, 239, 1);
-          border-radius: 4px;
-          padding: 8px;
         }
       }
     }

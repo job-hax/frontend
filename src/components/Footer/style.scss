@@ -1,15 +1,16 @@
 .footer-container {
-  a{
-    color: white;
-    text-decoration: none;
-  }
-
   display: flex;
   justify-content: space-between;
   padding: 20px 75px;
   background: rgb(92, 39, 195);
   background-image: url(../../assets/images/banner.jpg);
   background-size: 100% 100%;
+  overflow-y: hidden;
+
+  a{
+    color: white;
+    text-decoration: none;
+  }
 
   .footer-content {
     color: white;
