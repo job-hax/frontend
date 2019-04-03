@@ -1,6 +1,8 @@
 import React, {PureComponent} from "react";
 import ReactDOM from "react-dom";
 import defaultLogo from '../../assets/icons/JobHax-logo-black.svg';
+import classNames from 'classnames';
+
 import { fetchApi, postData } from "../../utils/api/fetch_api";
 import {
   updateNoteRequest,
@@ -21,6 +23,7 @@ class CardModal extends PureComponent {
     this.state = {
       showNotePad: false,
       showOptions: false,
+      isEditing: false,
       addNoteForm: '',
       updateNoteForm: '',
       notes: [],
@@ -30,6 +33,8 @@ class CardModal extends PureComponent {
     this.currentNote= null;
     this.toggleNotes = this.toggleNotes.bind(this);
     this.toggleOptions = this.toggleOptions.bind(this);
+    this.toggleEdit = this.toggleEdit.bind(this);
+    this.setToDefault = this.setToDefault.bind(this);
     this.onChange = this.onChange.bind(this);
     this.addNote = this.addNote.bind(this);
     this.saveNotes = this.saveNotes.bind(this);
@@ -49,18 +54,49 @@ class CardModal extends PureComponent {
     }));
   }
 
-  saveNotes() {
+  toggleEdit() {
+    this.setState(state => ({
+      isEditing: !state.isEditing
+    }));
+  }
+
+  setToDefault() {
+    this.toggleEdit();
+    var resetValue = this.refs.addNoteFormDefault; 
+    resetValue.value = "";
+    this.setState(({
+      addNoteForm: '',
+    }));
+  }
+
+  saveNotes(noteData, request, createdDate) {
     if (this.state.showNotePad) {
-      this.getNotes()
+      const noteUpdated = {
+        id: request.jobapp_note_id, 
+        description: request.description, 
+        created_date: createdDate.created_date, 
+        update_date: new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString()
+    }
+      console.log(noteUpdated);
+      const notesUpdated = this.state.notes
+        .filter(note => {
+          return note.id !== request.jobapp_note_id;
+        });
+      notesUpdated.unshift(noteUpdated);
+      this.setState(() => ({
+        notes: notesUpdated
+      }));
       this.toggleNotes()
       this.setState(({
         updateNoteForm: '',
       }));
     } else {
-      this.getNotes();
-      this.setState(({
-        addNoteForm: '',
+      let notesAdded = this.state.notes;
+      notesAdded.unshift(noteData);
+      this.setState(() => ({
+        notes: notesAdded
       }));
+      this.setToDefault();
     }
       console.log('after save \n--addNoteForm',this.state.addNoteForm,'\n--updateNoteForm',this.state.updateNoteForm);
   }
@@ -102,10 +138,10 @@ class CardModal extends PureComponent {
     config.headers.Authorization = token;
     fetchApi(url, config).then(response => {
       if (response.ok) {
-        this.notes = (response.json.data);
+        this.notes = (response.json.data).reverse();
         console.log('getNotes.response.json.data\n',this.notes);
         this.setState({
-          notes: this.notes.reverse(),
+          notes: this.notes,
         });
       }
     });
@@ -121,8 +157,6 @@ class CardModal extends PureComponent {
   addNote(e) {
     console.log('add note requested!', e.target.value);
     e.preventDefault();
-    var resetValue = this.refs.addNoteFormDefault; 
-    resetValue.value = "";
     const { card, token } = this.props;
     const { addNoteForm, updateNoteForm } = this.state;
     console.log('addNote \n--add note form',addNoteForm, '\n--update note form', updateNoteForm, '\n--value', e.target.value);
@@ -143,8 +177,9 @@ class CardModal extends PureComponent {
     config.headers.Authorization = token;
     postData(url, config, reqBody).catch(error => console.error(error))
     .then(response => {
+      console.log('response json\n',response.json)
       if (response.ok) {
-        this.saveNotes();
+        this.saveNotes(response.json.data, reqBody, this.currentNote);
       }
     });
   }
@@ -162,7 +197,12 @@ class CardModal extends PureComponent {
   }
 
   noteContainerGenerate() {
-    let textareaStyle = { height: this.state.textareaHeight };
+    let textareaStyle = { 
+      height: this.state.textareaHeight, 
+      maxWidth:"352px", 
+      minWidth:"352px", 
+      width:"352px",
+    };
     console.log('notecontainergenerator currentNote?',this.currentNote);
     if (this.state.notes.length == 0) {
       return (
@@ -205,7 +245,11 @@ class CardModal extends PureComponent {
                 </div>
               </div>
             :
-              <form className="note-container" onSubmit={this.addNote}>
+              <form 
+                className="add-note-area" 
+                onSubmit={this.addNote}
+                style={{borderBottom: "1px solid rgba(32, 32, 32, 0.1)"}}
+                >
                 <div>
                   <textarea 
                   name="updateNoteForm"
@@ -215,18 +259,20 @@ class CardModal extends PureComponent {
                   style={textareaStyle}
                   ></textarea>
                 </div>
-                <div className="button-container-parent">
-                  <div className="button-container-child">
-                    <button 
-                    value={item.id} 
-                    onClick={() => this.deleteNote(item.id)} 
-                    >
-                      <img src="../../src/assets/icons/DeleteIconInBtn@1x.png"/>
-                    </button>
-                    <button type="submit">
-                      <img src="../../src/assets/icons/edit.png"/>
-                    </button>
-                  </div>
+                <div className="notepad-buttons">
+                  <button 
+                    className="notepad-buttons cancel" 
+                    type="reset" 
+                    onClick={this.toggleNotes}
+                  >
+                    cancel
+                  </button>
+                  <button
+                    className="notepad-buttons save" 
+                    type="submit"
+                  >
+                    save
+                  </button>
                 </div>
               </form>
             }
@@ -299,24 +345,54 @@ class CardModal extends PureComponent {
   }
 
   generateNotes() {
+    const notesShowingClass = classNames({
+      'notes-showing': true,
+      '--short': this.state.isEditing,
+    });
+
     return (
       <div >
         <div>
-          <form onSubmit={this.addNote}>
-            <div>
-              <textarea
-                name="addNoteForm"
-                placeholder="+ Add note"
-                onChange={this.onChange}
-                ref="addNoteFormDefault"
-              ></textarea>
-            </div>
-            <div className="notepad-buttons textarea">
-              <button type="submit">save</button>
-            </div>
-          </form>
+          {this.state.isEditing ? 
+            <form className="add-note-area" onSubmit={this.addNote}>
+              <div>
+                <textarea
+                  name="addNoteForm"
+                  placeholder="+ Add note"
+                  onChange={this.onChange}
+                  ref="addNoteFormDefault"
+                ></textarea>
+              </div>
+              <div className="notepad-buttons">
+                <button 
+                  className="notepad-buttons cancel" 
+                  type="reset" 
+                  onClick={this.setToDefault}
+                >
+                  cancel
+                </button>
+                <button
+                  className="notepad-buttons save" 
+                  type="submit"
+                >
+                  save
+                </button>
+              </div>
+            </form>
+           :
+            <form className="add-note-area">
+              <div>
+                <textarea
+                  className="add-note-area --height-min"
+                  placeholder="+ Add note"
+                  onClick={this.toggleEdit}
+                  ref="addNoteFormDefault"
+                ></textarea>
+              </div>
+            </form>
+          }
           <div >
-            <div className="notesShowing">
+            <div className={notesShowingClass}>
               {this.noteContainerGenerate()}
             </div>
           </div>
