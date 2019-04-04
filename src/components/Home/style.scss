@@ -85,8 +85,10 @@ a:active{
         flex-direction: row;
         margin-left: -30px;
         margin-right: -30px;
+        overflow-y: hidden;
+
         .feature{
-            margin: 30px;
+            margin: 2.08%;
             background: white;
             border-radius: 20px;
             box-shadow: 5px 5px 40px rgba(0, 0, 0, 0.1);

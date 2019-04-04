@@ -35,7 +35,8 @@ class Card extends PureComponent {
   constructor() {
     super();
     this.state = {
-      showModal: false
+      showModal: false,
+      imageLoadError : true,
     };
     this.toggleModal = this.toggleModal.bind(this);
   }
@@ -119,7 +120,21 @@ class Card extends PureComponent {
         }
         <div className={cardClass} onClick={this.toggleModal}>
           <div className="card-company-icon">
-            <img src={companyLogo || defaultLogo}/>
+            { companyLogo == null ?
+              <img 
+                src= {'https://logo.clearbit.com/'+company.split(' ')[0].toLowerCase()+'.com'}
+                onError={e => { 
+                  if(this.state.imageLoadError) { 
+                  this.setState({
+                      imageLoadError: false
+                  });
+                  e.target.src = defaultLogo;
+              }}
+              }
+              ></img>
+            :
+              <img src= {companyLogo}></img>
+            }
           </div>
           <div className="card-company-info">
             <div id="company" className="card-company-name">
