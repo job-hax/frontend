@@ -242,6 +242,7 @@ class App extends Component {
       .then(response => {
         if (response.ok) {
           this.googleAuth.signOut();
+          this.googleAuth.disconnect();
           this.setState({
             isUserLoggedIn: false,
             isUserAuthenticated: false,
