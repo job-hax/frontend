@@ -3,16 +3,16 @@ import ReactEcharts from 'echarts-for-react';
 import echarts from 'echarts';
 
 import Header from '../Header/Header.jsx';
-import {fetchApi} from '../../utils/api/fetch_api'
+import {fetchApi} from '../../utils/api/fetch_api';
 import {
-  authenticateRequest,
   getTotalAppsCountRequest,
   getAppsCountByMonthRequest,
   getAppsCountByMonthWithTotalRequest,
   getCountByJobtitleAndStatusesRequest,
   getCountByStatusesRequest,
   getWordCountRequest
-} from '../../utils/api/requests.js'
+} from '../../utils/api/requests.js';
+import {IS_CONSOLE_LOG_OPEN} from '../../utils/constants/constants.js';
 
 import './style.scss'
 
@@ -47,10 +47,10 @@ class Metrics extends PureComponent {
     componentDidMount() {
         new Promise(resolve => setTimeout(resolve,500)) 
         .then(() =>{
-            console.log('metrics token:',this.props.token);
-            console.log('active?',this.props.active);
+            IS_CONSOLE_LOG_OPEN && console.log('metrics token:',this.props.token);
+            IS_CONSOLE_LOG_OPEN && console.log('active?',this.props.active);
             getTotalAppsCountRequest.config.headers.Authorization = this.props.token;
-            console.log(getTotalAppsCountRequest.config);
+            IS_CONSOLE_LOG_OPEN && console.log(getTotalAppsCountRequest.config);
             fetchApi(getTotalAppsCountRequest.url, getTotalAppsCountRequest.config)
             .then(response => {
                 if (response.ok) {
@@ -60,7 +60,7 @@ class Metrics extends PureComponent {
                 });
                 }
             });
-            console.log('yoyo',getAppsCountByMonthRequest.config);
+            IS_CONSOLE_LOG_OPEN && console.log('yoyo',getAppsCountByMonthRequest.config);
             getAppsCountByMonthRequest.config.headers.Authorization = this.props.token;
             fetchApi(getAppsCountByMonthRequest.url, getAppsCountByMonthRequest.config)
             .then(response => {
@@ -467,7 +467,7 @@ class Metrics extends PureComponent {
     };
 
     render() {
-        console.log('metrics token',this.props.token);
+        IS_CONSOLE_LOG_OPEN && console.log('metrics token',this.props.token);
         return(
             <div >
                 <Header handleSignOut={this.props.handleSignOut}/>
