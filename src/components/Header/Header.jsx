@@ -29,9 +29,19 @@ class Header extends Component {
         <div className="right-container">
           <div className="header-icon general tooltips">
             <Link to="/dashboard">
-              <img src="../../src/assets/icons/SyncIcon@3x.png"></img>
+              { window.location.href.slice(-9) == 'dashboard' ?
+                <img src="../../src/assets/icons/SyncIcon@3x.png"></img>
+              :
+                <img src="../../src/assets/icons/BoardIcon@3x.png"></img>
+              }
             </Link>
-            <span>Dashboard</span>
+            <span>
+              { window.location.href.slice(-9) == 'dashboard' ?
+                  'Refresh'
+                :
+                 ' Dashboard'
+              }
+            </span>
           </div>
           <div className="header-icon general tooltips">
             <Link to="/metrics">
@@ -52,7 +62,7 @@ class Header extends Component {
           </div>
           <div className="header-icon sign_out">
             <Link to="/">
-              <img onClick={() => this.props.handleSignOut()} src="../../src/assets/icons/sign_out.png"></img>
+              <img onClick={() => this.props.handleSignOut()} src="../../src/assets/icons/log-out@3x.png"></img>
             </Link>
           </div>
         </div>

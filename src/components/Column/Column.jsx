@@ -205,9 +205,6 @@ class Column extends Component {
       connectDropTarget,
       isCardOverColumn,
       message,
-      ongoingsMessage,
-      rejectedsMessage,
-      title,
       totalCount,
       isLastColumn
     } = this.props;
