@@ -24,6 +24,7 @@ class CardModal extends PureComponent {
       showNotePad: false,
       showOptions: false,
       isEditing: false,
+      imageLoadError : true,
       addNoteForm: '',
       updateNoteForm: '',
       notes: [],
@@ -488,8 +489,24 @@ class CardModal extends PureComponent {
           }}>
             <div className='modal-header'>
               <div>
-                <div >
-                  <img className="modal-company-icon" src={card.companyLogo || defaultLogo}/>
+                <div className="modal-company-icon" >
+                  { card.companyLogo == null ?
+                    <img  
+                      src= {'https://logo.clearbit.com/'+card.company.split(' ')[0].toLowerCase()+'.com'}
+                      onError={e => { 
+                        if(this.state.imageLoadError) { 
+                        this.setState({
+                            imageLoadError: false
+                        });
+                        e.target.src = defaultLogo;
+                    }}
+                    }
+                    ></img>
+                  :
+                    <img 
+                      src= {card.companyLogo}
+                    ></img>
+                  }
                 </div>
                 <div className="modal-header company-name" style={{marginLeft:'140px', marginTop:'40px'}}>
                   Job Details
