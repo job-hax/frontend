@@ -12,7 +12,7 @@ import {
   deleteJobRequest,
   updateJobStatusRequest
 } from "../../utils/api/requests.js";
-import {APPLICATION_STATUSES_IN_ORDER} from '../../utils/constants/constants.js';
+import {APPLICATION_STATUSES_IN_ORDER, IS_CONSOLE_LOG_OPEN} from '../../utils/constants/constants.js';
 
 import './style.scss';
 
@@ -43,7 +43,7 @@ class CardModal extends PureComponent {
 
   toggleNotes() {
     this.currentNote = null;
-    console.log('current note\n',this.currentNote)
+    IS_CONSOLE_LOG_OPEN && console.log('current note\n',this.currentNote)
     this.setState(state => ({
       showNotePad: !state.showNotePad
     }));
@@ -78,7 +78,7 @@ class CardModal extends PureComponent {
         created_date: createdDate.created_date, 
         update_date: new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString()
     }
-      console.log(noteUpdated);
+      IS_CONSOLE_LOG_OPEN && console.log(noteUpdated);
       const notesUpdated = this.state.notes
         .filter(note => {
           return note.id !== request.jobapp_note_id;
@@ -99,12 +99,12 @@ class CardModal extends PureComponent {
       }));
       this.setToDefault();
     }
-      console.log('after save \n--addNoteForm',this.state.addNoteForm,'\n--updateNoteForm',this.state.updateNoteForm);
+      IS_CONSOLE_LOG_OPEN && console.log('after save \n--addNoteForm',this.state.addNoteForm,'\n--updateNoteForm',this.state.updateNoteForm);
   }
 
   setCurrentNote(item) {
     this.currentNote = item;
-    console.log('set current note\n',this.currentNote);
+    IS_CONSOLE_LOG_OPEN && console.log('set current note\n',this.currentNote);
     this.setState(state => ({
       showNotePad: !state.showNotePad,
     }));
@@ -134,13 +134,13 @@ class CardModal extends PureComponent {
     const { card, token } = this.props;
     let { url, config } = getNotesRequest;
     url = url + '?jopapp_id=' + card.id;
-    console.log('URL with params\n',url)
-    console.log('token\n',token)
+    IS_CONSOLE_LOG_OPEN && console.log('URL with params\n',url)
+    IS_CONSOLE_LOG_OPEN && console.log('token\n',token)
     config.headers.Authorization = token;
     fetchApi(url, config).then(response => {
       if (response.ok) {
         this.notes = (response.json.data).reverse();
-        console.log('getNotes.response.json.data\n',this.notes);
+        IS_CONSOLE_LOG_OPEN && console.log('getNotes.response.json.data\n',this.notes);
         this.setState({
           notes: this.notes,
         });
@@ -152,16 +152,16 @@ class CardModal extends PureComponent {
     this.setState({
       [e.target.name]: e.target.value,
     })
-    console.log('value',e.target.value);
+    IS_CONSOLE_LOG_OPEN && console.log('value',e.target.value);
   } 
 
   addNote(e) {
-    console.log('add note requested!', e.target.value);
+    IS_CONSOLE_LOG_OPEN && console.log('add note requested!', e.target.value);
     e.preventDefault();
     const { card, token } = this.props;
     const { addNoteForm, updateNoteForm } = this.state;
-    console.log('addNote \n--add note form',addNoteForm, '\n--update note form', updateNoteForm, '\n--value', e.target.value);
-    console.log('addnoteform currentNote',this.currentNote);
+    IS_CONSOLE_LOG_OPEN && console.log('addNote \n--add note form',addNoteForm, '\n--update note form', updateNoteForm, '\n--value', e.target.value);
+    IS_CONSOLE_LOG_OPEN && console.log('addnoteform currentNote',this.currentNote);
     if (addNoteForm.trim().length == 0 & updateNoteForm.trim().length == 0) return
     const reqBody = this.currentNote == null ?
       {
@@ -174,11 +174,11 @@ class CardModal extends PureComponent {
         description: updateNoteForm,
       };
     let {url, config } = this.currentNote == null ? addNoteRequest : updateNoteRequest;
-    console.log('request body\n',reqBody)
+    IS_CONSOLE_LOG_OPEN && console.log('request body\n',reqBody)
     config.headers.Authorization = token;
     postData(url, config, reqBody).catch(error => console.error(error))
     .then(response => {
-      console.log('response json\n',response.json)
+      IS_CONSOLE_LOG_OPEN && console.log('response json\n',response.json)
       if (response.ok) {
         this.saveNotes(response.json.data, reqBody, this.currentNote);
       }
@@ -204,7 +204,7 @@ class CardModal extends PureComponent {
       minWidth:"352px", 
       width:"352px",
     };
-    console.log('notecontainergenerator currentNote?',this.currentNote);
+    IS_CONSOLE_LOG_OPEN && console.log('notecontainergenerator currentNote?',this.currentNote);
     if (this.state.notes.length == 0) {
       return (
         <p style={{color:"rgba(32,32,32,0.6)", marginTop:"16px"}}>You don't have any notes at the moment.</p>
@@ -291,10 +291,10 @@ class CardModal extends PureComponent {
     };
     let { url, config } = deleteNoteRequest
     config.headers.Authorization = token;
-    console.log('delete request body\n',body)
+    IS_CONSOLE_LOG_OPEN && console.log('delete request body\n',body)
     postData(url, config, body)
     .then(response => {
-      console.log('delete request response\n',response)
+      IS_CONSOLE_LOG_OPEN && console.log('delete request response\n',response)
       if (response.ok) {
         this.getNotes()
       } 
@@ -308,12 +308,12 @@ class CardModal extends PureComponent {
     };
     let { url, config } = deleteJobRequest;
     config.headers.Authorization = token;
-    console.log('delete job request body\n',body)
+    IS_CONSOLE_LOG_OPEN && console.log('delete job request body\n',body)
     postData(url, config, body)
     .then(response => {
-      console.log('delete job request response\n',response,card)
+      IS_CONSOLE_LOG_OPEN && console.log('delete job request response\n',response,card)
       if (response.ok) {
-          console.log('function ', columnName, card.id);
+          IS_CONSOLE_LOG_OPEN && console.log('function ', columnName, card.id);
           deleteJobFromList(columnName, card.id, card.isRejected);
       } 
     })
@@ -329,12 +329,12 @@ class CardModal extends PureComponent {
     };
     let { url, config } = updateJobStatusRequest;
     config.headers.Authorization = token;
-    console.log('update to rejected request body\n',body)
+    IS_CONSOLE_LOG_OPEN && console.log('update to rejected request body\n',body)
     postData(url, config, body)
     .then(response => {
-      console.log('update to rejected request response\n',response,card)
+      IS_CONSOLE_LOG_OPEN && console.log('update to rejected request response\n',response,card)
       if (response.ok) {
-          console.log('function ', columnName, card.id);
+          IS_CONSOLE_LOG_OPEN && console.log('function ', columnName, card.id);
           moveToRejected(columnName, card, isRejected);
       } 
     })

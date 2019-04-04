@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 
 import Footer from '../Footer/Footer.jsx';
+import {IS_CONSOLE_LOG_OPEN} from '../../utils/constants/constants.js';
 
 import './style.scss'
 
@@ -45,7 +46,7 @@ class SignIn extends Component {
   }
 
   render() {
-    console.log('signIn page toDashboard',this.props.toDashboard);
+    IS_CONSOLE_LOG_OPEN && console.log('signIn page toDashboard',this.props.toDashboard);
     if (this.props.toDashboard) {
       return <Redirect to='/dashboard'/>
     }
