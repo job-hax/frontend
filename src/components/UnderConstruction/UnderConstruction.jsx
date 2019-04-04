@@ -15,13 +15,13 @@ class UnderConstruction extends Component {
           {this.props.isUserLoggedIn ?
             <Link to="/dashboard">
               <button>
-                <p>Dashboard</p>
+                Dashboard
               </button>
             </Link>
               :
             <Link to="/">
               <button>
-                <p>Home</p>
+                Home
               </button>
             </Link>
           }
