@@ -12,6 +12,7 @@ import SignUp from '../SignUp/SignUp.jsx';
 import {fetchApi} from '../../utils/api/fetch_api'
 
 import {googleClientId} from "../../config/config.js";
+import {IS_CONSOLE_LOG_OPEN} from '../../utils/constants/constants.js';
 import {
   authenticateRequest,
   registerUserRequest,
@@ -59,7 +60,7 @@ class App extends Component {
             isUserAuthenticated: this.googleAuth.isSignedIn.get()
           }));
           this.googleAuth.isSignedIn.listen(this.onAuthUpdate)
-          console.log('shallRequestToken inside didMounth in app:',this.state.shallRequestToken);
+          IS_CONSOLE_LOG_OPEN && console.log('shallRequestToken inside didMounth in app:',this.state.shallRequestToken);
           const {url, config} = authenticateRequest;
           config.body.token = this.googleAuth.currentUser
             .get()
@@ -69,7 +70,7 @@ class App extends Component {
             .then(response => {
               if (response.ok) {
                 this.token = `${response.json.data.token_type} ${response.json.data.access_token.trim()}`;
-                console.log(this.token);
+                IS_CONSOLE_LOG_OPEN && console.log(this.token);
                 this.active=true;
                 this.setState({
                     token: this.token,
@@ -102,15 +103,15 @@ class App extends Component {
         }));
         this.googleAuth.isSignedIn.listen(this.onAuthUpdate)
         this.googleAuth.signIn().then((response) =>{
-          console.log('signIn response',response.Zi.token_type)
+          IS_CONSOLE_LOG_OPEN && console.log('signIn response',response.Zi.token_type)
           if (response.Zi.token_type=='Bearer'){
-            console.log('google access_token:',response.Zi.access_token);
+            IS_CONSOLE_LOG_OPEN && console.log('google access_token:',response.Zi.access_token);
             this.setState({
               shallRequestToken: true,
             });
-            console.log('shallRequestToken in handle signIn:',this.state.shallRequestToken);
+            IS_CONSOLE_LOG_OPEN && console.log('shallRequestToken in handle signIn:',this.state.shallRequestToken);
             if (this.state.shallRequestToken) {
-              console.log('shallRequestToken inside condition in app:',this.state.shallRequestToken);
+              IS_CONSOLE_LOG_OPEN && console.log('shallRequestToken inside condition in app:',this.state.shallRequestToken);
               const {url, config} = authenticateRequest;
               config.body.token = this.googleAuth.currentUser
                 .get()
@@ -120,7 +121,7 @@ class App extends Component {
                 .then(response => {
                   if (response.ok) {
                     this.token = `${response.json.data.token_type} ${response.json.data.access_token.trim()}`;
-                    console.log(this.token);
+                    IS_CONSOLE_LOG_OPEN && console.log(this.token);
                     this.active=true;
                     this.setState({
                         token: this.token,
@@ -138,7 +139,7 @@ class App extends Component {
   }
 
   handleSignUp(event) {
-    console.log('handle sign up first');
+    IS_CONSOLE_LOG_OPEN && console.log('handle sign up first');
     event.preventDefault();
     registerUserRequest.config.body.first_name = event.target[0].value;
     registerUserRequest.config.body.last_name = event.target[1].value;
@@ -146,7 +147,7 @@ class App extends Component {
     registerUserRequest.config.body.email = event.target[3].value;
     registerUserRequest.config.body.password = event.target[4].value;
     registerUserRequest.config.body.password2 = event.target[5].value;
-    console.log('handle sign up config body',registerUserRequest.config.body);
+    IS_CONSOLE_LOG_OPEN && console.log('handle sign up config body',registerUserRequest.config.body);
     registerUserRequest.config.body = JSON.stringify(registerUserRequest.config.body);
     fetchApi(registerUserRequest.url, registerUserRequest.config)
       .then(response => {
@@ -154,7 +155,7 @@ class App extends Component {
           this.setState({
             toSigIn: true,
           });
-          console.log('handle sign up state set',this.state.toSigIn);
+          IS_CONSOLE_LOG_OPEN && console.log('handle sign up state set',this.state.toSigIn);
         }
       });
     registerUserRequest.config.body = JSON.parse(registerUserRequest.config.body);
@@ -193,24 +194,24 @@ class App extends Component {
   }
 
   handleSignIn(event) {
-    console.log('handle sign in first');
+    IS_CONSOLE_LOG_OPEN && console.log('handle sign in first');
     event.preventDefault();
     loginUserRequest.config.body.username = event.target[0].value;
     loginUserRequest.config.body.password = event.target[1].value;
-    console.log('handle sign in config body',loginUserRequest.config.body);
+    IS_CONSOLE_LOG_OPEN && console.log('handle sign in config body',loginUserRequest.config.body);
     loginUserRequest.config.body = JSON.stringify(loginUserRequest.config.body);
     fetchApi(loginUserRequest.url, loginUserRequest.config)
       .then(response => {
         if (response.ok) {
           this.token = `${response.json.data.token_type} ${response.json.data.access_token.trim()}`;
-          console.log(this.token);
+          IS_CONSOLE_LOG_OPEN && console.log(this.token);
           this.setState({
             isUserLoggedIn: true,
             toDashboard: true,
             token: this.token,
             active: true,
           });
-          console.log('handle signIn isUserLoggedIn',this.state.isUserLoggedIn, '\n--redirect to Dashboard',this.state.toDashboard, '\n--token',this.state.token,'\n--active?', this.state.active);
+          IS_CONSOLE_LOG_OPEN && console.log('handle signIn isUserLoggedIn',this.state.isUserLoggedIn, '\n--redirect to Dashboard',this.state.toDashboard, '\n--token',this.state.token,'\n--active?', this.state.active);
         }
       });
       loginUserRequest.config.body = JSON.parse(loginUserRequest.config.body);
@@ -233,9 +234,9 @@ class App extends Component {
   }
 
   handleSignOut() {
-    console.log('handle signout first');
+    IS_CONSOLE_LOG_OPEN && console.log('handle signout first');
     event.preventDefault();
-    console.log('handle signout config body',logOutUserRequest.config.body);
+    IS_CONSOLE_LOG_OPEN && console.log('handle signout config body',logOutUserRequest.config.body);
     logOutUserRequest.config.body.token = this.state.token;
     logOutUserRequest.config.body = JSON.stringify(logOutUserRequest.config.body);
     fetchApi(logOutUserRequest.url, logOutUserRequest.config)
@@ -247,7 +248,7 @@ class App extends Component {
             isUserLoggedIn: false,
             isUserAuthenticated: false,
           });
-          console.log('handle signOut isUserLoggedIn',this.state.isUserLoggedIn);
+          IS_CONSOLE_LOG_OPEN && console.log('handle signOut isUserLoggedIn',this.state.isUserLoggedIn);
         }
       });
     logOutUserRequest.config.body = JSON.parse(logOutUserRequest.config.body);
@@ -255,7 +256,7 @@ class App extends Component {
 
   render() {
     const {isUserLoggedIn, isUserAuthenticated} = this.state;
-    console.log('app isUserLoggedIn',isUserLoggedIn,'\n--token',this.state.token,'\n--active?',this.state.active);
+    IS_CONSOLE_LOG_OPEN && console.log('app isUserLoggedIn',isUserLoggedIn,'\n--token',this.state.token,'\n--active?',this.state.active);
     return isUserLoggedIn||isUserAuthenticated ?
       (<Router>
         <div className="main-container">

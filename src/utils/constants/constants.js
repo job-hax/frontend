@@ -1,5 +1,7 @@
 export const MIN_CARD_NUMBER_IN_COLUMN = 0;
 
+export const IS_CONSOLE_LOG_OPEN = false;
+
 export const TOAPPLY = "toApply";
 export const APPLIED = "applied";
 export const PHONESCREEN = "phoneScreen";

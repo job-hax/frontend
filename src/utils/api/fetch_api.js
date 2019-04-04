@@ -1,8 +1,11 @@
+import {IS_CONSOLE_LOG_OPEN} from '../../utils/constants/constants.js'
+
+
 export function fetchApi(url, config) {
   return new Promise(resolve => {
     fetch(url, config)
       .then(response => {
-        console.log('Request : ', url, ' Params : ', config, ' Response : ', response);
+        IS_CONSOLE_LOG_OPEN && console.log('Request : ', url, ' Params : ', config, ' Response : ', response);
         if (response.ok) {
           response.json()
             .then(json => resolve({ok: true, json}));
@@ -28,7 +31,7 @@ export function postData(url = ``, config, data = {}) {
         }
       })
       .catch(error => {
-        console.log({ok: false, error});
+        IS_CONSOLE_LOG_OPEN && console.log({ok: false, error});
       });
   });
 }
