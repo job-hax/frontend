@@ -13,7 +13,7 @@ import {
 } from '../../utils/api/requests.js'
 import {IS_MOCKING} from '../../config/config.js';
 import {mockJobApps} from '../../utils/api/mockResponses.js';
-import {UPDATE_APPLICATION_STATUS} from '../../utils/constants/constants.js';
+import {UPDATE_APPLICATION_STATUS, IS_CONSOLE_LOG_OPEN} from '../../utils/constants/constants.js';
 import {generateCurrentDate} from '../../utils/helpers/helperFunctions.js';
 
 import './style.scss'
@@ -57,8 +57,8 @@ class Dashboard extends Component {
     }
     new Promise(resolve => setTimeout(resolve, 500)) 
     .then(() =>{
-      console.log('dashboard token',this.props.token);
-      console.log('dashboard active?',this.props.active);
+      IS_CONSOLE_LOG_OPEN && console.log('dashboard token',this.props.token);
+      IS_CONSOLE_LOG_OPEN && console.log('dashboard active?',this.props.active);
       if(this.props.active){
         const {url, config} = syncUserEmailsRequest;
         config.headers.Authorization = this.props.token;
@@ -232,7 +232,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    console.log('Dashboard opened!');
+    IS_CONSOLE_LOG_OPEN && console.log('Dashboard opened!');
     return (
       <div>
         <Header handleSignOut={this.props.handleSignOut}/>
