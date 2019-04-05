@@ -3,9 +3,8 @@
   justify-content: space-between;
   height: 60px;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0px 1px rgba(0, 0, 0, 0.2);
-
+  background-color: rgba(121, 4, 204, 1);
+  
   .left-container {
     display: flex;
   }
@@ -31,12 +30,12 @@
     }
     
     &.user-icon {
-      margin-top: 10px;
+      margin-top: 12px;
       margin-bottom: 10px;
       margin-right: 30px;
 
       img {
-          height: 40px;
+          height: 30px;
           width: auto;
         }
     }
@@ -49,7 +48,7 @@
     }
 
     img {
-      height: 20px;
+      height: 15px;
       width: auto;
     }
   }

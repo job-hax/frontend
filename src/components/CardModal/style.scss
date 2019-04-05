@@ -16,7 +16,6 @@
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 4px;
-    box-shadow: 1px rgba(0, 0, 0, 0.2);
   }
 
   .modal-header {
@@ -82,8 +81,6 @@
         justify-content: center;
         color: white;
         background-color:rgba(132, 100, 239, 1);
-        border-radius: 32px;
-        box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
         text-align: center;
         margin-top: 28px;
         padding-top: 8px;
@@ -105,7 +102,6 @@
         width: 144px;
         height: 288px;
         position: absolute;
-        box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.4);
         font-family: exo;
         padding-left: 16px;
         background-color: white;
