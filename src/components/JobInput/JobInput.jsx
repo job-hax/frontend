@@ -16,7 +16,7 @@ class JobInput extends PureComponent {
 
   handleInputChange(stateKey) {
     return e => this.setState({
-      [stateKey]: e.target.value.trim()
+      [stateKey]: e.target.value
     })
   }
 

@@ -46,11 +46,13 @@
     .card-company-name {
       font-size: 18px;
       font-weight: bold;
+      word-break: break-all;
     }
 
     .card-job-position {
       font-size: 12px;
       font-weight: normal;
+      word-break: break-all;
     }
   }
 
