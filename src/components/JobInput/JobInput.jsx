@@ -12,6 +12,15 @@ class JobInput extends PureComponent {
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleAddNewApplication = this.handleAddNewApplication.bind(this);
+    this.cancelJobInputEdit = this.cancelJobInputEdit.bind(this);
+  }
+
+  cancelJobInputEdit() {
+    this.props.toggleJobInput();
+    this.setState({
+      companyName: '',
+      jobTitle: '',
+    })
   }
 
   handleInputChange(stateKey) {
@@ -38,7 +47,7 @@ class JobInput extends PureComponent {
           })
         }
       })
-  }
+    }
 
   render() {
     const {
@@ -54,12 +63,15 @@ class JobInput extends PureComponent {
     const addJobButtonClass = classNames({
       'column-addJob-form-button': true,
       '--addJob': true,
-      '--button-disabled': companyName.length < 1 || jobTitle.length < 1
+      '--button-disabled': companyName.trim().length < 1 || jobTitle.trim().length < 1
     });
     return (
       showInput ?
         <div>
-          <form className="column-addJob-form" onSubmit={this.handleAddNewApplication}>
+          <form 
+          className="column-addJob-form" 
+          onSubmit={this.handleAddNewApplication}
+          >
             <input
               name="company"
               className="input-add-job --company"
@@ -77,12 +89,14 @@ class JobInput extends PureComponent {
             <div className="column-addJob-form-buttons-container">
               <button
                 className="column-addJob-form-button"
-                onClick={toggleJobInput}
+                type="reset"
+                onClick={this.cancelJobInputEdit}
               >
                 Cancel
               </button>
               <button
                 className={addJobButtonClass}
+                type="submit"
               >
                 Add Job
               </button>
