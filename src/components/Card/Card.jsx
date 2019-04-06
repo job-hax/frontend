@@ -115,7 +115,7 @@ class Card extends PureComponent {
         }
         <div className={cardClass} onClick={this.toggleModal}>
           <div className="card-company-icon">
-            { companyLogo == null ?
+            {companyLogo == null ?
               <img 
                 src= {'https://logo.clearbit.com/'+company.split(' ')[0].toLowerCase()+'.com'}
                 onError={e => { 
@@ -124,8 +124,8 @@ class Card extends PureComponent {
                       imageLoadError: false
                   });
                   e.target.src = defaultLogo;
-              }}
-              }
+                }}
+                }
               ></img>
             :
               <img src= {companyLogo}></img>
