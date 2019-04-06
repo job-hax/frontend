@@ -19,8 +19,8 @@
   }
 
   .modal-header-container {
-    margin-left: 32px;
-    margin-right: 32px;
+    margin-left: 24px;
+    margin-right: 24px;
     
     .modal-header {
       border-bottom: 1px solid rgba(38, 18, 104, 0.4);
@@ -36,27 +36,28 @@
 
         .modal-company-icon {
           position:relative;
-          margin-top: 26px;
-          width: 60px;
-          height: 60px;
+          margin-top: 20px;
+          margin-left: 4px;
+          width: 72px;
+          height: 72px;
           border-radius: 4px;
           background-color: white; 
           display: flex;
           align-items: center;
 
           img {
-            width: 60px;
+            width: 72px;
             height: auto;
             border-radius: 4px;
           }
         }
 
         .header-text {
-          margin-left: 16px;
+          margin-left: 20px;
           display: table;
 
           &.company-name {
-            margin-left: 4px;
+            margin-left: 0px;
             margin-top: 30px;
             font-size: 180%;
             height: auto;
@@ -246,7 +247,7 @@
       width: 66px;
       height: 408px;
       padding-top: 18px;
-      margin-left: 18px;
+      margin-left: 14px;
       display: table;
       text-align: right;
       border-right: 1px solid rgba(38, 18, 104, 0.4); 
