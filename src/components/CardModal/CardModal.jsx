@@ -487,46 +487,50 @@ class CardModal extends PureComponent {
           <section className='modal-main' onClick={e => {
             e.stopPropagation()
           }}>
-            <div className='modal-header'>
-              <div>
-                <div className="modal-company-icon" >
-                  { card.companyLogo == null ?
-                    <img  
-                      src= {'https://logo.clearbit.com/'+card.company.split(' ')[0].toLowerCase()+'.com'}
-                      onError={e => { 
-                        if(this.state.imageLoadError) { 
-                        this.setState({
-                            imageLoadError: false
-                        });
-                        e.target.src = defaultLogo;
-                    }}
+            <div className="modal-header-container">
+              <div className='modal-header'>
+                <div className="job-card-info-container">
+                  <div className="modal-company-icon" >
+                    {card.companyLogo == null ?
+                      <img  
+                        src= {'https://logo.clearbit.com/'+card.company.split(' ')[0].toLowerCase()+'.com'}
+                        onError={e => { 
+                          if(this.state.imageLoadError) { 
+                          this.setState({
+                              imageLoadError: false
+                          });
+                          e.target.src = defaultLogo;
+                        }}
+                        }
+                      ></img>
+                    :
+                      <img 
+                        src= {card.companyLogo}
+                      ></img>
                     }
-                    ></img>
-                  :
-                    <img 
-                      src= {card.companyLogo}
-                    ></img>
-                  }
+                  </div>
+                  <div className="header-text">
+                  <div className="header-text company-name">
+                    {card.company}
+                  </div>
+                  <div className="header-text job-title">
+                    {card.jobTitle}
+                  </div>
                 </div>
-                <div className="modal-header company-name" style={{marginLeft:'140px', marginTop:'40px'}}>
-                  Job Details
                 </div>
-                <div className="modal-header job-title">
-                  {card.jobTitle}
-                </div>
-              </div>
-              <div 
-                className="modal-header options"
-                onMouseEnter={this.toggleOptions}
-                onMouseLeave={this.toggleOptions}
-                >
                 <div 
-                className="current-status"
-                >
-                  <img src={icon.toString().split('@')[0]+'White@1x.png'}/>
-                  <p>{APPLICATION_STATUSES_IN_ORDER[(parseInt(id)-1)]['name']}</p>
+                  className="modal-header options"
+                  onMouseEnter={this.toggleOptions}
+                  onMouseLeave={this.toggleOptions}
+                  >
+                  <div 
+                  className="current-status"
+                  >
+                    <img src={icon.toString().split('@')[0]+'White@1x.png'}/>
+                    <p>{APPLICATION_STATUSES_IN_ORDER[(parseInt(id)-1)]['name']}</p>
+                  </div>
+                  {this.moveToOptionsGenerator()}
                 </div>
-                {this.moveToOptionsGenerator()}
               </div>
             </div>
             <div className="modal-body">
