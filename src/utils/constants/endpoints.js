@@ -1,4 +1,4 @@
-const apiRoot = 'https://backend.jobhax.com/';
+const apiRoot = "https://backend.jobhax.com/";
 
 export const SYNC_USER_EMAILS = `${apiRoot}api/users/sync_user_emails`;
 
@@ -40,3 +40,6 @@ export const GET_NOTES = `${apiRoot}api/jobapps/get_jobapp_notes`;
 
 export const DELETE_JOB = `${apiRoot}api/jobapps/delete_jobapp`;
 
+export const GET_POLL = `${apiRoot}api/poll/`;
+
+export const VOTE_POLL = pollId => `${apiRoot}api/poll/${pollId}/vote/`;

@@ -1,27 +1,27 @@
-import React, {Component} from "react";
-import {
-  Link,
-  Redirect
-} from 'react-router-dom';
+import React, { Component } from "react";
+import { Link, Redirect } from "react-router-dom";
 
-import Footer from '../Footer/Footer.jsx';
-import {IS_CONSOLE_LOG_OPEN} from '../../utils/constants/constants.js';
+import Footer from "../Footer/Footer.jsx";
+import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 
-import './style.scss'
+import "./style.scss";
 
 class SignIn extends Component {
-
   generateTopButtons() {
     return (
       <div className="top-buttons">
         <Link to="/">
-          <img className="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
+          <img
+            className="logo"
+            src="src/assets/icons/JobHax-logo-white.svg"
+            alt="JobHax-logo"
+          />
         </Link>
         <Link to="/">
           <button>Home</button>
         </Link>
       </div>
-    )
+    );
   }
 
   generateSignIn() {
@@ -33,7 +33,12 @@ class SignIn extends Component {
         </div>
         <div className="social-buttons-container">
           <Link to="/dashboard">
-            <button className="social-buttons" onClick={this.props.handleGoogleSignIn}>Sign in with GOOGLE</button>
+            <button
+              className="social-buttons"
+              onClick={this.props.handleGoogleSignIn}
+            >
+              Sign in with GOOGLE
+            </button>
           </Link>
         </div>
         <div className="Loading-buttons-container">
@@ -42,24 +47,24 @@ class SignIn extends Component {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
   render() {
-    IS_CONSOLE_LOG_OPEN && console.log('signIn page toDashboard',this.props.toDashboard);
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("signIn page toDashboard", this.props.toDashboard);
     if (this.props.toDashboard) {
-      return <Redirect to='/dashboard'/>
+      return <Redirect to="/dashboard" />;
     }
     return (
       <div className="sign_in-background">
         {this.generateTopButtons()}
         {this.generateSignIn()}
         <div className="bottom-fixed-footer">
-          <Footer/>
+          <Footer />
         </div>
       </div>
-
-    )
+    );
   }
 }
 
