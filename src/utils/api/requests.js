@@ -17,24 +17,26 @@ import {
   REGISTER_USER,
   SYNC_USER_EMAILS,
   UPDATE_JOB_STATUS,
-  UPDATE_NOTE
+  UPDATE_NOTE,
+  GET_POLL,
+  VOTE_POLL
 } from "../constants/endpoints.js";
 
-import { jobHaxClientId, jobHaxClientSecret } from '../../config/config.js';
+import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
 
 export const authenticateRequest = {
   url: AUTHENTICATE,
   config: {
-    method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
     body: {
       client_id: jobHaxClientId,
       client_secret: jobHaxClientSecret,
-      provider: 'google-oauth2'
+      provider: "google-oauth2"
     }
   }
 };
@@ -42,11 +44,11 @@ export const authenticateRequest = {
 export const getJobAppsRequest = {
   url: GET_JOB_APPS,
   config: {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
   }
 };
@@ -54,11 +56,11 @@ export const getJobAppsRequest = {
 export const addJobAppsRequest = {
   url: ADD_JOB_APPS,
   config: {
-    method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
   }
 };
@@ -66,11 +68,11 @@ export const addJobAppsRequest = {
 export const syncUserEmailsRequest = {
   url: SYNC_USER_EMAILS,
   config: {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
   }
 };
@@ -78,11 +80,11 @@ export const syncUserEmailsRequest = {
 export const updateJobStatusRequest = {
   url: UPDATE_JOB_STATUS,
   config: {
-    method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
   }
 };
@@ -90,15 +92,15 @@ export const updateJobStatusRequest = {
 export const loginUserRequest = {
   url: LOGIN_USER,
   config: {
-    method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
     body: {
       client_id: jobHaxClientId,
-      client_secret: jobHaxClientSecret,
+      client_secret: jobHaxClientSecret
     }
   }
 };
@@ -106,15 +108,15 @@ export const loginUserRequest = {
 export const registerUserRequest = {
   url: REGISTER_USER,
   config: {
-    method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
     body: {
       client_id: jobHaxClientId,
-      client_secret: jobHaxClientSecret,
+      client_secret: jobHaxClientSecret
     }
   }
 };
@@ -122,15 +124,15 @@ export const registerUserRequest = {
 export const logOutUserRequest = {
   url: LOGOUT_USER,
   config: {
-    method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
     body: {
       client_id: jobHaxClientId,
-      client_secret: jobHaxClientSecret,
+      client_secret: jobHaxClientSecret
     }
   }
 };
@@ -140,11 +142,11 @@ export const logOutUserRequest = {
 export const getTotalAppsCountRequest = {
   url: GET_TOTAL_APPLICATION_COUNT,
   config: {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
   }
 };
@@ -152,11 +154,11 @@ export const getTotalAppsCountRequest = {
 export const getAppsCountByMonthRequest = {
   url: GET_APPLICATION_COUNT_BY_MONTH,
   config: {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
   }
 };
@@ -164,11 +166,11 @@ export const getAppsCountByMonthRequest = {
 export const getAppsCountByMonthWithTotalRequest = {
   url: GET_APPLICATION_COUNT_BY_MONTH_WITH_TOTAL,
   config: {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
   }
 };
@@ -176,11 +178,11 @@ export const getAppsCountByMonthWithTotalRequest = {
 export const getCountByStatusesRequest = {
   url: GET_COUNT_BY_STATUSES,
   config: {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
   }
 };
@@ -188,11 +190,11 @@ export const getCountByStatusesRequest = {
 export const getCountByJobtitleAndStatusesRequest = {
   url: GET_COUNT_BY_JOBTITLE_AND_STATUSES,
   config: {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
   }
 };
@@ -200,11 +202,11 @@ export const getCountByJobtitleAndStatusesRequest = {
 export const getWordCountRequest = {
   url: GET_WORD_COUNT,
   config: {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
   }
 };
@@ -260,6 +262,31 @@ export const getNotesRequest = {
 
 export const deleteJobRequest = {
   url: DELETE_JOB,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//POLL REQUESTS//
+export const getPollRequest = {
+  url: GET_POLL,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const votePollRequest = {
+  url: VOTE_POLL,
   config: {
     method: "POST",
     mode: "cors",
