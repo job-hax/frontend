@@ -34,11 +34,14 @@ class PollBox extends React.Component {
     console.log("pollbox", this.props.data);
     return (
       <div>
-        {this.props.data.map(poll => (
-          <div key={poll.id}>
-            <PollCard poll={poll} token={this.props.token} />
-          </div>
-        ))}
+        {this.props.data.map(
+          poll =>
+            poll.is_published === true && (
+              <div key={poll.id}>
+                <PollCard poll={poll} token={this.props.token} />
+              </div>
+            )
+        )}
       </div>
     );
   }
