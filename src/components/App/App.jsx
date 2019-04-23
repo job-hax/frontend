@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Dashboard from "../Dashboard/Dashboard.jsx";
 import Metrics from "../Metrics/Metrics.jsx";
-import MetricsGlobal from "../MetricsGlobal/MetricsGlobal.jsx";
-import Reviews from "../Reviews/Reviews.jsx";
 import Home from "../Home/Home.jsx";
 import AboutUs from "../AboutUs/AboutUs.jsx";
 import Spinner from "../Spinner/Spinner.jsx";
