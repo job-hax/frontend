@@ -236,9 +236,9 @@ class Dashboard extends Component {
   }
 
   render() {
-    IS_CONSOLE_LOG_OPEN && console.log("Dashboard opened!");
+    IS_CONSOLE_LOG_OPEN && console.log("Dashboard opened!", this.state.offer);
     if (!this.props.active) return <Spinner message="Accessing your data..." />;
-    if (this.state.waitingToken)
+    if (this.state.waitingToken && !IS_MOCKING)
       return <Spinner message="Preparing your dashboard..." />;
     return (
       <div>
