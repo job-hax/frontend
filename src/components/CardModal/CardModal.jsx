@@ -14,7 +14,8 @@ import {
 } from "../../utils/api/requests.js";
 import {
   APPLICATION_STATUSES_IN_ORDER,
-  IS_CONSOLE_LOG_OPEN
+  IS_CONSOLE_LOG_OPEN,
+  makeTimeBeautiful
 } from "../../utils/constants/constants.js";
 
 import "./style.scss";
@@ -118,24 +119,6 @@ class CardModal extends PureComponent {
     this.setState(state => ({
       showNotePad: !state.showNotePad
     }));
-  }
-
-  makeTimeBeautiful(time, type = "date") {
-    var beautiful_time = "";
-    var dateFull = time.toString().split("T");
-    var datePart = dateFull[0].split("-");
-    var beautifulDatePart = datePart[1] + "." + datePart[2] + "." + datePart[0];
-    if (type == "date") {
-      beautiful_time = beautifulDatePart;
-    }
-    if (type == "dateandtime") {
-      var time_part = dateFull[1].split(":");
-      beautiful_time =
-        beautifulDatePart + " at " + time_part[0] + ":" + time_part[1];
-    } else {
-      beautiful_time = beautiful_time;
-    }
-    return beautiful_time;
   }
 
   componentDidMount() {
@@ -252,12 +235,12 @@ class CardModal extends PureComponent {
                   {item.update_date == null ? (
                     <p className="date">
                       {" "}
-                      {this.makeTimeBeautiful(item.created_date, "dateandtime")}
+                      {makeTimeBeautiful(item.created_date, "dateandtime")}
                     </p>
                   ) : (
                     <p className="date">
                       updated on{" "}
-                      {this.makeTimeBeautiful(item.update_date, "dateandtime")}
+                      {makeTimeBeautiful(item.update_date, "dateandtime")}
                     </p>
                   )}
                 </div>
@@ -505,31 +488,31 @@ class CardModal extends PureComponent {
               <div className="modal-header">
                 <div className="job-card-info-container">
                   <div className="modal-company-icon">
-                    {card.companyLogo == null ? (
+                    {card.companyObject.cb_company_logo == null ? (
                       <img
-                        src={
-                          "https://logo.clearbit.com/" +
-                          card.company.split(" ")[0].toLowerCase() +
-                          ".com"
-                        }
-                        onError={e => {
-                          if (this.state.imageLoadError) {
-                            this.setState({
-                              imageLoadError: false
-                            });
-                            e.target.src = defaultLogo;
-                          }
-                        }}
+                        src={card.companyObject.company_logo || defaultLogo}
                       />
                     ) : (
-                      <img src={card.companyLogo} />
+                      <img src={card.companyObject.cb_company_logo} />
                     )}
                   </div>
                   <div className="header-text">
                     <div className="header-text company-name">
-                      {card.company}
+                      {
+                        card.companyObject.company
+                          .split(",")[0]
+                          .split("-")[0]
+                          .split("(")[0]
+                      }
                     </div>
-                    <div className="header-text job-title">{card.jobTitle}</div>
+                    <div className="header-text job-title">
+                      {
+                        card.position.job_title
+                          .split(",")[0]
+                          .split("-")[0]
+                          .split("(")[0]
+                      }
+                    </div>
                   </div>
                 </div>
                 <div
@@ -556,10 +539,14 @@ class CardModal extends PureComponent {
                 <div className="modal-body navigation subheaders">Notes</div>
               </div>
               <div className="modal-body main">
-                <div className="modal-body main data">{card.company}</div>
-                <div className="modal-body main data">{card.jobTitle}</div>
                 <div className="modal-body main data">
-                  {this.makeTimeBeautiful(card.applyDate, "date")}
+                  {card.companyObject.company}
+                </div>
+                <div className="modal-body main data">
+                  {card.position.job_title}
+                </div>
+                <div className="modal-body main data">
+                  {makeTimeBeautiful(card.applyDate, "date")}
                 </div>
                 <div className="modal-body main data">{card.source}</div>
                 <div className="modal-body main data">

@@ -3,21 +3,26 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Dashboard from "../Dashboard/Dashboard.jsx";
 import Metrics from "../Metrics/Metrics.jsx";
+import MetricsGlobal from "../MetricsGlobal/MetricsGlobal.jsx";
+import Reviews from "../Reviews/Reviews.jsx";
 import Home from "../Home/Home.jsx";
 import AboutUs from "../AboutUs/AboutUs.jsx";
 import Spinner from "../Spinner/Spinner.jsx";
+import PollBox from "../PollBox/PollBox.jsx";
 import UnderConstruction from "../UnderConstruction/UnderConstruction.jsx";
 import SignIn from "../SignIn/SignIn.jsx";
 import SignUp from "../SignUp/SignUp.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
 
 import { googleClientId } from "../../config/config.js";
+import { mockPoll } from "../../utils/api/mockResponses.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import {
   authenticateRequest,
   registerUserRequest,
   loginUserRequest,
-  logOutUserRequest
+  logOutUserRequest,
+  getPollRequest
 } from "../../utils/api/requests.js";
 
 import "./style.scss";
@@ -33,7 +38,10 @@ class App extends Component {
       toDashboard: false,
       toSignIn: false,
       isUserLoggedIn: false,
-      isAuthenticationChecking: true
+      isAuthenticationChecking: true,
+      isPollChecking: true,
+      isPollShowing: false,
+      pollData: []
     };
     (this.token = ""),
       (this.active = false),
@@ -47,6 +55,7 @@ class App extends Component {
     this.generateSignInForm = this.generateSignInForm.bind(this);
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
+    this.toggleIsPollShowing = this.toggleIsPollShowing.bind(this);
   }
 
   componentDidMount() {
@@ -90,6 +99,27 @@ class App extends Component {
           config.body = JSON.parse(config.body);
         });
     });
+  }
+
+  componentDidUpdate() {
+    if (this.state.token != "" && this.state.isPollChecking) {
+      getPollRequest.config.headers.Authorization = this.state.token;
+      fetchApi(getPollRequest.url, getPollRequest.config).then(response => {
+        if (response.ok) {
+          this.pollData = response.json.data;
+          this.setState({ pollData: this.pollData, isPollChecking: false });
+          this.state.pollData.map(
+            poll =>
+              poll.is_published === true &&
+              this.setState({ isPollShowing: true })
+          );
+        }
+      });
+    }
+  }
+
+  toggleIsPollShowing() {
+    this.setState({ isPollShowing: !this.state.isPollShowing });
   }
 
   onAuthUpdate() {
@@ -320,6 +350,13 @@ class App extends Component {
     return isUserLoggedIn || isUserAuthenticated ? (
       <Router>
         <div className="main-container">
+          {this.state.isPollShowing && (
+            <PollBox
+              data={this.pollData}
+              togglePollDisplay={this.toggleIsPollShowing}
+              token={this.state.token}
+            />
+          )}
           <Route
             exact
             path="/dashboard"
@@ -338,7 +375,29 @@ class App extends Component {
               <Metrics
                 active={this.state.active}
                 token={this.state.token}
-                hansleSignOut={this.handleSignOut}
+                handleSignOut={this.handleSignOut}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/metricsGlobal"
+            render={() => (
+              <MetricsGlobal
+                active={this.state.active}
+                token={this.state.token}
+                handleSignOut={this.handleSignOut}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/reviews"
+            render={() => (
+              <Reviews
+                active={this.state.active}
+                token={this.state.token}
+                handleSignOut={this.handleSignOut}
               />
             )}
           />
