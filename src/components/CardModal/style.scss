@@ -21,12 +21,12 @@
   .modal-header-container {
     margin-left: 24px;
     margin-right: 24px;
-    
+
     .modal-header {
       border-bottom: 1px solid rgba(38, 18, 104, 0.4);
       height: 100px;
       color: #261268;
-      display: flex; 
+      display: flex;
       justify-content: space-between;
       overflow: hidden;
 
@@ -35,13 +35,13 @@
         justify-content: start;
 
         .modal-company-icon {
-          position:relative;
+          position: relative;
           margin-top: 20px;
           margin-left: 4px;
           width: 72px;
           height: 72px;
           border-radius: 4px;
-          background-color: white; 
+          background-color: white;
           display: flex;
           align-items: center;
 
@@ -54,7 +54,6 @@
 
         .header-text {
           margin-left: 20px;
-          display: table;
 
           &.company-name {
             margin-left: 0px;
@@ -68,8 +67,9 @@
             margin-top: 0px;
             margin-left: 0px;
             font-size: 100%;
-            height: auto;
+            max-height: 20px;
             border: none;
+            overflow: hidden;
           }
         }
       }
@@ -92,7 +92,7 @@
           display: flex;
           justify-content: center;
           color: white;
-          background-color:rgba(132, 100, 239, 1);
+          background-color: rgba(132, 100, 239, 1);
           text-align: center;
           margin-top: 28px;
           padding-top: 8px;
@@ -166,7 +166,7 @@
 
           .ongoing-option {
             padding-bottom: 0px;
-            
+
             p {
               border: none;
               margin-top: -32px;
@@ -210,7 +210,7 @@
 
 
           .unable {
-            color:rgba(32,32,32,0.6);
+            color: rgba(32, 32, 32, 0.6);
             height: 32px;
             padding-top: 8px;
 
@@ -222,7 +222,7 @@
             }
           }
 
-          .explanation{
+          .explanation {
             padding-left: 16px;
             margin-left: -16px;
             padding-top: 10px;
@@ -250,7 +250,7 @@
       margin-left: 14px;
       display: table;
       text-align: right;
-      border-right: 1px solid rgba(38, 18, 104, 0.4); 
+      border-right: 1px solid rgba(38, 18, 104, 0.4);
 
       &.subheaders {
         border: none;
@@ -276,6 +276,7 @@
         padding-bottom: 22px;
         margin-top: 0px;
         height: auto;
+
         p {
           margin-top: 0px;
         }
@@ -326,7 +327,7 @@
               height: auto;
               background: transparent;
 
-              button{
+              button {
                 background: transparent;
                 border: none;
               }
@@ -352,9 +353,9 @@
           font-size: 90%;
           height: 60px;
           max-width: 356px;
-          max-height: 60px; 
+          max-height: 60px;
           min-width: 356px;
-          min-height: 24px; 
+          min-height: 24px;
           border: 1px solid rgba(132, 100, 239, 1);
           border-radius: 4px;
           padding: 8px;
@@ -367,12 +368,12 @@
         }
 
         .notepad-buttons {
-          display: flex; 
+          display: flex;
           justify-content: flex-end;
           width: 356px;
           height: 28px;
 
-          button{
+          button {
             font-family: exo;
             color: white;
             width: auto;

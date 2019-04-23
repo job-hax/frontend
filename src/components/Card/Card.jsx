@@ -1,15 +1,15 @@
-import React, {PureComponent} from "react";
-import PropTypes from 'prop-types';
-import {DragSource} from 'react-dnd';
-import classNames from 'classnames';
-import defaultLogo from '../../assets/icons/JobHax-logo-black.svg';
-import linkedInLogo from '../../assets/icons/linkedInLogo.png';
-import hiredComLogo from '../../assets/icons/hiredComLogo.png';
-import indeedLogo from '../../assets/icons/indeedLogo.png';
-import vetteryLogo from '../../assets/icons/vetteryLogo.jpg';
-import CardModal from '../CardModal/CardModal.jsx';
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import { DragSource } from "react-dnd";
+import classNames from "classnames";
+import defaultLogo from "../../assets/icons/JobHax-logo-black.svg";
+import linkedInLogo from "../../assets/icons/linkedInLogo.png";
+import hiredComLogo from "../../assets/icons/hiredComLogo.png";
+import indeedLogo from "../../assets/icons/indeedLogo.png";
+import vetteryLogo from "../../assets/icons/vetteryLogo.jpg";
+import CardModal from "../CardModal/CardModal.jsx";
 
-import './style.scss'
+import "./style.scss";
 
 const cardSpec = {
   beginDrag(props) {
@@ -18,7 +18,11 @@ const cardSpec = {
 
   endDrag(props, monitor) {
     if (monitor.didDrop()) {
-      return props.updateApplications(props.card, props.columnName, monitor.getDropResult().name);
+      return props.updateApplications(
+        props.card,
+        props.columnName,
+        monitor.getDropResult().name
+      );
     }
   }
 };
@@ -36,46 +40,37 @@ class Card extends PureComponent {
     super();
     this.state = {
       showModal: false,
-      imageLoadError : true,
+      imageLoadError: true
     };
     this.toggleModal = this.toggleModal.bind(this);
   }
 
   toggleModal() {
-    this.setState(({showModal}) => ({
+    this.setState(({ showModal }) => ({
       showModal: !showModal
     }));
   }
 
   sourceLogoSelector(source) {
-    if (source=='Hired.com') {
-      return(
-        <img src={hiredComLogo}></img>
-      )
+    if (source == "Hired.com") {
+      return <img src={hiredComLogo} />;
     }
-    if (source=='LinkedIn') {
-      return(
-        <img src={linkedInLogo}></img>
-      )
+    if (source == "LinkedIn") {
+      return <img src={linkedInLogo} />;
     }
-    if (source=='Indeed') {
-      return(
-        <img src={indeedLogo}></img>
-      )
-    } 
-    if (source=='Vettery') {
-      return(
-        <img src={vetteryLogo}></img>
-      )
+    if (source == "Indeed") {
+      return <img src={indeedLogo} />;
+    }
+    if (source == "Vettery") {
+      return <img src={vetteryLogo} />;
     }
   }
 
   renderCard() {
     const {
       card: {
-        companyLogo,
-        company,
-        jobTitle,
+        companyObject,
+        position,
         isRejected,
         source,
         token,
@@ -89,54 +84,43 @@ class Card extends PureComponent {
       isDragging
     } = this.props;
 
-    const {showModal} = this.state;
+    const { showModal } = this.state;
 
     const cardClass = classNames({
-      'card-container': true,
-      'rejected-cards': isRejected,
-      '--is_dragging': isDragging
+      "card-container": true,
+      "rejected-cards": isRejected,
+      "--is_dragging": isDragging
     });
 
     return (
       <div>
-        {
-          showModal &&
+        {showModal && (
           <CardModal
-            token = {token}
+            token={token}
             columnName={columnName}
             toggleModal={this.toggleModal}
-            deleteJobFromList = {deleteJobFromList}
-            moveToRejected = {moveToRejected}
-            updateApplications = {updateApplications}
-            icon = {icon}
+            deleteJobFromList={deleteJobFromList}
+            moveToRejected={moveToRejected}
+            updateApplications={updateApplications}
+            icon={icon}
             id={id}
             {...this.props}
           />
-        }
+        )}
         <div className={cardClass} onClick={this.toggleModal}>
           <div className="card-company-icon">
-            {companyLogo == null ?
-              <img 
-                src= {'https://logo.clearbit.com/'+company.split(' ')[0].toLowerCase()+'.com'}
-                onError={e => { 
-                  if(this.state.imageLoadError) { 
-                  this.setState({
-                      imageLoadError: false
-                  });
-                  e.target.src = defaultLogo;
-                }}
-                }
-              ></img>
-            :
-              <img src= {companyLogo}></img>
-            }
+            {companyObject.cb_company_logo == null ? (
+              <img src={companyObject.company_logo || defaultLogo} />
+            ) : (
+              <img src={companyObject.cb_company_logo} />
+            )}
           </div>
           <div className="card-company-info">
             <div id="company" className="card-company-name">
-              {company}
+              {companyObject.company}
             </div>
             <div id="jobTitle" className="card-job-position">
-              {jobTitle}
+              {position.job_title}
             </div>
           </div>
           <div className="card-job-details">
@@ -149,24 +133,20 @@ class Card extends PureComponent {
 
   render() {
     const {
-      card: {
-        isRejected
-      },
-      connectDragSource,
+      card: { isRejected },
+      connectDragSource
     } = this.props;
 
     if (isRejected) {
       return this.renderCard();
     }
-    return connectDragSource(
-      this.renderCard()
-    );
+    return connectDragSource(this.renderCard());
   }
-};
+}
 
 Card.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired,
+  isDragging: PropTypes.bool.isRequired
 };
 
-export default DragSource('item', cardSpec, collect)(Card);
+export default DragSource("item", cardSpec, collect)(Card);
