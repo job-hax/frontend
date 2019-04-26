@@ -2,7 +2,7 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import echarts from "echarts";
 
-class PeakLineGraph extends React.Component {
+class MonthlyApplicationLineGraph extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -17,19 +17,19 @@ class PeakLineGraph extends React.Component {
         "#261268",
         "rgb(0,0,0)"
       ],
-      backgroundColor: "rgb(92, 39, 195)",
+      backgroundColor: "white",
       textStyle: {
         fontType: "Exo",
-        color: "white"
+        color: "#261268"
       },
       title: {
         textStyle: {
-          color: "white"
+          color: "#261268"
         }
       },
       splitLine: {
         lineStyle: {
-          color: "#black"
+          color: "#261268"
         }
       },
       line: {
@@ -44,7 +44,7 @@ class PeakLineGraph extends React.Component {
     this.chartThemeCreator();
     return {
       title: {
-        text: "Peak Season Graph",
+        text: "Monthly Applications Line Graph",
         subtext: "",
         x: "center",
         top: "0px"
@@ -53,10 +53,21 @@ class PeakLineGraph extends React.Component {
         trigger: "axis"
       },
       legend: {
-        data: this.props.data,
-        x: "right",
-        top: "28px",
-        textStyle: { color: "white" }
+        data: this.props.legendData,
+        textStyle: { color: "#261268" },
+        x: "center",
+        top: "28px"
+      },
+      toolbox: {
+        show: true,
+        title: "save",
+        feature: {
+          saveAsImage: {
+            show: true,
+            title: "save",
+            iconStyle: { color: "#261268", emphasis: { color: "#261268" } }
+          }
+        }
       },
       grid: {
         left: "3%",
@@ -64,17 +75,9 @@ class PeakLineGraph extends React.Component {
         bottom: "3%",
         containLabel: true
       },
-      toolbox: {
-        show: true,
-        feature: {
-          saveAsImage: { show: true }
-        }
-      },
-      calculable: true,
       xAxis: {
         type: "category",
         boundaryGap: false,
-        show: true,
         data: this.props.months
       },
       yAxis: {
@@ -86,22 +89,22 @@ class PeakLineGraph extends React.Component {
 
   render() {
     return (
-      <div>
-        <div
-          className="global_graph-container-light-background"
-          id="applicationtrend"
-        >
-          <div className="graph-dark">
-            <ReactEcharts
-              option={this.buildMonthlyApplicationLineGraph()}
-              style={{ height: "440px", width: "720px", margin: "30px" }}
-              theme="monthlyapplicationsline"
-            />
-          </div>
+      <div id="applicationtrend">
+        <div className="graph" style={{ marginTop: "40px" }}>
+          <ReactEcharts
+            option={this.buildMonthlyApplicationLineGraph()}
+            style={{
+              height: "440px",
+              width: "740px",
+              margin: "30px",
+              paddingTop: "30px"
+            }}
+            theme="monthlyapplicationsline"
+          />
         </div>
       </div>
     );
   }
 }
 
-export default PeakLineGraph;
+export default MonthlyApplicationLineGraph;

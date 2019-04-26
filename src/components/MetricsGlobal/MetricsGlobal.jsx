@@ -2,9 +2,9 @@ import React, { PureComponent } from "react";
 
 import Header from "../Header/Header.jsx";
 import Spinner from "../Spinner/Spinner.jsx";
-import FeatureArea from "./Components/FeatureArea.jsx";
-import TrendingBarGraph from "./Components/TrendingBarGraph.jsx";
-import PeakLineGraph from "./Components/PeakLineGraph.jsx";
+import FeatureArea from "./SubComponents/FeatureArea.jsx";
+import TrendingBarGraph from "./SubComponents/TrendingBarGraph.jsx";
+import PeakLineGraph from "./SubComponents/PeakLineGraph.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
 import {
   getMonthlyApplicationCountRequest,
