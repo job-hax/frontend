@@ -70,8 +70,13 @@ class TrendingBarGraph extends React.Component {
       },
       toolbox: {
         show: true,
+        title: "save",
         feature: {
-          saveAsImage: { show: true }
+          saveAsImage: {
+            show: true,
+            title: "save",
+            iconStyle: { color: "#261268", emphasis: { color: "#261268" } }
+          }
         }
       },
       calculable: true,
