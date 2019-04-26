@@ -30,8 +30,8 @@ class Metrics extends PureComponent {
       countByJobtitleAndStatusesRequest: [],
       countByStatusesRequest: [],
       wordCountRequest: [],
-      currentmonthsoflastyear: [],
-      waitingToken: true
+      currentMonthsOfLastYear: [],
+      isWaitingResponse: "beforeRequest"
     };
 
     this.totalAppsCountRequest = [];
@@ -42,12 +42,20 @@ class Metrics extends PureComponent {
     this.countByJobtitleAndStatusesRequest = [];
     this.countByStatusesRequest = [];
     this.wordCountRequest = [];
-    this.currentmonthsoflastyear = [];
+    this.currentMonthsOfLastYear = [];
   }
 
   componentDidMount() {
-    new Promise(resolve => setTimeout(resolve, 500)).then(() => {
-      this.setState({ waitingToken: false });
+    this.getData();
+  }
+
+  componentDidUpdate() {
+    this.getData();
+  }
+
+  getData() {
+    if (this.props.active && this.state.isWaitingResponse === "beforeRequest") {
+      this.setState({ isWaitingResponse: true });
       IS_CONSOLE_LOG_OPEN && console.log("metrics token:", this.props.token);
       IS_CONSOLE_LOG_OPEN && console.log("active?", this.props.active);
       getTotalAppsCountRequest.config.headers.Authorization = this.props.token;
@@ -78,10 +86,10 @@ class Metrics extends PureComponent {
             element["type"] = "bar";
             element["stack"] = "Company";
           });
-          this.currentmonthsoflastyear = response.json.data[1];
+          this.currentMonthsOfLastYear = response.json.data[1];
           this.setState({
             appsCountByMonthRequest: this.appsCountByMonthRequest,
-            currentmonthsoflastyear: this.currentmonthsoflastyear
+            currentMonthsOfLastYear: this.currentMonthsOfLastYear
           });
           this.state.appsCountByMonthRequest.map(item =>
             this.appsMonthSources.push(item.name)
@@ -139,6 +147,7 @@ class Metrics extends PureComponent {
       ).then(response => {
         if (response.ok) {
           this.countByStatusesRequest = response.json.data;
+          this.setState({ isWaitingResponse: false });
           this.setState({
             countByStatusesRequest: this.countByStatusesRequest
           });
@@ -155,7 +164,7 @@ class Metrics extends PureComponent {
           }
         }
       );
-    });
+    }
   }
 
   mapData(data) {
@@ -413,7 +422,7 @@ class Metrics extends PureComponent {
       xAxis: [
         {
           type: "category",
-          data: this.currentmonthsoflastyear
+          data: this.currentMonthsOfLastYear
         }
       ],
       yAxis: [
@@ -451,7 +460,7 @@ class Metrics extends PureComponent {
       xAxis: {
         type: "category",
         boundaryGap: false,
-        data: this.currentmonthsoflastyear
+        data: this.currentMonthsOfLastYear
       },
       yAxis: {
         type: "value"
@@ -498,7 +507,9 @@ class Metrics extends PureComponent {
 
   render() {
     IS_CONSOLE_LOG_OPEN && console.log("metrics token", this.props.token);
-    if (this.state.waitingToken)
+    if (this.state.isWaitingResponse === "beforeRequest")
+      return <Spinner message="Reaching your account..." />;
+    if (this.state.isWaitingResponse === true)
       return <Spinner message="Preparing your metrics..." />;
     return (
       <div>

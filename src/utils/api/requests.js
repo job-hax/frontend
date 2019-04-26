@@ -12,6 +12,10 @@ import {
   GET_NOTES,
   GET_TOTAL_APPLICATION_COUNT,
   GET_WORD_COUNT,
+  GET_TOP_COMPANIES,
+  GET_TOP_POSITIONS,
+  GET_STATISTICS,
+  GET_MONTHLY_APPLICATION_COUNT,
   LOGIN_USER,
   LOGOUT_USER,
   REGISTER_USER,
@@ -201,6 +205,42 @@ export const getCountByJobtitleAndStatusesRequest = {
 
 export const getWordCountRequest = {
   url: GET_WORD_COUNT,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//GLOBAL METRICS DATA REQUESTS//
+export const getTrendingRequest = {
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const getStatisticsRequest = {
+  url: GET_STATISTICS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const getMonthlyApplicationCountRequest = {
+  url: GET_MONTHLY_APPLICATION_COUNT,
   config: {
     method: "GET",
     mode: "cors",
