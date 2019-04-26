@@ -52,16 +52,14 @@ class Card extends PureComponent {
   }
 
   sourceLogoSelector(source) {
-    if (source == "Hired.com") {
+    if (source == null) return;
+    if (source.value == "Hired.com") {
       return <img src={hiredComLogo} />;
-    }
-    if (source == "LinkedIn") {
+    } else if (source.value == "LinkedIn") {
       return <img src={linkedInLogo} />;
-    }
-    if (source == "Indeed") {
+    } else if (source.value == "Indeed") {
       return <img src={indeedLogo} />;
-    }
-    if (source == "Vettery") {
+    } else if (source.value == "Vettery") {
       return <img src={vetteryLogo} />;
     }
   }
@@ -72,7 +70,7 @@ class Card extends PureComponent {
         companyObject,
         position,
         isRejected,
-        source,
+        app_source,
         token,
         columnName,
         deleteJobFromList,
@@ -124,7 +122,7 @@ class Card extends PureComponent {
             </div>
           </div>
           <div className="card-job-details">
-            {this.sourceLogoSelector(source)}
+            {this.sourceLogoSelector(app_source)}
           </div>
         </div>
       </div>

@@ -548,7 +548,9 @@ class CardModal extends PureComponent {
                 <div className="modal-body main data">
                   {makeTimeBeautiful(card.applyDate, "date")}
                 </div>
-                <div className="modal-body main data">{card.source}</div>
+                <div className="modal-body main data">
+                  {card.app_source === null ? "N/A" : card.app_source.value}
+                </div>
                 <div className="modal-body main data">
                   {this.generateNotes()}
                 </div>
