@@ -36,7 +36,7 @@ class Dashboard extends Component {
       phoneScreenRejected: [],
       onsiteInterviewRejected: [],
       offerRejected: [],
-      waitingToken: true
+      isWaitingResponse: "beforeRequest"
     };
 
     this.toApply = [];
@@ -56,15 +56,23 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
+    this.getData();
+  }
+
+  componentDidUpdate() {
+    this.getData();
+  }
+
+  getData() {
     if (IS_MOCKING) {
       this.sortJobApplications(mockJobApps.data);
       return;
     }
-    new Promise(resolve => setTimeout(resolve, 500)).then(() => {
-      this.setState({ waitingToken: false });
-      IS_CONSOLE_LOG_OPEN && console.log("dashboard token", this.props.token);
-      IS_CONSOLE_LOG_OPEN &&
-        console.log("dashboard active?", this.props.active);
+    if (this.props.active && this.state.isWaitingResponse === "beforeRequest") {
+      this.setState({ isWaitingResponse: true });
+      IS_CONSOLE_LOG_OPEN && console.log("dashboard token", this.props.token),
+        "\ndashboard active?",
+        this.props.active;
       if (this.props.active) {
         const { url, config } = syncUserEmailsRequest;
         config.headers.Authorization = this.props.token;
@@ -80,6 +88,7 @@ class Dashboard extends Component {
             fetchApi(url, config).then(response => {
               if (response.ok) {
                 this.sortJobApplications(response.json.data);
+                this.setState({ isWaitingResponse: false });
                 IS_CONSOLE_LOG_OPEN &&
                   console.log(
                     "dashboard response json data",
@@ -89,7 +98,7 @@ class Dashboard extends Component {
             });
           });
       }
-    });
+    }
   }
 
   sortJobApplications(applications) {
@@ -236,9 +245,15 @@ class Dashboard extends Component {
   }
 
   render() {
-    IS_CONSOLE_LOG_OPEN && console.log("Dashboard opened!", this.state.offer);
-    if (!this.props.active) return <Spinner message="Accessing your data..." />;
-    if (this.state.waitingToken && !IS_MOCKING)
+    IS_CONSOLE_LOG_OPEN &&
+      console.log(
+        "Dashboard opened!",
+        this.props.active,
+        this.state.isWaitingResponse
+      );
+    if (this.state.isWaitingResponse === "beforeRequest")
+      return <Spinner message="Reaching your account..." />;
+    if (this.state.isWaitingResponse && !IS_MOCKING)
       return <Spinner message="Preparing your dashboard..." />;
     return (
       <div>

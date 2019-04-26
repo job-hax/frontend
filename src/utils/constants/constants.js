@@ -59,6 +59,88 @@ export const APPLICATION_STATUSES_IN_ORDER = [
   }
 ];
 
+export const TRENDING_STATUS_OPTIONS = [
+  {
+    id: 0,
+    name: "All Applied",
+    param: ""
+  },
+  {
+    id: 2,
+    name: "To Apply",
+    param: "&status_id=2"
+  },
+  {
+    id: 1,
+    name: "Applied",
+    param: "&status_id=1"
+  },
+  {
+    id: 3,
+    name: "Phone Screen",
+    param: "&status_id=3"
+  },
+  {
+    id: 4,
+    name: "Onsite Interview",
+    param: "&status_id=4"
+  },
+  {
+    id: 5,
+    name: "Offer",
+    param: "&status_id=5"
+  }
+];
+
+export const TRENDING_YEAR_OPTIONS = [
+  {
+    id: 0,
+    name: "2019",
+    param: "&year=2019"
+  },
+  {
+    id: 1,
+    name: "2018",
+    param: "&year=2018"
+  },
+  {
+    id: 2,
+    name: "Lifetime",
+    param: ""
+  }
+];
+
+export const TRENDING_COUNT_OPTIONS = [
+  {
+    id: 0,
+    name: "10",
+    param: "&count=10"
+  },
+  {
+    id: 1,
+    name: "20",
+    param: "&count=20"
+  },
+  {
+    id: 2,
+    name: "30",
+    param: "&count=30"
+  }
+];
+
+export const TRENDING_TYPE_OPTIONS = [
+  {
+    id: 0,
+    name: "Companies",
+    param: "api/metrics/get_top_companies"
+  },
+  {
+    id: 1,
+    name: "Positions",
+    param: "api/metrics/get_top_positions"
+  }
+];
+
 export const VISIBILITY_FILTERS = {
   ALL: "all",
   COMPLETED: "completed",

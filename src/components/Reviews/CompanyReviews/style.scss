@@ -1,0 +1,68 @@
+.company-card-container {
+    min-height: 200px;
+    border: 1px solid rgb(167, 167, 167);
+    box-shadow: 1px 1px rgba(167, 167, 167, 0.322);
+    border-radius: 4px;
+    width: 60%;
+    margin-left: 20%;
+    margin-bottom: 20px;
+    padding: 12px;
+
+    .company-card-initial {
+        margin: 12px;
+        display: flex;
+        justify-content: left;
+        width: auto;
+
+        .company-card-left {
+            height: 180px;
+            width: 80%;
+            margin-right: 12px;
+
+            .company-card-header {
+                display: flex;
+                justify-content: left;
+
+                .company-name {
+                    font-size: 200%;
+                    margin-top: 20px;
+                    margin-left: 36px;
+                }
+
+                .company-logo {
+                    width: 80px;
+                    height: auto;
+                    margin-right: 12px;
+                    display: flex;
+                    align-items: center;
+
+                    img {
+                        width: 80px;
+                        height: auto;
+                    }
+                }
+            }
+
+            .company-card-info {
+                font-size: 90%;
+                margin-top: 12px;
+            }
+
+        }
+
+        .company-card-right {
+            width: 20%;
+        }
+    }
+
+    .company-card-reviews-container {
+        max-height: 60vh;
+        padding-bottom: 20px;
+        display: flex;
+        overflow-x: hidden;
+
+        &.hidden {
+            display: none;
+        }
+    }
+}
