@@ -38,7 +38,8 @@ class Metrics extends PureComponent {
       wordCountRequest: [],
       currentMonthsOfLastYear: [],
       isWaitingResponse: "beforeRequest",
-      isMonthlyLine: false
+      isMonthlyLine: false,
+      selectedGraph: "Bar"
     };
 
     this.totalAppsCountRequest = [];
@@ -174,11 +175,8 @@ class Metrics extends PureComponent {
     }
   }
 
-  graphSelector(graph) {
-    if (graph === "line") this.setState({ isMonthlyLine: true });
-    else {
-      this.setState({ isMonthlyLine: false });
-    }
+  graphSelector(param, name) {
+    this.setState({ isMonthlyLine: param, selectedGraph: name });
   }
 
   render() {
@@ -196,11 +194,11 @@ class Metrics extends PureComponent {
             <div className="filter-indicator">Selected:</div>
             <DropDownSelector
               itemList={[
-                { id: 0, name: "Bar", param: "bar" },
-                { id: 1, name: "Line", param: "line" }
+                { id: 0, name: "Bar", param: false },
+                { id: 1, name: "Line", param: true }
               ]}
               selector={this.graphSelector}
-              menuName={"Bar"}
+              menuName={this.state.selectedGraph}
             />
           </div>
         </div>
