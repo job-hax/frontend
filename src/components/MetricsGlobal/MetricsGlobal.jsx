@@ -138,7 +138,8 @@ class MetricsGlobal extends PureComponent {
           });
           this.currentMonthsOfLastYear = response.json.data[1];
           this.setState({
-            appsCountByMonthWithTotal: this.appsCountByMonthWithTotal
+            appsCountByMonthWithTotal: this.appsCountByMonthWithTotal,
+            currentMonthsOfLastYear: this.currentMonthsOfLastYear
           });
           this.state.appsCountByMonthWithTotal.map(item =>
             this.appsMonthSourcesWithTotal.push(item.name)
