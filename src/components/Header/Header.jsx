@@ -56,12 +56,6 @@ class Header extends Component {
             </Link>
           </div>
           <div className="header-icon general tooltips">
-            <Link to="/reviews">
-              <img src="../../src/assets/icons/reviews.png" />
-              <span>Reviews</span>
-            </Link>
-          </div>
-          <div className="header-icon general tooltips">
             <Link to="/underconstruction">
               <img src="../../src/assets/icons/NotifIcon@3x.png" />
               <span>Notifications</span>
