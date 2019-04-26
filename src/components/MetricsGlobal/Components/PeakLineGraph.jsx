@@ -74,6 +74,7 @@ class PeakLineGraph extends React.Component {
       xAxis: {
         type: "category",
         boundaryGap: false,
+        show: true,
         data: this.props.months
       },
       yAxis: {
