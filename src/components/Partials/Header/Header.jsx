@@ -98,10 +98,12 @@ class Header extends Component {
           ) : (
             <div
               className="header-icon general tooltips"
-              onClick={() => this.props.toggleNotifications(false)}
               ref={this.setWrapperRef}
             >
-              <img src="../../src/assets/icons/NotifIcon@3x.png" />
+              <img
+                src="../../src/assets/icons/NotifIcon@3x.png"
+                onClick={() => this.props.toggleNotifications(false)}
+              />
               <NotificationsBox
                 notificationsList={this.props.notificationsList}
               />
