@@ -1,8 +1,8 @@
 import React from "react";
 
-import { makeTimeBeautiful } from "../../utils/constants/constants.js";
-import { votePollRequest } from "../../utils/api/requests.js";
-import { fetchApi } from "../../utils/api/fetch_api";
+import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
+import { votePollRequest } from "../../../utils/api/requests.js";
+import { fetchApi } from "../../../utils/api/fetch_api";
 
 import "./style.scss";
 
