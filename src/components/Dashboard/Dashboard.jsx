@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
-import Column from "../Column/Column.jsx";
-import Spinner from "../Spinner/Spinner.jsx";
+import Column from "./Column/Column.jsx";
+import Spinner from "../Partials/Spinner/Spinner.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
 import {
   addJobAppsRequest,
@@ -269,7 +269,7 @@ class Dashboard extends Component {
             cards={this.state.toApply}
             token={this.props.token}
           />
-          <hr className = "column-divider"></hr>
+          <hr className="column-divider" />
           <Column
             name="applied"
             id="1"
@@ -287,7 +287,7 @@ class Dashboard extends Component {
             message="rejected without any interview"
             token={this.props.token}
           />
-          <hr className = "column-divider"></hr>
+          <hr className="column-divider" />
           <Column
             name="phoneScreen"
             id="3"
@@ -306,7 +306,7 @@ class Dashboard extends Component {
             message="rejected after phone screens"
             token={this.props.token}
           />
-          <hr className = "column-divider"></hr>
+          <hr className="column-divider" />
           <Column
             name="onsiteInterview"
             id="4"
@@ -325,7 +325,7 @@ class Dashboard extends Component {
             message="rejected after interviews"
             token={this.props.token}
           />
-          <hr className = "column-divider"></hr>
+          <hr className="column-divider" />
           <Column
             name="offer"
             id="5"

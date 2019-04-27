@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 
-import Footer from "../Footer/Footer.jsx";
+import Footer from "../Partials/Footer/Footer.jsx";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 
 import "./style.scss";

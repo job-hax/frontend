@@ -2,16 +2,16 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 
-import Header from "../Header/Header.jsx";
+import Header from "../Partials/Header/Header.jsx";
 import Dashboard from "../Dashboard/Dashboard.jsx";
 import Metrics from "../Metrics/Metrics.jsx";
 import MetricsGlobal from "../MetricsGlobal/MetricsGlobal.jsx";
 import Reviews from "../Reviews/Reviews.jsx";
-import Home from "../Home/Home.jsx";
-import AboutUs from "../AboutUs/AboutUs.jsx";
-import Spinner from "../Spinner/Spinner.jsx";
-import PollBox from "../PollBox/PollBox.jsx";
-import UnderConstruction from "../UnderConstruction/UnderConstruction.jsx";
+import Home from "../StaticPages/Home/Home.jsx";
+import AboutUs from "../StaticPages/AboutUs/AboutUs.jsx";
+import Spinner from "../Partials/Spinner/Spinner.jsx";
+import PollBox from "../Partials/PollBox/PollBox.jsx";
+import UnderConstruction from "../StaticPages/UnderConstruction/UnderConstruction.jsx";
 import SignIn from "../SignIn/SignIn.jsx";
 import SignUp from "../SignUp/SignUp.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
@@ -25,7 +25,9 @@ import {
   loginUserRequest,
   logOutUserRequest,
   getPollRequest,
-  notificationsRequest
+  notificationsRequest,
+  updateProfilePhotoRequest,
+  getProfileRequest
 } from "../../utils/api/requests.js";
 
 import "./style.scss";
@@ -45,8 +47,10 @@ class App extends Component {
       isPollChecking: true,
       isPollShowing: false,
       isNotificationsShowing: false,
+      profilePhotoUrl: "",
       pollData: [],
-      notificationsList: []
+      notificationsList: [],
+      profileData: []
     };
     this.token = "";
     this.active = false;
@@ -126,6 +130,18 @@ class App extends Component {
         }
       });
     }
+    if (this.state.token != "" && this.state.profileData.length == 0) {
+      getProfileRequest.config.headers.Authorization = this.state.token;
+      fetchApi(getProfileRequest.url, getProfileRequest.config).then(
+        response => {
+          if (response.ok) {
+            this.profileData = response.json.data;
+            this.setState({ profileData: this.profileData });
+            console.log("profileData", this.state.profileData);
+          }
+        }
+      );
+    }
   }
 
   toggleIsPollShowing() {
@@ -159,6 +175,22 @@ class App extends Component {
     }));
   }
 
+  postGoogleProfilePhoto(photoURL, token) {
+    updateProfilePhotoRequest.config.headers.Authorization = token;
+    updateProfilePhotoRequest.config.body = JSON.stringify({
+      photo_url: photoURL
+    });
+    console.log(updateProfilePhotoRequest);
+    fetchApi(
+      updateProfilePhotoRequest.url,
+      updateProfilePhotoRequest.config
+    ).then(response => {
+      if (response.ok) {
+        console.log(response);
+      }
+    });
+  }
+
   handleGoogleSignIn() {
     window.gapi.load("client:auth2", () => {
       window.gapi.client
@@ -173,13 +205,13 @@ class App extends Component {
           }));
           this.googleAuth.isSignedIn.listen(this.onAuthUpdate);
           this.googleAuth.signIn().then(response => {
-            IS_CONSOLE_LOG_OPEN &&
-              console.log("signIn response", response.Zi.token_type);
+            IS_CONSOLE_LOG_OPEN && console.log("signIn response", response);
             if (response.Zi.token_type == "Bearer") {
               IS_CONSOLE_LOG_OPEN &&
                 console.log("google access_token:", response.Zi.access_token);
               this.setState({
-                shallRequestToken: true
+                shallRequestToken: true,
+                profilePhotoUrl: response.w3.Paa
               });
               IS_CONSOLE_LOG_OPEN &&
                 console.log(
@@ -202,6 +234,11 @@ class App extends Component {
                     this.token = `${
                       response.json.data.token_type
                     } ${response.json.data.access_token.trim()}`;
+
+                    this.postGoogleProfilePhoto(
+                      this.state.profilePhotoUrl,
+                      this.token
+                    );
                     IS_CONSOLE_LOG_OPEN && console.log(this.token);
                     this.active = true;
                     this.setState({
@@ -389,6 +426,7 @@ class App extends Component {
               notificationCheck={this.checkNotifications}
               isNotificationsShowing={this.state.isNotificationsShowing}
               toggleNotifications={this.toggleNotificationsDisplay}
+              userPhoto={this.state.profileData.profile_photo}
             />
           )}
           {this.state.isPollShowing && (
@@ -467,6 +505,7 @@ class App extends Component {
     ) : (
       <Router>
         <div className="main-container">
+          <Route exact path="/home" render={() => <Redirect to="/" />} />
           <Route
             exact
             path="/"

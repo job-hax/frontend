@@ -3,11 +3,11 @@
   justify-content: space-between;
   padding: 20px 75px;
   background: rgb(92, 39, 195);
-  background-image: url(../../assets/images/homebanner.jpg);
+  background-image: url(../../../assets/images/homebanner.jpg);
   background-size: 100% 100%;
   overflow-y: hidden;
 
-  a{
+  a {
     color: white;
     text-decoration: none;
   }
@@ -15,18 +15,23 @@
   .footer-content {
     color: white;
     font-size: 10pt;
+
     &.footer-social-links {
       text-align: end;
-      span{
+
+      span {
         margin-left: 20px;
       }
     }
+
     &.footer-inside-links {
       text-align: start;
-      span{
+
+      span {
         margin-right: 20px;
       }
     }
+
     &.footer-notation {
       text-align: center;
     }

@@ -1,27 +1,23 @@
-import React, {Component} from 'react';
-import Footer from '../Footer/Footer.jsx';
-import {Link} from 'react-router-dom';
+import React, { Component } from "react";
+import Footer from "../../Partials/Footer/Footer.jsx";
+import { Link } from "react-router-dom";
 
-import './style.scss'
+import "./style.scss";
 
 class Home extends Component {
-
   generateTopButtons() {
-    const {isUserLoggedIn} = this.props;
+    const { isUserLoggedIn } = this.props;
 
-    return isUserLoggedIn ?
-    (
+    return isUserLoggedIn ? (
       <div className="top_buttons">
-       <Link to="/dashboard">
+        <Link to="/dashboard">
           <button>Dashboard</button>
         </Link>
         <Link to="/aboutus">
           <button>About us</button>
         </Link>
       </div>
-    )
-    : 
-    (
+    ) : (
       <div className="top_buttons">
         <Link to="/aboutus">
           <button>About us</button>
@@ -33,35 +29,43 @@ class Home extends Component {
           <button>Sign in</button>
         </Link>
       </div>
-    )
+    );
   }
 
   generateHeaderArea() {
-    return(
+    return (
       <section className="header_area" id="home">
         <div className="top_buttons_and_logo">
           <a href="#home">
-            <img className="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
+            <img
+              className="logo"
+              src="src/assets/icons/JobHax-logo-white.svg"
+              alt="JobHax-logo"
+            />
           </a>
           {this.generateTopButtons()}
         </div>
         <div className="intro">
           <h2>Simplify your job hunt!</h2>
-          <p>Improve your job search experience in a seamless & intuitive way</p>
-          <a className="how_it_works_btn" href="#howitworks">How It Works</a>
+          <p>
+            Improve your job search experience in a seamless & intuitive way
+          </p>
+          <a className="how_it_works_btn" href="#howitworks">
+            How It Works
+          </a>
         </div>
       </section>
-    )
+    );
   }
 
-  generateFeatureInfo(imageLink,header,body) {
+  generateFeatureInfo(imageLink, header, body) {
     return (
       <div className="feature">
-        <img src={imageLink} alt=""></img>
+        <img src={imageLink} alt="" />
         <h4>{header}</h4>
         <p className="small-text">{body}</p>
       </div>
-    )
+    );
   }
 
   generateFeatureArea() {
@@ -69,7 +73,10 @@ class Home extends Component {
       <section className="feature_area" id="feature">
         <div className="title">
           <h2>Unique Features</h2>
-          <p className="small-text">No more messy spreadsheets or digging through emails to see the status of your job applications!</p>
+          <p className="small-text">
+            No more messy spreadsheets or digging through emails to see the
+            status of your job applications!
+          </p>
         </div>
         <div className="features">
           {this.generateFeatureInfo(
@@ -94,14 +101,14 @@ class Home extends Component {
           )}
         </div>
       </section>
-    )
+    );
   }
 
-  generateInteriorItem(imageLink,header,body) {
+  generateInteriorItem(imageLink, header, body) {
     return (
       <section className="interior_area">
         <div className="row">
-          <img src={imageLink} alt=""></img>
+          <img src={imageLink} alt="" />
           <div className="text-group">
             <h4>{header}</h4>
             <p className="small-text">{body}</p>
@@ -109,21 +116,21 @@ class Home extends Component {
           </div>
         </div>
       </section>
-    )
+    );
   }
-  generateInteriorItemFlipLR(imageLink,header,body) {
+  generateInteriorItemFlipLR(imageLink, header, body) {
     return (
       <section className="interior_area">
         <div className="row flipLR">
           <div className="text-group">
             <h4>{header}</h4>
-              <p className="small-text">{body}</p>
-              {/* <a className="main_btn" href="#">See Details</a> */}
-            </div>
-          <img src={imageLink} alt=""></img>
+            <p className="small-text">{body}</p>
+            {/* <a className="main_btn" href="#">See Details</a> */}
+          </div>
+          <img src={imageLink} alt="" />
         </div>
       </section>
-    )
+    );
   }
 
   generateHowItWorksArea() {
@@ -145,8 +152,7 @@ class Home extends Component {
           "As you progress through your job search, we make it easy to identify problem areas so that you can constantly make improvements. For example, we can provide you with metrics on common attributes (skills, position, experience, etc.) among jobs which you are being rejected for so you can make changes to your resume."
         )}
       </div>
-      
-    )
+    );
   }
 
   render() {
@@ -155,7 +161,7 @@ class Home extends Component {
         {this.generateHeaderArea()}
         {this.generateFeatureArea()}
         {this.generateHowItWorksArea()}
-        <Footer/>
+        <Footer />
       </div>
     );
   }

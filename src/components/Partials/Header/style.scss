@@ -3,7 +3,7 @@
   justify-content: space-between;
   height: 60px;
   width: 100%;
-  background-image: url('../../assets/images/homebanner.jpg');
+  background-image: url('../../../assets/images/homebanner.jpg');
 
   .left-container {
     display: flex;
@@ -37,6 +37,7 @@
       img {
         height: 30px;
         width: auto;
+        border-radius: 15px;
       }
     }
 
@@ -132,7 +133,7 @@
       width: 40px;
       height: 40px;
       cursor: pointer;
-      background-image: url('../../assets/icons/JobHax-logo-white.svg');
+      background-image: url('../../../assets/icons/JobHax-logo-white.svg');
       background-size: 100%;
       background-repeat: no-repeat;
     }
