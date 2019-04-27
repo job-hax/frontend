@@ -224,7 +224,6 @@ class Column extends Component {
 
     const columnContainerClass = classNames({
       'column-container': true,
-      'add-margin': isLastColumn,
     });
 
     return connectDropTarget(
