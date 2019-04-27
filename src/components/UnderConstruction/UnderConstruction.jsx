@@ -1,64 +1,55 @@
-import React, {Component} from 'react';
-import Footer from '../Footer/Footer.jsx';
-import {Link} from 'react-router-dom';
+import React, { Component } from "react";
+import Footer from "../Footer/Footer.jsx";
+import { Link } from "react-router-dom";
 
-import './style.scss'
+import "./style.scss";
 
 class UnderConstruction extends Component {
-
-  generateTopButtons(){
+  generateTopButtons() {
     return (
       <div className="top-buttons">
-        <Link to="/">
-          <img className="logo" src="src/assets/icons/JobHax-logo-white.svg" alt="JobHax-logo"/>
+        <Link to="/home">
+          <img
+            className="logo"
+            src="src/assets/icons/JobHax-logo-white.svg"
+            alt="JobHax-logo"
+          />
         </Link>
-          {this.props.isUserLoggedIn ?
-            <Link to="/dashboard">
-              <button>
-                Dashboard
-              </button>
-            </Link>
-              :
-            <Link to="/">
-              <button>
-                Home
-              </button>
-            </Link>
-          }
+        <Link to="/home">
+          <button>Home</button>
+        </Link>
       </div>
-    )
+    );
   }
-  
-  generateHeaderArea(){
-    return(
+
+  generateHeaderArea() {
+    return (
       <section className="header_area">
         {this.generateTopButtons()}
-        <div >
+        <div>
           <h2>sorry</h2>
         </div>
       </section>
-    )
+    );
   }
 
-  generateInfo () {
+  generateInfo() {
     return (
       <div className="info-area">
         <h2>This page is under construction!</h2>
       </div>
-    )
+    );
   }
-
-
 
   render() {
     return (
       <div className="under_constrution-container">
         <div>
-            {this.generateHeaderArea()}
-            {this.generateInfo()}
+          {this.generateHeaderArea()}
+          {this.generateInfo()}
         </div>
         <div className="footer-bottom">
-            <Footer/>
+          <Footer />
         </div>
       </div>
     );

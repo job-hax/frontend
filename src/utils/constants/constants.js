@@ -1,6 +1,6 @@
 export const MIN_CARD_NUMBER_IN_COLUMN = 0;
 
-export const IS_CONSOLE_LOG_OPEN = false;
+export const IS_CONSOLE_LOG_OPEN = true;
 
 export const TOAPPLY = "toApply";
 export const APPLIED = "applied";
@@ -62,32 +62,32 @@ export const APPLICATION_STATUSES_IN_ORDER = [
 export const TRENDING_STATUS_OPTIONS = [
   {
     id: 0,
-    name: "All Applied",
+    value: "All Applied",
     param: ""
   },
   {
     id: 2,
-    name: "To Apply",
+    value: "To Apply",
     param: "&status_id=2"
   },
   {
     id: 1,
-    name: "Applied",
+    value: "Applied",
     param: "&status_id=1"
   },
   {
     id: 3,
-    name: "Phone Screen",
+    value: "Phone Screen",
     param: "&status_id=3"
   },
   {
     id: 4,
-    name: "Onsite Interview",
+    value: "Onsite Interview",
     param: "&status_id=4"
   },
   {
     id: 5,
-    name: "Offer",
+    value: "Offer",
     param: "&status_id=5"
   }
 ];
@@ -95,17 +95,17 @@ export const TRENDING_STATUS_OPTIONS = [
 export const TRENDING_YEAR_OPTIONS = [
   {
     id: 0,
-    name: "2019",
+    value: "2019",
     param: "&year=2019"
   },
   {
     id: 1,
-    name: "2018",
+    value: "2018",
     param: "&year=2018"
   },
   {
     id: 2,
-    name: "Lifetime",
+    value: "Lifetime",
     param: ""
   }
 ];
@@ -113,17 +113,17 @@ export const TRENDING_YEAR_OPTIONS = [
 export const TRENDING_COUNT_OPTIONS = [
   {
     id: 0,
-    name: "10",
+    value: "10",
     param: "&count=10"
   },
   {
     id: 1,
-    name: "20",
+    value: "20",
     param: "&count=20"
   },
   {
     id: 2,
-    name: "30",
+    value: "30",
     param: "&count=30"
   }
 ];
@@ -131,12 +131,12 @@ export const TRENDING_COUNT_OPTIONS = [
 export const TRENDING_TYPE_OPTIONS = [
   {
     id: 0,
-    name: "Companies",
+    value: "Companies",
     param: "api/metrics/get_top_companies"
   },
   {
     id: 1,
-    name: "Positions",
+    value: "Positions",
     param: "api/metrics/get_top_positions"
   }
 ];
