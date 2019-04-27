@@ -4,7 +4,7 @@
   height: 60px;
   width: 100%;
   background-color: rgba(121, 4, 204, 1);
-  
+
   .left-container {
     display: flex;
   }
@@ -28,16 +28,16 @@
       margin-top: 7px;
       margin-bottom: 15px;
     }
-    
+
     &.user-icon {
       margin-top: 12px;
       margin-bottom: 10px;
       margin-right: 30px;
 
       img {
-          height: 30px;
-          width: auto;
-        }
+        height: 30px;
+        width: auto;
+      }
     }
 
 
@@ -54,8 +54,8 @@
   }
 
   .search-box {
-    margin-top: 10px; 
-    margin-bottom: 10px; 
+    margin-top: 10px;
+    margin-bottom: 10px;
     width: 420px;
     height: 40px;
     background-color: rgba(255, 255, 255, 0.2);
@@ -65,7 +65,7 @@
   }
 
   .search-input {
-    color:rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.8);
     width: 380px;
     background-color: transparent;
     font-size: 18px;
@@ -74,8 +74,8 @@
     cursor: text;
     margin-top: 10px;
   }
-  
-  .svg_ics{
+
+  .svg_ics {
     fill: white;
   }
 
@@ -83,6 +83,7 @@
   .header-icon.tooltips {
     position: relative;
     display: inline;
+
     span {
       position: absolute;
       width: 140px;
@@ -93,6 +94,7 @@
       text-align: center;
       visibility: hidden;
       border-radius: 6px;
+
       &:after {
         content: '';
         position: absolute;
@@ -107,6 +109,7 @@
       }
     }
   }
+
   .header-icon {
     &:hover.tooltips {
       span {
@@ -119,7 +122,7 @@
       }
     }
   }
-  
+
   .jobhax-logo-container {
     margin-top: 10px;
     margin-right: 20px;

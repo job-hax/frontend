@@ -1,6 +1,5 @@
 import React from "react";
 
-import Header from "../Header/Header.jsx";
 import Spinner from "../Spinner/Spinner.jsx";
 import CompanyReviews from "./CompanyReviews/CompanyReviews.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
@@ -76,7 +75,6 @@ class Reviews extends React.Component {
       return <Spinner message="Preparing reviews..." />;
     return (
       <div className="reviews-container">
-        <Header handleSignOut={this.props.handleSignOut} />
         {this.generateFeatureArea()}
         {this.generateCompanyCards()}
       </div>

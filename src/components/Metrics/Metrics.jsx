@@ -1,8 +1,5 @@
 import React, { PureComponent } from "react";
-import ReactEcharts from "echarts-for-react";
-import echarts from "echarts";
 
-import Header from "../Header/Header.jsx";
 import Spinner from "../Spinner/Spinner.jsx";
 import DropDownSelector from "../MetricsGlobal/SubComponents/DropDownSelector.jsx";
 import FeatureArea from "./SubComponents/FeatureArea.jsx";
@@ -175,8 +172,8 @@ class Metrics extends PureComponent {
     }
   }
 
-  graphSelector(param, name) {
-    this.setState({ isMonthlyLine: param, selectedGraph: name });
+  graphSelector(param, value) {
+    this.setState({ isMonthlyLine: param, selectedGraph: value });
   }
 
   render() {
@@ -187,15 +184,14 @@ class Metrics extends PureComponent {
       return <Spinner message="Preparing your metrics..." />;
     return (
       <div>
-        <Header handleSignOut={this.props.handleSignOut} />
         <FeatureArea count={this.state.totalAppsCountRequest.count} />
         <div className="selection-menu-container">
           <div className="selection-menu">
             <div className="filter-indicator">Selected:</div>
             <DropDownSelector
               itemList={[
-                { id: 0, name: "Bar", param: false },
-                { id: 1, name: "Line", param: true }
+                { id: 0, value: "Bar", param: false },
+                { id: 1, value: "Line", param: true }
               ]}
               selector={this.graphSelector}
               menuName={this.state.selectedGraph}

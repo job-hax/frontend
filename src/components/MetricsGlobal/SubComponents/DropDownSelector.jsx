@@ -14,9 +14,9 @@ class DropDownSelector extends React.Component {
       <div
         key={item.id}
         className="dropdown-item"
-        onClick={() => this.props.selector(item.param, item.name)}
+        onClick={() => this.props.selector(item.param, item.value)}
       >
-        {item.name}
+        {item.value}
       </div>
     ));
   }
