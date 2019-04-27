@@ -109,13 +109,15 @@ class Header extends Component {
               />
             </div>
           )}
-          <div className="header-icon user-icon">
-            {this.props.userPhoto != "" ? (
-              <img src={this.props.userPhoto} />
-            ) : (
+          {this.props.userData != "" ? (
+            <div className="header-icon user-icon">
+              <img src={this.props.userData.profile_photo} />
+            </div>
+          ) : (
+            <div className="header-icon user-icon">
               <img src="../../src/assets/icons/SeyfoIcon@3x.png" />
-            )}
-          </div>
+            </div>
+          )}
           <div className="header-icon sign_out">
             <Link to="/">
               <img
