@@ -65,7 +65,6 @@ class Header extends Component {
               </span>
             </Link>
           </div>
-          <div className="header-icon general tooltips">
           {!this.props.isNotificationsShowing ? (
             <div
               className="header-icon general tooltips"
