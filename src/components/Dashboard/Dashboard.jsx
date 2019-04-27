@@ -248,7 +248,8 @@ class Dashboard extends Component {
       console.log(
         "Dashboard opened!",
         this.props.active,
-        this.state.isWaitingResponse
+        this.state.isWaitingResponse,
+        this.props.token
       );
     if (this.state.isWaitingResponse === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
