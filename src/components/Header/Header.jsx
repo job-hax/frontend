@@ -7,11 +7,32 @@ import "./style.scss";
 class Header extends Component {
   constructor(props) {
     super(props);
+
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+  }
+
+  componentWillMount() {
+    document.addEventListener("mousedown", this.handleClickOutside, false);
+  }
+
+  componentWillUnmount() {
+    document.addEventListener("mousedown", this.handleClickOutside, false);
+  }
+
+  setWrapperRef(node) {
+    this.wrapperRef = node;
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.props.toggleNotifications(false);
+    }
   }
 
   handleNotifications() {
     this.props.notificationCheck();
-    this.props.toggleNotifications();
+    this.props.toggleNotifications(true);
   }
 
   render() {
@@ -65,12 +86,6 @@ class Header extends Component {
               </span>
             </Link>
           </div>
-          <div className="header-icon general tooltips">
-            <Link to="/reviews">
-              <img src="../../src/assets/icons/reviews.png" />
-              <span>Reviews</span>
-            </Link>
-          </div>
           {!this.props.isNotificationsShowing ? (
             <div
               className="header-icon general tooltips"
@@ -80,11 +95,14 @@ class Header extends Component {
               <span>Notifications</span>
             </div>
           ) : (
-            <div className="header-icon general tooltips">
+            <div
+              className="header-icon general tooltips"
+              onClick={() => this.props.toggleNotifications(false)}
+              ref={this.setWrapperRef}
+            >
               <img src="../../src/assets/icons/NotifIcon@3x.png" />
               <NotificationsBox
                 notificationsList={this.props.notificationsList}
-                toggleDisplay={this.props.toggleNotifications}
               />
             </div>
           )}

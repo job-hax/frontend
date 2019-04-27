@@ -8,27 +8,6 @@ import "./style.scss";
 class NotificationsBox extends React.Component {
   constructor(props) {
     super(props);
-
-    this.setWrapperRef = this.setWrapperRef.bind(this);
-    this.handleClickOutside = this.handleClickOutside.bind(this);
-  }
-
-  componentWillMount() {
-    document.addEventListener("mousedown", this.handleClickOutside, false);
-  }
-
-  componentWillUnmount() {
-    document.addEventListener("mousedown", this.handleClickOutside, false);
-  }
-
-  setWrapperRef(node) {
-    this.wrapperRef = node;
-  }
-
-  handleClickOutside(event) {
-    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      this.props.toggleDisplay();
-    }
   }
 
   generateNotifications() {
@@ -52,7 +31,7 @@ class NotificationsBox extends React.Component {
 
   render() {
     return (
-      <div className="notification-box-container" ref={this.setWrapperRef}>
+      <div className="notification-box-container">
         <div className="notificaiton-box-header">Notifications</div>
         <div className="notificaitons-list">{this.generateNotifications()}</div>
       </div>
