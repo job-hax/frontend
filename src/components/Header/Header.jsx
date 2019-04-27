@@ -66,11 +66,6 @@ class Header extends Component {
             </Link>
           </div>
           <div className="header-icon general tooltips">
-            <Link to="/reviews">
-              <img src="../../src/assets/icons/reviews.png" />
-              <span>Reviews</span>
-            </Link>
-          </div>
           {!this.props.isNotificationsShowing ? (
             <div
               className="header-icon general tooltips"
