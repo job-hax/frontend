@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 
 import Spinner from "../Spinner/Spinner.jsx";
-import DropDownSelector from "../MetricsGlobal/SubComponents/DropDownSelector.jsx";
+import DropDownSelector from "../Partials/DropDown/DropDownSelector.jsx";
 import FeatureArea from "./SubComponents/FeatureArea.jsx";
 import MonthlyApplicationGraph from "./SubComponents/MonthlyApplicationGraph.jsx";
 import MonthlyApplicationLineGraph from "./SubComponents/MonthlyApplicationLineGraph.jsx";

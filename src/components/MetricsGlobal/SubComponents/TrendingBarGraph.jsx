@@ -2,7 +2,7 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import echarts from "echarts";
 
-import DropDownSelector from "./DropDownSelector.jsx";
+import DropDownSelector from "../../Partials/DropDown/DropDownSelector.jsx";
 import {
   TRENDING_STATUS_OPTIONS,
   TRENDING_YEAR_OPTIONS,
