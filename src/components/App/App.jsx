@@ -243,9 +243,9 @@ class App extends Component {
                     this.active = true;
                     this.setState({
                       token: this.token,
-                      active: this.active,
-                      isUserLoggedIn: true
+                      active: this.active
                     });
+                    this.setState({ isUserLoggedIn: true });
                   }
                 });
                 this.setState({ isAuthenticationChecking: false });
@@ -337,11 +337,13 @@ class App extends Component {
         } ${response.json.data.access_token.trim()}`;
         IS_CONSOLE_LOG_OPEN && console.log(this.token);
         this.setState({
-          isUserLoggedIn: true,
-          isAuthenticationChecking: false,
-          toDashboard: true,
           token: this.token,
           active: true
+        });
+        this.setState({
+          isUserLoggedIn: true,
+          isAuthenticationChecking: false,
+          toDashboard: true
         });
         IS_CONSOLE_LOG_OPEN &&
           console.log(
@@ -389,8 +391,14 @@ class App extends Component {
         this.googleAuth.signOut();
         this.googleAuth.disconnect();
         this.setState({
+          isUserAuthenticated: false,
+          token: "",
+          active: false,
           isUserLoggedIn: false,
-          isUserAuthenticated: false
+          profilePhotoUrl: "",
+          pollData: [],
+          notificationsList: [],
+          profileData: []
         });
         IS_CONSOLE_LOG_OPEN &&
           console.log(
@@ -411,155 +419,158 @@ class App extends Component {
         "\n--token",
         this.state.token,
         "\n--active?",
-        this.state.active,
-        window.location.href.slice(-4)
+        this.state.active
       );
     if (this.state.isAuthenticationChecking)
       return <Spinner message="Connecting..." />;
-    return isUserLoggedIn || isUserAuthenticated ? (
-      <Router>
-        <div className="main-container">
-          {window.location.href.slice(-4) != "home" && (
-            <Header
-              handleSignOut={this.handleSignOut}
-              notificationsList={this.state.notificationsList}
-              notificationCheck={this.checkNotifications}
-              isNotificationsShowing={this.state.isNotificationsShowing}
-              toggleNotifications={this.toggleNotificationsDisplay}
-              userPhoto={this.state.profileData.profile_photo}
-            />
-          )}
-          {this.state.isPollShowing && (
-            <PollBox
-              data={this.pollData}
-              togglePollDisplay={this.toggleIsPollShowing}
-              token={this.state.token}
-            />
-          )}
-          <Route
-            exact
-            path="/home"
-            render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn} />}
-          />
-          <Route
-            exact
-            path="/dashboard"
-            render={() => (
-              <Dashboard active={this.state.active} token={this.state.token} />
+    else
+      return isUserLoggedIn || isUserAuthenticated ? (
+        <Router>
+          <div className="main-container">
+            {window.location.href.slice(-4) != "home" && (
+              <Header
+                handleSignOut={this.handleSignOut}
+                notificationsList={this.state.notificationsList}
+                notificationCheck={this.checkNotifications}
+                isNotificationsShowing={this.state.isNotificationsShowing}
+                toggleNotifications={this.toggleNotificationsDisplay}
+                userData={this.state.profileData}
+              />
             )}
-          />
-          <Route
-            exact
-            path="/metrics"
-            render={() => (
-              <Metrics active={this.state.active} token={this.state.token} />
-            )}
-          />
-          <Route
-            exact
-            path="/metricsGlobal"
-            render={() => (
-              <MetricsGlobal
-                active={this.state.active}
+            {this.state.isPollShowing && (
+              <PollBox
+                data={this.pollData}
+                togglePollDisplay={this.toggleIsPollShowing}
                 token={this.state.token}
               />
             )}
-          />
-          <Route
-            exact
-            path="/reviews"
-            render={() => (
-              <Reviews active={this.state.active} token={this.state.token} />
-            )}
-          />
-          <Route
-            exact
-            path="/signin"
-            render={() => <Redirect to="/dashboard" />}
-          />
-          <Route
-            exact
-            path="/signup"
-            render={() => <Redirect to="/dashboard" />}
-          />
-          <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
-          <Route
-            exact
-            path="/aboutus"
-            render={() => (
-              <AboutUs isUserLoggedIn={this.state.isUserLoggedIn} />
-            )}
-          />
-          <Route
-            exact
-            path="/underconstruction"
-            render={() => (
-              <UnderConstruction
-                isUserLoggedIn={this.state.isUserLoggedIn}
-                active={this.state.active}
-              />
-            )}
-          />
-        </div>
-      </Router>
-    ) : (
-      <Router>
-        <div className="main-container">
-          <Route exact path="/home" render={() => <Redirect to="/" />} />
-          <Route
-            exact
-            path="/"
-            render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn} />}
-          />
-          <Route
-            exact
-            path="/aboutus"
-            render={() => (
-              <AboutUs isUserLoggedIn={this.state.isUserLoggedIn} />
-            )}
-          />
-          <Route
-            exact
-            path="/underconstruction"
-            render={() => (
-              <UnderConstruction
-                isUserLoggedIn={this.state.isUserLoggedIn}
-                active={this.state.active}
-              />
-            )}
-          />
-          <Route
-            exact
-            path="/dashboard"
-            render={() => <Redirect to="signin" />}
-          />
-          <Route
-            exact
-            path="/signin"
-            render={() => (
-              <SignIn
-                googleAuth={this.googleAuth}
-                handleGoogleSignIn={this.handleGoogleSignIn}
-                generateSignInForm={this.generateSignInForm}
-                toDashboard={this.state.toDashboard}
-              />
-            )}
-          />
-          <Route
-            exact
-            path="/signup"
-            render={() => (
-              <SignUp
-                googleAuth={this.googleAuth}
-                handleGoogleSignIn={this.handleGoogleSignIn}
-                generateSignUpForm={this.generateSignUpForm}
-                toSigIn={this.state.toSigIn}
-              />
-            )}
-          />
-        </div>
-      </Router>
-    );
+            <Route
+              exact
+              path="/home"
+              render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn} />}
+            />
+            <Route
+              exact
+              path="/dashboard"
+              render={() => (
+                <Dashboard
+                  active={this.state.active}
+                  token={this.state.token}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/metrics"
+              render={() => (
+                <Metrics active={this.state.active} token={this.state.token} />
+              )}
+            />
+            <Route
+              exact
+              path="/metricsGlobal"
+              render={() => (
+                <MetricsGlobal
+                  active={this.state.active}
+                  token={this.state.token}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/reviews"
+              render={() => (
+                <Reviews active={this.state.active} token={this.state.token} />
+              )}
+            />
+            <Route
+              exact
+              path="/signin"
+              render={() => <Redirect to="/dashboard" />}
+            />
+            <Route
+              exact
+              path="/signup"
+              render={() => <Redirect to="/dashboard" />}
+            />
+            <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
+            <Route
+              exact
+              path="/aboutus"
+              render={() => (
+                <AboutUs isUserLoggedIn={this.state.isUserLoggedIn} />
+              )}
+            />
+            <Route
+              exact
+              path="/underconstruction"
+              render={() => (
+                <UnderConstruction
+                  isUserLoggedIn={this.state.isUserLoggedIn}
+                  active={this.state.active}
+                />
+              )}
+            />
+          </div>
+        </Router>
+      ) : (
+        <Router>
+          <div className="main-container">
+            <Route exact path="/home" render={() => <Redirect to="/" />} />
+            <Route
+              exact
+              path="/"
+              render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn} />}
+            />
+            <Route
+              exact
+              path="/aboutus"
+              render={() => (
+                <AboutUs isUserLoggedIn={this.state.isUserLoggedIn} />
+              )}
+            />
+            <Route
+              exact
+              path="/underconstruction"
+              render={() => (
+                <UnderConstruction
+                  isUserLoggedIn={this.state.isUserLoggedIn}
+                  active={this.state.active}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/dashboard"
+              render={() => <Redirect to="signin" />}
+            />
+            <Route
+              exact
+              path="/signin"
+              render={() => (
+                <SignIn
+                  googleAuth={this.googleAuth}
+                  handleGoogleSignIn={this.handleGoogleSignIn}
+                  generateSignInForm={this.generateSignInForm}
+                  toDashboard={this.state.toDashboard}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/signup"
+              render={() => (
+                <SignUp
+                  googleAuth={this.googleAuth}
+                  handleGoogleSignIn={this.handleGoogleSignIn}
+                  generateSignUpForm={this.generateSignUpForm}
+                  toSigIn={this.state.toSigIn}
+                />
+              )}
+            />
+          </div>
+        </Router>
+      );
   }
 }
 
