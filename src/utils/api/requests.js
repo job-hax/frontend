@@ -22,7 +22,9 @@ import {
   UPDATE_NOTE,
   GET_POLL,
   VOTE_POLL,
-  NOTIFICATIONS
+  NOTIFICATIONS,
+  UPDATE_PROFILE_PHOTO,
+  GET_PROFILE
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -339,6 +341,31 @@ export const votePollRequest = {
 //NOTIFICATIONS REQUEST//
 export const notificationsRequest = {
   url: NOTIFICATIONS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//PROFILE REQUESTS//
+export const updateProfilePhotoRequest = {
+  url: UPDATE_PROFILE_PHOTO,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const getProfileRequest = {
+  url: GET_PROFILE,
   config: {
     method: "GET",
     mode: "cors",

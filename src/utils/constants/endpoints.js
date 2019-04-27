@@ -53,3 +53,7 @@ export const GET_POLL = `${apiRoot}api/poll/`;
 export const VOTE_POLL = pollId => `${apiRoot}api/poll/${pollId}/vote/`;
 
 export const NOTIFICATIONS = `${apiRoot}api/notifications/`;
+
+export const UPDATE_PROFILE_PHOTO = `${apiRoot}api/users/update_profile_photo`;
+
+export const GET_PROFILE = `${apiRoot}api/users/get_profile`;
