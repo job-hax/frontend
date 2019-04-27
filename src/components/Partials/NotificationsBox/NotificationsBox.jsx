@@ -1,7 +1,7 @@
 import React from "react";
 
-import defaultLogo from "../../assets/icons/JobHax-logo-black.svg";
-import { makeTimeBeautiful } from "../../utils/constants/constants.js";
+import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
+import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
 

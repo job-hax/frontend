@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { DropTarget } from "react-dnd";
-import Card from "../../Card/Card.jsx";
+import Card from "../Card/Card.jsx";
 import JobInput from "../JobInput/JobInput.jsx";
 import { MIN_CARD_NUMBER_IN_COLUMN } from "../../../utils/constants/constants.js";
 
