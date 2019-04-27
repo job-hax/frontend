@@ -271,6 +271,7 @@ class Dashboard extends Component {
             cards={this.state.toApply}
             token={this.props.token}
           />
+          <hr className = "column-divider"></hr>
           <Column
             name="applied"
             id="1"
@@ -288,6 +289,7 @@ class Dashboard extends Component {
             message="rejected without any interview"
             token={this.props.token}
           />
+          <hr className = "column-divider"></hr>
           <Column
             name="phoneScreen"
             id="3"
@@ -306,6 +308,7 @@ class Dashboard extends Component {
             message="rejected after phone screens"
             token={this.props.token}
           />
+          <hr className = "column-divider"></hr>
           <Column
             name="onsiteInterview"
             id="4"
@@ -324,6 +327,7 @@ class Dashboard extends Component {
             message="rejected after interviews"
             token={this.props.token}
           />
+          <hr className = "column-divider"></hr>
           <Column
             name="offer"
             id="5"

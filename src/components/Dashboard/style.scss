@@ -1,7 +1,11 @@
 .dashboard-container {
-  background-color:rgba(250, 250, 250, 0.1);
+  background-color:rgb(247, 246, 250);
   height: 92vh;
   width: 100%;
   display: flex;
   overflow-y: hidden;
+}
+
+.column-divider {
+  border-left: 1px solid #e4dcff;
 }
