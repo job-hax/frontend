@@ -132,9 +132,9 @@ class App extends Component {
     this.setState({ isPollShowing: !this.state.isPollShowing });
   }
 
-  toggleNotificationsDisplay() {
+  toggleNotificationsDisplay(open) {
     this.setState({
-      isNotificationsShowing: !this.state.isNotificationsShowing
+      isNotificationsShowing: open
     });
   }
 
@@ -384,7 +384,7 @@ class App extends Component {
         <div className="main-container">
           {window.location.href.slice(-4) != "home" && (
             <Header
-              handleSignOut={this.props.handleSignOut}
+              handleSignOut={this.handleSignOut}
               notificationsList={this.state.notificationsList}
               notificationCheck={this.checkNotifications}
               isNotificationsShowing={this.state.isNotificationsShowing}
@@ -492,14 +492,7 @@ class App extends Component {
           <Route
             exact
             path="/dashboard"
-            render={() => (
-              <SignIn
-                googleAuth={this.googleAuth}
-                handleGoogleSignIn={this.handleGoogleSignIn}
-                generateSignInForm={this.generateSignInForm}
-                toDashboard={this.state.toDashboard}
-              />
-            )}
+            render={() => <Redirect to="signin" />}
           />
           <Route
             exact
