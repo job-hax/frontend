@@ -12,8 +12,6 @@ import {
   GET_NOTES,
   GET_TOTAL_APPLICATION_COUNT,
   GET_WORD_COUNT,
-  GET_TOP_COMPANIES,
-  GET_TOP_POSITIONS,
   GET_STATISTICS,
   GET_MONTHLY_APPLICATION_COUNT,
   LOGIN_USER,
@@ -23,7 +21,8 @@ import {
   UPDATE_JOB_STATUS,
   UPDATE_NOTE,
   GET_POLL,
-  VOTE_POLL
+  VOTE_POLL,
+  NOTIFICATIONS
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -329,6 +328,19 @@ export const votePollRequest = {
   url: VOTE_POLL,
   config: {
     method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//NOTIFICATIONS REQUEST//
+export const notificationsRequest = {
+  url: NOTIFICATIONS,
+  config: {
+    method: "GET",
     mode: "cors",
     cache: "no-cache",
     headers: {

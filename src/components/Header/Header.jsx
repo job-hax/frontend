@@ -1,9 +1,19 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
+import NotificationsBox from "../NotificationsBox/NotificationsBox.jsx";
 import "./style.scss";
 
 class Header extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  handleNotifications() {
+    this.props.notificationCheck();
+    this.props.toggleNotifications();
+  }
+
   render() {
     return (
       <div className="header-container">
@@ -55,12 +65,23 @@ class Header extends Component {
               </span>
             </Link>
           </div>
-          <div className="header-icon general tooltips">
-            <Link to="/underconstruction">
+          {!this.props.isNotificationsShowing ? (
+            <div
+              className="header-icon general tooltips"
+              onClick={() => this.handleNotifications()}
+            >
               <img src="../../src/assets/icons/NotifIcon@3x.png" />
               <span>Notifications</span>
-            </Link>
-          </div>
+            </div>
+          ) : (
+            <div className="header-icon general tooltips">
+              <img src="../../src/assets/icons/NotifIcon@3x.png" />
+              <NotificationsBox
+                notificationsList={this.props.notificationsList}
+                toggleDisplay={this.props.toggleNotifications}
+              />
+            </div>
+          )}
           <div className="header-icon user-icon">
             <Link to="/underconstruction">
               <img src="../../src/assets/icons/SeyfoIcon@3x.png" />

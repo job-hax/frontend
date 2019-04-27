@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 
-import Header from "../Header/Header.jsx";
 import Spinner from "../Spinner/Spinner.jsx";
 import FeatureArea from "./SubComponents/FeatureArea.jsx";
 import TrendingBarGraph from "./SubComponents/TrendingBarGraph.jsx";
@@ -293,7 +292,6 @@ class MetricsGlobal extends PureComponent {
     ];
     return (
       <div>
-        <Header handleSignOut={this.props.handleSignOut} />
         <FeatureArea statistics={this.state.statistics} />;
         <div>
           <TrendingBarGraph

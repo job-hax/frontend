@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
+import Header from "../Header/Header.jsx";
 import Dashboard from "../Dashboard/Dashboard.jsx";
 import Metrics from "../Metrics/Metrics.jsx";
 import MetricsGlobal from "../MetricsGlobal/MetricsGlobal.jsx";
@@ -22,7 +24,8 @@ import {
   registerUserRequest,
   loginUserRequest,
   logOutUserRequest,
-  getPollRequest
+  getPollRequest,
+  notificationsRequest
 } from "../../utils/api/requests.js";
 
 import "./style.scss";
@@ -41,14 +44,17 @@ class App extends Component {
       isAuthenticationChecking: true,
       isPollChecking: true,
       isPollShowing: false,
-      pollData: []
+      isNotificationsShowing: false,
+      pollData: [],
+      notificationsList: []
     };
-    (this.token = ""),
-      (this.active = false),
-      (this.isUserAuthenticated = false),
-      (this.isUserLoggedIn = false),
-      (this.toDashboard = false),
-      (this.onAuthUpdate = this.onAuthUpdate.bind(this));
+    this.token = "";
+    this.active = false;
+    this.isUserAuthenticated = false;
+    this.isUserLoggedIn = false;
+    this.toDashboard = false;
+    this.notificationsList = [];
+    this.onAuthUpdate = this.onAuthUpdate.bind(this);
     this.handleGoogleSignIn = this.handleGoogleSignIn.bind(this);
     this.generateSignUpForm = this.generateSignUpForm.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
@@ -56,6 +62,10 @@ class App extends Component {
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
     this.toggleIsPollShowing = this.toggleIsPollShowing.bind(this);
+    this.checkNotifications = this.checkNotifications.bind(this);
+    this.toggleNotificationsDisplay = this.toggleNotificationsDisplay.bind(
+      this
+    );
   }
 
   componentDidMount() {
@@ -120,6 +130,27 @@ class App extends Component {
 
   toggleIsPollShowing() {
     this.setState({ isPollShowing: !this.state.isPollShowing });
+  }
+
+  toggleNotificationsDisplay() {
+    this.setState({
+      isNotificationsShowing: !this.state.isNotificationsShowing
+    });
+  }
+
+  checkNotifications() {
+    notificationsRequest.config.headers.Authorization = this.state.token;
+    fetchApi(notificationsRequest.url, notificationsRequest.config).then(
+      response => {
+        if (response.ok) {
+          this.notificationsList = response.json.data;
+          this.setState({
+            notificationsList: this.notificationsList
+          });
+          console.log(this.state.notificationsList);
+        }
+      }
+    );
   }
 
   onAuthUpdate() {
@@ -343,13 +374,23 @@ class App extends Component {
         "\n--token",
         this.state.token,
         "\n--active?",
-        this.state.active
+        this.state.active,
+        window.location.href.slice(-4)
       );
     if (this.state.isAuthenticationChecking)
       return <Spinner message="Connecting..." />;
     return isUserLoggedIn || isUserAuthenticated ? (
       <Router>
         <div className="main-container">
+          {window.location.href.slice(-4) != "home" && (
+            <Header
+              handleSignOut={this.props.handleSignOut}
+              notificationsList={this.state.notificationsList}
+              notificationCheck={this.checkNotifications}
+              isNotificationsShowing={this.state.isNotificationsShowing}
+              toggleNotifications={this.toggleNotificationsDisplay}
+            />
+          )}
           {this.state.isPollShowing && (
             <PollBox
               data={this.pollData}
@@ -359,24 +400,21 @@ class App extends Component {
           )}
           <Route
             exact
+            path="/home"
+            render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn} />}
+          />
+          <Route
+            exact
             path="/dashboard"
             render={() => (
-              <Dashboard
-                active={this.state.active}
-                token={this.state.token}
-                handleSignOut={this.handleSignOut}
-              />
+              <Dashboard active={this.state.active} token={this.state.token} />
             )}
           />
           <Route
             exact
             path="/metrics"
             render={() => (
-              <Metrics
-                active={this.state.active}
-                token={this.state.token}
-                handleSignOut={this.handleSignOut}
-              />
+              <Metrics active={this.state.active} token={this.state.token} />
             )}
           />
           <Route
@@ -386,7 +424,6 @@ class App extends Component {
               <MetricsGlobal
                 active={this.state.active}
                 token={this.state.token}
-                handleSignOut={this.handleSignOut}
               />
             )}
           />
@@ -394,40 +431,20 @@ class App extends Component {
             exact
             path="/reviews"
             render={() => (
-              <Reviews
-                active={this.state.active}
-                token={this.state.token}
-                handleSignOut={this.handleSignOut}
-              />
+              <Reviews active={this.state.active} token={this.state.token} />
             )}
           />
           <Route
             exact
             path="/signin"
-            render={() => (
-              <Dashboard
-                active={this.state.active}
-                token={this.state.token}
-                handleSignOut={this.handleSignOut}
-              />
-            )}
+            render={() => <Redirect to="/dashboard" />}
           />
           <Route
             exact
             path="/signup"
-            render={() => (
-              <Dashboard
-                active={this.state.active}
-                token={this.state.token}
-                handleSignOut={this.handleSignOut}
-              />
-            )}
+            render={() => <Redirect to="/dashboard" />}
           />
-          <Route
-            exact
-            path="/"
-            render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn} />}
-          />
+          <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
           <Route
             exact
             path="/aboutus"
@@ -439,7 +456,10 @@ class App extends Component {
             exact
             path="/underconstruction"
             render={() => (
-              <UnderConstruction isUserLoggedIn={this.state.isUserLoggedIn} />
+              <UnderConstruction
+                isUserLoggedIn={this.state.isUserLoggedIn}
+                active={this.state.active}
+              />
             )}
           />
         </div>
@@ -463,7 +483,10 @@ class App extends Component {
             exact
             path="/underconstruction"
             render={() => (
-              <UnderConstruction isUserLoggedIn={this.state.isUserLoggedIn} />
+              <UnderConstruction
+                isUserLoggedIn={this.state.isUserLoggedIn}
+                active={this.state.active}
+              />
             )}
           />
           <Route
