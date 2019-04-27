@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
-import Header from "../Header/Header.jsx";
 import Column from "../Column/Column.jsx";
 import Spinner from "../Spinner/Spinner.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
@@ -257,7 +256,6 @@ class Dashboard extends Component {
       return <Spinner message="Preparing your dashboard..." />;
     return (
       <div>
-        <Header handleSignOut={this.props.handleSignOut} />
         <div className="dashboard-container">
           <Column
             name="toApply"

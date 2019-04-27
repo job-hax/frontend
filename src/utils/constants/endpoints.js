@@ -51,3 +51,5 @@ export const DELETE_JOB = `${apiRoot}api/jobapps/delete_jobapp`;
 export const GET_POLL = `${apiRoot}api/poll/`;
 
 export const VOTE_POLL = pollId => `${apiRoot}api/poll/${pollId}/vote/`;
+
+export const NOTIFICATIONS = `${apiRoot}api/notifications/`;
