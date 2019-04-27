@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
-import defaultLogo from "../../assets/icons/JobHax-logo-black.svg";
+import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
 import classNames from "classnames";
 
-import { fetchApi, postData } from "../../utils/api/fetch_api";
+import { fetchApi, postData } from "../../../utils/api/fetch_api";
 import {
   updateNoteRequest,
   addNoteRequest,
@@ -11,12 +11,12 @@ import {
   getNotesRequest,
   deleteJobRequest,
   updateJobStatusRequest
-} from "../../utils/api/requests.js";
+} from "../../../utils/api/requests.js";
 import {
   APPLICATION_STATUSES_IN_ORDER,
   IS_CONSOLE_LOG_OPEN,
   makeTimeBeautiful
-} from "../../utils/constants/constants.js";
+} from "../../../utils/constants/constants.js";
 
 import "./style.scss";
 

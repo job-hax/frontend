@@ -36,6 +36,7 @@ class Header extends Component {
   }
 
   render() {
+    console.log("photoUrl", this.props.userPhoto);
     return (
       <div className="header-container">
         <div className="left-container">
@@ -97,19 +98,23 @@ class Header extends Component {
           ) : (
             <div
               className="header-icon general tooltips"
-              onClick={() => this.props.toggleNotifications(false)}
               ref={this.setWrapperRef}
             >
-              <img src="../../src/assets/icons/NotifIcon@3x.png" />
+              <img
+                src="../../src/assets/icons/NotifIcon@3x.png"
+                onClick={() => this.props.toggleNotifications(false)}
+              />
               <NotificationsBox
                 notificationsList={this.props.notificationsList}
               />
             </div>
           )}
           <div className="header-icon user-icon">
-            <Link to="/underconstruction">
+            {this.props.userPhoto != "" ? (
+              <img src={this.props.userPhoto} />
+            ) : (
               <img src="../../src/assets/icons/SeyfoIcon@3x.png" />
-            </Link>
+            )}
           </div>
           <div className="header-icon sign_out">
             <Link to="/">

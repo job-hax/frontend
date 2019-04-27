@@ -2,11 +2,11 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { DragSource } from "react-dnd";
 import classNames from "classnames";
-import defaultLogo from "../../assets/icons/JobHax-logo-black.svg";
-import linkedInLogo from "../../assets/icons/linkedInLogo.png";
-import hiredComLogo from "../../assets/icons/hiredComLogo.png";
-import indeedLogo from "../../assets/icons/indeedLogo.png";
-import vetteryLogo from "../../assets/icons/vetteryLogo.jpg";
+import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
+import linkedInLogo from "../../../assets/icons/linkedInLogo.png";
+import hiredComLogo from "../../../assets/icons/hiredComLogo.png";
+import indeedLogo from "../../../assets/icons/indeedLogo.png";
+import vetteryLogo from "../../../assets/icons/vetteryLogo.jpg";
 import CardModal from "../CardModal/CardModal.jsx";
 
 import "./style.scss";

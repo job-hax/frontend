@@ -1,26 +1,27 @@
 @import url('https://fonts.googleapis.com/css?family=Exo:400,500,600,700');
 
-.about_us-container{
+.about_us-container {
     background-color: white;
     height: 96vh;
     font-family: 'Exo', sans-serif;
     color: #261268;
 
-    .team-diagram{
+    .team-diagram {
         width: 100%;
         margin-bottom: -10px;
         background-color: white;
         padding-bottom: 100px;
     }
-  
-    .header_area{
-    background-image: url('../../assets/images/homebanner.jpg');
-    background-size: cover;
-    color: white;
-    height: 32vh;
-    padding-top: 65px;
-    padding-bottom: 80px;
-        button{
+
+    .header_area {
+        background-image: url('../../../assets/images/homebanner.jpg');
+        background-size: cover;
+        color: white;
+        height: 32vh;
+        padding-top: 65px;
+        padding-bottom: 80px;
+
+        button {
             color: white;
             font-family: Exo;
             font-size: 12pt;
@@ -30,22 +31,25 @@
             padding: 15px 35px;
             cursor: pointer;
         }
-        .top_buttons_and_logo{
+
+        .top_buttons_and_logo {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 45px;
         }
-        .top_buttons{
+
+        .top_buttons {
             text-align: right;
-            button{
+
+            button {
                 margin-left: 30px;
             }
         }
-    }  
+    }
 
     .animation {
-    
+
         .content__container {
             font-weight: 700;
             font-size: 200%;
@@ -56,6 +60,7 @@
             margin: auto;
             margin-top: 9vh;
         }
+
         .content__container__list {
             margin-top: 0;
             padding-left: 0px;
@@ -65,96 +70,132 @@
             animation-duration: 10s;
             animation-iteration-count: infinite;
         }
+
         .content__container__list__item {
             line-height: 60px;
-    }
-    
-    @-webkit-keyframes opacity {
-        0%, 100% {
-        opacity: 0;
         }
-        50% {
-        opacity: 1;
+
+        @-webkit-keyframes opacity {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
-    }
-    @-webkit-keyframes change {
-        0%, 12.66%, 100% {
-        -webkit-transform: translate3d(0, 0, 0);
+
+        @-webkit-keyframes change {
+
+            0%,
+            12.66%,
+            100% {
+                -webkit-transform: translate3d(0, 0, 0);
                 transform: translate3d(0, 0, 0);
-        }
-        16.66%, 29.32% {
-        -webkit-transform: translate3d(0, -25%, 0);
+            }
+
+            16.66%,
+            29.32% {
+                -webkit-transform: translate3d(0, -25%, 0);
                 transform: translate3d(0, -25%, 0);
-        }
-        33.32%,45.98% {
-        -webkit-transform: translate3d(0, -50%, 0);
+            }
+
+            33.32%,
+            45.98% {
+                -webkit-transform: translate3d(0, -50%, 0);
                 transform: translate3d(0, -50%, 0);
-        }
-        49.98%,62.64% {
-        -webkit-transform: translate3d(0, -75%, 0);
+            }
+
+            49.98%,
+            62.64% {
+                -webkit-transform: translate3d(0, -75%, 0);
                 transform: translate3d(0, -75%, 0);
-        }
-        66.64%,79.3% {
-        -webkit-transform: translate3d(0, -50%, 0);
+            }
+
+            66.64%,
+            79.3% {
+                -webkit-transform: translate3d(0, -50%, 0);
                 transform: translate3d(0, -50%, 0);
-        }
-        83.3%,95.96% {
-        -webkit-transform: translate3d(0, -25%, 0);
+            }
+
+            83.3%,
+            95.96% {
+                -webkit-transform: translate3d(0, -25%, 0);
                 transform: translate3d(0, -25%, 0);
+            }
         }
-    }
-    @keyframes opacity {
-        0%, 100% {
-        opacity: 0;
+
+        @keyframes opacity {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
-        50% {
-        opacity: 1;
-        }
-    }
-    @keyframes change {
-        0%, 12.66%, 100% {
-        -webkit-transform: translate3d(0, 0, 0);
+
+        @keyframes change {
+
+            0%,
+            12.66%,
+            100% {
+                -webkit-transform: translate3d(0, 0, 0);
                 transform: translate3d(0, 0, 0);
-        }
-        16.66%, 29.32% {
-        -webkit-transform: translate3d(0, -25%, 0);
+            }
+
+            16.66%,
+            29.32% {
+                -webkit-transform: translate3d(0, -25%, 0);
                 transform: translate3d(0, -25%, 0);
-        }
-        33.32%,45.98% {
-        -webkit-transform: translate3d(0, -50%, 0);
+            }
+
+            33.32%,
+            45.98% {
+                -webkit-transform: translate3d(0, -50%, 0);
                 transform: translate3d(0, -50%, 0);
-        }
-        49.98%,62.64% {
-        -webkit-transform: translate3d(0, -75%, 0);
+            }
+
+            49.98%,
+            62.64% {
+                -webkit-transform: translate3d(0, -75%, 0);
                 transform: translate3d(0, -75%, 0);
-        }
-        66.64%,79.3% {
-        -webkit-transform: translate3d(0, -50%, 0);
+            }
+
+            66.64%,
+            79.3% {
+                -webkit-transform: translate3d(0, -50%, 0);
                 transform: translate3d(0, -50%, 0);
-        }
-        83.3%,95.96% {
-        -webkit-transform: translate3d(0, -25%, 0);
+            }
+
+            83.3%,
+            95.96% {
+                -webkit-transform: translate3d(0, -25%, 0);
                 transform: translate3d(0, -25%, 0);
+            }
         }
-    }
     }
 
     .info-area {
         text-align: center;
 
-        h2{
+        h2 {
             font-weight: bold;
             margin-top: 40px;
         }
 
-        p{
+        p {
             margin-top: 20px;
         }
     }
 }
 
 .footer-bottom {
-    position: absolute ;
+    position: absolute;
     width: 100%;
     bottom: 0%;
 }
