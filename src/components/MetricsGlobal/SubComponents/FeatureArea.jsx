@@ -28,12 +28,17 @@ class FeatureArea extends React.Component {
             classmates!
           </p>
           <p className="small-text">
-            There are {this.props.statistics.total_user} ITU students using
-            JobHax platform and they have total{" "}
-            {this.props.statistics.total_application} job applications so far!
-            It means average of{" "}
-            {Math.round(this.props.statistics.total_average * 100) / 100} job
-            applications per ITU student!
+            There are
+            <span className="bold">{this.props.statistics.total_user} </span>
+            ITU students using JobHax platform and they have total{" "}
+            <span className="bold">
+              {this.props.statistics.total_application}{" "}
+            </span>{" "}
+            job applications so far! It means average of{" "}
+            <span className="bold">
+              {Math.round(this.props.statistics.total_average * 100) / 100}
+            </span>{" "}
+            job applications per ITU student!
           </p>
           <p className="small-text">
             You can find the most anticipated companies and job positions amount
