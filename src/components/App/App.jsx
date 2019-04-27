@@ -132,9 +132,9 @@ class App extends Component {
     this.setState({ isPollShowing: !this.state.isPollShowing });
   }
 
-  toggleNotificationsDisplay() {
+  toggleNotificationsDisplay(open) {
     this.setState({
-      isNotificationsShowing: !this.state.isNotificationsShowing
+      isNotificationsShowing: open
     });
   }
 
