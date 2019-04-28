@@ -1,6 +1,6 @@
 import React from "react";
 
-import Spinner from "../Spinner/Spinner.jsx";
+import Spinner from "../Partials/Spinner/Spinner.jsx";
 import CompanyReviews from "./CompanyReviews/CompanyReviews.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
 import { getJobAppsRequest } from "../../utils/api/requests.js";
