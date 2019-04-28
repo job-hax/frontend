@@ -30,15 +30,18 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
+    "antd": "^3.16.6",
     "classnames": "^2.2.6",
     "echarts": "^4.1.0",
     "echarts-for-react": "^2.0.14",
     "faker": "^4.1.0",
+    "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react-datepicker": "^2.5.0",
     "react-dnd": "^7.3.1",
     "react-dnd-html5-backend": "^7.2.0",
     "react-redux": "^6.0.1",
-    "react-router-dom": "^4.3.1"
+    "react-router-dom": "^4.3.1",
+    "semantic-ui-react": "^0.86.0"
   }
 }

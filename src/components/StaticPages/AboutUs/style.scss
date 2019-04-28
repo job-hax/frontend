@@ -2,6 +2,7 @@
 
 .about_us-container {
     background-color: white;
+    margin-top: -80px;
     height: 96vh;
     font-family: 'Exo', sans-serif;
     color: #261268;
@@ -17,7 +18,7 @@
         background-image: url('../../../assets/images/homebanner.jpg');
         background-size: cover;
         color: white;
-        height: 32vh;
+        height: 46vh;
         padding-top: 65px;
         padding-bottom: 80px;
 
@@ -58,7 +59,7 @@
             height: 60px;
             width: 900px;
             margin: auto;
-            margin-top: 9vh;
+            margin-top: 3vh;
         }
 
         .content__container__list {
@@ -196,6 +197,7 @@
 
 .footer-bottom {
     position: absolute;
+    z-index: 20;
     width: 100%;
     bottom: 0%;
 }

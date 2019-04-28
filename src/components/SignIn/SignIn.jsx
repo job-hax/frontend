@@ -51,11 +51,7 @@ class SignIn extends Component {
   }
 
   render() {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("signIn page toDashboard", this.props.toDashboard);
-    if (this.props.toDashboard) {
-      return <Redirect to="/dashboard" />;
-    }
+    IS_CONSOLE_LOG_OPEN && console.log("signIn page render run");
     return (
       <div className="sign_in-background">
         {this.generateTopButtons()}
