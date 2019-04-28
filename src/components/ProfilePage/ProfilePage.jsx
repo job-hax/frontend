@@ -211,7 +211,7 @@ class ProfilePage extends React.Component {
   }
 
   handleStatusClick(event) {
-    this.body["selectedStatus"] = Number(event.target.value);
+    this.body["emp_status_id"] = Number(event.target.value);
   }
 
   handleDatePickerChange(event) {
