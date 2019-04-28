@@ -109,7 +109,7 @@ class Header extends Component {
               />
             </div>
           )}
-          {this.props.userData != "" ? (
+          {this.props.userData.profile_photo != "" ? (
             <div className="header-icon user-icon">
               <Link to="/profile">
                 <img src={this.props.userData.profile_photo} />
@@ -117,11 +117,13 @@ class Header extends Component {
             </div>
           ) : (
             <div className="header-icon user-icon">
-              <img src="../../../src/assets/icons/SeyfoIcon@3x.png" />
+              <Link to="/profile">
+                <img src="../../../src/assets/icons/SeyfoIcon@3x.png" />
+              </Link>
             </div>
           )}
           <div className="header-icon sign_out">
-            <Link to="/">
+            <Link to="/home">
               <img
                 onClick={() => this.props.handleSignOut()}
                 src="../../../src/assets/icons/log-out@3x.png"

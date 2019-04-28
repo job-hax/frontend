@@ -10,19 +10,25 @@
   text-align: center;
   padding-top: 3%;
   cursor: pointer;
+
+  .button-inside {
+    margin-top: -6px;
+  }
 }
 
 .column-addJob-form {
   margin-left: 15px;
   margin-right: 15px;
   margin-top: 30px;
+  text-align: center;
   width: 90%;
-  height: 70px;
+  height: 75px;
   border: 1px solid rgb(255, 255, 255);
   border-radius: 4px;
   background-color: rgb(255, 255, 255);
   color: rgb(219, 208, 255);
   font-weight: 600;
+
 
   .input-add-job {
     border: none;
@@ -42,11 +48,11 @@
     }
   }
 
-  > div {
+  >div {
     margin-top: 13px;
   }
 
-  .column-addJob-form-buttons-container{
+  .column-addJob-form-buttons-container {
     display: flex;
     justify-content: space-between;
 

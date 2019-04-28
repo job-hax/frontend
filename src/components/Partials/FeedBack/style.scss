@@ -1,0 +1,40 @@
+.feedback-container {
+    color: #261268;
+    position: fixed;
+
+    .feedback-open-button {
+        position: fixed;
+        bottom: 40px;
+        right: 60px;
+        background-color: rgb(92, 39, 195);
+        color: white;
+        height: 30px;
+        width: 90px;
+        border-radius: 25px;
+        padding: 5px;
+        padding-left: 12px;
+        z-index: 2000;
+    }
+
+    .question {
+
+        .question-label {
+            margin-top: 16px;
+        }
+
+        .text-box {
+            font-family: exo;
+            font-size: 90%;
+            height: 160px;
+            max-width: 256px;
+            max-height: 200px;
+            min-width: 256px;
+            min-height: 120px;
+            border: 1px solid rgba(132, 100, 239, 1);
+            border-radius: 4px;
+            padding: 8px;
+        }
+    }
+
+
+}
