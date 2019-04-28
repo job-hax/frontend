@@ -31,9 +31,21 @@ class NotificationsBox extends React.Component {
 
   render() {
     return (
-      <div className="notification-box-container">
-        <div className="notificaiton-box-header">Notifications</div>
-        <div className="notificaitons-list">{this.generateNotifications()}</div>
+      <div
+        className="notification-box-container"
+        style={this.props.customBoxStyle}
+      >
+        <div className="notification-box-header">Notifications</div>
+        {this.props.notificationsList.length == 0 ? (
+          <div className="notification-notice">
+            {" "}
+            You do not have any notifications at the moment!{" "}
+          </div>
+        ) : (
+          <div className="notifications-list" style={this.props.itemListHeight}>
+            {this.generateNotifications()}
+          </div>
+        )}
       </div>
     );
   }
