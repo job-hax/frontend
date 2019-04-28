@@ -138,7 +138,7 @@ class ProfilePage extends React.Component {
         }
       }
     );
-    this.body.length = {};
+    this.body = {};
   }
 
   handleSettingsSubmit(event) {
