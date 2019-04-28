@@ -24,7 +24,9 @@ import {
   VOTE_POLL,
   NOTIFICATIONS,
   UPDATE_PROFILE_PHOTO,
-  GET_PROFILE
+  GET_PROFILE,
+  GET_EMPLOYMENT_STATUSES,
+  UPDATE_PROFILE
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -368,6 +370,30 @@ export const getProfileRequest = {
   url: GET_PROFILE,
   config: {
     method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const getEmploymentStatusesRequest = {
+  url: GET_EMPLOYMENT_STATUSES,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const updateProfileRequest = {
+  url: UPDATE_PROFILE,
+  config: {
+    method: "POST",
     mode: "cors",
     cache: "no-cache",
     headers: {

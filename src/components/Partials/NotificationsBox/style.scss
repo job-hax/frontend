@@ -1,32 +1,41 @@
 .notification-box-container {
     background-color: white;
     position: absolute;
-    width: 400px;
-    margin-left: -250px;
+    width: 340px;
+    margin-left: -190px;
     margin-top: 20px;
     height: fit-content;
     min-height: 120px;
     max-height: 500px;
-    font-size: 90%;
+    font-size: 85%;
     padding: 8px;
     box-shadow: 4px 4px 10px 10px rgba(126, 126, 126, 0.1);
     z-index: 1000;
     cursor: default;
 
 
-    .notificaiton-box-header {
+    .notification-box-header {
         border-bottom: 1px solid #261268;
         margin: 4px;
+        font-weight: 450;
+        font-size: 110%;
         margin-bottom: 12px;
         padding-top: 12px;
         padding-left: 12px;
     }
 
-    .notificaitons-list {
+    .notification-notice {
+        margin-top: 30px;
+        font-size: 90%;
+        color: #5c5b5b9c;
+        text-align: center;
+    }
+
+    .notifications-list {
         margin: 4px;
         overflow-x: hidden;
-        min-width: 392px;
-        max-width: 392px;
+        min-width: 332px;
+        max-width: 332px;
         min-height: 60px;
         max-height: 380px;
 
@@ -51,8 +60,8 @@
             }
 
             .notification-body {
-                min-width: 328px;
-                max-width: 328px;
+                min-width: 268px;
+                max-width: 268px;
                 min-height: 50px;
                 padding-bottom: 12px;
                 border-bottom: 1px solid #7474749f;
@@ -64,7 +73,7 @@
                     .notification-title {
                         font-weight: 500;
                         margin-top: 4px;
-                        max-width: 200px;
+                        max-width: 158px;
                     }
 
                     .notification-date {
@@ -76,6 +85,7 @@
 
                 .notification-content {
                     font-size: 95%;
+                    margin-top: 4px;
                 }
 
             }
