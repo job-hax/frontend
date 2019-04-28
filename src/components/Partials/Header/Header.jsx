@@ -123,10 +123,12 @@ class Header extends Component {
             </div>
           )}
           <div className="header-icon sign_out">
-            <img
-              onClick={() => this.props.handleSignOut()}
-              src="../../../src/assets/icons/log-out@3x.png"
-            />
+            <Link to="/home">
+              <img
+                onClick={() => this.props.handleSignOut()}
+                src="../../../src/assets/icons/log-out@3x.png"
+              />
+            </Link>
           </div>
         </div>
       </div>
