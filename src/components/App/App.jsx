@@ -14,6 +14,7 @@ import PollBox from "../Partials/PollBox/PollBox.jsx";
 import UnderConstruction from "../StaticPages/UnderConstruction/UnderConstruction.jsx";
 import SignIn from "../SignIn/SignIn.jsx";
 import SignUp from "../SignUp/SignUp.jsx";
+import ProfilePage from "../ProfilePage/ProfilePage.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
 
 import { googleClientId } from "../../config/config.js";
@@ -444,6 +445,16 @@ class App extends Component {
                 token={this.state.token}
               />
             )}
+            <Route
+              exact
+              path="/profile"
+              render={() => (
+                <ProfilePage
+                  data={this.state.profileData}
+                  token={this.state.token}
+                />
+              )}
+            />
             <Route
               exact
               path="/home"

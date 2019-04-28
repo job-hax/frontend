@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 
-import Spinner from "../Spinner/Spinner.jsx";
+import Spinner from "../Partials/Spinner/Spinner.jsx";
 import FeatureArea from "./SubComponents/FeatureArea.jsx";
 import TrendingBarGraph from "./SubComponents/TrendingBarGraph.jsx";
 import PeakLineGraph from "./SubComponents/PeakLineGraph.jsx";

@@ -1,0 +1,300 @@
+.profile-page-big-container {
+    display: flex;
+    justify-content: center;
+    height: 92vh;
+
+    .profile-page-container {
+        //border: 1px solid;
+        width: 1400px;
+        padding-top: 56px;
+        height: 84vh;
+        display: flex;
+        justify-content: center;
+        font-size: 90%;
+        background-color: white;
+
+        .profile-page-left {
+            display: flex;
+            justify-content: space-between;
+            width: 980px;
+
+            .profile-page-left-first {
+                width: 420px;
+                //border: 1px solid gray;
+
+                .profile-page-left-first-inside {
+                    width: 280px;
+                    height: 80vh;
+                    //border: 1px solid red;
+                    margin-left: 140px;
+
+                    .profile-image {
+                        height: 280px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        img {
+                            height: auto;
+                            width: auto;
+                            max-width: 280px;
+                            max-height: 280px;
+                        }
+                    }
+
+                    .register-date {
+                        font-style: italic;
+                        font-size: 90%;
+                        color: rgba(126, 126, 126, 0.8);
+                        font-weight: 100;
+                        text-align: center;
+                    }
+
+                    .professional-info-container {
+                        display: none;
+                    }
+
+                    .employment-status-container {
+                        margin-top: 40px;
+                        width: 280px;
+                        height: 40px;
+                        display: flex;
+                        justify-content: space-between;
+
+                        .employment-status-label {
+                            font-weight: 450;
+                        }
+
+                        .employment-status-content {
+                            font-weight: 300;
+                        }
+
+                    }
+                }
+
+            }
+
+            .profile-page-main {
+                margin-left: 56px;
+                width: 504px;
+                //border: 1px solid green;
+
+                .profile-header {
+                    align-content: left;
+                    height: 196px;
+
+                    .name {
+                        margin-top: 90px; //30px;
+                        margin-bottom: 28px;
+                        display: flex;
+                        justify-content: flex-start;
+                        font-size: 200%;
+
+                        .first-name {
+                            font-weight: 450;
+                        }
+
+                        .last-name {
+                            margin-left: 8px;
+                            font-weight: 480;
+                        }
+                    }
+
+                    .job-position {
+                        display: none;
+                    }
+
+                    .city-state {
+                        display: none;
+                    }
+                }
+
+                .profile-info {
+                    margin-top: -60px; // none
+
+                    .info-header {
+                        border-bottom: 1px solid #261268;
+                        width: 100%;
+                        display: flex;
+                        justify-content: flex-start;
+
+                        .info-type-icon {
+                            min-width: 18px;
+                            min-height: 18px;
+                            height: auto;
+                            width: auto;
+                            max-width: 24px;
+                            max-height: 24px;
+                            margin-bottom: 4px;
+                            background-color: black;
+                        }
+
+                        .info-type-name {
+                            padding-left: 8px;
+                            font-weight: 550;
+                        }
+                    }
+
+                    .info-content-container {
+                        margin-top: 12px;
+
+                        .info-content-title {
+                            font-weight: 550;
+                            margin-bottom: 14px;
+                        }
+
+                        .info-content-body {
+                            height: 240px;
+
+                            .info-content-body-item {
+                                display: flex;
+                                justify-content: flex-start;
+
+                                .info-content-body-item-label {
+                                    width: 120px;
+                                    font-weight: 450;
+                                    margin-bottom: 8px;
+                                }
+
+                                .info-content-body-item-text {
+                                    width: 384px;
+                                    margin-bottom: 8px;
+                                }
+                            }
+
+
+                        }
+                    }
+                }
+
+                .badges-container {
+                    display: none
+                }
+            }
+        }
+
+        .profile-page-right {
+            width: 420px;
+
+            .edit-button {
+                border-radius: 16px;
+                background-color: #261268;
+                color: white;
+                width: 80px;
+                height: 24px;
+                margin-left: 290px;
+                text-align: center;
+                padding-top: 4px;
+            }
+
+            .settings-button {
+                position: relative;
+                border-radius: 16px;
+                background-color: #261268;
+                color: white;
+                width: 140px;
+                height: 24px;
+                margin-left: 230px;
+                text-align: center;
+                padding-top: 4px;
+            }
+
+            .profile-notifications {
+                position: relative;
+                margin-top: 20px;
+                height: 480px;
+                width: 364px;
+                z-index: 10;
+            }
+
+            .settings-container {
+                width: 420px;
+
+                .settings-header {
+                    border-bottom: 1px solid #261268;
+                    width: 340px;
+                    margin-left: 40px;
+                    display: flex;
+                    justify-content: flex-start;
+
+                    .settings-icon {
+                        min-width: 18px;
+                        min-height: 18px;
+                        height: auto;
+                        width: auto;
+                        max-width: 24px;
+                        max-height: 24px;
+                        margin-bottom: 4px;
+                        background-color: black;
+                    }
+
+                    .settings-title {
+                        padding-left: 8px;
+                        font-weight: 550;
+                    }
+                }
+
+                .settings {
+                    width: 320px;
+                    margin-left: 80px;
+
+                    .setting {
+                        display: flex;
+                        justify-content: flex-start;
+                        margin-top: 12px;
+
+                        label {
+                            width: 200px;
+                        }
+
+                        input {
+                            width: 200px;
+                        }
+                    }
+                }
+
+                .settings-buttons-container {
+                    display: flex;
+                    justify-content: flex-end;
+                    margin: 16px;
+                    margin-left: 80px;
+
+                    .settings-editing-button {
+                        border-radius: 16px;
+                        background-color: #261268;
+                        color: white;
+                        width: 94px;
+                        height: 30px;
+                        text-align: center;
+                        padding-top: 2px;
+                        margin-right: 20px;
+                    }
+                }
+            }
+        }
+
+        .not-specified-notice {
+            font-style: italic;
+            font-size: 90%;
+            color: rgba(126, 126, 126, 0.8);
+            font-weight: 100;
+        }
+
+        .save-button-container {
+            margin-left: 100px;
+
+            .save-button {
+                border-radius: 16px;
+                background-color: #261268;
+                color: white;
+                width: 80px;
+                height: 30px;
+                margin-left: 290px;
+                text-align: center;
+                padding-top: 2px;
+            }
+        }
+
+
+    }
+}

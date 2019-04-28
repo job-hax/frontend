@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 import NotificationsBox from "../NotificationsBox/NotificationsBox.jsx";
 import "./style.scss";
@@ -46,7 +46,7 @@ class Header extends Component {
             </Link>
           </div>
           {/*<div className="search-box">
-            <img className="header-icon search-icon" src="../../src/assets/icons/SearchIcon@3x.png"></img>
+            <img className="header-icon search-icon" src="../../../src/assets/icons/SearchIcon@3x.png"></img>
             <div>
               <input
                 className="search-input"
@@ -62,9 +62,9 @@ class Header extends Component {
           <div className="header-icon general tooltips">
             <Link to="/dashboard">
               {window.location.href.slice(-9) == "dashboard" ? (
-                <img src="../../src/assets/icons/SyncIcon@3x.png" />
+                <img src="../../../src/assets/icons/SyncIcon@3x.png" />
               ) : (
-                <img src="../../src/assets/icons/BoardIcon@3x.png" />
+                <img src="../../../src/assets/icons/BoardIcon@3x.png" />
               )}
             </Link>
             <span>
@@ -75,13 +75,13 @@ class Header extends Component {
           </div>
           <div className="header-icon general tooltips">
             <Link to="/metrics">
-              <img src="../../src/assets/icons/StatsIcon@3x.png" />
+              <img src="../../../src/assets/icons/StatsIcon@3x.png" />
               <span>Metrics</span>
             </Link>
           </div>
           <div className="header-icon general tooltips">
             <Link to="/metricsGlobal">
-              <img src="../../src/assets/icons/globe.png" />
+              <img src="../../../src/assets/icons/globe.png" />
               <span style={{ height: "48px", lineHeight: "24px" }}>
                 Aggregated Metrics
               </span>
@@ -92,7 +92,7 @@ class Header extends Component {
               className="header-icon general tooltips"
               onClick={() => this.handleNotifications()}
             >
-              <img src="../../src/assets/icons/NotifIcon@3x.png" />
+              <img src="../../../src/assets/icons/NotifIcon@3x.png" />
               <span>Notifications</span>
             </div>
           ) : (
@@ -101,7 +101,7 @@ class Header extends Component {
               ref={this.setWrapperRef}
             >
               <img
-                src="../../src/assets/icons/NotifIcon@3x.png"
+                src="../../../src/assets/icons/NotifIcon@3x.png"
                 onClick={() => this.props.toggleNotifications(false)}
               />
               <NotificationsBox
@@ -111,18 +111,20 @@ class Header extends Component {
           )}
           {this.props.userData != "" ? (
             <div className="header-icon user-icon">
-              <img src={this.props.userData.profile_photo} />
+              <Link to="/profile">
+                <img src={this.props.userData.profile_photo} />
+              </Link>
             </div>
           ) : (
             <div className="header-icon user-icon">
-              <img src="../../src/assets/icons/SeyfoIcon@3x.png" />
+              <img src="../../../src/assets/icons/SeyfoIcon@3x.png" />
             </div>
           )}
           <div className="header-icon sign_out">
             <Link to="/">
               <img
                 onClick={() => this.props.handleSignOut()}
-                src="../../src/assets/icons/log-out@3x.png"
+                src="../../../src/assets/icons/log-out@3x.png"
               />
             </Link>
           </div>
