@@ -61,3 +61,5 @@ export const GET_PROFILE = `${apiRoot}api/users/get_profile`;
 export const GET_EMPLOYMENT_STATUSES = `${apiRoot}api/users/get_employment_statuses`;
 
 export const UPDATE_PROFILE = `${apiRoot}api/users/update_profile`;
+
+export const FEEDBACK = `${apiRoot}api/users/feedback`;

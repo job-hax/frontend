@@ -26,7 +26,8 @@ import {
   UPDATE_PROFILE_PHOTO,
   GET_PROFILE,
   GET_EMPLOYMENT_STATUSES,
-  UPDATE_PROFILE
+  UPDATE_PROFILE,
+  FEEDBACK
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -392,6 +393,19 @@ export const getEmploymentStatusesRequest = {
 
 export const updateProfileRequest = {
   url: UPDATE_PROFILE,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//FEEDBACK//
+export const feedbackRequest = {
+  url: FEEDBACK,
   config: {
     method: "POST",
     mode: "cors",

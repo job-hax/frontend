@@ -11,6 +11,7 @@ import Home from "../StaticPages/Home/Home.jsx";
 import AboutUs from "../StaticPages/AboutUs/AboutUs.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import PollBox from "../Partials/PollBox/PollBox.jsx";
+import FeedBack from "../Partials/FeedBack/FeedBack.jsx";
 import UnderConstruction from "../StaticPages/UnderConstruction/UnderConstruction.jsx";
 import SignIn from "../SignIn/SignIn.jsx";
 import SignUp from "../SignUp/SignUp.jsx";
@@ -41,8 +42,6 @@ class App extends Component {
       token: "",
       active: false,
       shallRequestToken: false,
-      toDashboard: false,
-      toSignIn: false,
       isUserLoggedIn: false,
       isAuthenticationChecking: true,
       isPollChecking: true,
@@ -57,7 +56,6 @@ class App extends Component {
     this.active = false;
     this.isUserAuthenticated = false;
     this.isUserLoggedIn = false;
-    this.toDashboard = false;
     this.notificationsList = [];
     this.onAuthUpdate = this.onAuthUpdate.bind(this);
     this.handleGoogleSignIn = this.handleGoogleSignIn.bind(this);
@@ -279,11 +277,34 @@ class App extends Component {
     fetchApi(registerUserRequest.url, registerUserRequest.config).then(
       response => {
         if (response.ok) {
-          this.setState({
-            toSigIn: true
-          });
-          IS_CONSOLE_LOG_OPEN &&
-            console.log("handle sign up state set", this.state.toSigIn);
+          console.log(response.json);
+          if (response.json.success === true) {
+            this.token = `${
+              response.json.data.token_type
+            } ${response.json.data.access_token.trim()}`;
+            this.setState({
+              token: this.token,
+              isUserLoggedIn: true,
+              active: true
+            });
+            console.log("before redirect", response.json.data);
+            <Redirect to="/profile" />;
+            alert("Your have registered successfully!");
+          } else {
+            this.setState({ isUpdating: false });
+            console.log(response, response.json.error_message);
+            alert(
+              "Error: \n Code " +
+                response.json.error_code +
+                "\n" +
+                response.json.error_message
+            );
+          }
+        } else {
+          this.setState({ isUpdating: false });
+          alert(
+            "Something went wrong! \n Error: \n Code \n " + response.json.status
+          );
         }
       }
     );
@@ -334,30 +355,44 @@ class App extends Component {
     loginUserRequest.config.body = JSON.stringify(loginUserRequest.config.body);
     fetchApi(loginUserRequest.url, loginUserRequest.config).then(response => {
       if (response.ok) {
-        this.token = `${
-          response.json.data.token_type
-        } ${response.json.data.access_token.trim()}`;
-        IS_CONSOLE_LOG_OPEN && console.log(this.token);
-        this.setState({
-          token: this.token,
-          active: true
-        });
-        this.setState({
-          isUserLoggedIn: true,
-          isAuthenticationChecking: false,
-          toDashboard: true
-        });
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "handle signIn isUserLoggedIn",
-            this.state.isUserLoggedIn,
-            "\n--redirect to Dashboard",
-            this.state.toDashboard,
-            "\n--token",
-            this.state.token,
-            "\n--active?",
-            this.state.active
+        if (response.json.success === true) {
+          this.token = `${
+            response.json.data.token_type
+          } ${response.json.data.access_token.trim()}`;
+          IS_CONSOLE_LOG_OPEN && console.log(this.token);
+          this.setState({
+            token: this.token,
+            active: true
+          });
+          this.setState({
+            isUserLoggedIn: true,
+            isAuthenticationChecking: false
+          });
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "handle signIn isUserLoggedIn",
+              this.state.isUserLoggedIn,
+              "\n--token",
+              this.state.token,
+              "\n--active?",
+              this.state.active
+            );
+          <Redirect to="/dashboard" />;
+        } else {
+          this.setState({ isUpdating: false });
+          console.log(response, response.json.error_message);
+          alert(
+            "Error: \n Code " +
+              response.json.error_code +
+              "\n" +
+              response.json.error_message
           );
+        }
+      } else {
+        this.setState({ isUpdating: false });
+        alert(
+          "Something went wrong! \n Error: \n Code \n " + response.json.status
+        );
       }
     });
     loginUserRequest.config.body = JSON.parse(loginUserRequest.config.body);
@@ -390,23 +425,42 @@ class App extends Component {
     );
     fetchApi(logOutUserRequest.url, logOutUserRequest.config).then(response => {
       if (response.ok) {
-        this.googleAuth.signOut();
-        this.googleAuth.disconnect();
-        this.setState({
-          isUserAuthenticated: false,
-          token: "",
-          active: false,
-          isUserLoggedIn: false,
-          profilePhotoUrl: "",
-          pollData: [],
-          notificationsList: [],
-          profileData: []
-        });
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "handle signOut isUserLoggedIn",
-            this.state.isUserLoggedIn
+        console.log(response.json);
+        if (response.json.success === true) {
+          this.googleAuth.signOut();
+          this.googleAuth.disconnect();
+          this.setState({
+            isUserAuthenticated: false,
+            token: "",
+            active: false,
+            isUserLoggedIn: false,
+            profilePhotoUrl: "",
+            pollData: [],
+            notificationsList: [],
+            profileData: []
+          });
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "handle signOut isUserLoggedIn",
+              this.state.isUserLoggedIn
+            );
+          <Redirect to="/home" />;
+          alert("You have signed out!");
+        } else {
+          this.setState({ isUpdating: false });
+          console.log(response, response.json.error_message);
+          alert(
+            "Error: \n Code " +
+              response.json.error_code +
+              "\n" +
+              response.json.error_message
           );
+        }
+      } else {
+        this.setState({ isUpdating: false });
+        alert(
+          "Something went wrong! \n Error: \n Code \n " + response.json.status
+        );
       }
     });
     logOutUserRequest.config.body = JSON.parse(logOutUserRequest.config.body);
@@ -439,6 +493,7 @@ class App extends Component {
                 userData={this.state.profileData}
               />
             )}
+            <FeedBack token={this.state.token} />
             {this.state.isPollShowing && (
               <PollBox
                 data={this.pollData}
@@ -503,7 +558,7 @@ class App extends Component {
             <Route
               exact
               path="/signup"
-              render={() => <Redirect to="/dashboard" />}
+              render={() => <Redirect to="/profile" />}
             />
             <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
             <Route
@@ -564,7 +619,6 @@ class App extends Component {
                   googleAuth={this.googleAuth}
                   handleGoogleSignIn={this.handleGoogleSignIn}
                   generateSignInForm={this.generateSignInForm}
-                  toDashboard={this.state.toDashboard}
                 />
               )}
             />
@@ -576,7 +630,6 @@ class App extends Component {
                   googleAuth={this.googleAuth}
                   handleGoogleSignIn={this.handleGoogleSignIn}
                   generateSignUpForm={this.generateSignUpForm}
-                  toSigIn={this.state.toSigIn}
                 />
               )}
             />
