@@ -97,6 +97,7 @@ class App extends Component {
             .getAuthResponse().access_token;
           config.body = JSON.stringify(config.body);
           fetchApi(url, config).then(response => {
+            console.log(config, response);
             if (response.ok) {
               this.token = `${
                 response.json.data.token_type
@@ -450,8 +451,8 @@ class App extends Component {
               path="/profile"
               render={() => (
                 <ProfilePage
-                  data={this.state.profileData}
                   token={this.state.token}
+                  active={this.state.active}
                 />
               )}
             />

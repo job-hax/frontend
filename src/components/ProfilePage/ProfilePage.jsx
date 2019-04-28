@@ -9,7 +9,8 @@ import { fetchApi } from "../../utils/api/fetch_api";
 import {
   notificationsRequest,
   getEmploymentStatusesRequest,
-  updateProfileRequest
+  updateProfileRequest,
+  getProfileRequest
 } from "../../utils/api/requests.js";
 
 import "./react-datepicker.scss";
@@ -23,6 +24,7 @@ class ProfilePage extends React.Component {
       isEditing: false,
       isUpdating: false,
       isDataArrived: false,
+      isUpdated: false,
       isProfileSettingsOpen: false,
       isNotificationsChecking: true,
       notificationsList: [],
@@ -51,12 +53,32 @@ class ProfilePage extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.props.data.length != 0 && !this.state.isDataArrived) {
-      this.setState({ data: this.props.data, isDataArrived: true });
-    }
     if (this.props.token != "" && this.state.isNotificationsChecking) {
       this.checkNotifications();
       this.getEmploymentStatuses();
+    }
+    if (this.props.token != "" && !this.state.isUpdated) {
+      this.getProfileData();
+    }
+  }
+
+  getProfileData() {
+    if (this.state.token != "" && this.state.data.length == 0) {
+      getProfileRequest.config.headers.Authorization = this.props.token;
+      fetchApi(getProfileRequest.url, getProfileRequest.config).then(
+        response => {
+          if (response.ok) {
+            this.data = response.json.data;
+            this.setState({ data: this.data, isUpdated: true });
+            if (this.data.dob) {
+              this.setState({
+                selectedDateShowing: new Date(this.data.dob + "T06:00:00")
+              });
+            }
+            console.log("profile page received data", this.state.data);
+          }
+        }
+      );
     }
   }
 
@@ -105,7 +127,7 @@ class ProfilePage extends React.Component {
     if (event.target[5].value.trim() != (null || "")) {
       this.state.body[" last_name"] = event.target[5].value.trim();
     }
-    console.log("HEREEEE", this.body);
+    console.log(this.body);
     updateProfileRequest.config.body = JSON.stringify(this.body);
     console.log(event.target, updateProfileRequest.config.body);
     fetchApi(updateProfileRequest.url, updateProfileRequest.config).then(
@@ -116,7 +138,8 @@ class ProfilePage extends React.Component {
             this.setState({
               data: this.data,
               isUpdating: false,
-              isEditing: false
+              isEditing: false,
+              isUpdated: true
             });
             alert("Your profile have been updated successfully!");
             console.log(this.state.data);
@@ -162,7 +185,8 @@ class ProfilePage extends React.Component {
               this.setState({
                 data: this.data,
                 isUpdating: false,
-                isProfileSettingsOpen: false
+                isProfileSettingsOpen: false,
+                isUpdated: true
               });
               alert("Your settings have been updated successfully!");
               console.log(this.state.data);
@@ -615,7 +639,7 @@ class ProfilePage extends React.Component {
       marginLeft: "36px",
       notificationsBoxHeight
     };
-    console.log(this.state.data);
+    console.log("render run! \n data:", this.state.data);
     if (this.state.data.length == 0) {
       return <Spinner message="Reaching profile data..." />;
     }
