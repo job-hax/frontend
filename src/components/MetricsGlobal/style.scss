@@ -11,7 +11,8 @@
 
         h2 {
             font-size: 24pt;
-            margin-bottom: 0;
+            margin-bottom: 24px;
+            color: #261268;
         }
     }
 
@@ -47,9 +48,18 @@
                 max-width: 180px;
             }
 
+            h4 {
+                margin-top: 16px;
+                margin-bottom: 8px;
+                max-width: 380px;
+                margin: auto;
+                color: #261268;
+            }
+
             p {
                 max-width: 380px;
                 margin: auto;
+                color: #261268;
             }
 
             a {
@@ -97,6 +107,7 @@
 
 .selection-menu-container {
     margin-top: 40px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: center;
     height: 30px;

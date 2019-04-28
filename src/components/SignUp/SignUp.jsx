@@ -49,9 +49,6 @@ class SignUp extends Component {
   }
 
   render() {
-    if (this.props.toSigIn) {
-      return <Redirect to="/signin" />;
-    }
     return (
       <div className="sign_up-background">
         {this.generateTopButtons()}
