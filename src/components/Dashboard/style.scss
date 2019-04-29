@@ -1,5 +1,5 @@
 .dashboard-container {
-  background-color: rgb(247, 246, 250);
+  background-color: rgb(236, 235, 241);
   height: 92vh;
   width: 100%;
   display: flex;
@@ -8,7 +8,8 @@
 
 .column-divider {
   height: 100%;
+  margin-top: 12px;
   width: 1px;
   color: #e4dcff;
-  border-left: 1px solid #e4dcff;
+  border-left: 1px solid #d2c9f1;
 }

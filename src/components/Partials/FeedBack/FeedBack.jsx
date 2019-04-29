@@ -5,7 +5,7 @@ import { feedbackRequest } from "../../../utils/api/requests.js";
 import { fetchApi } from "../../../utils/api/fetch_api";
 
 import "./style.scss";
-import "../../../../node_modules/antd-scss/antd.scss";
+import "../../../assets/libraryScss/antd-scss/antd.scss";
 
 const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 
@@ -14,7 +14,7 @@ class FeedBack extends React.Component {
     super(props);
 
     this.state = {
-      value: 3,
+      value: 5,
       visible: false
     };
 
