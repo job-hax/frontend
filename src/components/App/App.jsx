@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 
 import Header from "../Partials/Header/Header.jsx";
+import Blog from "../Blog/Blog.jsx";
 import Dashboard from "../Dashboard/Dashboard.jsx";
 import Metrics from "../Metrics/Metrics.jsx";
 import MetricsGlobal from "../MetricsGlobal/MetricsGlobal.jsx";
@@ -13,6 +14,7 @@ import Spinner from "../Partials/Spinner/Spinner.jsx";
 import PollBox from "../Partials/PollBox/PollBox.jsx";
 import FeedBack from "../Partials/FeedBack/FeedBack.jsx";
 import UnderConstruction from "../StaticPages/UnderConstruction/UnderConstruction.jsx";
+import FAQ from "../StaticPages/FAQ/FAQ.jsx";
 import SignIn from "../SignIn/SignIn.jsx";
 import SignUp from "../SignUp/SignUp.jsx";
 import ProfilePage from "../ProfilePage/ProfilePage.jsx";
@@ -513,6 +515,13 @@ class App extends Component {
             />
             <Route
               exact
+              path="/blogs"
+              render={() => (
+                <Blog token={this.state.token} active={this.state.active} />
+              )}
+            />
+            <Route
+              exact
               path="/home"
               render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn} />}
             />
@@ -571,12 +580,12 @@ class App extends Component {
             <Route
               exact
               path="/underconstruction"
-              render={() => (
-                <UnderConstruction
-                  isUserLoggedIn={this.state.isUserLoggedIn}
-                  active={this.state.active}
-                />
-              )}
+              render={() => <UnderConstruction />}
+            />
+            <Route
+              exact
+              path="/faqs"
+              render={() => <FAQ active={this.state.active} />}
             />
           </div>
         </Router>
@@ -599,12 +608,7 @@ class App extends Component {
             <Route
               exact
               path="/underconstruction"
-              render={() => (
-                <UnderConstruction
-                  isUserLoggedIn={this.state.isUserLoggedIn}
-                  active={this.state.active}
-                />
-              )}
+              render={() => <UnderConstruction />}
             />
             <Route
               exact
@@ -632,6 +636,16 @@ class App extends Component {
                   generateSignUpForm={this.generateSignUpForm}
                 />
               )}
+            />
+            <Route
+              exact
+              path="/faqs"
+              render={() => <FAQ active={this.state.active} />}
+            />
+            <Route
+              exact
+              path="/blogs"
+              render={() => <Redirect to="/signin" />}
             />
           </div>
         </Router>

@@ -1,0 +1,63 @@
+.review-form-container {
+    width: 500px;
+
+    .review-form {
+        display: flex;
+        justify-content: space-between;
+
+        .review-header {
+            font-weight: bolder;
+            padding-bottom: 8px;
+            padding-right: 12px;
+        }
+
+        .label {
+            font-weight: 450;
+            margin-top: 8px;
+            padding-right: 12px;
+        }
+
+        .text-box {
+            font-family: exo;
+            font-size: 90%;
+            height: 60px;
+            max-width: 200px;
+            max-height: 250px;
+            min-width: 200px;
+            min-height: 50px;
+            border: 1px solid rgba(132, 100, 239, 1);
+            border-radius: 4px;
+            padding: 8px;
+
+            &.interview-experience {
+                height: 200px;
+            }
+        }
+
+        .company-reviews {
+            width: 250px;
+
+            .employment-authorization {
+                width: 200px;
+
+                .employment-authorization-item {
+                    margin-top: 4px;
+                    display: flex;
+                    justify-content: space-between;
+                }
+            }
+
+        }
+
+        .interview-reviews {
+            width: 250px;
+
+        }
+
+        .review-button-container {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+    }
+}
