@@ -63,3 +63,17 @@ export const GET_EMPLOYMENT_STATUSES = `${apiRoot}api/users/get_employment_statu
 export const UPDATE_PROFILE = `${apiRoot}api/users/update_profile`;
 
 export const FEEDBACK = `${apiRoot}api/users/feedback`;
+
+export const REVIEW_SUBMIT = `${apiRoot}api/reviews/add_or_update`;
+
+export const GET_SOURCE_TYPES = `${apiRoot}api/reviews/get_source_types`;
+
+export const GET_EMPLOYMENT_AUTHS = `${apiRoot}api/users/get_employment_auths`;
+
+export const GET_REVIEWS = `${apiRoot}api/reviews/get_reviews`;
+
+export const GET_FAQS = `${apiRoot}api/faqs`;
+
+export const GET_BLOGS = `${apiRoot}api/blogs`;
+
+export const GET_BLOG = blogId => `${apiRoot}api/blogs/${blogId}`;

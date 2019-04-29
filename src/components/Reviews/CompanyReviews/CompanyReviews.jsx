@@ -6,6 +6,7 @@ import Review from "../Review/Review.jsx";
 import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
 
 import "./style.scss";
+import CompanyStats from "../../Partials/CompanyStats/CompanyStats.jsx";
 
 class CompanyReviews extends React.Component {
   constructor(props) {
@@ -41,11 +42,11 @@ class CompanyReviews extends React.Component {
               </div>
               <div className="company-name">{company.company}</div>
             </div>
-            <div className="company-card-info">
-              {faker.lorem.paragraph().toString()}
-            </div>
+            <div className="company-card-info" />
           </div>
-          <div className="company-card-right">stars</div>
+          <div className="company-card-right">
+            <CompanyStats company={this.props.company} />
+          </div>
         </div>
         <div className={reviewsClass}>
           <Review />

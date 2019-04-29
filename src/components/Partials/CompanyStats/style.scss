@@ -1,0 +1,10 @@
+.statistics-container {
+    display: table;
+    margin-top: 10px;
+
+    .authorization-stat-container {
+        display: flex;
+        justify-content: flex-start;
+        border: 1px solid red;
+    }
+}

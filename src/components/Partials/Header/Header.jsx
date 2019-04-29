@@ -82,9 +82,7 @@ class Header extends Component {
           <div className="header-icon general tooltips">
             <Link to="/metricsGlobal">
               <img src="../../../src/assets/icons/globe.png" />
-              <span style={{ height: "48px", lineHeight: "24px" }}>
-                Aggregated Metrics
-              </span>
+              <span>Aggregated Metrics</span>
             </Link>
           </div>
           {!this.props.isNotificationsShowing ? (

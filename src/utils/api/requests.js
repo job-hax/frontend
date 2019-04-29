@@ -27,7 +27,14 @@ import {
   GET_PROFILE,
   GET_EMPLOYMENT_STATUSES,
   UPDATE_PROFILE,
-  FEEDBACK
+  FEEDBACK,
+  REVIEW_SUBMIT,
+  GET_SOURCE_TYPES,
+  GET_REVIEWS,
+  GET_FAQS,
+  GET_BLOGS,
+  GET_BLOG,
+  GET_EMPLOYMENT_AUTHS
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -408,6 +415,93 @@ export const feedbackRequest = {
   url: FEEDBACK,
   config: {
     method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//REVIEWS//
+export const reviewSubmitRequest = {
+  url: REVIEW_SUBMIT,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const getSourceTypesRequest = {
+  url: GET_SOURCE_TYPES,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const getReviewsRequest = {
+  url: GET_REVIEWS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const getEmploymentAuthsRequest = {
+  url: GET_EMPLOYMENT_AUTHS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//FAQS//
+export const getFAQsRequest = {
+  url: GET_FAQS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//BLOG REQUESTS//
+export const getblogsRequest = {
+  url: GET_BLOGS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const getblogRequest = {
+  url: GET_BLOG,
+  config: {
+    method: "GET",
     mode: "cors",
     cache: "no-cache",
     headers: {
