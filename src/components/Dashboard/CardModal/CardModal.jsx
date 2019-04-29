@@ -1,19 +1,14 @@
 import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
-import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
-import classNames from "classnames";
+import { Rate } from "antd";
 
-import { fetchApi, postData } from "../../../utils/api/fetch_api";
+import ModalHeader from "./SubComponents/ModalHeader/ModalHeader.jsx";
+import Notes from "./SubComponents/Notes.jsx";
+import ReviewInput from "./SubComponents/ReviewInput/ReviewInput.jsx";
+import CompanyStats from "../../Partials/CompanyStats/CompanyStats.jsx";
+import { fetchApi } from "../../../utils/api/fetch_api";
+import { getNotesRequest } from "../../../utils/api/requests.js";
 import {
-  updateNoteRequest,
-  addNoteRequest,
-  deleteNoteRequest,
-  getNotesRequest,
-  deleteJobRequest,
-  updateJobStatusRequest
-} from "../../../utils/api/requests.js";
-import {
-  APPLICATION_STATUSES_IN_ORDER,
   IS_CONSOLE_LOG_OPEN,
   makeTimeBeautiful
 } from "../../../utils/constants/constants.js";
@@ -24,456 +19,67 @@ class CardModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      showNotePad: false,
-      showOptions: false,
-      isEditing: false,
       imageLoadError: true,
       whatIsDisplaying: "company",
-      addNoteForm: "",
-      updateNoteForm: "",
-      notes: [],
-      textareaHeight: 16
+      isEnteringReview: false,
+      isAlreadySubmittedReview: false,
+      isUpdated: false,
+      isCompanyPropsSetted: false,
+      company: {}
     };
-    this.notes = [];
-    this.currentNote = null;
-    this.toggleNotes = this.toggleNotes.bind(this);
-    this.toggleOptions = this.toggleOptions.bind(this);
-    this.toggleEdit = this.toggleEdit.bind(this);
-    this.setToDefault = this.setToDefault.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.addNote = this.addNote.bind(this);
-    this.saveNotes = this.saveNotes.bind(this);
-  }
 
-  toggleNotes() {
-    this.currentNote = null;
-    IS_CONSOLE_LOG_OPEN && console.log("current note\n", this.currentNote);
-    this.setState(state => ({
-      showNotePad: !state.showNotePad
-    }));
-  }
-
-  toggleOptions() {
-    this.setState(state => ({
-      showOptions: !state.showOptions
-    }));
-  }
-
-  toggleEdit() {
-    this.setState(state => ({
-      isEditing: !state.isEditing
-    }));
-  }
-
-  setToDefault() {
-    this.toggleEdit();
-    var resetValue = this.refs.addNoteFormDefault;
-    resetValue.value = "";
-    this.setState({
-      addNoteForm: ""
-    });
-  }
-
-  saveNotes(noteData, request, createdDate) {
-    if (this.state.showNotePad) {
-      const noteUpdated = {
-        id: request.jobapp_note_id,
-        description: request.description,
-        created_date: createdDate.created_date,
-        update_date: new Date(
-          new Date().toString().split("GMT")[0] + " UTC"
-        ).toISOString()
-      };
-      IS_CONSOLE_LOG_OPEN && console.log(noteUpdated);
-      const notesUpdated = this.state.notes.filter(note => {
-        return note.id !== request.jobapp_note_id;
-      });
-      notesUpdated.unshift(noteUpdated);
-      this.setState(() => ({
-        notes: notesUpdated
-      }));
-      this.toggleNotes();
-      this.setState({
-        updateNoteForm: ""
-      });
-    } else {
-      let notesAdded = this.state.notes;
-      notesAdded.unshift(noteData);
-      this.setState(() => ({
-        notes: notesAdded
-      }));
-      this.setToDefault();
-    }
-    IS_CONSOLE_LOG_OPEN &&
-      console.log(
-        "after save \n--addNoteForm",
-        this.state.addNoteForm,
-        "\n--updateNoteForm",
-        this.state.updateNoteForm
-      );
-  }
-
-  setCurrentNote(item) {
-    this.currentNote = item;
-    IS_CONSOLE_LOG_OPEN && console.log("set current note\n", this.currentNote);
-    this.setState(state => ({
-      showNotePad: !state.showNotePad
-    }));
+    this.toggleReview = this.toggleReview.bind(this);
+    this.setCompany = this.setCompany.bind(this);
   }
 
   componentDidMount() {
-    this.getNotes();
+    this.setState({ company: this.props.card.companyObject });
   }
 
-  getNotes() {
-    const { card, token } = this.props;
-    let { url, config } = getNotesRequest;
-    url = url + "?jopapp_id=" + card.id;
-    IS_CONSOLE_LOG_OPEN && console.log("URL with params\n", url);
-    IS_CONSOLE_LOG_OPEN && console.log("token\n", token);
-    config.headers.Authorization = token;
-    fetchApi(url, config).then(response => {
-      if (response.ok) {
-        this.notes = response.json.data.reverse();
-        IS_CONSOLE_LOG_OPEN &&
-          console.log("getNotes.response.json.data\n", this.notes);
-        this.setState({
-          notes: this.notes
-        });
-      }
-    });
-  }
-
-  onChange(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-    IS_CONSOLE_LOG_OPEN && console.log("value", e.target.value);
-  }
-
-  addNote(e) {
-    IS_CONSOLE_LOG_OPEN && console.log("add note requested!", e.target.value);
-    e.preventDefault();
-    const { card, token } = this.props;
-    const { addNoteForm, updateNoteForm } = this.state;
-    IS_CONSOLE_LOG_OPEN &&
-      console.log(
-        "addNote \n--add note form",
-        addNoteForm,
-        "\n--update note form",
-        updateNoteForm,
-        "\n--value",
-        e.target.value
-      );
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("addnoteform currentNote", this.currentNote);
-    if ((addNoteForm.trim().length == 0) & (updateNoteForm.trim().length == 0))
-      return;
-    const reqBody =
-      this.currentNote == null
-        ? {
-            jobapp_id: card.id,
-            description: addNoteForm
-          }
-        : {
-            jobapp_note_id: this.currentNote.id,
-            description: updateNoteForm
-          };
-    let { url, config } =
-      this.currentNote == null ? addNoteRequest : updateNoteRequest;
-    IS_CONSOLE_LOG_OPEN && console.log("request body\n", reqBody);
-    config.headers.Authorization = token;
-    postData(url, config, reqBody)
-      .catch(error => console.error(error))
-      .then(response => {
-        IS_CONSOLE_LOG_OPEN && console.log("response json\n", response.json);
-        if (response.ok) {
-          this.saveNotes(response.json.data, reqBody, this.currentNote);
-        }
-      });
-  }
-
-  handleKeyUp(evt) {
-    if (this.state.textareaHeight != 48) {
+  componentDidUpdate() {
+    if (this.state.isCompanyPropsSetted == false && !this.state.isUpdated)
       this.setState({
-        textareaHeight: 48
+        company: this.props.card.companyObject,
+        isCompanyPropsSetted: true
       });
-    } else {
-      this.setState({
-        textareaHeight: 16
-      });
-    }
   }
 
-  noteContainerGenerate() {
-    let textareaStyle = {
-      height: this.state.textareaHeight,
-      maxWidth: "352px",
-      minWidth: "352px",
-      width: "352px"
-    };
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("notecontainergenerator currentNote?", this.currentNote);
-    if (this.state.notes.length == 0) {
-      return (
-        <p style={{ color: "rgba(32,32,32,0.6)", marginTop: "16px" }}>
-          You don't have any notes at the moment.
-        </p>
-      );
-    } else {
-      return this.state.notes.map(item => (
-        <div key={item.id}>
-          <div>
-            {this.currentNote != item ? (
-              <div className="note-container">
-                <div
-                  className="text-container"
-                  value={item}
-                  onClick={() => this.setCurrentNote(item)}
-                >
-                  <p className="note"> {item.description}</p>
-                  {item.update_date == null ? (
-                    <p className="date">
-                      {" "}
-                      {makeTimeBeautiful(item.created_date, "dateandtime")}
-                    </p>
-                  ) : (
-                    <p className="date">
-                      updated on{" "}
-                      {makeTimeBeautiful(item.update_date, "dateandtime")}
-                    </p>
-                  )}
-                </div>
-                <div className="button-container-parent">
-                  <div className="button-container-child">
-                    <button
-                      value={item.id}
-                      onClick={() => this.deleteNote(item.id)}
-                    >
-                      <img src="../../src/assets/icons/DeleteIconInBtn@1x.png" />
-                    </button>
-                    <button
-                      value={item}
-                      onClick={() => this.setCurrentNote(item)}
-                    >
-                      <img src="../../src/assets/icons/edit.png" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <form
-                className="add-note-area"
-                onSubmit={this.addNote}
-                style={{ borderBottom: "1px solid rgba(32, 32, 32, 0.1)" }}
-              >
-                <div>
-                  <textarea
-                    name="updateNoteForm"
-                    onChange={this.onChange}
-                    defaultValue={item.description}
-                    onDoubleClick={this.handleKeyUp.bind(this)}
-                    style={textareaStyle}
-                  />
-                </div>
-                <div className="notepad-buttons">
-                  <button
-                    className="notepad-buttons cancel"
-                    type="reset"
-                    onClick={this.toggleNotes}
-                  >
-                    cancel
-                  </button>
-                  <button className="notepad-buttons save" type="submit">
-                    save
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      ));
-    }
+  toggleReview() {
+    this.setState({ isEnteringReview: !this.state.isEnteringReview });
   }
 
-  deleteNote(id) {
-    const { token } = this.props;
-    const body = {
-      jobapp_note_id: id
-    };
-    let { url, config } = deleteNoteRequest;
-    config.headers.Authorization = token;
-    IS_CONSOLE_LOG_OPEN && console.log("delete request body\n", body);
-    postData(url, config, body).then(response => {
-      IS_CONSOLE_LOG_OPEN && console.log("delete request response\n", response);
-      if (response.ok) {
-        this.getNotes();
-      }
-    });
+  setCompany(newCompany) {
+    this.setState({ company: newCompany, isUpdated: true });
   }
 
-  deleteJobFunction() {
-    const { card, token, deleteJobFromList, columnName } = this.props;
-    const body = {
-      jobapp_id: card.id
-    };
-    let { url, config } = deleteJobRequest;
-    config.headers.Authorization = token;
-    IS_CONSOLE_LOG_OPEN && console.log("delete job request body\n", body);
-    postData(url, config, body).then(response => {
-      IS_CONSOLE_LOG_OPEN &&
-        console.log("delete job request response\n", response, card);
-      if (response.ok) {
-        IS_CONSOLE_LOG_OPEN && console.log("function ", columnName, card.id);
-        deleteJobFromList(columnName, card.id, card.isRejected);
-      }
-    });
-  }
-
-  updateAsRejected() {
-    const { card, token, moveToRejected, columnName } = this.props;
-    var isRejected = !card.isRejected;
-    const body = {
-      jobapp_id: card.id,
-      status_id: card.applicationStatus.id,
-      rejected: isRejected
-    };
-    let { url, config } = updateJobStatusRequest;
-    config.headers.Authorization = token;
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("update to rejected request body\n", body);
-    postData(url, config, body).then(response => {
-      IS_CONSOLE_LOG_OPEN &&
-        console.log("update to rejected request response\n", response, card);
-      if (response.ok) {
-        IS_CONSOLE_LOG_OPEN && console.log("function ", columnName, card.id);
-        moveToRejected(columnName, card, isRejected);
-      }
-    });
-  }
-
-  updateCardStatusToOtherStatuses(insertedColumnName) {
-    const { card, columnName, updateApplications } = this.props;
-    updateApplications(card, columnName, insertedColumnName);
-  }
-
-  generateNotes() {
-    const notesShowingClass = classNames({
-      "notes-showing": true,
-      "--short": this.state.isEditing
-    });
-
-    return (
-      <div>
-        <div>
-          {this.state.isEditing ? (
-            <form className="add-note-area" onSubmit={this.addNote}>
-              <div>
-                <textarea
-                  name="addNoteForm"
-                  placeholder="+ Add note"
-                  onChange={this.onChange}
-                  ref="addNoteFormDefault"
-                />
-              </div>
-              <div className="notepad-buttons">
-                <button
-                  className="notepad-buttons cancel"
-                  type="reset"
-                  onClick={this.setToDefault}
-                >
-                  cancel
-                </button>
-                <button className="notepad-buttons save" type="submit">
-                  save
-                </button>
-              </div>
-            </form>
-          ) : (
-            <form className="add-note-area">
-              <div>
-                <textarea
-                  className="add-note-area --height-min"
-                  placeholder="+ Add note"
-                  onClick={this.toggleEdit}
-                  ref="addNoteFormDefault"
-                />
-              </div>
-            </form>
-          )}
-          <div>
-            <div className={notesShowingClass}>
-              {this.noteContainerGenerate()}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  otherApplicationStatusesGenerator() {
-    const { columnName } = this.props;
-    var statuses = APPLICATION_STATUSES_IN_ORDER.filter(
-      item => item.id !== columnName
-    );
-    return statuses.map(item => (
+  generateNavigationPanel(itemList) {
+    const styleNormal = { paddingTop: "50px" };
+    const styleOnReviewEntry = { paddingTop: "594px", paddingBottom: "260px" };
+    const notesSubHeaderStyle = this.state.isEnteringReview
+      ? styleOnReviewEntry
+      : styleNormal;
+    return itemList.map(item => (
       <div
-        key={item.id}
-        className="options"
-        value={item.id}
-        onClick={() => this.updateCardStatusToOtherStatuses(item.id)}
+        style={item == "Notes" ? notesSubHeaderStyle : { paddingTop: "0px" }}
+        key={itemList.indexOf(item)}
+        className="modal-body navigation subheaders"
       >
-        <img src={item.icon.toString().split("@")[0] + "InBtn@1x.png"} />
-        <p>{item.name}</p>
+        {item}
       </div>
     ));
   }
 
-  moveToOptionsGenerator() {
-    const { card, icon } = this.props;
-    if (this.state.showOptions) {
-      return (
-        <div className="options-container">
-          <div className="explanation">MOVE TO:</div>
-          {card.applicationStatus.id != 2 ? (
-            <div className="options" onClick={() => this.updateAsRejected()}>
-              {card.isRejected ? (
-                <div className="ongoing-option">
-                  <img src={icon.toString().split("@")[0] + "InBtn@1x.png"} />
-                  <p>Ongoing</p>
-                </div>
-              ) : (
-                <div className="rejected-option">
-                  <img
-                    src={"../../src/assets/icons/RejectedIconInBtn@1x.png"}
-                  />
-                  <p>Rejected</p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="unable">
-              <img src={"../../src/assets/icons/RejectedIconInBtn@1x.png"} />
-              Rejected
-            </div>
-          )}
-          {this.otherApplicationStatusesGenerator()}
-          <div
-            className="delete-option"
-            onClick={() => this.deleteJobFunction()}
-          >
-            <img src="../../src/assets/icons/DeleteIconInBtn@1x.png" />
-            <p>Delete</p>
-          </div>
-        </div>
-      );
-    } else {
-      return;
-    }
+  generateModalBodyInfo(itemsList) {
+    return itemsList.map(item => (
+      <div key={itemsList.indexOf(item)} className="modal-body main data info">
+        {item}
+      </div>
+    ));
   }
 
   render() {
-    const { toggleModal, card, icon, id } = this.props;
+    console.log(this.state.company, "---------", this.props.card.companyObject);
+    const { toggleModal, card } = this.props;
 
     return ReactDOM.createPortal(
       <React.Fragment>
@@ -484,75 +90,65 @@ class CardModal extends PureComponent {
               e.stopPropagation();
             }}
           >
-            <div className="modal-header-container">
-              <div className="modal-header">
-                <div className="job-card-info-container">
-                  <div className="modal-company-icon">
-                    {card.companyObject.cb_company_logo == null ? (
-                      <img
-                        src={card.companyObject.company_logo || defaultLogo}
-                      />
-                    ) : (
-                      <img src={card.companyObject.cb_company_logo} />
-                    )}
-                  </div>
-                  <div className="header-text">
-                    <div className="header-text company-name">
-                      {
-                        card.companyObject.company
-                          .split(",")[0]
-                          .split("-")[0]
-                          .split("(")[0]
-                      }
-                    </div>
-                    <div className="header-text job-title">
-                      {
-                        card.position.job_title
-                          .split(",")[0]
-                          .split("-")[0]
-                          .split("(")[0]
-                      }
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="modal-header options"
-                  onMouseEnter={this.toggleOptions}
-                  onMouseLeave={this.toggleOptions}
-                >
-                  <div className="current-status">
-                    <img src={icon.toString().split("@")[0] + "White@1x.png"} />
-                    <p>
-                      {APPLICATION_STATUSES_IN_ORDER[parseInt(id) - 1]["name"]}
-                    </p>
-                  </div>
-                  {this.moveToOptionsGenerator()}
-                </div>
-              </div>
-            </div>
+            <ModalHeader
+              showOptions={this.state.showOptions}
+              card={this.props.card}
+              icon={this.props.icon}
+              id={this.props.id}
+              columnName={this.props.columnName}
+              token={this.props.token}
+            />
+
             <div className="modal-body">
               <div className="modal-body navigation">
-                <div className="modal-body navigation subheaders">Company</div>
-                <div className="modal-body navigation subheaders">Position</div>
-                <div className="modal-body navigation subheaders">Date</div>
-                <div className="modal-body navigation subheaders">Source</div>
-                <div className="modal-body navigation subheaders">Notes</div>
+                {this.generateNavigationPanel([
+                  "Company",
+                  "Position",
+                  "Date",
+                  "Source",
+                  "Notes"
+                ])}
               </div>
               <div className="modal-body main">
                 <div className="modal-body main data">
-                  {card.companyObject.company}
+                  <div>
+                    {this.generateModalBodyInfo([
+                      card.companyObject.company,
+                      card.position.job_title,
+                      makeTimeBeautiful(card.applyDate, "date"),
+                      card.app_source === null ? "N/A" : card.app_source.value
+                    ])}
+                  </div>
+                  {this.state.isCompanyPropsSetted && (
+                    <div className="company-stats-container">
+                      <CompanyStats company={this.state.company} />
+                    </div>
+                  )}
                 </div>
-                <div className="modal-body main data">
-                  {card.position.job_title}
+                <div className="review-entry-container">
+                  {!this.state.isEnteringReview ? (
+                    <div
+                      className="review-button"
+                      style={{ marginTop: "-28px" }}
+                      onClick={this.toggleReview}
+                    >
+                      {this.state.isAlreadySubmittedReview
+                        ? "Update Your Review"
+                        : "Add a Review"}
+                    </div>
+                  ) : (
+                    <div>
+                      <ReviewInput
+                        token={this.props.token}
+                        toggleReview={this.toggleReview}
+                        card={this.props.card}
+                        setCompany={this.setCompany}
+                      />
+                    </div>
+                  )}
                 </div>
-                <div className="modal-body main data">
-                  {makeTimeBeautiful(card.applyDate, "date")}
-                </div>
-                <div className="modal-body main data">
-                  {card.app_source === null ? "N/A" : card.app_source.value}
-                </div>
-                <div className="modal-body main data">
-                  {this.generateNotes()}
+                <div className="modal-body main notes">
+                  <Notes card={this.props.card} token={this.props.token} />
                 </div>
               </div>
             </div>

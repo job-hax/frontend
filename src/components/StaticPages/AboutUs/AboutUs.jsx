@@ -80,8 +80,11 @@ class AboutUs extends Component {
   }
 
   render() {
+    const style = !this.props.isUserLoggedIn
+      ? { marginTop: "0px" }
+      : { marginTop: "-80px" };
     return (
-      <div className="about_us-container">
+      <div style={style} className="about_us-container">
         <div>
           {this.generateHeaderArea([
             "Are you actively looking for job?",

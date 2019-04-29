@@ -1,0 +1,60 @@
+.under_constrution-container {
+    background-color: white;
+    margin-top: -80px;
+    height: 96vh;
+    font-family: Exo;
+    color: #261268;
+
+    .header_area {
+        background-image: url('../../../assets/images/homebanner.jpg');
+        background-size: 100%;
+        color: white;
+        height: 46vh;
+        text-align: center;
+        padding-top: 20px;
+        padding-bottom: 80px;
+
+        h2 {
+            font-weight: bolder;
+            margin-top: 0px;
+        }
+
+        .top-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 36px;
+
+            button {
+                color: white;
+                font-family: Exo;
+                font-size: 12pt;
+                background: rgba(255, 255, 255, 0.05);
+                border: none;
+                border-radius: 50px;
+                padding: 15px 35px;
+                margin-top: 7.8%;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .logo {
+        width: 90px;
+    }
+}
+
+.info-area {
+    text-align: center;
+
+    h2 {
+        font-weight: bolder;
+        margin-top: 120px;
+        color: #261268;
+    }
+}
+
+.footer-bottom {
+    position: absolute;
+    width: 100%;
+    bottom: 0%;
+}
