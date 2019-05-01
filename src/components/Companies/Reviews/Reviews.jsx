@@ -52,7 +52,11 @@ class Reviews extends React.Component {
 
   mapReviews() {
     return this.state.reviewsList.map(review => (
-      <div key={review.id} className="review-container">
+      <div
+        key={review.id}
+        className="review-container"
+        style={this.props.reviewContainerStyle}
+      >
         <div className="review-header">
           <div className="reviewer-name">
             {review.anonymous === false ? review.username : "Anonymous"}
@@ -66,7 +70,7 @@ class Reviews extends React.Component {
           <div className="review-body-company">
             <div className="body-company-title">Company</div>
             <div className="body-company-sub-container">
-              <div className="body-company-data">
+              <div className="body-company-data" style={this.props.leftWidth}>
                 <div className="employment-status">
                   <label>Employment Type:</label>
                   {review.emp_status === null ? (
@@ -102,7 +106,10 @@ class Reviews extends React.Component {
           <div className="review-body-interview">
             <div className="body-interview-title">Interview</div>
             <div className="interview-ratings">
-              <div className="overall-experience-container">
+              <div
+                className="overall-experience-container"
+                style={this.props.leftWidth}
+              >
                 <label>Overall Experience:</label>
                 {review.overall_interview_experience === null ? (
                   <div className="not-specified">"Not specified"</div>
@@ -157,10 +164,7 @@ class Reviews extends React.Component {
             </Select>
           </div>
         )}
-        <div
-          style={{ paddingTop: 0, maxHeight: "50vh" }}
-          className="reviews-container"
-        >
+        <div style={this.props.style} className="reviews-container">
           {this.mapReviews()}
         </div>
       </div>

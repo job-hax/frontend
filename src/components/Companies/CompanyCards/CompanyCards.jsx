@@ -120,6 +120,14 @@ class CompanyCards extends React.Component {
               positionsList={this.state.positionsList}
               company_id={this.props.company.id}
               token={this.props.token}
+              style={{ paddingTop: 0, maxHeight: "50vh" }}
+              reviewContainerStyle={{
+                display: "block"
+              }}
+              leftWidth={{
+                minWidth: "360px",
+                maxWidth: "360px"
+              }}
             />
           </div>
         )}
