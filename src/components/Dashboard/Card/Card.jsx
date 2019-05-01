@@ -107,10 +107,10 @@ class Card extends PureComponent {
         )}
         <div className={cardClass} onClick={this.toggleModal}>
           <div className="card-company-icon">
-            {companyObject.cb_company_logo == null ? (
-              <img src={companyObject.company_logo || defaultLogo} />
+            {companyObject.company_logo == null ? (
+              <img src={companyObject.cb_company_logo || defaultLogo} />
             ) : (
-              <img src={companyObject.cb_company_logo} />
+              <img src={companyObject.company_logo} />
             )}
           </div>
           <div className="card-company-info">

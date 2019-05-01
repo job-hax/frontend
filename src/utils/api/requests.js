@@ -34,7 +34,9 @@ import {
   GET_FAQS,
   GET_BLOGS,
   GET_BLOG,
-  GET_EMPLOYMENT_AUTHS
+  GET_EMPLOYMENT_AUTHS,
+  GET_COMPANIES,
+  GET_AGREEMENTS
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -486,7 +488,7 @@ export const getFAQsRequest = {
 };
 
 //BLOG REQUESTS//
-export const getblogsRequest = {
+export const getBlogsRequest = {
   url: GET_BLOGS,
   config: {
     method: "GET",
@@ -498,8 +500,36 @@ export const getblogsRequest = {
   }
 };
 
-export const getblogRequest = {
+export const getBlogRequest = {
   url: GET_BLOG,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//AGREEMENTS REQUEST//
+
+export const getAgreementsRequest = {
+  url: GET_AGREEMENTS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//COMPANIES REQUESTS//
+
+export const getCompaniesRequest = {
+  url: GET_COMPANIES,
   config: {
     method: "GET",
     mode: "cors",

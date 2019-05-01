@@ -36,13 +36,18 @@ class Home extends Component {
     return (
       <section className="header_area" id="home">
         <div className="top_buttons_and_logo">
-          <a href="#home">
-            <img
-              className="logo"
-              src="src/assets/icons/JobHax-logo-white.svg"
-              alt="JobHax-logo"
-            />
-          </a>
+          <div>
+            <a href="#home">
+              <img
+                className="logo"
+                src="src/assets/icons/JobHax-logo-white.svg"
+                alt="JobHax-logo"
+              />
+              <div style={{ marginLeft: 30, fontSize: "60%", color: "white" }}>
+                Alpha
+              </div>
+            </a>
+          </div>
           {this.generateTopButtons()}
         </div>
         <div className="intro">
