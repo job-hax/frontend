@@ -2,7 +2,7 @@ import React from "react";
 import { Pagination } from "antd";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
-import CompanyReviews from "./CompanyCards/CompanyCards.jsx";
+import CompanyCards from "./CompanyCards/CompanyCards.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
 import { getCompaniesRequest } from "../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
@@ -97,7 +97,7 @@ class Companies extends React.Component {
   generateCompanyCards() {
     return this.state.companies.data.map(company => (
       <div key={company.id}>
-        <CompanyReviews company={company} />
+        <CompanyCards company={company} token={this.props.token} />
       </div>
     ));
   }
