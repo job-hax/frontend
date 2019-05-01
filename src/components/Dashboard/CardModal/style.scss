@@ -313,22 +313,38 @@
 
       }
 
+      .review-container {
+        display: flex;
+        justify-content: flex-start;
 
-      .review-entry-container {
-        margin-top: 30px;
-        margin-left: 20px;
+        .review-entry-container {
+          margin-top: 30px;
+          margin-left: 20px;
 
-        .review-button {
-          width: fit-content;
-          width: -moz-fit-content;
-          height: 28px;
-          padding: 4px 8px 4px 8px;
-          background-color: rgba(132, 100, 239, 1);
-          color: white;
-          text-align: center;
+          .review-button {
+            width: fit-content;
+            width: -moz-fit-content;
+            height: 28px;
+            padding: 4px 8px 4px 8px;
+            background-color: rgba(132, 100, 239, 1);
+            color: white;
+            text-align: center;
+            cursor: pointer;
+          }
+
+
+          .modal-reviews-container {
+            max-height: 60vh;
+            padding: 0px 0px 0px 0px;
+            display: block;
+
+            &.hidden {
+              display: none;
+            }
+          }
         }
-
       }
+
 
       &.notes {
         width: 490px;
