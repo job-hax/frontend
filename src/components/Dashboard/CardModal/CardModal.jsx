@@ -1,13 +1,14 @@
 import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
-import { Rate } from "antd";
+import classNames from "classnames";
 
 import ModalHeader from "./SubComponents/ModalHeader/ModalHeader.jsx";
 import Notes from "./SubComponents/Notes.jsx";
 import ReviewInput from "./SubComponents/ReviewInput/ReviewInput.jsx";
 import CompanyStats from "../../Partials/CompanyStats/CompanyStats.jsx";
+import Reviews from "../../Companies/Reviews/Reviews.jsx";
 import { fetchApi } from "../../../utils/api/fetch_api";
-import { getNotesRequest } from "../../../utils/api/requests.js";
+import { getReviewsRequest } from "../../../utils/api/requests.js";
 import {
   IS_CONSOLE_LOG_OPEN,
   makeTimeBeautiful
@@ -23,16 +24,44 @@ class CardModal extends PureComponent {
       whatIsDisplaying: "company",
       isEnteringReview: false,
       isAlreadySubmittedReview: false,
+      isReviewsDisplaying: false,
       isUpdated: false,
-      company: {}
+      company: {},
+      reviewsList: []
     };
 
-    this.toggleReview = this.toggleReview.bind(this);
+    this.toggleReviewEdit = this.toggleReviewEdit.bind(this);
+    this.toggleReviewDisplay = this.toggleReviewDisplay.bind(this);
     this.setCompany = this.setCompany.bind(this);
   }
 
-  toggleReview() {
+  componentDidMount() {
+    let newReviewsUrl =
+      getReviewsRequest.url +
+      "?company_id=" +
+      this.props.card.companyObject.id +
+      "&position_id=" +
+      this.props.card.position.id +
+      "&all_reviews=true";
+    getReviewsRequest.config.headers.Authorization = this.props.token;
+    fetchApi(newReviewsUrl, getReviewsRequest.config).then(response => {
+      if (response.ok) {
+        this.setState({ reviewsList: response.json.data });
+        IS_CONSOLE_LOG_OPEN &&
+          console.log(
+            "card modal position reviews response json data",
+            response.json.data
+          );
+      }
+    });
+  }
+
+  toggleReviewEdit() {
     this.setState({ isEnteringReview: !this.state.isEnteringReview });
+  }
+
+  toggleReviewDisplay() {
+    this.setState({ isReviewsDisplaying: !this.state.isReviewsDisplaying });
   }
 
   setCompany(newCompany) {
@@ -45,9 +74,10 @@ class CardModal extends PureComponent {
   generateNavigationPanel(itemList) {
     const styleNormal = { paddingTop: "50px" };
     const styleOnReviewEntry = { paddingTop: "594px", paddingBottom: "260px" };
-    const notesSubHeaderStyle = this.state.isEnteringReview
-      ? styleOnReviewEntry
-      : styleNormal;
+    const notesSubHeaderStyle =
+      this.state.isEnteringReview || this.state.isReviewsDisplaying
+        ? styleOnReviewEntry
+        : styleNormal;
     return itemList.map(item => (
       <div
         style={item == "Notes" ? notesSubHeaderStyle : { paddingTop: "0px" }}
@@ -69,6 +99,11 @@ class CardModal extends PureComponent {
 
   render() {
     const { toggleModal, card } = this.props;
+    const reviewContainerMargin = this.state.isEnteringReview
+      ? {
+          marginBottom: "140px"
+        }
+      : { marginBottom: 0 };
     console.log(card, "---------", this.state.isUpdated);
 
     return ReactDOM.createPortal(
@@ -116,27 +151,70 @@ class CardModal extends PureComponent {
                     <CompanyStats company={card.companyObject} />
                   </div>
                 </div>
-                <div className="review-entry-container">
-                  {!this.state.isEnteringReview ? (
-                    <div
-                      className="review-button"
-                      style={{ marginTop: "-28px" }}
-                      onClick={this.toggleReview}
-                    >
-                      {this.state.isAlreadySubmittedReview
-                        ? "Update Your Review"
-                        : "Add a Review"}
-                    </div>
-                  ) : (
-                    <div>
-                      <ReviewInput
-                        token={this.props.token}
-                        toggleReview={this.toggleReview}
-                        card={this.props.card}
-                        setCompany={this.setCompany}
-                      />
+                <div className="review-container" style={reviewContainerMargin}>
+                  {!this.state.isEnteringReview && (
+                    <div className="review-entry-container">
+                      {this.state.reviewsList.length > 0 && (
+                        <div
+                          className="review-button"
+                          style={{ marginTop: "-28px" }}
+                          onClick={this.toggleReviewDisplay}
+                        >
+                          {this.state.isReviewsDisplaying
+                            ? "Close Reviews"
+                            : "See Reviews"}
+                        </div>
+                      )}
+                      {this.state.isReviewsDisplaying === true && (
+                        <Reviews
+                          reviewsList={this.state.reviewsList}
+                          positionsList={[]}
+                          company_id={this.props.card.companyObject.id}
+                          token={this.props.token}
+                          style={{
+                            height: "auto",
+                            width: "560px",
+                            marginLeft: "12px",
+                            margintTop: "12px",
+                            paddingTop: 0,
+                            minHeight: "540px",
+                            maxHeight: "540px",
+                            display: "block"
+                          }}
+                          reviewContainerStyle={{
+                            display: "block",
+                            marginBottom: 20
+                          }}
+                          leftWidth={{
+                            minWidth: "220px",
+                            maxWidth: "220px"
+                          }}
+                        />
+                      )}
                     </div>
                   )}
+                  <div className="review-entry-container">
+                    {!this.state.isEnteringReview ? (
+                      <div
+                        className="review-button"
+                        style={{ marginTop: "-28px" }}
+                        onClick={this.toggleReviewEdit}
+                      >
+                        {this.state.isAlreadySubmittedReview
+                          ? "Update Your Review"
+                          : "Add a Review"}
+                      </div>
+                    ) : (
+                      <div className="modal-reviews-container">
+                        <ReviewInput
+                          token={this.props.token}
+                          toggleReview={this.toggleReviewEdit}
+                          card={this.props.card}
+                          setCompany={this.setCompany}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="modal-body main notes">
                   <Notes card={this.props.card} token={this.props.token} />
