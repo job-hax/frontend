@@ -102,39 +102,41 @@ class Dashboard extends Component {
 
   sortJobApplications(applications) {
     for (let application of applications) {
-      switch (application.applicationStatus.value.toLowerCase()) {
-        case "to apply":
-          this.toApply.push(application);
-          break;
-        case "applied":
-          if (application.isRejected) {
-            this.appliedRejected.push(application);
-          } else {
-            this.applied.push(application);
-          }
-          break;
-        case "phone screen":
-          if (application.isRejected) {
-            this.phoneScreenRejected.push(application);
-          } else {
-            this.phoneScreen.push(application);
-          }
-          break;
-        case "onsite interview":
-          if (application.isRejected) {
-            this.onsiteInterviewRejected.push(application);
-          } else {
-            this.onsiteInterview.push(application);
-          }
-          break;
-        case "offer":
-          if (application.isRejected) {
-            this.offerRejected.push(application);
-          } else {
-            this.offer.push(application);
-          }
-          break;
-        default:
+      if (application.companyObject != null) {
+        switch (application.applicationStatus.value.toLowerCase()) {
+          case "to apply":
+            this.toApply.push(application);
+            break;
+          case "applied":
+            if (application.isRejected) {
+              this.appliedRejected.push(application);
+            } else {
+              this.applied.push(application);
+            }
+            break;
+          case "phone screen":
+            if (application.isRejected) {
+              this.phoneScreenRejected.push(application);
+            } else {
+              this.phoneScreen.push(application);
+            }
+            break;
+          case "onsite interview":
+            if (application.isRejected) {
+              this.onsiteInterviewRejected.push(application);
+            } else {
+              this.onsiteInterview.push(application);
+            }
+            break;
+          case "offer":
+            if (application.isRejected) {
+              this.offerRejected.push(application);
+            } else {
+              this.offer.push(application);
+            }
+            break;
+          default:
+        }
       }
     }
     this.refreshJobs();

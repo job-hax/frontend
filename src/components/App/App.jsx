@@ -7,9 +7,10 @@ import Blog from "../Blog/Blog.jsx";
 import Dashboard from "../Dashboard/Dashboard.jsx";
 import Metrics from "../Metrics/Metrics.jsx";
 import MetricsGlobal from "../MetricsGlobal/MetricsGlobal.jsx";
-import Reviews from "../Reviews/Reviews.jsx";
+import Companies from "../Companies/Companies.jsx";
 import Home from "../StaticPages/Home/Home.jsx";
 import AboutUs from "../StaticPages/AboutUs/AboutUs.jsx";
+import PrivacyPolicy from "../StaticPages/PrivacyPolicy/PrivacyPolicy.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import PollBox from "../Partials/PollBox/PollBox.jsx";
 import FeedBack from "../Partials/FeedBack/FeedBack.jsx";
@@ -554,9 +555,12 @@ class App extends Component {
             />
             <Route
               exact
-              path="/reviews"
+              path="/companies"
               render={() => (
-                <Reviews active={this.state.active} token={this.state.token} />
+                <Companies
+                  active={this.state.active}
+                  token={this.state.token}
+                />
               )}
             />
             <Route
@@ -576,6 +580,11 @@ class App extends Component {
               render={() => (
                 <AboutUs isUserLoggedIn={this.state.isUserLoggedIn} />
               )}
+            />
+            <Route
+              exact
+              path="/privacypolicy"
+              render={() => <PrivacyPolicy />}
             />
             <Route
               exact
@@ -646,6 +655,11 @@ class App extends Component {
               exact
               path="/blogs"
               render={() => <Redirect to="/signin" />}
+            />
+            <Route
+              exact
+              path="/privacypolicy"
+              render={() => <PrivacyPolicy />}
             />
           </div>
         </Router>

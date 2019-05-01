@@ -16,6 +16,7 @@
         h2 {
             font-weight: bolder;
             margin-top: 0px;
+            font-size: 220%;
         }
 
         .top-buttons {
@@ -42,13 +43,23 @@
     }
 }
 
-.info-area {
-    text-align: center;
+.info-container {
+    display: flex;
+    justify-content: center;
 
-    h2 {
-        font-weight: bolder;
-        margin-top: 120px;
-        color: #261268;
+    .info-area {
+        margin-top: 50px;
+        margin-bottom: 100px;
+        text-align: center;
+        height: fit-content;
+        height: -moz-fit-content;
+        width: 80%;
+
+        h2 {
+            font-weight: bolder;
+            margin-top: 120px;
+            color: #261268;
+        }
     }
 }
 
@@ -56,5 +67,4 @@
     position: absolute;
     width: 100%;
     bottom: 0%;
-    z-index: 0;
 }

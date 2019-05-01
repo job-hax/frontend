@@ -24,7 +24,6 @@ class CardModal extends PureComponent {
       isEnteringReview: false,
       isAlreadySubmittedReview: false,
       isUpdated: false,
-      isCompanyPropsSetted: false,
       company: {}
     };
 
@@ -32,24 +31,15 @@ class CardModal extends PureComponent {
     this.setCompany = this.setCompany.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({ company: this.props.card.companyObject });
-  }
-
-  componentDidUpdate() {
-    if (this.state.isCompanyPropsSetted == false && !this.state.isUpdated)
-      this.setState({
-        company: this.props.card.companyObject,
-        isCompanyPropsSetted: true
-      });
-  }
-
   toggleReview() {
     this.setState({ isEnteringReview: !this.state.isEnteringReview });
   }
 
   setCompany(newCompany) {
-    this.setState({ company: newCompany, isUpdated: true });
+    console.log("setCompany run!", this.props.card.companyObject, "\n after");
+    this.props.card.companyObject = newCompany;
+    console.log(this.props.card.companyObject, "setCompanyLog last");
+    this.setState({ isUpdated: true });
   }
 
   generateNavigationPanel(itemList) {
@@ -78,8 +68,8 @@ class CardModal extends PureComponent {
   }
 
   render() {
-    console.log(this.state.company, "---------", this.props.card.companyObject);
     const { toggleModal, card } = this.props;
+    console.log(card, "---------", this.state.isUpdated);
 
     return ReactDOM.createPortal(
       <React.Fragment>
@@ -97,6 +87,9 @@ class CardModal extends PureComponent {
               id={this.props.id}
               columnName={this.props.columnName}
               token={this.props.token}
+              deleteJobFromList={this.props.deleteJobFromList}
+              moveToRejected={this.props.moveToRejected}
+              updateApplications={this.props.updateApplications}
             />
 
             <div className="modal-body">
@@ -119,11 +112,9 @@ class CardModal extends PureComponent {
                       card.app_source === null ? "N/A" : card.app_source.value
                     ])}
                   </div>
-                  {this.state.isCompanyPropsSetted && (
-                    <div className="company-stats-container">
-                      <CompanyStats company={this.state.company} />
-                    </div>
-                  )}
+                  <div className="company-stats-container">
+                    <CompanyStats company={card.companyObject} />
+                  </div>
                 </div>
                 <div className="review-entry-container">
                   {!this.state.isEnteringReview ? (

@@ -14,6 +14,7 @@ class FeedBack extends React.Component {
     super(props);
 
     this.state = {
+      textValue: "",
       value: 5,
       visible: false
     };
@@ -23,6 +24,7 @@ class FeedBack extends React.Component {
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
   }
 
   showModal() {
@@ -35,7 +37,7 @@ class FeedBack extends React.Component {
     event.preventDefault();
     feedbackRequest.config.headers.Authorization = this.props.token;
     if (event.target[0].value.trim() != (null || "")) {
-      this.body["text"] = event.target[0].value.trim();
+      this.body["text"] = this.state.textValue.trim();
     }
     this.body["star"] = this.state.value;
     feedbackRequest.config.body = JSON.stringify(this.body);
@@ -43,6 +45,7 @@ class FeedBack extends React.Component {
     fetchApi(feedbackRequest.url, feedbackRequest.config).then(response => {
       if (response.ok) {
         if (response.json.success === true) {
+          this.setState({ textValue: "" });
           alert("Your feedback has been submitted successfully!");
         } else {
           this.setState({ isUpdating: false });
@@ -77,6 +80,10 @@ class FeedBack extends React.Component {
 
   handleChange(value) {
     this.setState({ value });
+  }
+
+  handleTextChange(event) {
+    this.setState({ textValue: event.target.value });
   }
 
   generateModal() {
@@ -116,14 +123,22 @@ class FeedBack extends React.Component {
       color: "white"
     };
 
+    const feedbackButtonStyle =
+      window.location.href.slice(-17) == "underconstruction"
+        ? { display: "none" }
+        : { bottom: "16px" };
+
     return (
       <div>
         <div
           className="feedback-open-button"
+          style={feedbackButtonStyle}
           type="primary"
           onClick={this.showModal}
         >
-          Feedback
+          <div>
+            <img src="../../../../src/assets/icons/feedback_icon.png" />
+          </div>
         </div>
         <Modal
           visible={visible}
@@ -161,6 +176,8 @@ class FeedBack extends React.Component {
                 style={textBoxStyle}
                 className="text-box"
                 placeholder="+add feedback"
+                value={this.state.textValue}
+                onChange={this.handleTextChange}
               />
             </div>
             <div style={buttonsContainerStyle} className="buttons-container">

@@ -5,7 +5,7 @@ import parse from "html-react-parser";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
-import { getblogRequest, getblogsRequest } from "../../utils/api/requests.js";
+import { getBlogRequest, getBlogsRequest } from "../../utils/api/requests.js";
 import { makeTimeBeautiful } from "../../utils/constants/constants.js";
 
 import "./style.scss";
@@ -34,8 +34,8 @@ class Blog extends React.Component {
 
   componentDidUpdate() {
     if (this.props.token && this.props.active && !this.state.isRequested) {
-      getblogsRequest.config.headers.Authorization = this.props.token;
-      fetchApi(getblogsRequest.url, getblogsRequest.config).then(response => {
+      getBlogsRequest.config.headers.Authorization = this.props.token;
+      fetchApi(getBlogsRequest.url, getBlogsRequest.config).then(response => {
         if (response.ok) {
           this.setState({
             isRequested: true
@@ -50,8 +50,8 @@ class Blog extends React.Component {
   }
 
   getBlogDetail(blogId) {
-    getblogRequest.config.headers.Authorization = this.props.token;
-    fetchApi(getblogRequest.url(blogId), getblogsRequest.config).then(
+    getBlogRequest.config.headers.Authorization = this.props.token;
+    fetchApi(getBlogRequest.url(blogId), getBlogsRequest.config).then(
       response => {
         if (response.ok) {
           this.setState({

@@ -15,7 +15,7 @@ class Footer extends Component {
             <a href="https://docs.jobhax.com">
               <span>Docs</span>
             </a>
-            <Link to="/underconstruction">
+            <Link to="/privacypolicy">
               <span>Legal</span>
             </Link>
             <Link to="/faqs">

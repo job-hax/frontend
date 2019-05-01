@@ -85,6 +85,12 @@ class Header extends Component {
               <span>Aggregated Metrics</span>
             </Link>
           </div>
+          <div className="header-icon general tooltips">
+            <Link to="/companies">
+              <img src="../../../src/assets/icons/company_icon.png" />
+              <span>Companies</span>
+            </Link>
+          </div>
           {!this.props.isNotificationsShowing ? (
             <div
               className="header-icon general tooltips"

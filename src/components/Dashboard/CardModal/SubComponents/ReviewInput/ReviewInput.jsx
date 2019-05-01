@@ -207,13 +207,6 @@ class ReviewInput extends React.Component {
             }
             value={this.state.companyRateValue}
           />
-          {this.state.companyRateValue ? (
-            <span className="ant-rate-text">
-              {desc[this.state.companyRateValue - 1]}
-            </span>
-          ) : (
-            ""
-          )}
         </div>
         <div>
           <div className="label">Pros:</div>
@@ -299,13 +292,6 @@ class ReviewInput extends React.Component {
             onChange={value => this.handleInterviewRatingChange(value)}
             value={this.state.interviewRateValue}
           />
-          {this.state.interviewRateValue ? (
-            <span className="ant-rate-text">
-              {desc[this.state.interviewRateValue - 1]}
-            </span>
-          ) : (
-            ""
-          )}
         </div>
         <div>
           <div className="label">How did you get into interview?</div>
