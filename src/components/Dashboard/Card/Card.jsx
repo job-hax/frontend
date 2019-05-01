@@ -7,6 +7,7 @@ import linkedInLogo from "../../../assets/icons/linkedInLogo.png";
 import hiredComLogo from "../../../assets/icons/hiredComLogo.png";
 import indeedLogo from "../../../assets/icons/indeedLogo.png";
 import vetteryLogo from "../../../assets/icons/vetteryLogo.jpg";
+import glassdoorLogo from "../../../assets/icons/glassdoorLogo.png";
 import CardModal from "../CardModal/CardModal.jsx";
 
 import "./style.scss";
@@ -61,6 +62,8 @@ class Card extends PureComponent {
       return <img src={indeedLogo} />;
     } else if (source.value == "Vettery") {
       return <img src={vetteryLogo} />;
+    } else if (source.value == "glassdoor") {
+      return <img src={glassdoorLogo} />;
     }
   }
 

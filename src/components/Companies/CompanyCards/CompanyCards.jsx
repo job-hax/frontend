@@ -25,12 +25,7 @@ class CompanyReviews extends React.Component {
     });
     return (
       <div className="company-card-container">
-        <div
-          className="company-card-initial"
-          onClick={() =>
-            this.setState({ isReviewsShowing: !this.state.isReviewsShowing })
-          }
-        >
+        <div className="company-card-initial">
           <div className="company-card-left">
             <div className="company-card-header">
               <div className="company-logo">
@@ -43,6 +38,18 @@ class CompanyReviews extends React.Component {
               <div className="company-name">{company.company}</div>
             </div>
             <div className="company-card-info" />
+            {this.props.company.review_count != 0 && (
+              <div
+                className="see-reviews-button"
+                onClick={() =>
+                  this.setState({
+                    isReviewsShowing: !this.state.isReviewsShowing
+                  })
+                }
+              >
+                See {this.props.company.review_count} reviews
+              </div>
+            )}
           </div>
           <div className="company-card-right">
             <CompanyStats company={this.props.company} />
