@@ -62,9 +62,8 @@
 
     .company-card-reviews-container {
         max-height: 60vh;
-        padding-bottom: 20px;
+        padding: 0px 0px 0px 0px;
         display: flex;
-        overflow-x: hidden;
 
         &.hidden {
             display: none;
