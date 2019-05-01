@@ -28,23 +28,17 @@ function generateComment() {
 }
 
 function reviewCardRandomGenerator() {
-    const amount = Math.floor(Math.random() * 6) + 1 
-    const list = [];
-    for (let i = 0; i <= amount ; i++) {
+  const amount = Math.floor(Math.random() * 6) + 1;
+  const list = [];
+  for (let i = 0; i <= amount; i++) {
     list.push(<ApprovalCard content={generateComment()} />);
-    };
-    return list.map(item => (
-        <div key={Math.random()}>
-            {item}
-        </div>
-    ))
-};
+  }
+  return list.map(item => <div key={Math.random()}>{item}</div>);
+}
 
 const Comments = () => {
   return (
-    <div className="ui container comments">
-      {reviewCardRandomGenerator()}
-    </div>
+    <div className="ui container comments">{reviewCardRandomGenerator()}</div>
   );
 };
 

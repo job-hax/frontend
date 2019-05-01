@@ -23,9 +23,10 @@ class CompanyStats extends React.Component {
       )
     );
     const averageRating = ratingTotal == 0 ? 0 : ratingTotal / countTotal;
+    console.log("average rating", averageRating);
     return (
       <div>
-        <Rate tooltips={details} disabled defaultValue={averageRating} />
+        <Rate tooltips={details} disabled value={averageRating} />
       </div>
     );
   }

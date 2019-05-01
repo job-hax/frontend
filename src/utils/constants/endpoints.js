@@ -77,3 +77,7 @@ export const GET_FAQS = `${apiRoot}api/faqs`;
 export const GET_BLOGS = `${apiRoot}api/blogs`;
 
 export const GET_BLOG = blogId => `${apiRoot}api/blogs/${blogId}`;
+
+export const GET_AGREEMENTS = `${apiRoot}api/agreements/`;
+
+export const GET_COMPANIES = `${apiRoot}api/companies/`;
