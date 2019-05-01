@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import faker from "faker";
 
-import Review from "../Review/Review.jsx";
+import Review from "../Reviews/Reviews.jsx";
 import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
 
 import "./style.scss";
