@@ -28,6 +28,10 @@ class Companies extends React.Component {
     this.handlePageChange = this.handlePageChange.bind(this);
   }
 
+  componentDidMount() {
+    this.getData("initialRequest");
+  }
+
   componentDidUpdate() {
     if (this.props.active === true) {
       if (this.state.isInitialRequest === "beforeRequest") {
@@ -123,6 +127,7 @@ class Companies extends React.Component {
                 <Pagination
                   onChange={this.handlePageChange}
                   defaultCurrent={this.state.companies.pagination.current_page}
+                  current={this.state.companies.pagination.current_page}
                   total={this.state.companies.pagination.total_count}
                 />
               </div>
