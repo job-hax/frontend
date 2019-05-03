@@ -252,7 +252,7 @@ class ReviewInput extends React.Component {
     } else if (event.target.type === "dropdown") {
       const object = { id: event.target.id, value: event.target.textContent };
       const optionName = event.target.title;
-      this.body[optionName] = object;
+      this.body[optionName + "_id"] = event.target.id;
       this.setState({
         [optionName]: object
       });
