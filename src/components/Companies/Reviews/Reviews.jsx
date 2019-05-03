@@ -1,5 +1,5 @@
 import React from "react";
-import { Rate, Select } from "antd";
+import { Rate, Radio, Select } from "antd";
 
 import CompanyRating from "./CompanyRating/CompanyRating.jsx";
 import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
@@ -11,6 +11,8 @@ import "./style.scss";
 import "../../../assets/libraryScss/antd-scss/antd.scss";
 
 const descDifficulty = ["too easy", "easy", "normal", "hard", "too hard"];
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 class Reviews extends React.Component {
   constructor(props) {
@@ -110,17 +112,36 @@ class Reviews extends React.Component {
                 className="overall-experience-container"
                 style={this.props.leftWidth}
               >
-                <label>Overall Experience:</label>
-                {review.overall_interview_experience === null ? (
-                  <div className="not-specified">"Not specified"</div>
-                ) : (
-                  <div className="overall-experience">
-                    {review.overall_interview_experience == 1 ? "Bad" : "Good"}
-                  </div>
-                )}
+                <label>Overall:</label>
+                <div className="overall-experience">
+                  <RadioGroup
+                    name="overall_interview_experience"
+                    value={
+                      review.overall_interview_experience &&
+                      review.overall_interview_experience.toString()
+                    }
+                    onChange={this.handleInputChange}
+                    //style={{marginTop:"-8px"}}
+                  >
+                    <RadioButton
+                      id="overall-interview-experience-good"
+                      value="0"
+                    >
+                      Good
+                    </RadioButton>
+                    <RadioButton
+                      id="overall-interview-experience-bad"
+                      value="1"
+                    >
+                      Bad
+                    </RadioButton>
+                  </RadioGroup>
+                </div>
               </div>
               <div className="difficulty-container">
-                <label>Difficulty:</label>
+                <label style={{ margin: "10px 8px 6px 4px" }}>
+                  Difficulty:
+                </label>
                 <Rate
                   tooltips={descDifficulty}
                   disabled
@@ -130,7 +151,9 @@ class Reviews extends React.Component {
             </div>
             {review.interview_notes != "" && (
               <div className="interview-experience">
-                <label>Interview Experience:</label>
+                <label style={{ margin: "10px 4px 6px 0px" }}>
+                  Interview Experience:
+                </label>
                 <div className="interview-notes">{review.interview_notes}</div>
               </div>
             )}
