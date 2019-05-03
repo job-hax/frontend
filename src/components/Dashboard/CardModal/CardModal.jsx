@@ -27,12 +27,15 @@ class CardModal extends PureComponent {
       isReviewsDisplaying: false,
       isUpdated: false,
       company: {},
-      reviewsList: []
+      reviewsList: [],
+      review: {
+        id: -1
+      }
     };
 
     this.toggleReviewEdit = this.toggleReviewEdit.bind(this);
     this.toggleReviewDisplay = this.toggleReviewDisplay.bind(this);
-    this.setCompany = this.setCompany.bind(this);
+    this.setReview = this.setReview.bind(this);
   }
 
   componentDidMount() {
@@ -54,6 +57,24 @@ class CardModal extends PureComponent {
           );
       }
     });
+    if (this.props.card.companyObject.review_id) {
+      let newReviewsUrl =
+        getReviewsRequest.url +
+        "?review_id=" +
+        this.props.card.companyObject.review_id;
+      getReviewsRequest.config.headers.Authorization = this.props.token;
+      fetchApi(newReviewsUrl, getReviewsRequest.config).then(response => {
+        if (response.ok) {
+          this.setState({ review: response.json.data });
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "card modal position old review",
+              response.json.data,
+              this.state.review
+            );
+        }
+      });
+    }
   }
 
   toggleReviewEdit() {
@@ -64,11 +85,8 @@ class CardModal extends PureComponent {
     this.setState({ isReviewsDisplaying: !this.state.isReviewsDisplaying });
   }
 
-  setCompany(newCompany) {
-    console.log("setCompany run!", this.props.card.companyObject, "\n after");
-    this.props.card.companyObject = newCompany;
-    console.log(this.props.card.companyObject, "setCompanyLog last");
-    this.setState({ isUpdated: true });
+  setReview(newReview) {
+    this.setState({ review: newReview });
   }
 
   generateNavigationPanel(itemList) {
@@ -104,7 +122,6 @@ class CardModal extends PureComponent {
           marginBottom: "140px"
         }
       : { marginBottom: 0 };
-    console.log(card, "---------", this.state.isUpdated);
 
     return ReactDOM.createPortal(
       <React.Fragment>
@@ -200,7 +217,7 @@ class CardModal extends PureComponent {
                         style={{ marginTop: "-28px" }}
                         onClick={this.toggleReviewEdit}
                       >
-                        {this.state.isAlreadySubmittedReview
+                        {this.props.card.companyObject.review_id
                           ? "Update Your Review"
                           : "Add a Review"}
                       </div>
@@ -210,7 +227,9 @@ class CardModal extends PureComponent {
                           token={this.props.token}
                           toggleReview={this.toggleReviewEdit}
                           card={this.props.card}
-                          setCompany={this.setCompany}
+                          setCompany={this.props.updateCard}
+                          setReview={this.setReview}
+                          oldReview={this.state.review}
                         />
                       </div>
                     )}
