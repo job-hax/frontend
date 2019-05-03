@@ -125,8 +125,8 @@ class CompanyCards extends React.Component {
                 display: "block"
               }}
               leftWidth={{
-                minWidth: "360px",
-                maxWidth: "360px"
+                minWidth: "384px",
+                maxWidth: "384px"
               }}
             />
           </div>

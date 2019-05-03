@@ -62,6 +62,8 @@
     display: flex;
     justify-content: center;
     margin-top: 36px;
+    height: fit-content;
+    height: -moz-fit-content;
 
     .blog-card-container {
         min-height: 200px;
@@ -118,10 +120,28 @@
                     margin-top: 12px;
                 }
 
-                .details-button {
+                .blog-stats-container {
+                    display: flex;
+                    justify-content: space-between;
                     margin-top: 32px;
-                    cursor: pointer
+
+
+                    .details-button {
+                        cursor: pointer
+                    }
+
+                    .blog-stats {
+                        display: flex;
+                        justify-content: center;
+                        cursor: pointer;
+
+                        .stat {
+                            margin-right: 4px
+                        }
+                    }
+
                 }
+
 
             }
 
@@ -146,4 +166,12 @@
             }
         }
     }
+}
+
+.pagination-container {
+    margin-top: 20px;
+}
+
+.footer-blog {
+    bottom: 0;
 }

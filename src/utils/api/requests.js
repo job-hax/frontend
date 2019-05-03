@@ -33,7 +33,7 @@ import {
   GET_REVIEWS,
   GET_FAQS,
   GET_BLOGS,
-  GET_BLOG,
+  GET_OR_POST_BLOG,
   GET_EMPLOYMENT_AUTHS,
   GET_COMPANIES,
   GET_AGREEMENTS
@@ -501,9 +501,21 @@ export const getBlogsRequest = {
 };
 
 export const getBlogRequest = {
-  url: GET_BLOG,
+  url: GET_OR_POST_BLOG,
   config: {
     method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+export const postBlogRequest = {
+  url: GET_OR_POST_BLOG,
+  config: {
+    method: "POST",
     mode: "cors",
     cache: "no-cache",
     headers: {

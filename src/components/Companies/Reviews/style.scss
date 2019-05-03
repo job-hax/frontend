@@ -2,6 +2,7 @@
     width: 95%;
     margin-left: 5%;
     padding-right: 5%;
+    padding-bottom: 32px;
     overflow-x: hidden;
 
     .review-container {
@@ -35,6 +36,7 @@
 
             .review-body-company {
                 margin: 0 0 16px 0;
+                padding-right: 40px;
 
                 .body-company-title {
                     font-weight: 450;
@@ -47,8 +49,8 @@
                     justify-content: flex-start;
 
                     .body-company-data {
-                        min-width: 360px;
-                        max-width: 360px;
+                        min-width: 320px;
+                        max-width: 320px;
 
                         .employment-status {
 
@@ -100,12 +102,15 @@
                     justify-content: flex-start;
 
                     .overall-experience-container {
-                        width: 420px;
-                        min-width: 360px;
-                        max-width: 360px;
+                        display: flex;
+                        justify-content: flex-start;
+                        min-width: 320px;
+                        max-width: 320px;
+                        margin-top: 10px;
 
                         .overall-experience {
-                            margin-left: 24px;
+                            margin-left: 12px;
+                            margin-top: -8px;
                         }
                     }
 
@@ -118,7 +123,6 @@
 
                     label {
                         font-weight: 450;
-                        margin: 10px 4px 6px 8px;
                     }
                 }
 
@@ -127,7 +131,6 @@
 
                     label {
                         font-weight: 450;
-                        margin: 10px 0px 6px 8px;
                     }
 
                     .interview-notes {
