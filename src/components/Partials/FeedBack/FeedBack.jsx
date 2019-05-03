@@ -115,12 +115,13 @@ class FeedBack extends React.Component {
     };
     const buttonStyle = {
       backgroundColor: "rgb(92, 39, 195)",
-      height: "28px",
+      height: "32px",
       width: "70px",
       textAlign: "center",
-      paddingTop: "4px",
+      paddingTop: "0px",
       marginRight: "16px",
-      color: "white"
+      color: "white",
+      cursor: "pointer"
     };
 
     const feedbackButtonStyle =
