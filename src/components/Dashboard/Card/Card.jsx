@@ -44,12 +44,17 @@ class Card extends PureComponent {
       imageLoadError: true
     };
     this.toggleModal = this.toggleModal.bind(this);
+    this.updateCard = this.updateCard.bind(this);
   }
 
   toggleModal() {
     this.setState(({ showModal }) => ({
       showModal: !showModal
     }));
+  }
+
+  updateCard(newCompanyObject) {
+    this.props.card.companyObject = newCompanyObject;
   }
 
   sourceLogoSelector(source) {
@@ -105,6 +110,7 @@ class Card extends PureComponent {
             updateApplications={updateApplications}
             icon={icon}
             id={id}
+            updateCard={this.updateCard}
             {...this.props}
           />
         )}

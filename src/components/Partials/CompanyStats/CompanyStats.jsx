@@ -22,7 +22,8 @@ class CompanyStats extends React.Component {
         )
       )
     );
-    const averageRating = ratingTotal == 0 ? 0 : ratingTotal / countTotal;
+    const averageRating =
+      ratingTotal == 0 ? 0 : Math.round(ratingTotal / countTotal);
     console.log("average rating", averageRating);
     return (
       <div>

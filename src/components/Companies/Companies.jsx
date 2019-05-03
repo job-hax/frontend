@@ -118,18 +118,22 @@ class Companies extends React.Component {
       return <Spinner message={"Preparing page " + this.state.pageNo} />;
     if (this.props.active && this.state.isInitialRequest === false) {
       return (
-        <div className="reviews-container">
-          {this.generateFeatureArea()}
-          <div className="company-cards-container">
-            <div>
-              {this.generateCompanyCards()}
-              <div className="pagination-container">
-                <Pagination
-                  onChange={this.handlePageChange}
-                  defaultCurrent={this.state.companies.pagination.current_page}
-                  current={this.state.companies.pagination.current_page}
-                  total={this.state.companies.pagination.total_count}
-                />
+        <div>
+          <div className="reviews-container">
+            {this.generateFeatureArea()}
+            <div className="company-cards-container">
+              <div>
+                {this.generateCompanyCards()}
+                <div className="pagination-container">
+                  <Pagination
+                    onChange={this.handlePageChange}
+                    defaultCurrent={
+                      this.state.companies.pagination.current_page
+                    }
+                    current={this.state.companies.pagination.current_page}
+                    total={this.state.companies.pagination.total_count}
+                  />
+                </div>
               </div>
             </div>
           </div>
