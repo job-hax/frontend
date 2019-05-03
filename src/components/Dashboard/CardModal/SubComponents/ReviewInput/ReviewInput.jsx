@@ -33,9 +33,9 @@ class ReviewInput extends React.Component {
       pros: "",
       cons: "",
       interview_notes: "",
-      overall_company_experience: 0,
-      interview_difficulty: 0,
-      overall_interview_experience: 0,
+      overall_company_experience: null,
+      interview_difficulty: null,
+      overall_interview_experience: null,
       anonymous: false,
       emp_auths: [
         {
@@ -283,7 +283,10 @@ class ReviewInput extends React.Component {
           <Rate
             tooltips={desc}
             name="overall_company_experience"
-            value={this.state.overall_company_experience}
+            value={
+              this.state.overall_company_experience &&
+              this.state.overall_company_experience
+            }
             onChange={this.handleCompanyRateChange}
           />
         </div>
@@ -373,7 +376,10 @@ class ReviewInput extends React.Component {
           <div className="label">Overall</div>
           <RadioGroup
             name="overall_interview_experience"
-            value={this.state.overall_interview_experience.toString()}
+            value={
+              this.state.overall_interview_experience != null &&
+              this.state.overall_interview_experience.toString()
+            }
             onChange={this.handleInputChange}
           >
             <RadioButton id="overall-interview-experience-good" value="0">
@@ -388,7 +394,9 @@ class ReviewInput extends React.Component {
           <div className="label">Difficulty</div>
           <Rate
             name="interview_difficulty"
-            value={this.state.interview_difficulty}
+            value={
+              this.state.interview_difficulty && this.state.interview_difficulty
+            }
             onChange={this.handleInterviewDifficultyChange}
             tooltips={descDifficulty}
           />

@@ -117,7 +117,7 @@ class Reviews extends React.Component {
                   <RadioGroup
                     name="overall_interview_experience"
                     value={
-                      review.overall_interview_experience &&
+                      review.overall_interview_experience != null &&
                       review.overall_interview_experience.toString()
                     }
                     onChange={this.handleInputChange}
