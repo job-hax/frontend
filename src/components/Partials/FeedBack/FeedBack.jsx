@@ -59,9 +59,7 @@ class FeedBack extends React.Component {
         }
       } else {
         this.setState({ isUpdating: false });
-        alert(
-          "Something went wrong! \n Error: \n Code \n " + response.json.status
-        );
+        alert("Something went wrong! \n Error: \n Code \n " + response.status);
       }
     });
     this.body = {};
@@ -115,16 +113,17 @@ class FeedBack extends React.Component {
     };
     const buttonStyle = {
       backgroundColor: "rgb(92, 39, 195)",
-      height: "28px",
+      height: "32px",
       width: "70px",
       textAlign: "center",
-      paddingTop: "4px",
+      paddingTop: "0px",
       marginRight: "16px",
-      color: "white"
+      color: "white",
+      cursor: "pointer"
     };
 
     const feedbackButtonStyle =
-      window.location.href.slice(-17) == "underconstruction"
+      window.location.pathname == "/underconstruction"
         ? { display: "none" }
         : { bottom: "16px" };
 

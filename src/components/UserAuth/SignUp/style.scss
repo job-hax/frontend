@@ -1,5 +1,5 @@
 .sign_up-background {
-    background-image: url(../../assets/images/homebanner.jpg);
+    background-image: url(../../../assets/images/homebanner.jpg);
     height: 102%;
     margin-top: -2%;
 }
@@ -19,11 +19,11 @@
     text-align: center;
 
     .content-container {
-        padding:4px;
+        padding: 4px;
     }
 
     .form-container {
-        margin:8px;
+        margin: 8px;
         text-align: start;
         font-weight: bold;
 
@@ -39,15 +39,15 @@
                 height: 20px;
                 width: 170px;
                 border-radius: 4px;
-                font-family: Exo; 
+                font-family: Exo;
                 font-size: 12pt;
                 color: rgb(38, 18, 104);
             }
         }
 
         .form-button {
-            margin-top:16px;
-            margin-left:14px;
+            margin-top: 16px;
+            margin-left: 14px;
         }
     }
 
@@ -63,13 +63,13 @@
         cursor: pointer;
         width: 300px;
         height: 32px;
-        font-family: Exo; 
+        font-family: Exo;
         color: rgb(38, 18, 104);
         font-size: 12pt;
     }
 
     .Loading-buttons-container {
-        padding-top:16px;
+        padding-top: 16px;
         border-top: 1px solid;
         border-color: rgb(200, 176, 223);
     }
@@ -81,18 +81,18 @@
     margin: 20px 90px;
     padding-top: 88px;
 
-    button{
-    color: white;
-    font-family: Exo;
-    font-size: 12pt;
-    background: rgba(255, 255, 255, 0.05);
-    border: none;
-    border-radius: 50px;
-    padding: 15px 35px;
-    margin-top: 7.8%;
-    cursor: pointer;
-    }  
-    
+    button {
+        color: white;
+        font-family: Exo;
+        font-size: 12pt;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        border-radius: 50px;
+        padding: 15px 35px;
+        margin-top: 7.8%;
+        cursor: pointer;
+    }
+
     .logo {
         width: 90px;
     }
