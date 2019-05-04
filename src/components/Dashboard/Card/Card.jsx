@@ -8,6 +8,10 @@ import hiredComLogo from "../../../assets/icons/hiredComLogo.png";
 import indeedLogo from "../../../assets/icons/indeedLogo.png";
 import vetteryLogo from "../../../assets/icons/vetteryLogo.jpg";
 import glassdoorLogo from "../../../assets/icons/glassdoorLogo.png";
+import leverLogo from "../../../assets/icons/leverLogo.png";
+import jobviteLogo from "../../../assets/icons/jobviteLogo.jpg";
+import smartRecruiterLogo from "../../../assets/icons/smartRecruiterLogo.png";
+import greenHouseLogo from "../../../assets/icons/greenHouseLogo.png";
 import CardModal from "../CardModal/CardModal.jsx";
 
 import "./style.scss";
@@ -69,6 +73,14 @@ class Card extends PureComponent {
       return <img src={vetteryLogo} />;
     } else if (source.value == "glassdoor") {
       return <img src={glassdoorLogo} />;
+    } else if (source.value == "jobvite.com") {
+      return <img src={jobviteLogo} />;
+    } else if (source.value == "smartrecruiters.com") {
+      return <img src={smartRecruiterLogo} />;
+    } else if (source.value == "greenhouse.io") {
+      return <img src={greenHouseLogo} />;
+    } else if (source.value == "lever.co") {
+      return <img src={leverLogo} />;
     }
   }
 
@@ -116,10 +128,10 @@ class Card extends PureComponent {
         )}
         <div className={cardClass} onClick={this.toggleModal}>
           <div className="card-company-icon">
-            {companyObject.company_logo == null ? (
-              <img src={companyObject.cb_company_logo || defaultLogo} />
+            {companyObject.cb_company_logo === null ? (
+              <img src={companyObject.company_logo || defaultLogo} />
             ) : (
-              <img src={companyObject.company_logo} />
+              <img src={companyObject.cb_company_logo} />
             )}
           </div>
           <div className="card-company-info">

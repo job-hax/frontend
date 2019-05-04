@@ -168,7 +168,9 @@ class BlogCard extends React.Component {
           </div>
         </div>
         {this.state.isDetailsShowing == true && (
-          <div>{parse(`${this.state.blog.content}`)}</div>
+          <div className="blog-card-info">
+            {parse(`${this.state.blog.content}`)}
+          </div>
         )}
       </div>
     );

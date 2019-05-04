@@ -43,7 +43,7 @@ class App extends Component {
       active: false,
       isUserLoggedIn: false,
       isAuthenticationChecking: true,
-      isProfileUpdated: false,
+      isProfileUpdated: true,
       isPollChecking: true,
       isPollShowing: false,
       isNotificationsShowing: false,
@@ -165,6 +165,10 @@ class App extends Component {
     this.setState({ isAuthenticationChecking: isAuthenticationChecking });
   }
 
+  setIsProfileUpdated(isProfileUpdated) {
+    this.setState({ isProfileUpdated: isProfileUpdated });
+  }
+
   checkNotifications() {
     notificationsRequest.config.headers.Authorization = this.state.token;
     fetchApi(notificationsRequest.url, notificationsRequest.config).then(
@@ -248,6 +252,8 @@ class App extends Component {
       );
     if (this.state.isAuthenticationChecking)
       return <Spinner message="Connecting..." />;
+    else if ((isUserLoggedIn || isUserAuthenticated) && !this.state.active)
+      return <Spinner message="Reaching your account..." />;
     else
       return (isUserLoggedIn || isUserAuthenticated) && this.state.active ? (
         <Router>
@@ -277,6 +283,7 @@ class App extends Component {
                 <ProfilePage
                   token={this.state.token}
                   active={this.state.active}
+                  setIsProfileUpdated={this.setIsProfileUpdated}
                 />
               )}
             />

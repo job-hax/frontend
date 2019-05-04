@@ -39,24 +39,6 @@ class CardModal extends PureComponent {
   }
 
   componentDidMount() {
-    let newReviewsUrl =
-      getReviewsRequest.url +
-      "?company_id=" +
-      this.props.card.companyObject.id +
-      "&position_id=" +
-      this.props.card.position.id +
-      "&all_reviews=true";
-    getReviewsRequest.config.headers.Authorization = this.props.token;
-    fetchApi(newReviewsUrl, getReviewsRequest.config).then(response => {
-      if (response.ok) {
-        this.setState({ reviewsList: response.json.data });
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "card modal position reviews response json data",
-            response.json.data
-          );
-      }
-    });
     if (this.props.card.companyObject.review_id) {
       let newReviewsUrl =
         getReviewsRequest.url +
@@ -82,7 +64,29 @@ class CardModal extends PureComponent {
   }
 
   toggleReviewDisplay() {
-    this.setState({ isReviewsDisplaying: !this.state.isReviewsDisplaying });
+    if (!this.state.isReviewsDisplaying) {
+      let newReviewsUrl =
+        getReviewsRequest.url +
+        "?company_id=" +
+        this.props.card.companyObject.id +
+        "&position_id=" +
+        this.props.card.position.id +
+        "&all_reviews=true";
+      getReviewsRequest.config.headers.Authorization = this.props.token;
+      fetchApi(newReviewsUrl, getReviewsRequest.config).then(response => {
+        if (response.ok) {
+          this.setState({ reviewsList: response.json.data });
+          this.setState({ isReviewsDisplaying: true });
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "card modal position reviews response json data",
+              response.json.data
+            );
+        }
+      });
+    } else {
+      this.setState({ isReviewsDisplaying: false });
+    }
   }
 
   setReview(newReview) {
@@ -171,7 +175,7 @@ class CardModal extends PureComponent {
                 <div className="review-container" style={reviewContainerMargin}>
                   {!this.state.isEnteringReview && (
                     <div className="review-entry-container">
-                      {this.state.reviewsList.length > 0 && (
+                      {card.companyObject.review_count > 0 && (
                         <div
                           className="review-button"
                           style={{ marginTop: "-28px" }}
@@ -188,6 +192,7 @@ class CardModal extends PureComponent {
                           positionsList={[]}
                           company_id={this.props.card.companyObject.id}
                           token={this.props.token}
+                          filterDisplay={false}
                           style={{
                             height: "auto",
                             width: "560px",
