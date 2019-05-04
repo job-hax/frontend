@@ -127,9 +127,9 @@ class ProfilePage extends React.Component {
     if (event.target[5].value.trim() != (null || "")) {
       this.state.body[" last_name"] = event.target[5].value.trim();
     }
-    console.log(this.body);
     updateProfileRequest.config.body = JSON.stringify(this.body);
     console.log(event.target, updateProfileRequest.config.body);
+    console.log(updateProfileRequest);
     fetchApi(updateProfileRequest.url, updateProfileRequest.config).then(
       response => {
         if (response.ok) {
@@ -156,7 +156,7 @@ class ProfilePage extends React.Component {
         } else {
           this.setState({ isUpdating: false });
           alert(
-            "Something went wrong! \n Error: \n Code \n " + response.json.status
+            "Something went wrong! \n Error: \n Code \n " + response.status
           );
         }
       }
@@ -203,8 +203,7 @@ class ProfilePage extends React.Component {
           } else {
             this.setState({ isUpdating: false });
             alert(
-              "Something went wrong! \n Error: \n Code \n " +
-                response.json.status
+              "Something went wrong! \n Error: \n Code \n " + response.status
             );
           }
         }

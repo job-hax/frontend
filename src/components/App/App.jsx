@@ -16,22 +16,19 @@ import PollBox from "../Partials/PollBox/PollBox.jsx";
 import FeedBack from "../Partials/FeedBack/FeedBack.jsx";
 import UnderConstruction from "../StaticPages/UnderConstruction/UnderConstruction.jsx";
 import FAQ from "../StaticPages/FAQ/FAQ.jsx";
-import SignIn from "../SignIn/SignIn.jsx";
-import SignUp from "../SignUp/SignUp.jsx";
+import SignIn from "../UserAuth/SignIn/SignIn.jsx";
+import SignUp from "..//UserAuth/SignUp/SignUp.jsx";
+import Action from "../UserAuth/Action/Action.jsx";
 import ProfilePage from "../ProfilePage/ProfilePage.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
 
 import { googleClientId } from "../../config/config.js";
-import { mockPoll } from "../../utils/api/mockResponses.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import {
   authenticateRequest,
-  registerUserRequest,
-  loginUserRequest,
   logOutUserRequest,
   getPollRequest,
   notificationsRequest,
-  updateProfilePhotoRequest,
   getProfileRequest
 } from "../../utils/api/requests.js";
 
@@ -44,32 +41,28 @@ class App extends Component {
       isUserAuthenticated: false,
       token: "",
       active: false,
-      shallRequestToken: false,
       isUserLoggedIn: false,
       isAuthenticationChecking: true,
+      isProfileUpdated: false,
       isPollChecking: true,
       isPollShowing: false,
       isNotificationsShowing: false,
-      profilePhotoUrl: "",
       pollData: [],
       notificationsList: [],
       profileData: []
     };
-    this.token = "";
-    this.active = false;
-    this.isUserAuthenticated = false;
-    this.isUserLoggedIn = false;
     this.notificationsList = [];
     this.onAuthUpdate = this.onAuthUpdate.bind(this);
-    this.handleGoogleSignIn = this.handleGoogleSignIn.bind(this);
-    this.generateSignUpForm = this.generateSignUpForm.bind(this);
-    this.handleSignUp = this.handleSignUp.bind(this);
-    this.generateSignInForm = this.generateSignInForm.bind(this);
-    this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
     this.toggleIsPollShowing = this.toggleIsPollShowing.bind(this);
     this.checkNotifications = this.checkNotifications.bind(this);
     this.toggleNotificationsDisplay = this.toggleNotificationsDisplay.bind(
+      this
+    );
+    this.passStatesFromSignin = this.passStatesFromSignin.bind(this);
+    this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this);
+    this.setIsUserAuthenticated = this.setIsUserAuthenticated.bind(this);
+    this.setIsAuthenticationChecking = this.setIsAuthenticationChecking.bind(
       this
     );
   }
@@ -87,11 +80,6 @@ class App extends Component {
             isUserAuthenticated: this.googleAuth.isSignedIn.get()
           }));
           this.googleAuth.isSignedIn.listen(this.onAuthUpdate);
-          IS_CONSOLE_LOG_OPEN &&
-            console.log(
-              "shallRequestToken inside didMounth in app:",
-              this.state.shallRequestToken
-            );
           const { url, config } = authenticateRequest;
           config.body.token = this.googleAuth.currentUser
             .get()
@@ -157,6 +145,26 @@ class App extends Component {
     });
   }
 
+  passStatesFromSignin(token, active, isProfileUpdated) {
+    this.setState({
+      token: token,
+      active: active,
+      isProfileUpdated: isProfileUpdated
+    });
+  }
+
+  setIsUserLoggedIn(isUserLoggedIn) {
+    this.setState({ isUserLoggedIn: isUserLoggedIn });
+  }
+
+  setIsUserAuthenticated(isUserAuthenticated) {
+    this.setState({ isUserAuthenticated: isUserAuthenticated });
+  }
+
+  setIsAuthenticationChecking(isAuthenticationChecking) {
+    this.setState({ isAuthenticationChecking: isAuthenticationChecking });
+  }
+
   checkNotifications() {
     notificationsRequest.config.headers.Authorization = this.state.token;
     fetchApi(notificationsRequest.url, notificationsRequest.config).then(
@@ -178,245 +186,6 @@ class App extends Component {
     }));
   }
 
-  postGoogleProfilePhoto(photoURL, token) {
-    updateProfilePhotoRequest.config.headers.Authorization = token;
-    updateProfilePhotoRequest.config.body = JSON.stringify({
-      photo_url: photoURL
-    });
-    console.log(updateProfilePhotoRequest);
-    fetchApi(
-      updateProfilePhotoRequest.url,
-      updateProfilePhotoRequest.config
-    ).then(response => {
-      if (response.ok) {
-        console.log(response);
-      }
-    });
-  }
-
-  handleGoogleSignIn() {
-    window.gapi.load("client:auth2", () => {
-      window.gapi.client
-        .init({
-          clientId: googleClientId,
-          scope: "email https://www.googleapis.com/auth/gmail.readonly"
-        })
-        .then(() => {
-          this.googleAuth = window.gapi.auth2.getAuthInstance();
-          this.setState(() => ({
-            isUserAuthenticated: this.googleAuth.isSignedIn.get()
-          }));
-          this.googleAuth.isSignedIn.listen(this.onAuthUpdate);
-          this.googleAuth.signIn().then(response => {
-            IS_CONSOLE_LOG_OPEN && console.log("signIn response", response);
-            if (response.Zi.token_type == "Bearer") {
-              IS_CONSOLE_LOG_OPEN &&
-                console.log("google access_token:", response.Zi.access_token);
-              this.setState({
-                shallRequestToken: true,
-                profilePhotoUrl: response.w3.Paa
-              });
-              IS_CONSOLE_LOG_OPEN &&
-                console.log(
-                  "shallRequestToken in handle signIn:",
-                  this.state.shallRequestToken
-                );
-              if (this.state.shallRequestToken) {
-                IS_CONSOLE_LOG_OPEN &&
-                  console.log(
-                    "shallRequestToken inside condition in app:",
-                    this.state.shallRequestToken
-                  );
-                const { url, config } = authenticateRequest;
-                config.body.token = this.googleAuth.currentUser
-                  .get()
-                  .getAuthResponse().access_token;
-                config.body = JSON.stringify(config.body);
-                fetchApi(url, config).then(response => {
-                  if (response.ok) {
-                    this.token = `${
-                      response.json.data.token_type
-                    } ${response.json.data.access_token.trim()}`;
-
-                    this.postGoogleProfilePhoto(
-                      this.state.profilePhotoUrl,
-                      this.token
-                    );
-                    IS_CONSOLE_LOG_OPEN && console.log(this.token);
-                    this.active = true;
-                    this.setState({
-                      token: this.token,
-                      active: this.active
-                    });
-                    this.setState({ isUserLoggedIn: true });
-                  }
-                });
-                this.setState({ isAuthenticationChecking: false });
-                config.body = JSON.parse(config.body);
-              }
-            }
-          });
-        });
-    });
-  }
-
-  handleSignUp(event) {
-    IS_CONSOLE_LOG_OPEN && console.log("handle sign up first");
-    event.preventDefault();
-    registerUserRequest.config.body.first_name = event.target[0].value;
-    registerUserRequest.config.body.last_name = event.target[1].value;
-    registerUserRequest.config.body.username = event.target[2].value;
-    registerUserRequest.config.body.email = event.target[3].value;
-    registerUserRequest.config.body.password = event.target[4].value;
-    registerUserRequest.config.body.password2 = event.target[5].value;
-    IS_CONSOLE_LOG_OPEN &&
-      console.log(
-        "handle sign up config body",
-        registerUserRequest.config.body
-      );
-    registerUserRequest.config.body = JSON.stringify(
-      registerUserRequest.config.body
-    );
-    fetchApi(registerUserRequest.url, registerUserRequest.config).then(
-      response => {
-        if (response.ok) {
-          console.log(response.json);
-          if (response.json.success === true) {
-            this.token = `${
-              response.json.data.token_type
-            } ${response.json.data.access_token.trim()}`;
-            this.setState({
-              token: this.token,
-              isUserLoggedIn: true,
-              active: true
-            });
-            console.log("before redirect", response.json.data);
-            <Redirect to="/profile" />;
-            alert("Your have registered successfully!");
-          } else {
-            this.setState({ isUpdating: false });
-            console.log(response, response.json.error_message);
-            alert(
-              "Error: \n Code " +
-                response.json.error_code +
-                "\n" +
-                response.json.error_message
-            );
-          }
-        } else {
-          this.setState({ isUpdating: false });
-          alert(
-            "Something went wrong! \n Error: \n Code \n " + response.json.status
-          );
-        }
-      }
-    );
-    registerUserRequest.config.body = JSON.parse(
-      registerUserRequest.config.body
-    );
-  }
-
-  generateSignUpForm() {
-    return (
-      <form onSubmit={this.handleSignUp} className="form-container">
-        <div className="form-element-container">
-          <label>First Name</label>
-          <input className="input-box" />
-        </div>
-        <div className="form-element-container">
-          <label>Last Name</label>
-          <input className="input-box" />
-        </div>
-        <div className="form-element-container">
-          <label>User Name</label>
-          <input className="input-box" />
-        </div>
-        <div className="form-element-container">
-          <label>Email</label>
-          <input className="input-box" />
-        </div>
-        <div className="form-element-container">
-          <label>Password</label>
-          <input type="password" className="input-box" />
-        </div>
-        <div className="form-element-container">
-          <label>Re-enter Password</label>
-          <input type="password" className="input-box" />
-        </div>
-        <button className="social-buttons form-button">Sign up</button>
-      </form>
-    );
-  }
-
-  handleSignIn(event) {
-    IS_CONSOLE_LOG_OPEN && console.log("handle sign in first");
-    event.preventDefault();
-    loginUserRequest.config.body.username = event.target[0].value;
-    loginUserRequest.config.body.password = event.target[1].value;
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("handle sign in config body", loginUserRequest.config.body);
-    loginUserRequest.config.body = JSON.stringify(loginUserRequest.config.body);
-    fetchApi(loginUserRequest.url, loginUserRequest.config).then(response => {
-      if (response.ok) {
-        if (response.json.success === true) {
-          this.token = `${
-            response.json.data.token_type
-          } ${response.json.data.access_token.trim()}`;
-          IS_CONSOLE_LOG_OPEN && console.log(this.token);
-          this.setState({
-            token: this.token,
-            active: true
-          });
-          this.setState({
-            isUserLoggedIn: true,
-            isAuthenticationChecking: false
-          });
-          IS_CONSOLE_LOG_OPEN &&
-            console.log(
-              "handle signIn isUserLoggedIn",
-              this.state.isUserLoggedIn,
-              "\n--token",
-              this.state.token,
-              "\n--active?",
-              this.state.active
-            );
-          <Redirect to="/dashboard" />;
-        } else {
-          this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
-          alert(
-            "Error: \n Code " +
-              response.json.error_code +
-              "\n" +
-              response.json.error_message
-          );
-        }
-      } else {
-        this.setState({ isUpdating: false });
-        alert(
-          "Something went wrong! \n Error: \n Code \n " + response.json.status
-        );
-      }
-    });
-    loginUserRequest.config.body = JSON.parse(loginUserRequest.config.body);
-  }
-
-  generateSignInForm() {
-    return (
-      <form onSubmit={this.handleSignIn} className="form-container">
-        <div className="form-element-container">
-          <label>Username</label>
-          <input className="input-box" />
-        </div>
-        <div className="form-element-container">
-          <label>Password</label>
-          <input type="password" className="input-box" />
-        </div>
-        <button className="social-buttons form-button">Sign in</button>
-      </form>
-    );
-  }
-
   handleSignOut() {
     IS_CONSOLE_LOG_OPEN && console.log("handle signout first");
     event.preventDefault();
@@ -435,9 +204,9 @@ class App extends Component {
           this.setState({
             isUserAuthenticated: false,
             token: "",
+            isProfileUpdated: false,
             active: false,
             isUserLoggedIn: false,
-            profilePhotoUrl: "",
             pollData: [],
             notificationsList: [],
             profileData: []
@@ -448,9 +217,7 @@ class App extends Component {
               this.state.isUserLoggedIn
             );
           <Redirect to="/home" />;
-          alert("You have signed out!");
         } else {
-          this.setState({ isUpdating: false });
           console.log(response, response.json.error_message);
           alert(
             "Error: \n Code " +
@@ -460,10 +227,7 @@ class App extends Component {
           );
         }
       } else {
-        this.setState({ isUpdating: false });
-        alert(
-          "Something went wrong! \n Error: \n Code \n " + response.json.status
-        );
+        alert("Something went wrong! \n Error: \n Code \n " + response.status);
       }
     });
     logOutUserRequest.config.body = JSON.parse(logOutUserRequest.config.body);
@@ -478,15 +242,17 @@ class App extends Component {
         "\n--token",
         this.state.token,
         "\n--active?",
-        this.state.active
+        this.state.active,
+        "\n profile updated?",
+        this.state.isProfileUpdated
       );
     if (this.state.isAuthenticationChecking)
       return <Spinner message="Connecting..." />;
     else
-      return isUserLoggedIn || isUserAuthenticated ? (
+      return (isUserLoggedIn || isUserAuthenticated) && this.state.active ? (
         <Router>
           <div className="main-container">
-            {window.location.href.slice(-4) != "home" && (
+            {window.location.pathname != "/home" && (
               <Header
                 handleSignOut={this.handleSignOut}
                 notificationsList={this.state.notificationsList}
@@ -566,7 +332,13 @@ class App extends Component {
             <Route
               exact
               path="/signin"
-              render={() => <Redirect to="/dashboard" />}
+              render={() =>
+                this.state.isProfileUpdated === true ? (
+                  <Redirect to="/dashboard" />
+                ) : (
+                  <Redirect to="/profile" />
+                )
+              }
             />
             <Route
               exact
@@ -596,6 +368,7 @@ class App extends Component {
               path="/faqs"
               render={() => <FAQ active={this.state.active} />}
             />
+            <Route exact path="/action" render={() => <Action />} />
           </div>
         </Router>
       ) : (
@@ -632,6 +405,11 @@ class App extends Component {
                   googleAuth={this.googleAuth}
                   handleGoogleSignIn={this.handleGoogleSignIn}
                   generateSignInForm={this.generateSignInForm}
+                  passStatesFromSignin={this.passStatesFromSignin}
+                  setIsUserLoggedIn={this.setIsUserLoggedIn}
+                  setIsUserAuthenticated={this.setIsUserAuthenticated}
+                  setIsAuthenticationChecking={this.setIsAuthenticationChecking}
+                  onAuthUpdate={this.onAuthUpdate}
                 />
               )}
             />
@@ -661,6 +439,7 @@ class App extends Component {
               path="/privacypolicy"
               render={() => <PrivacyPolicy />}
             />
+            <Route exact path="/action" render={() => <Action />} />
           </div>
         </Router>
       );
