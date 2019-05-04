@@ -97,7 +97,9 @@ class FeedBack extends React.Component {
       borderRadius: "4px",
       height: "140px",
       width: "100%",
-      marginTop: "8px"
+      marginTop: "8px",
+      maxHeight: "140px",
+      minHeight: "140px"
     };
     const quesitonContainerStyle = {
       marginTop: "12px"
