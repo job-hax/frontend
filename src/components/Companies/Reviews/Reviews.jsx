@@ -179,24 +179,26 @@ class Reviews extends React.Component {
     console.log(this.state.reviewsList);
     return (
       <div>
-        <div className="filter">
-          <label>Filter:</label>
-          <Select
-            defaultValue="All Positions"
-            style={{ width: 200, position: "relative" }}
-            onChange={this.handlePositionFilterChange}
-          >
-            {this.props.positionsList.map(position => (
-              <Select.Option
-                id="company-positions"
-                key={position.id}
-                value={position.id}
-              >
-                {position.job_title}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
+        {this.props.filterDisplay && (
+          <div className="filter">
+            <label>Filter:</label>
+            <Select
+              defaultValue="All Positions"
+              style={{ width: 200, position: "relative" }}
+              onChange={this.handlePositionFilterChange}
+            >
+              {this.props.positionsList.map(position => (
+                <Select.Option
+                  id="company-positions"
+                  key={position.id}
+                  value={position.id}
+                >
+                  {position.job_title}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        )}
         <div style={this.props.style} className="reviews-container">
           {this.mapReviews()}
         </div>

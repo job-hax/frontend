@@ -16,7 +16,7 @@ class Footer extends Component {
               <span>Docs</span>
             </a>
             <Link to="/privacypolicy">
-              <span>Legal</span>
+              <span>Privacy Policy</span>
             </Link>
             <Link to="/faqs">
               <span>FAQ</span>
