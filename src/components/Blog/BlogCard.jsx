@@ -59,7 +59,7 @@ class BlogCard extends React.Component {
         } else {
           this.setState({ isUpdating: false });
           alert(
-            "Something went wrong! \n Error: \n Code \n " + response.json.status
+            "Something went wrong! \n Error: \n Code \n " + response.status
           );
         }
       }
@@ -98,9 +98,7 @@ class BlogCard extends React.Component {
           );
         }
       } else {
-        alert(
-          "Something went wrong! \n Error: \n Code \n " + response.json.status
-        );
+        alert("Something went wrong! \n Error: \n Code \n " + response.status);
       }
     });
   }
