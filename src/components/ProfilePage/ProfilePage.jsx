@@ -142,6 +142,7 @@ class ProfilePage extends React.Component {
               isUpdated: true
             });
             alert("Your profile have been updated successfully!");
+            this.props.setIsProfileUpdated(true);
             console.log(this.state.data);
           } else {
             this.setState({ isUpdating: false });
