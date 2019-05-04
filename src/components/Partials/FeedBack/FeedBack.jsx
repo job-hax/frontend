@@ -59,9 +59,7 @@ class FeedBack extends React.Component {
         }
       } else {
         this.setState({ isUpdating: false });
-        alert(
-          "Something went wrong! \n Error: \n Code \n " + response.json.status
-        );
+        alert("Something went wrong! \n Error: \n Code \n " + response.status);
       }
     });
     this.body = {};
@@ -125,7 +123,7 @@ class FeedBack extends React.Component {
     };
 
     const feedbackButtonStyle =
-      window.location.href.slice(-17) == "underconstruction"
+      window.location.pathname == "/underconstruction"
         ? { display: "none" }
         : { bottom: "16px" };
 

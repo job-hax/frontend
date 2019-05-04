@@ -202,7 +202,7 @@ class ReviewInput extends React.Component {
         } else {
           this.setState({ isUpdating: false });
           alert(
-            "Something went wrong! \n Error: \n Code \n " + response.json.status
+            "Something went wrong! \n Error: \n Code \n " + response.status
           );
         }
       }

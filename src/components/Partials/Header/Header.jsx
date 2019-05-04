@@ -61,14 +61,14 @@ class Header extends Component {
         <div className="right-container">
           <div className="header-icon general tooltips">
             <Link to="/dashboard">
-              {window.location.href.slice(-9) == "dashboard" ? (
+              {window.location.pathname == "/dashboard" ? (
                 <img src="../../../src/assets/icons/SyncIcon@3x.png" />
               ) : (
                 <img src="../../../src/assets/icons/BoardIcon@3x.png" />
               )}
             </Link>
             <span>
-              {window.location.href.slice(-9) == "dashboard"
+              {window.location.pathname == "/dashboard"
                 ? "Refresh"
                 : " Dashboard"}
             </span>
