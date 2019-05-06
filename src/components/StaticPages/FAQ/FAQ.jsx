@@ -1,10 +1,13 @@
 import React from "react";
 import { Collapse } from "antd";
+import { Link } from "react-router-dom";
 
 import { getFAQsRequest } from "../../../utils/api/requests.js";
 import { fetchApi } from "../../../utils/api/fetch_api";
 import Footer from "../../Partials/Footer/Footer.jsx";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
+
+import "./style.scss";
 
 const Panel = Collapse.Panel;
 
@@ -28,11 +31,29 @@ class FAQ extends React.Component {
     });
   }
 
+  generateTopButtons() {
+    return (
+      <div className="legal-top">
+        <Link to="/home">
+          <img
+            className="logo"
+            src="src/assets/icons/JobHax-logo-white.svg"
+            alt="JobHax-logo"
+          />
+        </Link>
+        <Link to="/home">
+          <button>Home</button>
+        </Link>
+      </div>
+    );
+  }
+
   generateHeaderArea() {
     return (
-      <section style={{ height: "44.5vh" }} className="header_area">
-        <div style={{ marginTop: "200px" }}>
-          <h2 style={{ fontSize: "240%" }}>Frequently Asked Questions</h2>
+      <section className="header_area">
+        {this.generateTopButtons()}
+        <div>
+          <h2>Frequently Asked Questions</h2>
         </div>
       </section>
     );
