@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Modal, Form, Input } from "antd";
+import { Modal, Form, Input, Icon, Button, Checkbox } from "antd";
 
 import Footer from "../../Partials/Footer/Footer.jsx";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
@@ -24,6 +24,7 @@ const ForgotPasswordModal = Form.create({ name: "form_in_modal" })(
       return (
         <Modal
           visible={visible}
+          centered
           title="Forgot Password"
           okText="Submit"
           onCancel={onCancel}
@@ -47,7 +48,7 @@ const ForgotPasswordModal = Form.create({ name: "form_in_modal" })(
   }
 );
 
-class SignIn extends Component {
+class SignInPage extends Component {
   constructor(props) {
     super(props);
 
@@ -91,9 +92,15 @@ class SignIn extends Component {
         if (response.ok) {
           if (response.json.success === true) {
             this.toggleModal();
-            this.props.alert(5000, "info", "A link to reset password has sent to your email!");
+            this.props.alert(
+              5000,
+              "info",
+              "A link to reset password has sent to your email!"
+            );
           } else {
-            this.props.alert(5000, "error", 
+            this.props.alert(
+              5000,
+              "error",
               "Error: \n Code " +
                 response.json.error_code +
                 "\n" +
@@ -101,7 +108,9 @@ class SignIn extends Component {
             );
           }
         } else {
-          this.props.alert(5000, "error", 
+          this.props.alert(
+            5000,
+            "error",
             "Something went wrong! \n Error: \n Code \n " + response.status
           );
         }
@@ -129,9 +138,15 @@ class SignIn extends Component {
                 username: "",
                 password: ""
               });
-              this.props.alert(5000, "info", "New activation link has sent to your email!");
+              this.props.alert(
+                5000,
+                "info",
+                "New activation link has sent to your email!"
+              );
             } else {
-              this.props.alert(5000, "error", 
+              this.props.alert(
+                5000,
+                "error",
                 "Error: \n Code " +
                   response.json.error_code +
                   "\n" +
@@ -139,7 +154,9 @@ class SignIn extends Component {
               );
             }
           } else {
-            this.props.alert(5000, "error", 
+            this.props.alert(
+              5000,
+              "error",
               "Something went wrong! \n Error: \n Code \n " + response.status
             );
           }
@@ -186,7 +203,9 @@ class SignIn extends Component {
             });
           } else {
             console.log(response, response.json.error_message);
-            this.props.alert(5000, "error", 
+            this.props.alert(
+              5000,
+              "error",
               "Error: \n Code " +
                 response.json.error_code +
                 "\n" +
@@ -195,7 +214,11 @@ class SignIn extends Component {
           }
         }
       } else {
-        this.props.alert(5000, "error", "Something went wrong! \n Error: \n Code \n " + response.status);
+        this.props.alert(
+          5000,
+          "error",
+          "Something went wrong! \n Error: \n Code \n " + response.status
+        );
       }
     });
     loginUserRequest.config.body = JSON.parse(loginUserRequest.config.body);
@@ -282,7 +305,7 @@ class SignIn extends Component {
 
   generateTopButtons() {
     return (
-      <div className="top-buttons">
+      <div className="sign_in-top">
         <Link to="/">
           <img
             className="logo"
@@ -298,33 +321,49 @@ class SignIn extends Component {
   }
 
   generateSignInForm() {
-    const style = {
-      textSize: "90%",
-      textWeight: "350",
-      textStyle: "italic",
-      cursor: "pointer"
+    const { getFieldDecorator } = this.props.form;
+    const styleResendPassword = {
+      fontSize: "90%",
+      marginTop: -12,
+      cursor: "pointer",
+      textAlign: "end"
     };
     return (
-      <form onSubmit={this.handleSignIn} className="form-container">
-        <div className="form-element-container">
-          <label>Username</label>
-          <input className="input-box" />
-        </div>
-        <div className="form-element-container">
-          <label>Password</label>
-          <input type="password" className="input-box" />
-        </div>
-        <div
-          style={{
-            textAlign: "end",
-            marginRight: "20px"
-          }}
-        >
-          <div>
-            <span style={style} onClick={this.toggleModal}>
-              {" "}
-              Forgot password?{" "}
-            </span>
+      <Form onSubmit={this.handleSignIn} className="login-form">
+        <Form.Item>
+          {getFieldDecorator("username", {
+            rules: [{ required: true, message: "Please enter your username!" }]
+          })(
+            <Input
+              prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
+              placeholder="Username"
+            />
+          )}
+        </Form.Item>
+        <Form.Item>
+          {getFieldDecorator("password", {
+            rules: [{ required: true, message: "Please enter your Password!" }]
+          })(
+            <Input
+              prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+              type="password"
+              placeholder="Password"
+            />
+          )}
+        </Form.Item>
+        <Form.Item>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            {getFieldDecorator("remember", {
+              valuePropName: "checked",
+              initialValue: true
+            })(<Checkbox>Remember me</Checkbox>)}
+            <a
+              className="login-form-forgot"
+              style={{ fontSize: "90%" }}
+              onClick={this.toggleModal}
+            >
+              Forgot password
+            </a>
             <ForgotPasswordModal
               wrappedComponentRef={this.saveFormRef}
               visible={this.state.showModal}
@@ -333,38 +372,50 @@ class SignIn extends Component {
             />
           </div>
           {this.state.isVerificationReSendDisplaying && (
-            <div onClick={() => this.postUser("generate_activation_code")}>
-              <a style={style}> Resend activation email? </a>
+            <div
+              style={styleResendPassword}
+              onClick={() => this.postUser("generate_activation_code")}
+            >
+              <a> Resend activation email? </a>
             </div>
           )}
-        </div>
-
-        <button className="social-buttons form-button">Sign in</button>
-      </form>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="login-form-button"
+            style={{ width: "100%", borderRadius: 0 }}
+          >
+            Log in
+          </Button>
+          <div>
+            Or{" "}
+            <Link to="/signup" style={{ fontSize: "90%" }}>
+              register now!
+            </Link>
+          </div>
+          <div className="social-buttons-container">
+            <div>
+              <Link to="/dashboard">
+                <button
+                  className="social-buttons-google"
+                  onClick={this.handleGoogleSignIn}
+                >
+                  <img src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png" />
+                </button>
+              </Link>
+            </div>
+          </div>
+        </Form.Item>
+      </Form>
     );
   }
 
   generateSignIn() {
     return (
-      <div className="sign_in-container">
+      <div className="sign_in-form-container">
         <div className="content-container">
           <h1>Sign in</h1>
           {this.generateSignInForm()}
-        </div>
-        <div className="social-buttons-container">
-          <Link to="/dashboard">
-            <button
-              className="social-buttons"
-              onClick={this.handleGoogleSignIn}
-            >
-              Sign in with GOOGLE
-            </button>
-          </Link>
-        </div>
-        <div className="Loading-buttons-container">
-          <Link to="/signup">
-            <button className="social-buttons">Sign up!</button>
-          </Link>
         </div>
       </div>
     );
@@ -373,9 +424,11 @@ class SignIn extends Component {
   render() {
     IS_CONSOLE_LOG_OPEN && console.log("signIn page render run");
     return (
-      <div className="sign_in-background">
-        {this.generateTopButtons()}
-        {this.generateSignIn()}
+      <div>
+        <div className="sign_in-background">{this.generateTopButtons()}</div>
+        <div className="sign_in-vertical-container">
+          <div className="sign_in-container">{this.generateSignIn()}</div>
+        </div>
         <div className="bottom-fixed-footer">
           <Footer />
         </div>
@@ -383,5 +436,7 @@ class SignIn extends Component {
     );
   }
 }
+
+const SignIn = Form.create({ name: "signin" })(SignInPage);
 
 export default SignIn;
