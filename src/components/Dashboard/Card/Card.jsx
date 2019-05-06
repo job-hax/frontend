@@ -82,7 +82,7 @@ class Card extends PureComponent {
       return <img src={greenHouseLogo} />;
     } else if (source.value == "lever.co") {
       return <img src={leverLogo} />;
-    } else if (source.value == "ziprecturiter.com") {
+    } else if (source.value == "ziprecruiter.com") {
       return <img src={zipRecruiterLogo} />;
     }
   }
