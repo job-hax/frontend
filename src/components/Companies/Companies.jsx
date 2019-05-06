@@ -1,5 +1,5 @@
 import React from "react";
-import { Pagination } from "antd";
+import { Pagination, Input } from "antd";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import CompanyCards from "./CompanyCards/CompanyCards.jsx";
@@ -10,6 +10,8 @@ import Footer from "../Partials/Footer/Footer.jsx";
 
 import "./style.scss";
 import "../../assets/libraryScss/antd-scss/antd.scss";
+
+const Search = Input.Search;
 
 class Companies extends React.Component {
   constructor(props) {
@@ -22,7 +24,8 @@ class Companies extends React.Component {
       isDetailsRequested: false,
       companies: {},
       pageNo: 1,
-      pageSize: 10
+      pageSize: 10,
+      query: ""
     };
 
     this.handlePageChange = this.handlePageChange.bind(this);
@@ -42,6 +45,10 @@ class Companies extends React.Component {
         this.getData("newPageRequest");
         this.setState({ isNewPageRequested: false });
       }
+      if (this.state.isQueryRequested === true) {
+        this.getData("queryRequest");
+        this.setState({ isQueryRequested: false });
+      }
     }
   }
 
@@ -56,7 +63,13 @@ class Companies extends React.Component {
       );
     const { url, config } = getCompaniesRequest;
     let newUrl =
-      url + "?page=" + this.state.pageNo + "&page_size=" + this.state.pageSize;
+      url +
+      "?page=" +
+      this.state.pageNo +
+      "&page_size=" +
+      this.state.pageSize +
+      "&q=" +
+      this.state.query;
     config.headers.Authorization = this.props.token;
     fetchApi(newUrl, config).then(response => {
       if (response.ok) {
@@ -71,6 +84,12 @@ class Companies extends React.Component {
             companies: response.json,
             isWaitingResponse: false,
             isNewPageRequested: false
+          });
+        } else if (requestType === "queryRequest") {
+          this.setState({
+            companies: response.json,
+            isWaitingResponse: false,
+            isQueryRequested: false
           });
         }
 
@@ -113,7 +132,7 @@ class Companies extends React.Component {
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
-      return <Spinner message="Preparing reviews..." />;
+      return <Spinner message="Preparing companies..." />;
     if (this.state.isNewPageRequested === true)
       return <Spinner message={"Preparing page " + this.state.pageNo} />;
     if (this.props.active && this.state.isInitialRequest === false) {
@@ -123,16 +142,34 @@ class Companies extends React.Component {
             {this.generateFeatureArea()}
             <div className="company-cards-container">
               <div>
-                {this.generateCompanyCards()}
-                <div className="pagination-container">
-                  <Pagination
-                    onChange={this.handlePageChange}
-                    defaultCurrent={
-                      this.state.companies.pagination.current_page
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "end"
+                  }}
+                >
+                  <Search
+                    placeholder="search"
+                    onSearch={value =>
+                      this.setState({ query: value, isQueryRequested: true })
                     }
-                    current={this.state.companies.pagination.current_page}
-                    total={this.state.companies.pagination.total_count}
+                    style={{ width: 300, margin: "0 0 24px 0" }}
                   />
+                </div>
+
+                <div>
+                  {this.generateCompanyCards()}
+                  <div className="pagination-container">
+                    <Pagination
+                      onChange={this.handlePageChange}
+                      defaultCurrent={
+                        this.state.companies.pagination.current_page
+                      }
+                      current={this.state.companies.pagination.current_page}
+                      total={this.state.companies.pagination.total_count}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
