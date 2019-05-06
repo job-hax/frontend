@@ -141,24 +141,25 @@ class ProfilePage extends React.Component {
               isEditing: false,
               isUpdated: true
             });
-            this.props.alert(5000, "success", "Your profile have been updated successfully!");
+            this.props.alert(
+              5000,
+              "success",
+              "Your profile have been updated successfully!"
+            );
             this.props.setIsProfileUpdated(true);
             console.log(this.state.data);
           } else {
             this.setState({ isUpdating: false });
             console.log(response, response.json.error_message);
-            this.props.alert(5000, "error", 
-              "Error: \n Code " +
-                response.json.error_code +
-                "\n" +
-                response.json.error_message
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.json.error_message
             );
           }
         } else {
           this.setState({ isUpdating: false });
-          alert(
-            "Something went wrong! \n Error: \n Code \n " + response.status
-          );
+          this.props.alert(5000, "error", "Something went wrong!");
         }
       }
     );
@@ -189,29 +190,34 @@ class ProfilePage extends React.Component {
                 isProfileSettingsOpen: false,
                 isUpdated: true
               });
-              this.props.alert(5000, "success", "Your settings have been updated successfully!");
+              this.props.alert(
+                5000,
+                "success",
+                "Your settings have been updated successfully!"
+              );
               console.log(this.state.data);
             } else {
               this.setState({ isUpdating: false });
               console.log(response, response.json.error_message);
-              this.props.alert(5000, "error", 
-                "Error: \n Code " +
-                  response.json.error_code +
-                  "\n" +
-                  response.json.error_message
+              this.props.alert(
+                5000,
+                "error",
+                "Error:" + response.json.error_message
               );
             }
           } else {
             this.setState({ isUpdating: false });
-            this.props.alert(5000, "error", 
-              "Something went wrong! \n Error: \n Code \n " + response.status
-            );
+            this.props.alert(5000, "error", "Something went wrong!");
           }
         }
       );
       this.settingsBody = {};
     } else
-      this.props.alert(5000, "error", "Passwords are not matching!\n Please enter the same password.");
+      this.props.alert(
+        5000,
+        "error",
+        "Passwords are not matching!\n Please enter the same password."
+      );
   }
 
   handlePhoneNumberChange(event) {

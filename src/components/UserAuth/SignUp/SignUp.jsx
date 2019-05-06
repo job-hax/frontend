@@ -120,10 +120,7 @@ class SignUpPage extends Component {
                 this.props.alert(
                   5000,
                   "error",
-                  "Error: \n Code " +
-                    response.json.error_code +
-                    "\n" +
-                    response.json.error_message
+                  "Error: " + response.json.error_message
                 );
               }
             } else {
@@ -134,11 +131,7 @@ class SignUpPage extends Component {
                   "You have to fill out all from!"
                 );
               } else {
-                this.props.alert(
-                  5000,
-                  "error",
-                  "Something went wrong! \n Error: \n Code \n " + response.json
-                );
+                this.props.alert(5000, "error", "Something went wrong!");
               }
             }
           }

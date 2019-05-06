@@ -33,11 +33,10 @@ class PollCard extends React.Component {
       if (response.ok) {
         console.log(response);
         if (response.json.success == false) {
-          this.props.alert(5000, "error", 
-            "Error " +
-              response.json.error_code +
-              "!\n" +
-              response.json.error_message
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.json.error_message
           );
         } else {
           this.setState({ isPollSubmitted: true });

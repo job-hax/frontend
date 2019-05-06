@@ -48,11 +48,7 @@ class ChangePassword extends React.Component {
               this.setState({ redirect: "home" });
             }
           } else {
-            this.props.alert(
-              5000,
-              "error",
-              "Something went wrong! \n Error: \n Code \n " + response.status
-            );
+            this.props.alert(5000, "error", "Something went wrong!");
           }
         });
       }

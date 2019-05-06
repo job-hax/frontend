@@ -230,15 +230,10 @@ class App extends Component {
           <Redirect to="/home" />;
         } else {
           console.log(response, response.json.error_message);
-          alert(
-            "Error: \n Code " +
-              response.json.error_code +
-              "\n" +
-              response.json.error_message
-          );
+          alert("Error: " + response.json.error_message);
         }
       } else {
-        alert("Something went wrong! \n Error: \n Code \n " + response.status);
+        alert("Something went wrong!");
       }
     });
     logOutUserRequest.config.body = JSON.parse(logOutUserRequest.config.body);
