@@ -4,7 +4,7 @@ import {
   APPLICATION_STATUSES_IN_ORDER,
   IS_CONSOLE_LOG_OPEN
 } from "../../../../../utils/constants/constants.js";
-import { postData } from "../../../../../utils/api/fetch_api";
+import { fetchApi } from "../../../../../utils/api/fetch_api";
 import {
   deleteJobRequest,
   updateJobStatusRequest
@@ -35,7 +35,8 @@ class MoveOptions extends React.Component {
     let { url, config } = deleteJobRequest;
     config.headers.Authorization = token;
     IS_CONSOLE_LOG_OPEN && console.log("delete job request body\n", body);
-    postData(url, config, body).then(response => {
+    config.body = JSON.stringify(body);
+    fetchApi(url, config).then(response => {
       IS_CONSOLE_LOG_OPEN &&
         console.log("delete job request response\n", response, card);
       if (response.ok) {
@@ -57,7 +58,8 @@ class MoveOptions extends React.Component {
     config.headers.Authorization = token;
     IS_CONSOLE_LOG_OPEN &&
       console.log("update to rejected request body\n", body);
-    postData(url, config, body).then(response => {
+    config.body = JSON.stringify(body);
+    fetchApi(url, config).then(response => {
       IS_CONSOLE_LOG_OPEN &&
         console.log("update to rejected request response\n", response, card);
       if (response.ok) {

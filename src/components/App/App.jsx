@@ -12,6 +12,7 @@ import Companies from "../Companies/Companies.jsx";
 import Home from "../StaticPages/Home/Home.jsx";
 import AboutUs from "../StaticPages/AboutUs/AboutUs.jsx";
 import PrivacyPolicy from "../StaticPages/PrivacyPolicy/PrivacyPolicy.jsx";
+import UserAgreement from "../StaticPages/UserAgreement/UserAgreement.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import PollBox from "../Partials/PollBox/PollBox.jsx";
 import FeedBack from "../Partials/FeedBack/FeedBack.jsx";
@@ -229,15 +230,10 @@ class App extends Component {
           <Redirect to="/home" />;
         } else {
           console.log(response, response.json.error_message);
-          alert(
-            "Error: \n Code " +
-              response.json.error_code +
-              "\n" +
-              response.json.error_message
-          );
+          alert("Error: " + response.json.error_message);
         }
       } else {
-        alert("Something went wrong! \n Error: \n Code \n " + response.status);
+        alert("Something went wrong!");
       }
     });
     logOutUserRequest.config.body = JSON.parse(logOutUserRequest.config.body);
@@ -422,6 +418,11 @@ class App extends Component {
             />
             <Route
               exact
+              path="/useragreement"
+              render={() => <UserAgreement />}
+            />
+            <Route
+              exact
               path="/underconstruction"
               render={() => <UnderConstruction />}
             />
@@ -507,6 +508,11 @@ class App extends Component {
               exact
               path="/privacypolicy"
               render={() => <PrivacyPolicy />}
+            />
+            <Route
+              exact
+              path="/useragreement"
+              render={() => <UserAgreement />}
             />
             <Route exact path="/action" render={() => <Action />} />
           </div>
