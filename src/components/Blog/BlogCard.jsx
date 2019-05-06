@@ -49,18 +49,15 @@ class BlogCard extends React.Component {
           } else {
             this.setState({ isUpdating: false });
             console.log(response, response.json.error_message);
-            this.props.alert(5000, "error", 
-              "Error: \n Code " +
-                response.json.error_code +
-                "\n" +
-                response.json.error_message
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.json.error_message
             );
           }
         } else {
           this.setState({ isUpdating: false });
-          this.props.alert(5000, "error", 
-            "Something went wrong! \n Error: \n Code \n " + response.status
-          );
+          this.props.alert(5000, "error", "Something went wrong!");
         }
       }
     );
@@ -90,15 +87,14 @@ class BlogCard extends React.Component {
           }
         } else {
           console.log(response, response.json.error_message);
-          this.props.alert(5000, "error", 
-            "Error: \n Code " +
-              response.json.error_code +
-              "\n" +
-              response.json.error_message
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.json.error_message
           );
         }
       } else {
-        this.props.alert(5000, "error", "Something went wrong! \n Error: \n Code \n " + response.status);
+        this.props.alert(5000, "error", "Something went wrong!");
       }
     });
   }
