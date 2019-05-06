@@ -12,6 +12,7 @@ import leverLogo from "../../../assets/icons/leverLogo.png";
 import jobviteLogo from "../../../assets/icons/jobviteLogo.jpg";
 import smartRecruiterLogo from "../../../assets/icons/smartRecruiterLogo.png";
 import greenHouseLogo from "../../../assets/icons/greenHouseLogo.png";
+import zipRecruiterLogo from "../../../assets/icons/zipRecruiterLogo.png";
 import CardModal from "../CardModal/CardModal.jsx";
 
 import "./style.scss";
@@ -81,6 +82,8 @@ class Card extends PureComponent {
       return <img src={greenHouseLogo} />;
     } else if (source.value == "lever.co") {
       return <img src={leverLogo} />;
+    } else if (source.value == "ziprecturiter.com") {
+      return <img src={zipRecruiterLogo} />;
     }
   }
 
