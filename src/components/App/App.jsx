@@ -255,11 +255,13 @@ class App extends Component {
   }
 
   generateAlert() {
+    const bottom =
+      window.location.pathname === ("/signin" || "/signup") ? "80px" : "30px";
     return (
       <div
         style={{
           position: "absolute",
-          bottom: "30px",
+          bottom: bottom,
           width: "100%",
           display: "flex",
           justifyContent: "center"
