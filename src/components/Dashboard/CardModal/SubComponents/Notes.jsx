@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import { fetchApi, postData } from "../../../../utils/api/fetch_api";
+import { fetchApi } from "../../../../utils/api/fetch_api";
 import {
   updateNoteRequest,
   addNoteRequest,
@@ -142,7 +142,8 @@ class Notes extends React.Component {
       this.currentNote == null ? addNoteRequest : updateNoteRequest;
     IS_CONSOLE_LOG_OPEN && console.log("request body\n", reqBody);
     config.headers.Authorization = token;
-    postData(url, config, reqBody)
+    config.body = JSON.stringify(reqBody);
+    fetchApi(url, config)
       .catch(error => console.error(error))
       .then(response => {
         IS_CONSOLE_LOG_OPEN && console.log("response json\n", response.json);
@@ -160,7 +161,8 @@ class Notes extends React.Component {
     let { url, config } = deleteNoteRequest;
     config.headers.Authorization = token;
     IS_CONSOLE_LOG_OPEN && console.log("delete request body\n", body);
-    postData(url, config, body).then(response => {
+    config.body = JSON.stringify(body);
+    fetchApi(url, config).then(response => {
       IS_CONSOLE_LOG_OPEN && console.log("delete request response\n", response);
       if (response.ok) {
         this.getNotes();
