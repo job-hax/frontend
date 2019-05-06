@@ -269,6 +269,7 @@ class Dashboard extends Component {
             totalCount={this.state.toApply.length}
             cards={this.state.toApply}
             token={this.props.token}
+            alert={this.props.alert}
           />
           <div className="column-divider" />
           <Column
@@ -287,6 +288,7 @@ class Dashboard extends Component {
             cardsRejecteds={this.state.appliedRejected}
             message="rejected without any interview"
             token={this.props.token}
+            alert={this.props.alert}
           />
           <div className="column-divider" />
           <Column
@@ -306,6 +308,7 @@ class Dashboard extends Component {
             cardsRejecteds={this.state.phoneScreenRejected}
             message="rejected after phone screens"
             token={this.props.token}
+            alert={this.props.alert}
           />
           <div className="column-divider" />
           <Column
@@ -325,6 +328,7 @@ class Dashboard extends Component {
             cardsRejecteds={this.state.onsiteInterviewRejected}
             message="rejected after interviews"
             token={this.props.token}
+            alert={this.props.alert}
           />
           <div className="column-divider" />
           <Column
@@ -344,6 +348,7 @@ class Dashboard extends Component {
             message="you rejected their offer"
             token={this.props.token}
             isLastColumn={true}
+            alert={this.props.alert}
           />
         </div>
       </div>

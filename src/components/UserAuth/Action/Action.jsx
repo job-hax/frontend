@@ -33,18 +33,22 @@ class Action extends React.Component {
           if (response.json.success === true) {
             if (action === "activate") {
               this.setState({ redirect: "signin" });
-              alert(
+              this.props.alert(
+                5000,
+                "success",
                 "Your account has activated successfully. You can sign in now!"
               );
             } else if (action === "check_forgot_password") {
               this.setState({ redirect: "check_forgot_password" });
             }
           } else {
-            alert("Something went wrong!");
+            this.props.alert(5000, "error", "Something went wrong!");
             this.setState({ redirect: "home" });
           }
         } else {
-          alert(
+          this.props.alert(
+            5000,
+            "error",
             "Something went wrong! \n Error: \n Code \n " + response.status
           );
         }
@@ -55,7 +59,7 @@ class Action extends React.Component {
     if (this.state.redirect === "home") {
       return <Redirect to="/home" />;
     } else if (this.state.redirect === "check_forgot_password") {
-      return <ChangePassword code={this.state.code} />;
+      return <ChangePassword code={this.state.code} alert={this.props.alert} />;
     } else if (this.state.redirect === "signin") {
       return <Redirect to="/signin" />;
     }

@@ -46,11 +46,15 @@ class FeedBack extends React.Component {
       if (response.ok) {
         if (response.json.success === true) {
           this.setState({ textValue: "" });
-          alert("Your feedback has been submitted successfully!");
+          this.props.alert(
+            2000,
+            "success",
+            "Your feedback has been submitted successfully!"
+          );
         } else {
           this.setState({ isUpdating: false });
           console.log(response, response.json.error_message);
-          alert(
+          this.props.alert(5000, "error", 
             "Error: \n Code " +
               response.json.error_code +
               "\n" +
@@ -59,7 +63,7 @@ class FeedBack extends React.Component {
         }
       } else {
         this.setState({ isUpdating: false });
-        alert("Something went wrong! \n Error: \n Code \n " + response.status);
+        this.props.alert(5000, "error", "Something went wrong! \n Error: \n Code \n " + response.status);
       }
     });
     this.body = {};

@@ -38,15 +38,15 @@ class ChangePassword extends React.Component {
           if (response.ok) {
             if (response.json.success === true) {
               this.setState({ redirect: "signin" });
-              alert(
+              this.props.alert(5000, "success", 
                 "Your password has changed successfully. You can sign in now!"
               );
             } else {
-              alert("Something went wrong!");
+              this.props.alert(5000, "error", "Something went wrong!");
               this.setState({ redirect: "home" });
             }
           } else {
-            alert(
+            this.props.alert(5000, "error", 
               "Something went wrong! \n Error: \n Code \n " + response.status
             );
           }

@@ -190,9 +190,16 @@ class ReviewInput extends React.Component {
             console.log("reviewSubmitRequest response", response.json.data);
             this.props.setCompany(response.json.data.company);
             this.props.setReview(response.json.data.review);
+            this.props.alert(
+              5000,
+              "success",
+              "Your review has saved successfully!"
+            );
           } else {
             this.setState({ isUpdating: false });
-            alert(
+            this.props.alert(
+              5000,
+              "error",
               "Error: \n Code " +
                 response.json.error_code +
                 "\n" +
@@ -201,7 +208,9 @@ class ReviewInput extends React.Component {
           }
         } else {
           this.setState({ isUpdating: false });
-          alert(
+          this.props.alert(
+            5000,
+            "error",
             "Something went wrong! \n Error: \n Code \n " + response.status
           );
         }

@@ -74,6 +74,7 @@ class Column extends Component {
             updateApplications={updateApplications}
             icon={icon}
             id={id}
+            alert={this.props.alert}
           />
         ))
       );
@@ -92,6 +93,7 @@ class Column extends Component {
           updateApplications={updateApplications}
           icon={icon}
           id={id}
+          alert={this.props.alert}
         />
       ))
     );
@@ -136,6 +138,7 @@ class Column extends Component {
             showInput={showJobInput}
             toggleJobInput={this.toggleJobInput}
             columnName={name}
+            alert={this.props.alert}
           />
         </div>
       </div>

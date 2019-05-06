@@ -91,9 +91,9 @@ class SignIn extends Component {
         if (response.ok) {
           if (response.json.success === true) {
             this.toggleModal();
-            alert("A link to reset password has sent to your email!");
+            this.props.alert(5000, "info", "A link to reset password has sent to your email!");
           } else {
-            alert(
+            this.props.alert(5000, "error", 
               "Error: \n Code " +
                 response.json.error_code +
                 "\n" +
@@ -101,7 +101,7 @@ class SignIn extends Component {
             );
           }
         } else {
-          alert(
+          this.props.alert(5000, "error", 
             "Something went wrong! \n Error: \n Code \n " + response.status
           );
         }
@@ -129,9 +129,9 @@ class SignIn extends Component {
                 username: "",
                 password: ""
               });
-              alert("New activation link has sent to your email!");
+              this.props.alert(5000, "info", "New activation link has sent to your email!");
             } else {
-              alert(
+              this.props.alert(5000, "error", 
                 "Error: \n Code " +
                   response.json.error_code +
                   "\n" +
@@ -139,7 +139,7 @@ class SignIn extends Component {
               );
             }
           } else {
-            alert(
+            this.props.alert(5000, "error", 
               "Something went wrong! \n Error: \n Code \n " + response.status
             );
           }
@@ -186,7 +186,7 @@ class SignIn extends Component {
             });
           } else {
             console.log(response, response.json.error_message);
-            alert(
+            this.props.alert(5000, "error", 
               "Error: \n Code " +
                 response.json.error_code +
                 "\n" +
@@ -195,7 +195,7 @@ class SignIn extends Component {
           }
         }
       } else {
-        alert("Something went wrong! \n Error: \n Code \n " + response.status);
+        this.props.alert(5000, "error", "Something went wrong! \n Error: \n Code \n " + response.status);
       }
     });
     loginUserRequest.config.body = JSON.parse(loginUserRequest.config.body);
