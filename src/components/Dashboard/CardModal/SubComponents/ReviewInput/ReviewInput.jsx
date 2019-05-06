@@ -200,19 +200,12 @@ class ReviewInput extends React.Component {
             this.props.alert(
               5000,
               "error",
-              "Error: \n Code " +
-                response.json.error_code +
-                "\n" +
-                response.json.error_message
+              "Error: " + response.json.error_message
             );
           }
         } else {
           this.setState({ isUpdating: false });
-          this.props.alert(
-            5000,
-            "error",
-            "Something went wrong! \n Error: \n Code \n " + response.status
-          );
+          this.props.alert(5000, "error", "Something went wrong!");
         }
       }
     );
