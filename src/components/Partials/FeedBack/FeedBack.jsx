@@ -15,7 +15,7 @@ class FeedBack extends React.Component {
 
     this.state = {
       textValue: "",
-      value: 5,
+      value: null,
       visible: false
     };
 
@@ -39,7 +39,6 @@ class FeedBack extends React.Component {
     if (event.target[0].value.trim() != (null || "")) {
       this.body["text"] = this.state.textValue.trim();
     }
-    this.body["star"] = this.state.value;
     feedbackRequest.config.body = JSON.stringify(this.body);
     console.log(feedbackRequest.config.body);
     fetchApi(feedbackRequest.url, feedbackRequest.config).then(response => {
@@ -54,7 +53,9 @@ class FeedBack extends React.Component {
         } else {
           this.setState({ isUpdating: false });
           console.log(response, response.json.error_message);
-          this.props.alert(5000, "error", 
+          this.props.alert(
+            5000,
+            "error",
             "Error: \n Code " +
               response.json.error_code +
               "\n" +
@@ -63,7 +64,19 @@ class FeedBack extends React.Component {
         }
       } else {
         this.setState({ isUpdating: false });
-        this.props.alert(5000, "error", "Something went wrong! \n Error: \n Code \n " + response.status);
+        if (response.json === 500) {
+          this.props.alert(
+            5000,
+            "error",
+            "You have to fill the all feedback form!"
+          );
+        } else {
+          this.props.alert(
+            5000,
+            "error",
+            "Something went wrong! \n Error: \n Code \n " + response.status
+          );
+        }
       }
     });
     this.body = {};
@@ -82,6 +95,7 @@ class FeedBack extends React.Component {
 
   handleChange(value) {
     this.setState({ value });
+    this.body["star"] = value;
   }
 
   handleTextChange(event) {
