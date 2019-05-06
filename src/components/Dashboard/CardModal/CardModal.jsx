@@ -235,6 +235,7 @@ class CardModal extends PureComponent {
                           setCompany={this.props.updateCard}
                           setReview={this.setReview}
                           oldReview={this.state.review}
+                          alert={this.props.alert}
                         />
                       </div>
                     )}

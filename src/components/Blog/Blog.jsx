@@ -11,7 +11,6 @@ import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import BlogCard from "./BlogCard.jsx";
 
 import "./style.scss";
-import "../../assets/libraryScss/antd-scss/antd.scss";
 
 class Blog extends React.Component {
   constructor(props) {
@@ -115,6 +114,7 @@ class Blog extends React.Component {
           upVote={blog.upvote}
           downVote={blog.downvote}
           token={this.props.token}
+          alert={this.props.alert}
         />
       </div>
     ));

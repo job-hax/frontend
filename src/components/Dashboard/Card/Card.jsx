@@ -123,6 +123,7 @@ class Card extends PureComponent {
             icon={icon}
             id={id}
             updateCard={this.updateCard}
+            alert={this.props.alert}
             {...this.props}
           />
         )}

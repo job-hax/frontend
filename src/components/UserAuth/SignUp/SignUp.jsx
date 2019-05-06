@@ -34,12 +34,12 @@ class SignUp extends Component {
         if (response.ok) {
           console.log(response.json);
           if (response.json.success === true) {
-            alert(
+            this.props.alert(5000, "success", 
               "Registration mail has sent to your email successfully! \nPlease click the link on your email to activate your account!"
             );
           } else {
             console.log(response, response.json.error_message);
-            alert(
+            this.props.alert(5000, "error", 
               "Error: \n Code " +
                 response.json.error_code +
                 "\n" +
@@ -47,7 +47,7 @@ class SignUp extends Component {
             );
           }
         } else {
-          alert(
+          this.props.alert(5000, "error", 
             "Something went wrong! \n Error: \n Code \n " + response.status
           );
         }
