@@ -12,6 +12,7 @@ import Companies from "../Companies/Companies.jsx";
 import Home from "../StaticPages/Home/Home.jsx";
 import AboutUs from "../StaticPages/AboutUs/AboutUs.jsx";
 import PrivacyPolicy from "../StaticPages/PrivacyPolicy/PrivacyPolicy.jsx";
+import UserAgreement from "../StaticPages/UserAgreement/UserAgreement.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import PollBox from "../Partials/PollBox/PollBox.jsx";
 import FeedBack from "../Partials/FeedBack/FeedBack.jsx";
@@ -422,6 +423,11 @@ class App extends Component {
             />
             <Route
               exact
+              path="/useragreement"
+              render={() => <UserAgreement />}
+            />
+            <Route
+              exact
               path="/underconstruction"
               render={() => <UnderConstruction />}
             />
@@ -507,6 +513,11 @@ class App extends Component {
               exact
               path="/privacypolicy"
               render={() => <PrivacyPolicy />}
+            />
+            <Route
+              exact
+              path="/useragreement"
+              render={() => <UserAgreement />}
             />
             <Route exact path="/action" render={() => <Action />} />
           </div>
