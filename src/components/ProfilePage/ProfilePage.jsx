@@ -141,13 +141,13 @@ class ProfilePage extends React.Component {
               isEditing: false,
               isUpdated: true
             });
-            alert("Your profile have been updated successfully!");
+            this.props.alert(5000, "success", "Your profile have been updated successfully!");
             this.props.setIsProfileUpdated(true);
             console.log(this.state.data);
           } else {
             this.setState({ isUpdating: false });
             console.log(response, response.json.error_message);
-            alert(
+            this.props.alert(5000, "error", 
               "Error: \n Code " +
                 response.json.error_code +
                 "\n" +
@@ -189,12 +189,12 @@ class ProfilePage extends React.Component {
                 isProfileSettingsOpen: false,
                 isUpdated: true
               });
-              alert("Your settings have been updated successfully!");
+              this.props.alert(5000, "success", "Your settings have been updated successfully!");
               console.log(this.state.data);
             } else {
               this.setState({ isUpdating: false });
               console.log(response, response.json.error_message);
-              alert(
+              this.props.alert(5000, "error", 
                 "Error: \n Code " +
                   response.json.error_code +
                   "\n" +
@@ -203,7 +203,7 @@ class ProfilePage extends React.Component {
             }
           } else {
             this.setState({ isUpdating: false });
-            alert(
+            this.props.alert(5000, "error", 
               "Something went wrong! \n Error: \n Code \n " + response.status
             );
           }
@@ -211,13 +211,13 @@ class ProfilePage extends React.Component {
       );
       this.settingsBody = {};
     } else
-      alert("Passwords are not matching!\n Please enter the same password.");
+      this.props.alert(5000, "error", "Passwords are not matching!\n Please enter the same password.");
   }
 
   handlePhoneNumberChange(event) {
     event.preventDefault();
     if (isNaN(event.target.value)) {
-      alert("Please enter only numbers!");
+      this.props.alert(5000, "error", "Please enter only numbers!");
       var resetValue = this.refs.phoneNumber;
       resetValue.value = null;
       delete this.body.phone_number;

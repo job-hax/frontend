@@ -38,7 +38,11 @@ class PollBox extends React.Component {
           poll =>
             poll.is_published === true && (
               <div key={poll.id}>
-                <PollCard poll={poll} token={this.props.token} />
+                <PollCard
+                  poll={poll}
+                  token={this.props.token}
+                  alert={this.props.alert}
+                />
               </div>
             )
         )}
