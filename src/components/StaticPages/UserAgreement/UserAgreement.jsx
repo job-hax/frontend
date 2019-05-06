@@ -8,12 +8,12 @@ import { getAgreementsRequest } from "../../../utils/api/requests.js";
 
 import "./style.scss";
 
-class PrivacyPolicy extends Component {
+class UserAgreement extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      privacy_policy: ""
+      user_agreement: ""
     };
   }
 
@@ -21,7 +21,7 @@ class PrivacyPolicy extends Component {
     const { url, config } = getAgreementsRequest;
     fetchApi(url, config).then(response => {
       if (response.ok) {
-        this.setState({ privacy_policy: response.json.data.privacy });
+        this.setState({ user_agreement: response.json.data.user_agreement });
       }
     });
   }
@@ -48,7 +48,7 @@ class PrivacyPolicy extends Component {
       <section className="header_area">
         {this.generateTopButtons()}
         <div>
-          <h2>Privacy Policy</h2>
+          <h2>User Agreement</h2>
         </div>
       </section>
     );
@@ -58,9 +58,9 @@ class PrivacyPolicy extends Component {
     return (
       <div className="info-container">
         <div className="info-area">
-          {this.state.privacy_policy.is_html === true
-            ? parse(`${this.state.privacy_policy.value}`)
-            : this.state.privacy_policy.value}
+          {this.state.user_agreement.is_html === true
+            ? parse(`${this.state.user_agreement.value}`)
+            : this.state.user_agreement.value}
         </div>
       </div>
     );
@@ -81,4 +81,4 @@ class PrivacyPolicy extends Component {
   }
 }
 
-export default PrivacyPolicy;
+export default UserAgreement;
