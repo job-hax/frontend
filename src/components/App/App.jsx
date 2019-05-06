@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Redirect } from "react-router-dom";
+import { Alert } from "antd";
 
 import Header from "../Partials/Header/Header.jsx";
 import Blog from "../Blog/Blog.jsx";
@@ -33,6 +34,7 @@ import {
 } from "../../utils/api/requests.js";
 
 import "./style.scss";
+import "../../assets/libraryScss/antd-scss/antd.scss";
 
 class App extends Component {
   constructor(props) {
@@ -46,6 +48,9 @@ class App extends Component {
       isProfileUpdated: true,
       isPollChecking: true,
       isPollShowing: false,
+      isAlertShowing: false,
+      alertType: "",
+      alertMessage: "",
       isNotificationsShowing: false,
       pollData: [],
       notificationsList: [],
@@ -65,6 +70,7 @@ class App extends Component {
     this.setIsAuthenticationChecking = this.setIsAuthenticationChecking.bind(
       this
     );
+    this.showAlert = this.showAlert.bind(this);
   }
 
   componentDidMount() {
@@ -237,6 +243,41 @@ class App extends Component {
     logOutUserRequest.config.body = JSON.parse(logOutUserRequest.config.body);
   }
 
+  showAlert(time, type, message) {
+    this.setState({
+      isAlertShowing: true,
+      alertType: type,
+      alertMessage: message
+    });
+    new Promise(wait => setTimeout(wait, time)).then(() =>
+      this.setState({ isAlertShowing: false, alertType: "", alertMessage: "" })
+    );
+  }
+
+  generateAlert() {
+    const bottom =
+      window.location.pathname === ("/signin" || "/signup") ? "80px" : "30px";
+    return (
+      <div
+        style={{
+          position: "absolute",
+          bottom: bottom,
+          width: "100%",
+          display: "flex",
+          justifyContent: "center"
+        }}
+      >
+        <div>
+          <Alert
+            type={this.state.alertType}
+            message={this.state.alertMessage}
+            showIcon
+          />
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { isUserLoggedIn, isUserAuthenticated } = this.state;
     IS_CONSOLE_LOG_OPEN &&
@@ -268,14 +309,16 @@ class App extends Component {
                 userData={this.state.profileData}
               />
             )}
-            <FeedBack token={this.state.token} />
+            <FeedBack token={this.state.token} alert={this.showAlert} />
             {this.state.isPollShowing && (
               <PollBox
                 data={this.pollData}
                 togglePollDisplay={this.toggleIsPollShowing}
                 token={this.state.token}
+                alert={this.showAlert}
               />
             )}
+            {this.state.isAlertShowing && <div>{this.generateAlert()}</div>}
             <Route
               exact
               path="/profile"
@@ -284,6 +327,7 @@ class App extends Component {
                   token={this.state.token}
                   active={this.state.active}
                   setIsProfileUpdated={this.setIsProfileUpdated}
+                  alert={this.showAlert}
                 />
               )}
             />
@@ -291,7 +335,11 @@ class App extends Component {
               exact
               path="/blogs"
               render={() => (
-                <Blog token={this.state.token} active={this.state.active} />
+                <Blog
+                  token={this.state.token}
+                  active={this.state.active}
+                  alert={this.showAlert}
+                />
               )}
             />
             <Route
@@ -306,6 +354,7 @@ class App extends Component {
                 <Dashboard
                   active={this.state.active}
                   token={this.state.token}
+                  alert={this.showAlert}
                 />
               )}
             />
@@ -313,7 +362,11 @@ class App extends Component {
               exact
               path="/metrics"
               render={() => (
-                <Metrics active={this.state.active} token={this.state.token} />
+                <Metrics
+                  active={this.state.active}
+                  token={this.state.token}
+                  alert={this.showAlert}
+                />
               )}
             />
             <Route
@@ -323,6 +376,7 @@ class App extends Component {
                 <MetricsGlobal
                   active={this.state.active}
                   token={this.state.token}
+                  alert={this.showAlert}
                 />
               )}
             />
@@ -333,6 +387,7 @@ class App extends Component {
                 <Companies
                   active={this.state.active}
                   token={this.state.token}
+                  alert={this.showAlert}
                 />
               )}
             />
@@ -375,12 +430,17 @@ class App extends Component {
               path="/faqs"
               render={() => <FAQ active={this.state.active} />}
             />
-            <Route exact path="/action" render={() => <Action />} />
+            <Route
+              exact
+              path="/action"
+              render={() => <Action alert={this.showAlert} />}
+            />
           </div>
         </Router>
       ) : (
         <Router>
           <div className="main-container">
+            {this.state.isAlertShowing && <div>{this.generateAlert()}</div>}
             <Route exact path="/home" render={() => <Redirect to="/" />} />
             <Route
               exact
@@ -417,6 +477,7 @@ class App extends Component {
                   setIsUserAuthenticated={this.setIsUserAuthenticated}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
                   onAuthUpdate={this.onAuthUpdate}
+                  alert={this.showAlert}
                 />
               )}
             />
@@ -428,6 +489,7 @@ class App extends Component {
                   googleAuth={this.googleAuth}
                   handleGoogleSignIn={this.handleGoogleSignIn}
                   generateSignUpForm={this.generateSignUpForm}
+                  alert={this.showAlert}
                 />
               )}
             />
