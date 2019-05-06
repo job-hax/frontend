@@ -38,7 +38,9 @@ class ChangePassword extends React.Component {
           if (response.ok) {
             if (response.json.success === true) {
               this.setState({ redirect: "signin" });
-              this.props.alert(5000, "success", 
+              this.props.alert(
+                5000,
+                "success",
                 "Your password has changed successfully. You can sign in now!"
               );
             } else {
@@ -46,7 +48,9 @@ class ChangePassword extends React.Component {
               this.setState({ redirect: "home" });
             }
           } else {
-            this.props.alert(5000, "error", 
+            this.props.alert(
+              5000,
+              "error",
               "Something went wrong! \n Error: \n Code \n " + response.status
             );
           }
@@ -149,6 +153,8 @@ class ChangePassword extends React.Component {
   }
 }
 
-const ChangePasswordPage = Form.create({ name: "register" })(ChangePassword);
+const ChangePasswordPage = Form.create({ name: "change_password" })(
+  ChangePassword
+);
 
 export default ChangePasswordPage;
