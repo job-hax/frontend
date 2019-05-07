@@ -253,12 +253,7 @@ class App extends Component {
   }
 
   generateAlert() {
-    const bottom =
-      window.location.pathname === "/signin"
-        ? "80px"
-        : window.location.pathname === "/signup"
-        ? "0"
-        : "30px";
+    const bottom = "30px";
     return (
       <div
         style={{
@@ -266,7 +261,8 @@ class App extends Component {
           bottom: bottom,
           width: "100%",
           display: "flex",
-          justifyContent: "center"
+          justifyContent: "center",
+          zIndex: 100
         }}
       >
         <div>
