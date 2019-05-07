@@ -73,7 +73,7 @@ class PrivacyPolicy extends Component {
           {this.generateHeaderArea()}
           {this.generateInfo()}
         </div>
-        <div>
+        <div className="footer-bottom">
           <Footer />
         </div>
       </div>
