@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
+import { ReCaptcha } from "react-recaptcha-v3";
 
 import Column from "./Column/Column.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
@@ -9,7 +10,8 @@ import {
   addJobAppsRequest,
   getJobAppsRequest,
   syncUserEmailsRequest,
-  updateJobStatusRequest
+  updateJobStatusRequest,
+  postUsersRequest
 } from "../../utils/api/requests.js";
 import { IS_MOCKING } from "../../config/config.js";
 import { mockJobApps } from "../../utils/api/mockResponses.js";
@@ -52,6 +54,7 @@ class Dashboard extends Component {
     this.addNewApplication = this.addNewApplication.bind(this);
     this.deleteJobFromList = this.deleteJobFromList.bind(this);
     this.moveToRejected = this.moveToRejected.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
@@ -60,6 +63,32 @@ class Dashboard extends Component {
 
   componentDidUpdate() {
     this.getData();
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    postUsersRequest.config["body"] = JSON.stringify({
+      recaptcha_token: recaptchaToken,
+      action: "dashboard"
+    });
+    fetchApi(
+      postUsersRequest.url("verify_recaptcha/"),
+      postUsersRequest.config
+    ).then(response => {
+      if (response.ok) {
+        if (response.json.success != true) {
+          this.setState({ isUpdating: false });
+          console.log(response, response.json.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.json.error_message
+          );
+        }
+      }
+      postUsersRequest.config["body"] = {};
+    });
   }
 
   getData() {
@@ -184,7 +213,7 @@ class Dashboard extends Component {
     });
   }
 
-  addNewApplication({ name, title, columnName }) {
+  addNewApplication({ name, title, columnName, recaptchaToken }) {
     return new Promise(resolve => {
       const { url, config } = addJobAppsRequest;
       config.headers.Authorization = this.props.token;
@@ -193,7 +222,8 @@ class Dashboard extends Component {
         status_id: UPDATE_APPLICATION_STATUS[columnName].id,
         company: name,
         application_date: generateCurrentDate(),
-        source: "N/A"
+        source: "N/A",
+        recaptcha_token: recaptchaToken
       });
 
       fetchApi(url, config).then(response => {
@@ -349,6 +379,13 @@ class Dashboard extends Component {
             token={this.props.token}
             isLastColumn={true}
             alert={this.props.alert}
+          />
+        </div>
+        <div>
+          <ReCaptcha
+            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+            action="dashboard"
+            verifyCallback={this.verifyReCaptchaCallback}
           />
         </div>
       </div>

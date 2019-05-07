@@ -1,5 +1,6 @@
 import React from "react";
 import { Icon } from "antd";
+import { ReCaptcha } from "react-recaptcha-v3";
 import parse from "html-react-parser";
 
 import { fetchApi } from "../../utils/api/fetch_api";
@@ -25,6 +26,7 @@ class BlogCard extends React.Component {
 
     this.getBlogDetail = this.getBlogDetail.bind(this);
     this.postBlogStats = this.postBlogStats.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
@@ -32,6 +34,14 @@ class BlogCard extends React.Component {
       viewCount: this.props.viewCount,
       upVote: this.props.upVote,
       downVote: this.props.downVote
+    });
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    postBlogRequest.config["body"] = JSON.stringify({
+      recaptcha_token: recaptchaToken
     });
   }
 
@@ -168,6 +178,13 @@ class BlogCard extends React.Component {
             {parse(`${this.state.blog.content}`)}
           </div>
         )}
+        <div>
+          <ReCaptcha
+            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+            action="blog_stats"
+            verifyCallback={this.verifyReCaptchaCallback}
+          />
+        </div>
       </div>
     );
   }

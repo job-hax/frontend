@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Redirect } from "react-router-dom";
+import { loadReCaptcha } from "react-recaptcha-v3";
 import { Alert } from "antd";
 
 import Header from "../Partials/Header/Header.jsx";
@@ -75,6 +76,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    loadReCaptcha("6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY");
     window.gapi.load("client:auth2", () => {
       window.gapi.client
         .init({
@@ -252,7 +254,11 @@ class App extends Component {
 
   generateAlert() {
     const bottom =
-      window.location.pathname === ("/signin" || "/signup") ? "80px" : "30px";
+      window.location.pathname === "/signin"
+        ? "80px"
+        : window.location.pathname === "/signup"
+        ? "0"
+        : "30px";
     return (
       <div
         style={{

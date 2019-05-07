@@ -1,8 +1,10 @@
 import React from "react";
 import { Rate, Modal } from "antd";
+import { ReCaptcha } from "react-recaptcha-v3";
 
 import { feedbackRequest } from "../../../utils/api/requests.js";
 import { fetchApi } from "../../../utils/api/fetch_api";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
 import "../../../assets/libraryScss/antd-scss/antd.scss";
@@ -25,6 +27,13 @@ class FeedBack extends React.Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    this.body["recaptcha_token"] = recaptchaToken;
   }
 
   showModal() {
@@ -73,6 +82,7 @@ class FeedBack extends React.Component {
       }
     });
     this.body = {};
+    this.setState({ value: null });
   }
 
   handleOk() {
@@ -138,7 +148,7 @@ class FeedBack extends React.Component {
     const feedbackButtonStyle =
       window.location.pathname == "/underconstruction"
         ? { display: "none" }
-        : { bottom: "16px" };
+        : { bottom: "86px" };
 
     return (
       <div>
@@ -198,6 +208,13 @@ class FeedBack extends React.Component {
                   Submit
                 </button>
               </div>
+            </div>
+            <div>
+              <ReCaptcha
+                sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+                action="feedback"
+                verifyCallback={this.verifyReCaptchaCallback}
+              />
             </div>
           </form>
         </Modal>
