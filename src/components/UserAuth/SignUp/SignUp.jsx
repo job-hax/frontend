@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { ReCaptcha } from "react-recaptcha-v3";
 import { Form, Input, Icon, Select, Checkbox, Button } from "antd";
 
 import { fetchApi } from "../../../utils/api/fetch_api";
@@ -8,38 +9,6 @@ import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import Footer from "../../Partials/Footer/Footer.jsx";
 
 import "./style.scss";
-
-const UserAgreementModal = Form.create({ name: "form_in_modal" })(
-  class extends React.Component {
-    render() {
-      const { visible, onCancel, onCreate, form } = this.props;
-      const { getFieldDecorator } = form;
-      return (
-        <Modal
-          visible={visible}
-          centered
-          title="User Agreement"
-          okText="Submit"
-          onCancel={onCancel}
-          onOk={onCreate}
-        >
-          <Form layout="vertical">
-            <Form.Item label="Username or Email Address">
-              {getFieldDecorator("username", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please enter your username or email address!"
-                  }
-                ]
-              })(<Input />)}
-            </Form.Item>
-          </Form>
-        </Modal>
-      );
-    }
-  }
-);
 
 class SignUpPage extends Component {
   constructor(props) {
@@ -56,6 +25,13 @@ class SignUpPage extends Component {
     this.compareToFirstPassword = this.compareToFirstPassword.bind(this);
     this.validateToNextPassword = this.validateToNextPassword.bind(this);
     this.handleConfirmBlur = this.handleConfirmBlur.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    registerUserRequest.config.body.recaptcha_token = recaptchaToken;
   }
 
   compareToFirstPassword(rule, value, callback) {
@@ -313,6 +289,13 @@ class SignUpPage extends Component {
         </Form.Item>
         <div style={{ fontSize: "90%" }}>
           Do you have an account? Go <Link to="/signin">sign in!</Link>
+        </div>
+        <div>
+          <ReCaptcha
+            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+            action="signup"
+            verifyCallback={this.verifyReCaptchaCallback}
+          />
         </div>
       </Form>
     );

@@ -1,11 +1,11 @@
 import React from "react";
 import { Pagination, Icon } from "antd";
-import parse from "html-react-parser";
+import { ReCaptcha } from "react-recaptcha-v3";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
 import { fetchApi } from "../../utils/api/fetch_api";
-import { getBlogsRequest } from "../../utils/api/requests.js";
+import { getBlogsRequest, postUsersRequest } from "../../utils/api/requests.js";
 import { makeTimeBeautiful } from "../../utils/constants/constants.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import BlogCard from "./BlogCard.jsx";
@@ -27,6 +27,7 @@ class Blog extends React.Component {
 
     this.getData = this.getData.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
@@ -44,6 +45,32 @@ class Blog extends React.Component {
         this.setState({ isNewPageRequested: false });
       }
     }
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    postUsersRequest.config["body"] = JSON.stringify({
+      recaptcha_token: recaptchaToken,
+      action: "blog"
+    });
+    fetchApi(
+      postUsersRequest.url("verify_recaptcha/"),
+      postUsersRequest.config
+    ).then(response => {
+      if (response.ok) {
+        if (response.json.success != true) {
+          this.setState({ isUpdating: false });
+          console.log(response, response.json.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.json.error_message
+          );
+        }
+      }
+      postUsersRequest.config["body"] = {};
+    });
   }
 
   getData(requestType) {
@@ -139,6 +166,13 @@ class Blog extends React.Component {
                 total={this.state.pagination.total_count}
               />
             </div>
+          </div>
+          <div>
+            <ReCaptcha
+              sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+              action="blog"
+              verifyCallback={this.verifyReCaptchaCallback}
+            />
           </div>
           <div className="footer-blog">
             <Footer />

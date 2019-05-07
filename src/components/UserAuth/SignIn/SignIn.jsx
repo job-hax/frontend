@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { ReCaptcha } from "react-recaptcha-v3";
 import { Modal, Form, Input, Icon, Button, Checkbox } from "antd";
 
 import Footer from "../../Partials/Footer/Footer.jsx";
@@ -19,30 +20,39 @@ import "./style.scss";
 const ForgotPasswordModal = Form.create({ name: "form_in_modal" })(
   class extends React.Component {
     render() {
-      const { visible, onCancel, onCreate, form } = this.props;
+      const { visible, onCancel, onCreate, form, verifyReCaptcha } = this.props;
       const { getFieldDecorator } = form;
       return (
-        <Modal
-          visible={visible}
-          centered
-          title="Forgot Password"
-          okText="Submit"
-          onCancel={onCancel}
-          onOk={onCreate}
-        >
-          <Form layout="vertical">
-            <Form.Item label="Username or Email Address">
-              {getFieldDecorator("username", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please enter your username or email address!"
-                  }
-                ]
-              })(<Input />)}
-            </Form.Item>
-          </Form>
-        </Modal>
+        <div>
+          <Modal
+            visible={visible}
+            centered
+            title="Forgot Password"
+            okText="Submit"
+            onCancel={onCancel}
+            onOk={onCreate}
+          >
+            <Form layout="vertical">
+              <Form.Item label="Username or Email Address">
+                {getFieldDecorator("username", {
+                  rules: [
+                    {
+                      required: true,
+                      message: "Please enter your username or email address!"
+                    }
+                  ]
+                })(<Input />)}
+              </Form.Item>
+            </Form>
+            <div>
+              <ReCaptcha
+                sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+                action="forgot_password"
+                verifyCallback={verifyReCaptcha}
+              />
+            </div>
+          </Modal>
+        </div>
       );
     }
   }
@@ -71,6 +81,22 @@ class SignInPage extends Component {
     this.toggleModal = this.toggleModal.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
     this.saveFormRef = this.saveFormRef.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
+    this.verifyForgotPasswordReCaptchaCallback = this.verifyForgotPasswordReCaptchaCallback.bind(
+      this
+    );
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    loginUserRequest.config.body.recaptcha_token = recaptchaToken;
+  }
+
+  verifyForgotPasswordReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    postUsersRequest.config.body = { recaptcha_token: recaptchaToken };
   }
 
   toggleModal() {
@@ -84,7 +110,10 @@ class SignInPage extends Component {
         return;
       }
       console.log("Received values of form: ", values);
-      postUsersRequest.config.body = JSON.stringify(values);
+      postUsersRequest.config.body["username"] = values.username;
+      postUsersRequest.config.body = JSON.stringify(
+        postUsersRequest.config.body
+      );
       fetchApi(
         postUsersRequest.url("forgot_password"),
         postUsersRequest.config
@@ -107,6 +136,7 @@ class SignInPage extends Component {
         } else {
           this.props.alert(5000, "error", "Something went wrong!");
         }
+        postUsersRequest.config.body = {};
       });
       form.resetFields();
     });
@@ -348,6 +378,7 @@ class SignInPage extends Component {
               visible={this.state.showModal}
               onCancel={this.toggleModal}
               onCreate={this.handleCreate}
+              verifyReCaptcha={this.verifyForgotPasswordReCaptchaCallback}
             />
           </div>
           {this.state.isVerificationReSendDisplaying && (
@@ -358,6 +389,13 @@ class SignInPage extends Component {
               <a> Resend activation email? </a>
             </div>
           )}
+          <div>
+            <ReCaptcha
+              sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+              action="signin"
+              verifyCallback={this.verifyReCaptchaCallback}
+            />
+          </div>
           <Button
             type="primary"
             htmlType="submit"

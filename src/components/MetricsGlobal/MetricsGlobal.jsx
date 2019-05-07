@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import { ReCaptcha } from "react-recaptcha-v3";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import FeatureArea from "./SubComponents/FeatureArea.jsx";
@@ -8,7 +9,8 @@ import { fetchApi } from "../../utils/api/fetch_api";
 import {
   getMonthlyApplicationCountRequest,
   getStatisticsRequest,
-  getTrendingRequest
+  getTrendingRequest,
+  postUsersRequest
 } from "../../utils/api/requests.js";
 import { apiRoot, GET_TOP_COMPANIES } from "../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
@@ -51,6 +53,7 @@ class MetricsGlobal extends PureComponent {
     this.setTrendingDataCount = this.setTrendingDataCount.bind(this);
     this.setTrendingDataYear = this.setTrendingDataYear.bind(this);
     this.setTrendingDataStatus = this.setTrendingDataStatus.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
@@ -75,6 +78,32 @@ class MetricsGlobal extends PureComponent {
     ) {
       this.getTrendingData(this.state.trendingUrl);
     }
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    postUsersRequest.config["body"] = JSON.stringify({
+      recaptcha_token: recaptchaToken,
+      action: "metrics_global"
+    });
+    fetchApi(
+      postUsersRequest.url("verify_recaptcha/"),
+      postUsersRequest.config
+    ).then(response => {
+      if (response.ok) {
+        if (response.json.success != true) {
+          this.setState({ isUpdating: false });
+          console.log(response, response.json.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.json.error_message
+          );
+        }
+      }
+      postUsersRequest.config["body"] = {};
+    });
   }
 
   getStatisticsData() {
@@ -307,6 +336,13 @@ class MetricsGlobal extends PureComponent {
             data={this.state.appsMonthSourcesWithTotal}
             months={this.state.currentMonthsOfLastYear}
             series={this.state.appsCountByMonthWithTotal}
+          />
+        </div>
+        <div>
+          <ReCaptcha
+            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+            action="metrics_global"
+            verifyCallback={this.verifyReCaptchaCallback}
           />
         </div>
       </div>
