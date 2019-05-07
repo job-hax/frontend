@@ -7,7 +7,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 100px;
+    padding: 100px 0 200px 0;
 
     .sign_up-form-container {
         margin: auto;
@@ -55,4 +55,10 @@
     .logo {
         width: 90px;
     }
+}
+
+.bottom-fixed-footer-sign_up {
+    position: fixed;
+    bottom: 0%;
+    width: 100%;
 }

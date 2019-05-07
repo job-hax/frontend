@@ -43,7 +43,7 @@ class UnderConstruction extends Component {
 
   render() {
     return (
-      <div className="under_constrution-container">
+      <div className="under_construction-container">
         <div>
           {this.generateHeaderArea()}
           {this.generateInfo()}
