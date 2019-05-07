@@ -1,9 +1,13 @@
 import React from "react";
 import DatePicker from "react-datepicker";
+import { ReCaptcha } from "react-recaptcha-v3";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
-import { makeTimeBeautiful } from "../../utils/constants/constants.js";
+import {
+  makeTimeBeautiful,
+  IS_CONSOLE_LOG_OPEN
+} from "../../utils/constants/constants.js";
 
 import { fetchApi } from "../../utils/api/fetch_api";
 import {
@@ -39,6 +43,7 @@ class ProfilePage extends React.Component {
     this.settingsBody = {};
     this.checkNotifications = this.checkNotifications.bind(this);
     this.getEmploymentStatuses = this.getEmploymentStatuses.bind(this);
+    this.getProfileData = this.getProfileData.bind(this);
     this.handleGenderClick = this.handleGenderClick.bind(this);
     this.handleStatusClick = this.handleStatusClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -46,6 +51,7 @@ class ProfilePage extends React.Component {
     this.handleSettingsSubmit = this.handleSettingsSubmit.bind(this);
     this.handleItuMailChange = this.handleItuMailChange.bind(this);
     this.handlePhoneNumberChange = this.handlePhoneNumberChange.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
@@ -60,6 +66,13 @@ class ProfilePage extends React.Component {
     if (this.props.token != "" && !this.state.isUpdated) {
       this.getProfileData();
     }
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    this.body["recaptcha_token"] = recaptchaToken;
+    this.settingsBody["recaptcha_token"] = recaptchaToken;
   }
 
   getProfileData() {
@@ -750,6 +763,13 @@ class ProfilePage extends React.Component {
               </div>
             )}
           </div>
+        </div>
+        <div>
+          <ReCaptcha
+            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+            action="update_profile"
+            verifyCallback={this.verifyReCaptchaCallback}
+          />
         </div>
       </div>
     );

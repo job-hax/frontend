@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import { ReCaptcha } from "react-recaptcha-v3";
 
 import { fetchApi } from "../../../../utils/api/fetch_api";
 import {
@@ -25,7 +26,8 @@ class Notes extends React.Component {
       addNoteForm: "",
       updateNoteForm: "",
       notes: [],
-      textareaHeight: 16
+      textareaHeight: 16,
+      recaptchaToken: ""
     };
     this.notes = [];
     this.currentNote = null;
@@ -35,10 +37,17 @@ class Notes extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.addNote = this.addNote.bind(this);
     this.saveNotes = this.saveNotes.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
     this.getNotes();
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    this.setState({ recaptchaToken: recaptchaToken });
   }
 
   getNotes() {
@@ -132,11 +141,13 @@ class Notes extends React.Component {
       this.currentNote == null
         ? {
             jobapp_id: card.id,
-            description: addNoteForm
+            description: addNoteForm,
+            recaptcha_token: this.state.recaptchaToken
           }
         : {
             jobapp_note_id: this.currentNote.id,
-            description: updateNoteForm
+            description: updateNoteForm,
+            recaptcha_token: this.state.recaptchaToken
           };
     let { url, config } =
       this.currentNote == null ? addNoteRequest : updateNoteRequest;
@@ -354,7 +365,18 @@ class Notes extends React.Component {
   }
 
   render() {
-    return <div>{this.generateNotes()} </div>;
+    return (
+      <div>
+        {this.generateNotes()}
+        <div>
+          <ReCaptcha
+            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+            action="jobapp_note"
+            verifyCallback={this.verifyReCaptchaCallback}
+          />
+        </div>
+      </div>
+    );
   }
 }
 
