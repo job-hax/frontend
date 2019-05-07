@@ -30,7 +30,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 77vh;
+    padding: 100px 0 200px 0;
 
     .sign_in-form-container {
         margin: auto;
@@ -74,7 +74,7 @@
 }
 
 .bottom-fixed-footer {
-    position: absolute;
+    position: fixed;
     bottom: 0%;
     width: 100%;
 }

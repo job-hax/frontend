@@ -78,7 +78,7 @@ class FAQ extends React.Component {
       <div className="under_constrution-container">
         <div>{this.generateHeaderArea()}</div>
         <div>{this.generateAccordion()}</div>
-        <div>
+        <div className="footer-bottom">
           <Footer />
         </div>
       </div>
