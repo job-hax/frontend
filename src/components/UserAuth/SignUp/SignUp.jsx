@@ -319,7 +319,7 @@ class SignUpPage extends Component {
         <div className="sign_up-vertical-container">
           <div className="sign_up-container">{this.generateSignUp()}</div>
         </div>
-        <div>
+        <div className="bottom-fixed-footer-sign_up">
           <Footer />
         </div>
       </div>
