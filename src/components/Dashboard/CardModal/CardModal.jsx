@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
-import classNames from "classnames";
+import { ReCaptcha } from "react-recaptcha-v3";
 
 import ModalHeader from "./SubComponents/ModalHeader/ModalHeader.jsx";
 import Notes from "./SubComponents/Notes.jsx";
@@ -8,7 +8,10 @@ import ReviewInput from "./SubComponents/ReviewInput/ReviewInput.jsx";
 import CompanyStats from "../../Partials/CompanyStats/CompanyStats.jsx";
 import Reviews from "../../Companies/Reviews/Reviews.jsx";
 import { fetchApi } from "../../../utils/api/fetch_api";
-import { getReviewsRequest } from "../../../utils/api/requests.js";
+import {
+  getReviewsRequest,
+  postUsersRequest
+} from "../../../utils/api/requests.js";
 import {
   IS_CONSOLE_LOG_OPEN,
   makeTimeBeautiful
@@ -36,6 +39,7 @@ class CardModal extends PureComponent {
     this.toggleReviewEdit = this.toggleReviewEdit.bind(this);
     this.toggleReviewDisplay = this.toggleReviewDisplay.bind(this);
     this.setReview = this.setReview.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
@@ -57,6 +61,32 @@ class CardModal extends PureComponent {
         }
       });
     }
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    postUsersRequest.config["body"] = JSON.stringify({
+      recaptcha_token: recaptchaToken,
+      action: "card_modal"
+    });
+    fetchApi(
+      postUsersRequest.url("verify_recaptcha/"),
+      postUsersRequest.config
+    ).then(response => {
+      if (response.ok) {
+        if (response.json.success != true) {
+          this.setState({ isUpdating: false });
+          console.log(response, response.json.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.json.error_message
+          );
+        }
+      }
+      postUsersRequest.config["body"] = {};
+    });
   }
 
   toggleReviewEdit() {
@@ -247,6 +277,13 @@ class CardModal extends PureComponent {
               </div>
             </div>
           </section>
+          <div>
+            <ReCaptcha
+              sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+              action="card_modal"
+              verifyCallback={this.verifyReCaptchaCallback}
+            />
+          </div>
         </div>
       </React.Fragment>,
       document.querySelector("#modal")

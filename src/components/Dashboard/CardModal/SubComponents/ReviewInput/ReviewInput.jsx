@@ -1,5 +1,6 @@
 import React from "react";
 import { Rate, Select, Radio, Checkbox } from "antd";
+import { ReCaptcha } from "react-recaptcha-v3";
 
 import { fetchApi } from "../../../../../utils/api/fetch_api.js";
 import {
@@ -8,6 +9,7 @@ import {
   getEmploymentStatusesRequest,
   getEmploymentAuthsRequest
 } from "../../../../../utils/api/requests.js";
+import { IS_CONSOLE_LOG_OPEN } from "../../../../../utils/constants/constants.js";
 
 import "./style.scss";
 import "../../../../../assets/libraryScss/antd-scss/antd.scss";
@@ -79,6 +81,7 @@ class ReviewInput extends React.Component {
     this.handleInterviewDifficultyChange = this.handleInterviewDifficultyChange.bind(
       this
     );
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
@@ -174,6 +177,12 @@ class ReviewInput extends React.Component {
     });
   }
 
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    this.body["recaptcha_token"] = recaptchaToken;
+  }
+
   handleSubmit(event) {
     event.preventDefault();
     this.props.toggleReview();
@@ -210,9 +219,9 @@ class ReviewInput extends React.Component {
       }
     );
     this.body = {
-      job_app_id: this.props.card.id,
       company_id: this.props.card.companyObject.id,
-      position_id: this.props.card.position.id
+      position_id: this.props.card.position.id,
+      anonymous: false
     };
   }
 
@@ -478,7 +487,18 @@ class ReviewInput extends React.Component {
   }
 
   render() {
-    return <div>{this.generateReviewForm()}</div>;
+    return (
+      <div>
+        {this.generateReviewForm()}
+        <div>
+          <ReCaptcha
+            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+            action="review"
+            verifyCallback={this.verifyReCaptchaCallback}
+          />
+        </div>
+      </div>
+    );
   }
 }
 

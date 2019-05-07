@@ -1,5 +1,8 @@
 import React, { PureComponent } from "react";
+import { ReCaptcha } from "react-recaptcha-v3";
 import classNames from "classnames";
+
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
 
@@ -8,11 +11,19 @@ class JobInput extends PureComponent {
     super(props);
     this.state = {
       companyName: "",
-      jobTitle: ""
+      jobTitle: "",
+      recaptchaToken: ""
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleAddNewApplication = this.handleAddNewApplication.bind(this);
     this.cancelJobInputEdit = this.cancelJobInputEdit.bind(this);
+    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
+  }
+
+  verifyReCaptchaCallback(recaptchaToken) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
+    this.setState({ recaptchaToken: recaptchaToken });
   }
 
   cancelJobInputEdit() {
@@ -37,7 +48,8 @@ class JobInput extends PureComponent {
       .addNewApplication({
         columnName,
         name: e.target[0].value,
-        title: e.target[1].value
+        title: e.target[1].value,
+        recaptchaToken: this.state.recaptchaToken
       })
       .then(({ ok }) => {
         if (ok) {
@@ -91,6 +103,13 @@ class JobInput extends PureComponent {
             <button className={addJobButtonClass} type="submit">
               Add Job
             </button>
+          </div>
+          <div>
+            <ReCaptcha
+              sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
+              action="add_job"
+              verifyCallback={this.verifyReCaptchaCallback}
+            />
           </div>
         </form>
       </div>
