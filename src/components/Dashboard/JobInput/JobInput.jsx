@@ -1,7 +1,9 @@
 import React, { PureComponent } from "react";
 import { ReCaptcha } from "react-recaptcha-v3";
 import classNames from "classnames";
+import { AutoComplete, Select, Icon, Menu } from "antd";
 
+import { fetchApi } from "../../../utils/api/fetch_api";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
@@ -12,12 +14,14 @@ class JobInput extends PureComponent {
     this.state = {
       companyName: "",
       jobTitle: "",
-      recaptchaToken: ""
+      recaptchaToken: "",
+      autoCompleteData: []
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleAddNewApplication = this.handleAddNewApplication.bind(this);
     this.cancelJobInputEdit = this.cancelJobInputEdit.bind(this);
     this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   verifyReCaptchaCallback(recaptchaToken) {
@@ -26,11 +30,57 @@ class JobInput extends PureComponent {
     this.setState({ recaptchaToken: recaptchaToken });
   }
 
-  cancelJobInputEdit() {
-    this.props.toggleJobInput();
-    this.setState({
-      companyName: "",
-      jobTitle: ""
+  handleSearch(value) {
+    this.setState({ companyName: value });
+    let url =
+      "https://autocomplete.clearbit.com/v1/companies/suggest?query=" + value;
+    let config = {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    fetchApi(url, config).then(response => {
+      if (response.ok) {
+        console.log(response);
+        let bufferList = [];
+        response.json.forEach(company => bufferList.push(company.name));
+        {
+          /*<Select.Option
+              key={Math.random()}
+              value={company.name}
+              style={{ display: "flex", justifyContent: "left" }}
+              onClick={this.onCompanySelect}
+            >
+              <div>
+                <div
+                  style={{
+                    height: "20px",
+                    minWidth: "20px",
+                    maxWidth: "20px",
+                    marginRight: "16px",
+                    overflow: "hidden"
+                  }}
+                >
+                  <img
+                    src={company.logo}
+                    style={{ height: "20px", width: "auto" }}
+                  />
+                </div>
+                <div style={{ maxWidth: "140px", overflow: "hidden" }}>
+                  {company.name.length >= 18
+                    ? company.name.substring(0, 17) + "..."
+                    : company.name}
+                </div>
+              </div>
+          </Select.Option>*/
+        }
+        this.setState({
+          autoCompleteData: bufferList
+        });
+      }
     });
   }
 
@@ -61,6 +111,14 @@ class JobInput extends PureComponent {
       });
   }
 
+  cancelJobInputEdit() {
+    this.props.toggleJobInput();
+    this.setState({
+      companyName: "",
+      jobTitle: ""
+    });
+  }
+
   render() {
     const { showInput, toggleJobInput } = this.props;
 
@@ -69,8 +127,7 @@ class JobInput extends PureComponent {
     const addJobButtonClass = classNames({
       "column-addJob-form-button": true,
       "--addJob": true,
-      "--button-disabled":
-        companyName.trim().length < 1 || jobTitle.trim().length < 1
+      "--button-disabled": companyName.length < 1 || jobTitle.trim().length < 1
     });
     return showInput ? (
       <div>
@@ -78,11 +135,11 @@ class JobInput extends PureComponent {
           className="column-addJob-form"
           onSubmit={this.handleAddNewApplication}
         >
-          <input
-            name="company"
-            className="input-add-job --company"
+          <AutoComplete
+            dataSource={this.state.autoCompleteData}
+            style={{ width: 200 }}
+            onSearch={this.handleSearch}
             placeholder="Company Name"
-            onChange={this.handleInputChange("companyName")}
             value={companyName}
           />
           <input
