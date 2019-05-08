@@ -87,8 +87,9 @@ class MetricsGlobal extends PureComponent {
       recaptcha_token: recaptchaToken,
       action: "metrics_global"
     });
+    postUsersRequest.config.headers.Authorization = this.props.token;
     fetchApi(
-      postUsersRequest.url("verify_recaptcha/"),
+      postUsersRequest.url("verify_recaptcha"),
       postUsersRequest.config
     ).then(response => {
       if (response.ok) {

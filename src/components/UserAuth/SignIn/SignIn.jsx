@@ -66,7 +66,6 @@ class SignInPage extends Component {
       token: "",
       username: "",
       password: "",
-      profilePhotoUrl: "",
       isUserLoggedIn: false,
       isUserAuthenticated: false,
       isAuthenticationChecking: false,
@@ -412,14 +411,12 @@ class SignInPage extends Component {
           </div>
           <div className="social-buttons-container">
             <div>
-              <Link to="/dashboard">
-                <button
-                  className="social-buttons-google"
+              <div className="social-buttons-google">
+                <img
                   onClick={this.handleGoogleSignIn}
-                >
-                  <img src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png" />
-                </button>
-              </Link>
+                  src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
+                />
+              </div>
             </div>
           </div>
         </Form.Item>

@@ -37,7 +37,8 @@ import {
   GET_EMPLOYMENT_AUTHS,
   GET_COMPANIES,
   GET_AGREEMENTS,
-  USERS
+  USERS,
+  POSITIONS
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -568,6 +569,19 @@ export const postUsersRequest = {
 
 export const getUsersRequest = {
   url: USERS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+};
+
+//POSITIONS REQUESTS//
+export const getPositionsRequest = {
+  url: POSITIONS,
   config: {
     method: "GET",
     mode: "cors",

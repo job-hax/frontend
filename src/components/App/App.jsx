@@ -473,13 +473,10 @@ class App extends Component {
               render={() => (
                 <SignIn
                   googleAuth={this.googleAuth}
-                  handleGoogleSignIn={this.handleGoogleSignIn}
-                  generateSignInForm={this.generateSignInForm}
                   passStatesFromSignin={this.passStatesFromSignin}
                   setIsUserLoggedIn={this.setIsUserLoggedIn}
                   setIsUserAuthenticated={this.setIsUserAuthenticated}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
-                  onAuthUpdate={this.onAuthUpdate}
                   alert={this.showAlert}
                 />
               )}
@@ -490,9 +487,11 @@ class App extends Component {
               render={() => (
                 <SignUp
                   googleAuth={this.googleAuth}
-                  handleGoogleSignIn={this.handleGoogleSignIn}
-                  generateSignUpForm={this.generateSignUpForm}
                   alert={this.showAlert}
+                  setIsUserAuthenticated={this.setIsUserAuthenticated}
+                  setIsAuthenticationChecking={this.setIsAuthenticationChecking}
+                  passStatesFromSignin={this.passStatesFromSignin}
+                  setIsUserLoggedIn={this.setIsUserLoggedIn}
                 />
               )}
             />

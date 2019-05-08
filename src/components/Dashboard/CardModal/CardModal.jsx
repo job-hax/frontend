@@ -70,8 +70,9 @@ class CardModal extends PureComponent {
       recaptcha_token: recaptchaToken,
       action: "card_modal"
     });
+    postUsersRequest.config.headers.Authorization = this.props.token;
     fetchApi(
-      postUsersRequest.url("verify_recaptcha/"),
+      postUsersRequest.url("verify_recaptcha"),
       postUsersRequest.config
     ).then(response => {
       if (response.ok) {

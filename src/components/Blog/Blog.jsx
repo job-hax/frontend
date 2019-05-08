@@ -54,8 +54,9 @@ class Blog extends React.Component {
       recaptcha_token: recaptchaToken,
       action: "blog"
     });
+    postUsersRequest.config.headers.Authorization = this.props.token;
     fetchApi(
-      postUsersRequest.url("verify_recaptcha/"),
+      postUsersRequest.url("verify_recaptcha"),
       postUsersRequest.config
     ).then(response => {
       if (response.ok) {

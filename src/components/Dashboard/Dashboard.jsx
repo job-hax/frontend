@@ -72,8 +72,9 @@ class Dashboard extends Component {
       recaptcha_token: recaptchaToken,
       action: "dashboard"
     });
+    postUsersRequest.config.headers.Authorization = this.props.token;
     fetchApi(
-      postUsersRequest.url("verify_recaptcha/"),
+      postUsersRequest.url("verify_recaptcha"),
       postUsersRequest.config
     ).then(response => {
       if (response.ok) {
