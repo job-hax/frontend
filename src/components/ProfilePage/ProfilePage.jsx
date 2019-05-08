@@ -657,7 +657,8 @@ class ProfilePage extends React.Component {
       border: "1px solid rgba(126, 126, 126, 0.4)",
       marginLeft: "36px",
       zIndex: 0,
-      notificationsBoxHeight
+      notificationsBoxHeight,
+      position: "relative"
     };
     console.log("render run! \n data:", this.state.data);
     if (this.state.data.length == 0) {
