@@ -54,6 +54,8 @@
             justify-content: end;
 
             .social-buttons-google {
+                display: flex;
+                justify-content: center;
                 border: none;
                 padding: none;
                 background-color: white;

@@ -25,10 +25,52 @@
             }
         }
 
-        .Loading-buttons-container {
-            padding-top: 16px;
-            border-top: 1px solid;
-            border-color: rgb(200, 176, 223);
+        .social-buttons-container {
+            padding-top: 8px;
+            display: flex;
+            justify-content: end;
+            cursor: default;
+
+            .social-buttons-google {
+                border: none;
+                border-bottom: 1px solid rgba(150, 150, 150, 0.4);
+                padding: 0 0 8px 0;
+                background-color: white;
+                font-family: Exo;
+                cursor: default;
+                color: rgb(38, 18, 104);
+                font-size: 12pt;
+
+                img {
+                    cursor: pointer;
+                    width: 70%;
+                    height: auto;
+                }
+            }
+        }
+
+        .email-button-container {
+            padding: 8px 0 32px 0;
+            display: flex;
+            justify-content: center;
+
+            .email-button {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px;
+                border: 1px solid rgba(200, 200, 200, 0.2);
+                border-radius: 4px;
+                box-shadow: 0px 1px 0px 0 rgba(110, 110, 110, 0.4);
+                width: 184px;
+                height: 36px;
+                background-color: white;
+                text-align: center;
+                font-weight: 500;
+                font-size: 95%;
+                color: rgba(100, 100, 100, 0.9);
+                cursor: pointer;
+            }
         }
     }
 
