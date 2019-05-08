@@ -1,10 +1,15 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { ReCaptcha } from "react-recaptcha-v3";
 import { Form, Input, Icon, Select, Checkbox, Button } from "antd";
 
+import { googleClientId } from "../../../config/config.js";
 import { fetchApi } from "../../../utils/api/fetch_api";
-import { registerUserRequest } from "../../../utils/api/requests.js";
+import {
+  registerUserRequest,
+  authenticateRequest,
+  updateProfilePhotoRequest
+} from "../../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import Footer from "../../Partials/Footer/Footer.jsx";
 
@@ -15,9 +20,12 @@ class SignUpPage extends Component {
     super(props);
 
     this.state = {
+      token: "",
+      isUserLoggedIn: false,
+      isUserAuthenticated: false,
+      isAuthenticationChecking: false,
       confirmDirty: false,
-      isAgreementRead: false,
-      isAgreementDisplaying: false
+      isEmailSignUpRequested: false
     };
 
     this.handleSignUp = this.handleSignUp.bind(this);
@@ -26,6 +34,7 @@ class SignUpPage extends Component {
     this.validateToNextPassword = this.validateToNextPassword.bind(this);
     this.handleConfirmBlur = this.handleConfirmBlur.bind(this);
     this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
+    this.handleGoogleSignIn = this.handleGoogleSignIn.bind(this);
   }
 
   verifyReCaptchaCallback(recaptchaToken) {
@@ -54,6 +63,85 @@ class SignUpPage extends Component {
   handleConfirmBlur(event) {
     const value = event.target.value;
     this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+  }
+
+  handleGoogleSignIn() {
+    window.gapi.load("client:auth2", () => {
+      window.gapi.client
+        .init({
+          clientId: googleClientId,
+          scope: "email https://www.googleapis.com/auth/gmail.readonly"
+        })
+        .then(() => {
+          this.googleAuth = window.gapi.auth2.getAuthInstance();
+          let authenticated = this.googleAuth.isSignedIn.get();
+          this.setState(() => ({ isUserAuthenticated: authenticated }));
+          this.googleAuth.isSignedIn.listen(
+            this.props.setIsUserAuthenticated(this.googleAuth.isSignedIn.get())
+          );
+          this.googleAuth.signIn().then(response => {
+            IS_CONSOLE_LOG_OPEN && console.log("signIn response", response);
+            if (response.Zi.token_type === "Bearer") {
+              IS_CONSOLE_LOG_OPEN &&
+                console.log(
+                  "google access_token:",
+                  response.Zi.access_token,
+                  response,
+                  response.w3.Paa
+                );
+              let photoUrl = response.w3.Paa;
+              const { url, config } = authenticateRequest;
+              config.body.token = this.googleAuth.currentUser
+                .get()
+                .getAuthResponse().access_token;
+              config.body = JSON.stringify(config.body);
+              fetchApi(url, config).then(response => {
+                if (response.ok) {
+                  this.token = `${
+                    response.json.data.token_type
+                  } ${response.json.data.access_token.trim()}`;
+                  this.postGoogleProfilePhoto(photoUrl, this.token);
+                  IS_CONSOLE_LOG_OPEN &&
+                    console.log(
+                      this.token,
+                      "profile updated?",
+                      response.json.data.profile_updated
+                    );
+                  this.props.passStatesFromSignin(
+                    this.token,
+                    true,
+                    response.json.data.profile_updated
+                  );
+                  this.setState({ token: this.token });
+                  this.setState({ isUserLoggedIn: true });
+                  this.props.setIsUserLoggedIn(this.state.isUserLoggedIn);
+                }
+              });
+              this.setState({ isAuthenticationChecking: false });
+              this.props.setIsAuthenticationChecking(
+                this.state.isAuthenticationChecking
+              );
+              config.body = JSON.parse(config.body);
+            }
+          });
+        });
+    });
+  }
+
+  postGoogleProfilePhoto(photoURL, token) {
+    updateProfilePhotoRequest.config.headers.Authorization = token;
+    updateProfilePhotoRequest.config.body = JSON.stringify({
+      photo_url: photoURL
+    });
+    console.log(updateProfilePhotoRequest);
+    fetchApi(
+      updateProfilePhotoRequest.url,
+      updateProfilePhotoRequest.config
+    ).then(response => {
+      if (response.ok) {
+        console.log(response);
+      }
+    });
   }
 
   handleSignUp(event) {
@@ -301,12 +389,45 @@ class SignUpPage extends Component {
     );
   }
 
+  generateSignupOptions() {
+    return (
+      <div>
+        <div>
+          <div className="social-buttons-container">
+            <div>
+              <button className="social-buttons-google">
+                <img
+                  onClick={this.handleGoogleSignIn}
+                  src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
+                />
+              </button>
+            </div>
+          </div>
+          <div className="email-button-container">
+            <div
+              onClick={() => this.setState({ isEmailSignUpRequested: true })}
+              className="email-button"
+            >
+              <Icon type="mail" />
+              Sign Up with E-mail
+            </div>
+          </div>
+        </div>
+        <div style={{ fontSize: "90%" }}>
+          Do you have an account? Go <Link to="/signin">sign in!</Link>
+        </div>
+      </div>
+    );
+  }
+
   generateSignUp() {
     return (
       <div className="sign_up-form-container">
         <div className="content-container">
           <h1>Sign up</h1>
-          {this.generateSignUpForm()}
+          {this.state.isEmailSignUpRequested
+            ? this.generateSignUpForm()
+            : this.generateSignupOptions()}
         </div>
       </div>
     );

@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { AutoComplete, Select, Icon, Menu } from "antd";
 
 import { fetchApi } from "../../../utils/api/fetch_api";
+import { getPositionsRequest } from "../../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
@@ -15,9 +16,10 @@ class JobInput extends PureComponent {
       companyName: "",
       jobTitle: "",
       recaptchaToken: "",
-      autoCompleteData: []
+      autoCompleteCompanyData: [],
+      autoCompletePositionsData: []
     };
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handlePositionsSearch = this.handlePositionsSearch.bind(this);
     this.handleAddNewApplication = this.handleAddNewApplication.bind(this);
     this.cancelJobInputEdit = this.cancelJobInputEdit.bind(this);
     this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
@@ -78,17 +80,29 @@ class JobInput extends PureComponent {
           </Select.Option>*/
         }
         this.setState({
-          autoCompleteData: bufferList
+          autoCompleteCompanyData: bufferList
         });
       }
     });
   }
 
-  handleInputChange(stateKey) {
-    return e =>
-      this.setState({
-        [stateKey]: e.target.value
-      });
+  handlePositionsSearch(value) {
+    this.setState({ jobTitle: value });
+    const { url, config } = getPositionsRequest;
+    let newUrl = url + "?q=" + value + "&count=5";
+    config.headers.Authorization = this.props.token;
+    fetchApi(newUrl, config).then(response => {
+      if (response.ok) {
+        console.log(response.json);
+        let bufferPositionsList = [];
+        response.json.data.forEach(position =>
+          bufferPositionsList.push(position.job_title)
+        );
+        this.setState({
+          autoCompletePositionsData: bufferPositionsList
+        });
+      }
+    });
   }
 
   handleAddNewApplication(e) {
@@ -121,9 +135,7 @@ class JobInput extends PureComponent {
 
   render() {
     const { showInput, toggleJobInput } = this.props;
-
     const { companyName, jobTitle } = this.state;
-
     const addJobButtonClass = classNames({
       "column-addJob-form-button": true,
       "--addJob": true,
@@ -136,17 +148,17 @@ class JobInput extends PureComponent {
           onSubmit={this.handleAddNewApplication}
         >
           <AutoComplete
-            dataSource={this.state.autoCompleteData}
-            style={{ width: 200 }}
+            dataSource={this.state.autoCompleteCompanyData}
+            style={{ width: 200, marginTop: "4px" }}
             onSearch={this.handleSearch}
             placeholder="Company Name"
             value={companyName}
           />
-          <input
-            name="title"
-            className="input-add-job --position"
+          <AutoComplete
+            dataSource={this.state.autoCompletePositionsData}
+            style={{ width: 200, marginTop: "4px" }}
+            onSearch={this.handlePositionsSearch}
             placeholder="Job Title"
-            onChange={this.handleInputChange("jobTitle")}
             value={jobTitle}
           />
           <div className="column-addJob-form-buttons-container">
