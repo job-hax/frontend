@@ -1,6 +1,6 @@
 # JobHax Frontend application
 ![Alt text](https://img.shields.io/github/issues-raw/job-hax/frontend.svg)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/job-hax/frontend.svg?style=plastic)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/job-hax/frontend.svg?style=plastic)
 ![GitHub contributors](https://img.shields.io/github/contributors/job-hax/frontend.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/job-hax/frontend.svg)
 ## Prerequisites
