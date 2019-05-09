@@ -1,5 +1,5 @@
 # JobHax Frontend application
-
+![Alt text](https://img.shields.io/github/issues-raw/job-hax/frontend.svg)
 ## Prerequisites
 1. Download nodejs version 10x:
 	```
