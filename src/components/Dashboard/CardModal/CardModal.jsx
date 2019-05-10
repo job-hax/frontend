@@ -1,13 +1,12 @@
 import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import ModalHeader from "./SubComponents/ModalHeader/ModalHeader.jsx";
 import Notes from "./SubComponents/Notes.jsx";
 import ReviewInput from "./SubComponents/ReviewInput/ReviewInput.jsx";
 import CompanyStats from "../../Partials/CompanyStats/CompanyStats.jsx";
 import Reviews from "../../Companies/Reviews/Reviews.jsx";
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   getReviewsRequest,
   postUsersRequest
@@ -39,55 +38,45 @@ class CardModal extends PureComponent {
     this.toggleReviewEdit = this.toggleReviewEdit.bind(this);
     this.toggleReviewDisplay = this.toggleReviewDisplay.bind(this);
     this.setReview = this.setReview.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
+    postUsersRequest.config.headers.Authorization = this.props.token;
+    axiosCaptcha(
+      postUsersRequest.url("verify_recaptcha"),
+      postUsersRequest.config,
+      "card_modal"
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
+          this.setState({ isUpdating: false });
+          console.log(response, response.data.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
+      }
+    });
     if (this.props.card.companyObject.review_id) {
       let newReviewsUrl =
         getReviewsRequest.url +
         "?review_id=" +
         this.props.card.companyObject.review_id;
       getReviewsRequest.config.headers.Authorization = this.props.token;
-      fetchApi(newReviewsUrl, getReviewsRequest.config).then(response => {
-        if (response.ok) {
-          this.setState({ review: response.json.data });
+      axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
+        if (response.statusText === "OK") {
+          this.setState({ review: response.data.data });
           IS_CONSOLE_LOG_OPEN &&
             console.log(
               "card modal position old review",
-              response.json.data,
+              response.data.data,
               this.state.review
             );
         }
       });
     }
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    postUsersRequest.config["body"] = JSON.stringify({
-      recaptcha_token: recaptchaToken,
-      action: "card_modal"
-    });
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config
-    ).then(response => {
-      if (response.ok) {
-        if (response.json.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.json.error_message
-          );
-        }
-      }
-      postUsersRequest.config["body"] = {};
-    });
   }
 
   toggleReviewEdit() {
@@ -104,14 +93,14 @@ class CardModal extends PureComponent {
         this.props.card.position.id +
         "&all_reviews=true";
       getReviewsRequest.config.headers.Authorization = this.props.token;
-      fetchApi(newReviewsUrl, getReviewsRequest.config).then(response => {
-        if (response.ok) {
-          this.setState({ reviewsList: response.json.data });
+      axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
+        if (response.statusText === "OK") {
+          this.setState({ reviewsList: response.data.data });
           this.setState({ isReviewsDisplaying: true });
           IS_CONSOLE_LOG_OPEN &&
             console.log(
-              "card modal position reviews response json data",
-              response.json.data
+              "card modal position reviews response.data data",
+              response.data.data
             );
         }
       });
@@ -278,13 +267,6 @@ class CardModal extends PureComponent {
               </div>
             </div>
           </section>
-          <div>
-            <ReCaptcha
-              sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-              action="card_modal"
-              verifyCallback={this.verifyReCaptchaCallback}
-            />
-          </div>
         </div>
       </React.Fragment>,
       document.querySelector("#modal")

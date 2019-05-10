@@ -1,10 +1,9 @@
 import React from "react";
 import { Pagination, Input } from "antd";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import CompanyCards from "./CompanyCards/CompanyCards.jsx";
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   getCompaniesRequest,
   postUsersRequest
@@ -33,10 +32,27 @@ class Companies extends React.Component {
     };
 
     this.handlePageChange = this.handlePageChange.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
+    postUsersRequest.config.headers.Authorization = this.props.token;
+    axiosCaptcha(
+      postUsersRequest.url("verify_recaptcha"),
+      postUsersRequest.config,
+      "companies"
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
+          this.setState({ isUpdating: false });
+          console.log(response, response.data.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
+      }
+    });
     this.getData("initialRequest");
   }
 
@@ -55,33 +71,6 @@ class Companies extends React.Component {
         this.setState({ isQueryRequested: false });
       }
     }
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    postUsersRequest.config["body"] = JSON.stringify({
-      recaptcha_token: recaptchaToken,
-      action: "companies"
-    });
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config
-    ).then(response => {
-      if (response.ok) {
-        if (response.json.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.json.error_message
-          );
-        }
-      }
-      postUsersRequest.config["body"] = {};
-    });
   }
 
   getData(requestType) {
@@ -103,30 +92,30 @@ class Companies extends React.Component {
       "&q=" +
       this.state.query;
     config.headers.Authorization = this.props.token;
-    fetchApi(newUrl, config).then(response => {
-      if (response.ok) {
+    axiosCaptcha(newUrl, config).then(response => {
+      if (response.statusText === "OK") {
         if (requestType === "initialRequest") {
           this.setState({
-            companies: response.json,
+            companies: response.data,
             isWaitingResponse: false,
             isInitialRequest: false
           });
         } else if (requestType === "newPageRequest") {
           this.setState({
-            companies: response.json,
+            companies: response.data,
             isWaitingResponse: false,
             isNewPageRequested: false
           });
         } else if (requestType === "queryRequest") {
           this.setState({
-            companies: response.json,
+            companies: response.data,
             isWaitingResponse: false,
             isQueryRequested: false
           });
         }
 
         IS_CONSOLE_LOG_OPEN &&
-          console.log("companies response json data", response.json);
+          console.log("companies response.data data", response.data);
       }
     });
   }
@@ -205,13 +194,6 @@ class Companies extends React.Component {
                 </div>
               </div>
             </div>
-          </div>
-          <div>
-            <ReCaptcha
-              sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-              action="companies"
-              verifyCallback={this.verifyReCaptchaCallback}
-            />
           </div>
           <Footer />
         </div>

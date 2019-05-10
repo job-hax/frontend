@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { ReCaptcha } from "react-recaptcha-v3";
 import { Modal, Form, Input, Icon, Button, Checkbox } from "antd";
 
 import Footer from "../../Partials/Footer/Footer.jsx";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import { googleClientId } from "../../../config/config.js";
 
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   authenticateRequest,
   loginUserRequest,
@@ -20,7 +19,7 @@ import "./style.scss";
 const ForgotPasswordModal = Form.create({ name: "form_in_modal" })(
   class extends React.Component {
     render() {
-      const { visible, onCancel, onCreate, form, verifyReCaptcha } = this.props;
+      const { visible, onCancel, onCreate, form } = this.props;
       const { getFieldDecorator } = form;
       return (
         <div>
@@ -44,13 +43,6 @@ const ForgotPasswordModal = Form.create({ name: "form_in_modal" })(
                 })(<Input />)}
               </Form.Item>
             </Form>
-            <div>
-              <ReCaptcha
-                sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-                action="forgot_password"
-                verifyCallback={verifyReCaptcha}
-              />
-            </div>
           </Modal>
         </div>
       );
@@ -80,22 +72,6 @@ class SignInPage extends Component {
     this.toggleModal = this.toggleModal.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
     this.saveFormRef = this.saveFormRef.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
-    this.verifyForgotPasswordReCaptchaCallback = this.verifyForgotPasswordReCaptchaCallback.bind(
-      this
-    );
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    loginUserRequest.config.body.recaptcha_token = recaptchaToken;
-  }
-
-  verifyForgotPasswordReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    postUsersRequest.config.body = { recaptcha_token: recaptchaToken };
   }
 
   toggleModal() {
@@ -109,16 +85,14 @@ class SignInPage extends Component {
         return;
       }
       console.log("Received values of form: ", values);
-      postUsersRequest.config.body["username"] = values.username;
-      postUsersRequest.config.body = JSON.stringify(
-        postUsersRequest.config.body
-      );
-      fetchApi(
+      postUsersRequest.config["body"] = { username: values.username };
+      axiosCaptcha(
         postUsersRequest.url("forgot_password"),
-        postUsersRequest.config
+        postUsersRequest.config,
+        "forgot_password"
       ).then(response => {
-        if (response.ok) {
-          if (response.json.success === true) {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
             this.toggleModal();
             this.props.alert(
               5000,
@@ -129,13 +103,12 @@ class SignInPage extends Component {
             this.props.alert(
               5000,
               "error",
-              "Error: " + response.json.error_message
+              "Error: " + response.data.error_message
             );
           }
         } else {
           this.props.alert(5000, "error", "Something went wrong!");
         }
-        postUsersRequest.config.body = {};
       });
       form.resetFields();
     });
@@ -147,14 +120,14 @@ class SignInPage extends Component {
 
   postUser(type) {
     if (type === "generate_activation_code") {
-      postUsersRequest.config.body = JSON.stringify({
+      postUsersRequest.config.body = {
         username: this.state.username,
         password: this.state.password
-      });
-      fetchApi(postUsersRequest.url(type), postUsersRequest.config).then(
+      };
+      axiosCaptcha(postUsersRequest.url(type), postUsersRequest.config).then(
         response => {
-          if (response.ok) {
-            if (response.json.success === true) {
+          if (response.statusText === "OK") {
+            if (response.data.success === true) {
               this.setState({
                 isVerificationReSendDisplaying: false,
                 username: "",
@@ -169,7 +142,7 @@ class SignInPage extends Component {
               this.props.alert(
                 5000,
                 "error",
-                "Error: " + response.json.error_message
+                "Error: " + response.data.error_message
               );
             }
           } else {
@@ -185,51 +158,48 @@ class SignInPage extends Component {
     event.preventDefault();
     loginUserRequest.config.body.username = event.target[0].value;
     loginUserRequest.config.body.password = event.target[1].value;
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("handle sign in config body", loginUserRequest.config.body);
-    loginUserRequest.config.body = JSON.stringify(loginUserRequest.config.body);
-    fetchApi(loginUserRequest.url, loginUserRequest.config).then(response => {
-      if (response.ok) {
-        if (response.json.success === true) {
-          this.token = `${
-            response.json.data.token_type
-          } ${response.json.data.access_token.trim()}`;
-          IS_CONSOLE_LOG_OPEN && console.log(this.token);
-          this.setState({
-            token: this.token
-          });
-          this.props.passStatesFromSignin(
-            this.token,
-            true,
-            response.json.data.profile_updated
-          );
-          this.setState({
-            isUserLoggedIn: true,
-            isAuthenticationChecking: false
-          });
-          this.props.setIsUserLoggedIn(true);
-          this.props.setIsAuthenticationChecking(false);
-        } else {
-          if (response.json.error_code === 13) {
+    axiosCaptcha(loginUserRequest.url, loginUserRequest.config, "signin").then(
+      response => {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            this.token = `${
+              response.data.data.token_type
+            } ${response.data.data.access_token.trim()}`;
+            IS_CONSOLE_LOG_OPEN && console.log(this.token);
             this.setState({
-              isVerificationReSendDisplaying: true,
-              username: loginUserRequest.config.body.username,
-              password: loginUserRequest.config.body.password
+              token: this.token
             });
-          } else {
-            console.log(response, response.json.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.json.error_message
+            this.props.passStatesFromSignin(
+              this.token,
+              true,
+              response.data.data.profile_updated
             );
+            this.setState({
+              isUserLoggedIn: true,
+              isAuthenticationChecking: false
+            });
+            this.props.setIsUserLoggedIn(true);
+            this.props.setIsAuthenticationChecking(false);
+          } else {
+            if (response.data.error_code === 13) {
+              this.setState({
+                isVerificationReSendDisplaying: true,
+                username: loginUserRequest.config.body.username,
+                password: loginUserRequest.config.body.password
+              });
+            } else {
+              this.props.alert(
+                5000,
+                "error",
+                "Error: " + response.data.error_message
+              );
+            }
           }
+        } else {
+          this.props.alert(5000, "error", "Something went wrong!");
         }
-      } else {
-        this.props.alert(5000, "error", "Something went wrong!");
       }
-    });
-    loginUserRequest.config.body = JSON.parse(loginUserRequest.config.body);
+    );
   }
 
   handleGoogleSignIn() {
@@ -261,23 +231,22 @@ class SignInPage extends Component {
               config.body.token = this.googleAuth.currentUser
                 .get()
                 .getAuthResponse().access_token;
-              config.body = JSON.stringify(config.body);
-              fetchApi(url, config).then(response => {
-                if (response.ok) {
+              axiosCaptcha(url, config, "signin").then(response => {
+                if (response.statusText === "OK") {
                   this.token = `${
-                    response.json.data.token_type
-                  } ${response.json.data.access_token.trim()}`;
+                    response.data.data.token_type
+                  } ${response.data.data.access_token.trim()}`;
                   this.postGoogleProfilePhoto(photoUrl, this.token);
                   IS_CONSOLE_LOG_OPEN &&
                     console.log(
                       this.token,
                       "profile updated?",
-                      response.json.data.profile_updated
+                      response.data.data.profile_updated
                     );
                   this.props.passStatesFromSignin(
                     this.token,
                     true,
-                    response.json.data.profile_updated
+                    response.data.data.profile_updated
                   );
                   this.setState({ token: this.token });
                   this.setState({ isUserLoggedIn: true });
@@ -288,7 +257,6 @@ class SignInPage extends Component {
               this.props.setIsAuthenticationChecking(
                 this.state.isAuthenticationChecking
               );
-              config.body = JSON.parse(config.body);
             }
           });
         });
@@ -297,15 +265,15 @@ class SignInPage extends Component {
 
   postGoogleProfilePhoto(photoURL, token) {
     updateProfilePhotoRequest.config.headers.Authorization = token;
-    updateProfilePhotoRequest.config.body = JSON.stringify({
+    updateProfilePhotoRequest.config.body = {
       photo_url: photoURL
-    });
+    };
     console.log(updateProfilePhotoRequest);
-    fetchApi(
+    axiosCaptcha(
       updateProfilePhotoRequest.url,
       updateProfilePhotoRequest.config
     ).then(response => {
-      if (response.ok) {
+      if (response.statusText === "OK") {
         console.log(response);
       }
     });
@@ -377,7 +345,6 @@ class SignInPage extends Component {
               visible={this.state.showModal}
               onCancel={this.toggleModal}
               onCreate={this.handleCreate}
-              verifyReCaptcha={this.verifyForgotPasswordReCaptchaCallback}
             />
           </div>
           {this.state.isVerificationReSendDisplaying && (
@@ -388,13 +355,6 @@ class SignInPage extends Component {
               <a> Resend activation email? </a>
             </div>
           )}
-          <div>
-            <ReCaptcha
-              sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-              action="signin"
-              verifyCallback={this.verifyReCaptchaCallback}
-            />
-          </div>
           <Button
             type="primary"
             htmlType="submit"

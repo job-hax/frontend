@@ -56,17 +56,19 @@
             .social-buttons-google {
                 display: flex;
                 justify-content: center;
+                width: 288px;
                 border: none;
                 padding: none;
                 background-color: white;
-                cursor: pointer;
+                cursor: default;
                 font-family: Exo;
                 color: rgb(38, 18, 104);
                 font-size: 12pt;
 
                 img {
-                    width: 70%;
-                    height: auto;
+                    cursor: pointer;
+                    width: 186px;
+                    height: 42px;
                 }
             }
         }

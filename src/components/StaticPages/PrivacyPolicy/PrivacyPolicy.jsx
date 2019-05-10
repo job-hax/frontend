@@ -3,7 +3,7 @@ import Footer from "../../Partials/Footer/Footer.jsx";
 import { Link } from "react-router-dom";
 import parse from "html-react-parser";
 
-import { fetchApi } from "../../../utils/api/fetch_api.js";
+import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
 import { getAgreementsRequest } from "../../../utils/api/requests.js";
 
 import "./style.scss";
@@ -19,9 +19,9 @@ class PrivacyPolicy extends Component {
 
   componentDidMount() {
     const { url, config } = getAgreementsRequest;
-    fetchApi(url, config).then(response => {
-      if (response.ok) {
-        this.setState({ privacy_policy: response.json.data.privacy });
+    axiosCaptcha(url, config).then(response => {
+      if (response.statusText === "OK") {
+        this.setState({ privacy_policy: response.data.data.privacy });
       }
     });
   }

@@ -1,9 +1,8 @@
 import React from "react";
 import { Rate, Modal } from "antd";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import { feedbackRequest } from "../../../utils/api/requests.js";
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
@@ -33,7 +32,6 @@ class FeedBack extends React.Component {
   verifyReCaptchaCallback(recaptchaToken) {
     IS_CONSOLE_LOG_OPEN &&
       console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    this.body["recaptcha_token"] = recaptchaToken;
   }
 
   showModal() {
@@ -42,45 +40,48 @@ class FeedBack extends React.Component {
     });
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
     feedbackRequest.config.headers.Authorization = this.props.token;
     if (event.target[0].value.trim() != (null || "")) {
       this.body["text"] = this.state.textValue.trim();
     }
-    feedbackRequest.config.body = JSON.stringify(this.body);
+    feedbackRequest.config.body = this.body;
     console.log(feedbackRequest.config.body);
-    fetchApi(feedbackRequest.url, feedbackRequest.config).then(response => {
-      if (response.ok) {
-        if (response.json.success === true) {
-          this.setState({ textValue: "" });
-          this.props.alert(
-            2000,
-            "success",
-            "Your feedback has been submitted successfully!"
-          );
-        } else {
-          this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.json.error_message
-          );
-        }
+    const response = await axiosCaptcha(
+      feedbackRequest.url,
+      feedbackRequest.config,
+      "feedback"
+    );
+    if (response.statusText === "OK") {
+      if (response.data.success === true) {
+        this.setState({ textValue: "" });
+        this.props.alert(
+          2000,
+          "success",
+          "Your feedback has been submitted successfully!"
+        );
       } else {
         this.setState({ isUpdating: false });
-        if (response.json === 500) {
-          this.props.alert(
-            5000,
-            "error",
-            "You have to fill the all feedback form!"
-          );
-        } else {
-          this.props.alert(5000, "error", "Something went wrong!");
-        }
+        console.log(response, response.data.error_message);
+        this.props.alert(
+          5000,
+          "error",
+          "Error: " + response.data.error_message
+        );
       }
-    });
+    } else {
+      this.setState({ isUpdating: false });
+      if (response.data === 500) {
+        this.props.alert(
+          5000,
+          "error",
+          "You have to fill the all feedback form!"
+        );
+      } else {
+        this.props.alert(5000, "error", "Something went wrong!");
+      }
+    }
     this.body = {};
     this.setState({ value: null });
   }
@@ -208,13 +209,6 @@ class FeedBack extends React.Component {
                   Submit
                 </button>
               </div>
-            </div>
-            <div>
-              <ReCaptcha
-                sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-                action="feedback"
-                verifyCallback={this.verifyReCaptchaCallback}
-              />
             </div>
           </form>
         </Modal>

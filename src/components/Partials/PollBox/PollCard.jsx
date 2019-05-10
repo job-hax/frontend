@@ -2,7 +2,7 @@ import React from "react";
 
 import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
 import { votePollRequest } from "../../../utils/api/requests.js";
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 
 import "./style.scss";
 
@@ -24,19 +24,19 @@ class PollCard extends React.Component {
     const urlFunction = votePollRequest.url;
     votePollRequest.url = votePollRequest.url(event.target.id);
     votePollRequest.config.headers.Authorization = this.props.token;
-    votePollRequest.config.body = JSON.stringify({
+    votePollRequest.config.body = {
       item_id: this.state.selectedAnswer
-    });
+    };
     console.log(votePollRequest);
-    fetchApi(votePollRequest.url, votePollRequest.config).then(response => {
+    axiosCaptcha(votePollRequest.url, votePollRequest.config).then(response => {
       votePollRequest.url = urlFunction;
-      if (response.ok) {
+      if (response.statusText === "OK") {
         console.log(response);
-        if (response.json.success == false) {
+        if (response.data.success == false) {
           this.props.alert(
             5000,
             "error",
-            "Error: " + response.json.error_message
+            "Error: " + response.data.error_message
           );
         } else {
           this.setState({ isPollSubmitted: true });

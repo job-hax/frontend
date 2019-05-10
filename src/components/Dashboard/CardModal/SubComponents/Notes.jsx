@@ -1,8 +1,7 @@
 import React from "react";
 import classNames from "classnames";
-import { ReCaptcha } from "react-recaptcha-v3";
 
-import { fetchApi } from "../../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../../utils/api/fetch_api";
 import {
   updateNoteRequest,
   addNoteRequest,
@@ -37,31 +36,20 @@ class Notes extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.addNote = this.addNote.bind(this);
     this.saveNotes = this.saveNotes.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
     this.getNotes();
   }
 
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    this.setState({ recaptchaToken: recaptchaToken });
-  }
-
   getNotes() {
     const { card, token } = this.props;
     let { url, config } = getNotesRequest;
     url = url + "?jopapp_id=" + card.id;
-    IS_CONSOLE_LOG_OPEN && console.log("URL with params\n", url);
-    IS_CONSOLE_LOG_OPEN && console.log("token\n", token);
     config.headers.Authorization = token;
-    fetchApi(url, config).then(response => {
-      if (response.ok) {
-        this.notes = response.json.data.reverse();
-        IS_CONSOLE_LOG_OPEN &&
-          console.log("getNotes.response.json.data\n", this.notes);
+    axiosCaptcha(url, config).then(response => {
+      if (response.statusText === "OK") {
+        this.notes = response.data.data.reverse();
         this.setState({
           notes: this.notes
         });
@@ -141,25 +129,23 @@ class Notes extends React.Component {
       this.currentNote == null
         ? {
             jobapp_id: card.id,
-            description: addNoteForm,
-            recaptcha_token: this.state.recaptchaToken
+            description: addNoteForm
           }
         : {
             jobapp_note_id: this.currentNote.id,
-            description: updateNoteForm,
-            recaptcha_token: this.state.recaptchaToken
+            description: updateNoteForm
           };
     let { url, config } =
       this.currentNote == null ? addNoteRequest : updateNoteRequest;
     IS_CONSOLE_LOG_OPEN && console.log("request body\n", reqBody);
     config.headers.Authorization = token;
-    config.body = JSON.stringify(reqBody);
-    fetchApi(url, config)
+    config.body = reqBody;
+    axiosCaptcha(url, config, "jobapp_note")
       .catch(error => console.error(error))
       .then(response => {
-        IS_CONSOLE_LOG_OPEN && console.log("response json\n", response.json);
-        if (response.ok) {
-          this.saveNotes(response.json.data, reqBody, this.currentNote);
+        IS_CONSOLE_LOG_OPEN && console.log("response.data\n", response.data);
+        if (response.statusText === "OK") {
+          this.saveNotes(response.data.data, reqBody, this.currentNote);
         }
       });
   }
@@ -172,10 +158,10 @@ class Notes extends React.Component {
     let { url, config } = deleteNoteRequest;
     config.headers.Authorization = token;
     IS_CONSOLE_LOG_OPEN && console.log("delete request body\n", body);
-    config.body = JSON.stringify(body);
-    fetchApi(url, config).then(response => {
+    config.body = body;
+    axiosCaptcha(url, config).then(response => {
       IS_CONSOLE_LOG_OPEN && console.log("delete request response\n", response);
-      if (response.ok) {
+      if (response.statusText === "OK") {
         this.getNotes();
       }
     });
@@ -365,18 +351,7 @@ class Notes extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        {this.generateNotes()}
-        <div>
-          <ReCaptcha
-            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-            action="jobapp_note"
-            verifyCallback={this.verifyReCaptchaCallback}
-          />
-        </div>
-      </div>
-    );
+    return <div>{this.generateNotes()}</div>;
   }
 }
 

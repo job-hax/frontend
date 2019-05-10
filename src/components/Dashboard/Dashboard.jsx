@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import Column from "./Column/Column.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   addJobAppsRequest,
   getJobAppsRequest,
@@ -54,42 +53,32 @@ class Dashboard extends Component {
     this.addNewApplication = this.addNewApplication.bind(this);
     this.deleteJobFromList = this.deleteJobFromList.bind(this);
     this.moveToRejected = this.moveToRejected.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
+    postUsersRequest.config.headers.Authorization = this.props.token;
+    axiosCaptcha(
+      postUsersRequest.url("verify_recaptcha"),
+      postUsersRequest.config,
+      "dashboard"
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
+          this.setState({ isUpdating: false });
+          console.log(response.data.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
+      }
+    });
     this.getData();
   }
 
   componentDidUpdate() {
     this.getData();
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    postUsersRequest.config["body"] = JSON.stringify({
-      recaptcha_token: recaptchaToken,
-      action: "dashboard"
-    });
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config
-    ).then(response => {
-      if (response.ok) {
-        if (response.json.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.json.error_message
-          );
-        }
-      }
-      postUsersRequest.config["body"] = {};
-    });
   }
 
   getData() {
@@ -105,23 +94,23 @@ class Dashboard extends Component {
       if (this.props.active) {
         const { url, config } = syncUserEmailsRequest;
         config.headers.Authorization = this.props.token;
-        fetchApi(url, config)
+        axiosCaptcha(url, config)
           .then(response => {
             return {
-              ok: response.ok
+              ok: response.statusText === "OK"
             };
           })
           .then(({ ok }) => {
             const { url, config } = getJobAppsRequest;
             config.headers.Authorization = this.props.token;
-            fetchApi(url, config).then(response => {
-              if (response.ok) {
-                this.sortJobApplications(response.json.data);
+            axiosCaptcha(url, config).then(response => {
+              if (response.statusText === "OK") {
+                this.sortJobApplications(response.data.data);
                 this.setState({ isWaitingResponse: false });
                 IS_CONSOLE_LOG_OPEN &&
                   console.log(
-                    "dashboard response json data",
-                    response.json.data
+                    "dashboard response.data data",
+                    response.data.data
                   );
               }
             });
@@ -197,15 +186,15 @@ class Dashboard extends Component {
     insertedItemColumn.unshift(card);
 
     let { url, config } = updateJobStatusRequest;
-    config.body = JSON.stringify({
+    config.body = {
       jobapp_id: card.id,
       status_id: card.applicationStatus.id,
       rejected: false
-    });
+    };
     config.headers.Authorization = this.props.token;
 
-    fetchApi(url, config).then(response => {
-      if (response.ok) {
+    axiosCaptcha(url, config).then(response => {
+      if (response.statusText === "OK") {
         this.setState(() => ({
           [dragColumnName]: removedItemColumn,
           [dropColumnName]: insertedItemColumn
@@ -214,23 +203,22 @@ class Dashboard extends Component {
     });
   }
 
-  addNewApplication({ name, title, columnName, recaptchaToken }) {
+  addNewApplication({ name, title, columnName }) {
     return new Promise(resolve => {
       const { url, config } = addJobAppsRequest;
       config.headers.Authorization = this.props.token;
-      config.body = JSON.stringify({
+      config.body = {
         job_title: title,
         status_id: UPDATE_APPLICATION_STATUS[columnName].id,
         company: name,
         application_date: generateCurrentDate(),
-        source: "N/A",
-        recaptcha_token: recaptchaToken
-      });
+        source: "N/A"
+      };
 
-      fetchApi(url, config).then(response => {
-        if (response.ok) {
+      axiosCaptcha(url, config, "add_job").then(response => {
+        if (response.statusText === "OK") {
           let insertedItemColumn = this.state[columnName].slice();
-          insertedItemColumn.unshift(response.json.data);
+          insertedItemColumn.unshift(response.data.data);
 
           this.setState(() => ({
             [columnName]: insertedItemColumn
@@ -380,13 +368,6 @@ class Dashboard extends Component {
             token={this.props.token}
             isLastColumn={true}
             alert={this.props.alert}
-          />
-        </div>
-        <div>
-          <ReCaptcha
-            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-            action="dashboard"
-            verifyCallback={this.verifyReCaptchaCallback}
           />
         </div>
       </div>
