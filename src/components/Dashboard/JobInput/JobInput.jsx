@@ -1,11 +1,9 @@
 import React, { PureComponent } from "react";
-import { ReCaptcha } from "react-recaptcha-v3";
 import classNames from "classnames";
 import { AutoComplete, Select, Icon, Menu } from "antd";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { getPositionsRequest } from "../../../utils/api/requests.js";
-import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
 
@@ -15,21 +13,13 @@ class JobInput extends PureComponent {
     this.state = {
       companyName: "",
       jobTitle: "",
-      recaptchaToken: "",
       autoCompleteCompanyData: [],
       autoCompletePositionsData: []
     };
     this.handlePositionsSearch = this.handlePositionsSearch.bind(this);
     this.handleAddNewApplication = this.handleAddNewApplication.bind(this);
     this.cancelJobInputEdit = this.cancelJobInputEdit.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    this.setState({ recaptchaToken: recaptchaToken });
   }
 
   handleSearch(value) {
@@ -112,8 +102,7 @@ class JobInput extends PureComponent {
       .addNewApplication({
         columnName,
         name: e.target[0].value,
-        title: e.target[1].value,
-        recaptchaToken: this.state.recaptchaToken
+        title: e.target[1].value
       })
       .then(({ ok }) => {
         if (ok) {
@@ -173,13 +162,6 @@ class JobInput extends PureComponent {
             <button className={addJobButtonClass} type="submit">
               Add Job
             </button>
-          </div>
-          <div>
-            <ReCaptcha
-              sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-              action="add_job"
-              verifyCallback={this.verifyReCaptchaCallback}
-            />
           </div>
         </form>
       </div>

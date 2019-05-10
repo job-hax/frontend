@@ -35,7 +35,7 @@ class MoveOptions extends React.Component {
     let { url, config } = deleteJobRequest;
     config.headers.Authorization = token;
     IS_CONSOLE_LOG_OPEN && console.log("delete job request body\n", body);
-    config.body = JSON.stringify(body);
+    config.body = body;
     axiosCaptcha(url, config).then(response => {
       IS_CONSOLE_LOG_OPEN &&
         console.log("delete job request response\n", response, card);
@@ -58,7 +58,7 @@ class MoveOptions extends React.Component {
     config.headers.Authorization = token;
     IS_CONSOLE_LOG_OPEN &&
       console.log("update to rejected request body\n", body);
-    config.body = JSON.stringify(body);
+    config.body = body;
     axiosCaptcha(url, config).then(response => {
       IS_CONSOLE_LOG_OPEN &&
         console.log("update to rejected request response\n", response, card);

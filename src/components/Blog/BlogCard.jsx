@@ -1,6 +1,5 @@
 import React from "react";
 import { Icon } from "antd";
-import { ReCaptcha } from "react-recaptcha-v3";
 import parse from "html-react-parser";
 
 import { axiosCaptcha } from "../../utils/api/fetch_api";
@@ -26,7 +25,6 @@ class BlogCard extends React.Component {
 
     this.getBlogDetail = this.getBlogDetail.bind(this);
     this.postBlogStats = this.postBlogStats.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
@@ -34,14 +32,6 @@ class BlogCard extends React.Component {
       viewCount: this.props.viewCount,
       upVote: this.props.upVote,
       downVote: this.props.downVote
-    });
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    postBlogRequest.config["body"] = JSON.stringify({
-      recaptcha_token: recaptchaToken
     });
   }
 
@@ -76,37 +66,39 @@ class BlogCard extends React.Component {
   postBlogStats(type) {
     postBlogRequest.config.headers.Authorization = this.props.token;
     let newUrl = postBlogRequest.url(this.props.id) + "/" + type + "/";
-    axiosCaptcha(newUrl, postBlogRequest.config).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success === true) {
-          IS_CONSOLE_LOG_OPEN && console.log(response.data);
-          if (type === "upvote") {
-            this.setState({
-              upVote: response.data.data.upvote,
-              downVote: response.data.data.downvote
-            });
-          }
-          if (type === "downvote") {
-            this.setState({
-              upVote: response.data.data.upvote,
-              downVote: response.data.data.downvote
-            });
-          }
-          if (type === "view") {
-            this.setState({ viewCount: this.state.viewCount + 1 });
+    axiosCaptcha(newUrl, postBlogRequest.config, "blog_stats").then(
+      response => {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            IS_CONSOLE_LOG_OPEN && console.log(response.data);
+            if (type === "upvote") {
+              this.setState({
+                upVote: response.data.data.upvote,
+                downVote: response.data.data.downvote
+              });
+            }
+            if (type === "downvote") {
+              this.setState({
+                upVote: response.data.data.upvote,
+                downVote: response.data.data.downvote
+              });
+            }
+            if (type === "view") {
+              this.setState({ viewCount: this.state.viewCount + 1 });
+            }
+          } else {
+            console.log(response, response.data.error_message);
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
           }
         } else {
-          console.log(response, response.data.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
+          this.props.alert(5000, "error", "Something went wrong!");
         }
-      } else {
-        this.props.alert(5000, "error", "Something went wrong!");
       }
-    });
+    );
   }
 
   handleSeeMore() {
@@ -178,13 +170,6 @@ class BlogCard extends React.Component {
             {parse(`${this.state.blog.content}`)}
           </div>
         )}
-        <div>
-          <ReCaptcha
-            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-            action="blog_stats"
-            verifyCallback={this.verifyReCaptchaCallback}
-          />
-        </div>
       </div>
     );
   }

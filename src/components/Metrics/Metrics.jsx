@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import DropDownSelector from "../Partials/DropDown/DropDownSelector.jsx";
@@ -52,28 +51,14 @@ class Metrics extends PureComponent {
     this.currentMonthsOfLastYear = [];
 
     this.graphSelector = this.graphSelector.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
-    this.getData();
-  }
-
-  componentDidUpdate() {
-    this.getData();
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    postUsersRequest.config["body"] = JSON.stringify({
-      recaptcha_token: recaptchaToken,
-      action: "metrics"
-    });
     postUsersRequest.config.headers.Authorization = this.props.token;
     axiosCaptcha(
       postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config
+      postUsersRequest.config,
+      "metrics"
     ).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success != true) {
@@ -86,8 +71,12 @@ class Metrics extends PureComponent {
           );
         }
       }
-      postUsersRequest.config["body"] = {};
     });
+    this.getData();
+  }
+
+  componentDidUpdate() {
+    this.getData();
   }
 
   getData() {
@@ -252,13 +241,6 @@ class Metrics extends PureComponent {
           xData={this.state.countByJobtitleAndStatusesRequest.jobs}
           series={this.state.countByJobtitleAndStatusesRequest.data}
         />
-        <div>
-          <ReCaptcha
-            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-            action="metrics"
-            verifyCallback={this.verifyReCaptchaCallback}
-          />
-        </div>
       </div>
     );
   }

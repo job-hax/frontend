@@ -1,6 +1,5 @@
 import React from "react";
 import { Rate, Select, Radio, Checkbox } from "antd";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import { axiosCaptcha } from "../../../../../utils/api/fetch_api.js";
 import {
@@ -9,7 +8,6 @@ import {
   getEmploymentStatusesRequest,
   getEmploymentAuthsRequest
 } from "../../../../../utils/api/requests.js";
-import { IS_CONSOLE_LOG_OPEN } from "../../../../../utils/constants/constants.js";
 
 import "./style.scss";
 import "../../../../../assets/libraryScss/antd-scss/antd.scss";
@@ -81,7 +79,6 @@ class ReviewInput extends React.Component {
     this.handleInterviewDifficultyChange = this.handleInterviewDifficultyChange.bind(
       this
     );
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
@@ -177,47 +174,43 @@ class ReviewInput extends React.Component {
     });
   }
 
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    this.body["recaptcha_token"] = recaptchaToken;
-  }
-
   handleSubmit(event) {
     event.preventDefault();
     this.props.toggleReview();
     reviewSubmitRequest.config.headers.Authorization = this.props.token;
-    reviewSubmitRequest.config.body = JSON.stringify(this.body);
+    reviewSubmitRequest.config.body = this.body;
     console.log(
       "reviewSubmitRequest.config.body",
       reviewSubmitRequest.config.body
     );
-    axiosCaptcha(reviewSubmitRequest.url, reviewSubmitRequest.config).then(
-      response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            console.log("reviewSubmitRequest response", response.data.data);
-            this.props.setCompany(response.data.data.company);
-            this.props.setReview(response.data.data.review);
-            this.props.alert(
-              5000,
-              "success",
-              "Your review has saved successfully!"
-            );
-          } else {
-            this.setState({ isUpdating: false });
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
-          }
+    axiosCaptcha(
+      reviewSubmitRequest.url,
+      reviewSubmitRequest.config,
+      "review"
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          console.log("reviewSubmitRequest response", response.data.data);
+          this.props.setCompany(response.data.data.company);
+          this.props.setReview(response.data.data.review);
+          this.props.alert(
+            5000,
+            "success",
+            "Your review has saved successfully!"
+          );
         } else {
           this.setState({ isUpdating: false });
-          this.props.alert(5000, "error", "Something went wrong!");
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
         }
+      } else {
+        this.setState({ isUpdating: false });
+        this.props.alert(5000, "error", "Something went wrong!");
       }
-    );
+    });
     this.body = {
       company_id: this.props.card.companyObject.id,
       position_id: this.props.card.position.id,
@@ -487,18 +480,7 @@ class ReviewInput extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        {this.generateReviewForm()}
-        <div>
-          <ReCaptcha
-            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-            action="review"
-            verifyCallback={this.verifyReCaptchaCallback}
-          />
-        </div>
-      </div>
-    );
+    return <div>{this.generateReviewForm()}</div>;
   }
 }
 

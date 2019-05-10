@@ -1,6 +1,5 @@
 import React from "react";
 import { Rate, Modal } from "antd";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import { feedbackRequest } from "../../../utils/api/requests.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
@@ -33,7 +32,6 @@ class FeedBack extends React.Component {
   verifyReCaptchaCallback(recaptchaToken) {
     IS_CONSOLE_LOG_OPEN &&
       console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    this.body["recaptcha_token"] = recaptchaToken;
   }
 
   showModal() {
@@ -48,11 +46,12 @@ class FeedBack extends React.Component {
     if (event.target[0].value.trim() != (null || "")) {
       this.body["text"] = this.state.textValue.trim();
     }
-    feedbackRequest.config.body = JSON.stringify(this.body);
+    feedbackRequest.config.body = this.body;
     console.log(feedbackRequest.config.body);
     const response = await axiosCaptcha(
       feedbackRequest.url,
-      feedbackRequest.config
+      feedbackRequest.config,
+      "feedback"
     );
     if (response.statusText === "OK") {
       if (response.data.success === true) {
@@ -210,13 +209,6 @@ class FeedBack extends React.Component {
                   Submit
                 </button>
               </div>
-            </div>
-            <div>
-              <ReCaptcha
-                sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-                action="feedback"
-                verifyCallback={this.verifyReCaptchaCallback}
-              />
             </div>
           </form>
         </Modal>
