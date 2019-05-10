@@ -8,7 +8,6 @@ import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   addJobAppsRequest,
   getJobAppsRequest,
-  syncUserEmailsRequest,
   updateJobStatusRequest,
   postUsersRequest
 } from "../../utils/api/requests.js";
@@ -92,29 +91,16 @@ class Dashboard extends Component {
         "\ndashboard active?",
         this.props.active;
       if (this.props.active) {
-        const { url, config } = syncUserEmailsRequest;
+        const { url, config } = getJobAppsRequest;
         config.headers.Authorization = this.props.token;
-        axiosCaptcha(url, config)
-          .then(response => {
-            return {
-              ok: response.statusText === "OK"
-            };
-          })
-          .then(({ ok }) => {
-            const { url, config } = getJobAppsRequest;
-            config.headers.Authorization = this.props.token;
-            axiosCaptcha(url, config).then(response => {
-              if (response.statusText === "OK") {
-                this.sortJobApplications(response.data.data);
-                this.setState({ isWaitingResponse: false });
-                IS_CONSOLE_LOG_OPEN &&
-                  console.log(
-                    "dashboard response.data data",
-                    response.data.data
-                  );
-              }
-            });
-          });
+        axiosCaptcha(url, config).then(response => {
+          if (response.statusText === "OK") {
+            this.sortJobApplications(response.data.data);
+            this.setState({ isWaitingResponse: false });
+            IS_CONSOLE_LOG_OPEN &&
+              console.log("dashboard response.data data", response.data.data);
+          }
+        });
       }
     }
   }
