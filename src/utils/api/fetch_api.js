@@ -1,20 +1,18 @@
 import axios from "axios";
 
+import { reCaptchaV3SiteKey } from "../../config/config.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 
 const script = document.createElement("script");
-script.src = `https://www.google.com/recaptcha/api.js?render=6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY`;
+script.src = `https://www.google.com/recaptcha/api.js?render=${reCaptchaV3SiteKey}`;
 document.body.appendChild(script);
 
 function reCaptchaToken(action) {
   return new Promise(resolve => {
     grecaptcha.ready(async () => {
-      const token = await grecaptcha.execute(
-        "6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY",
-        {
-          action: action
-        }
-      );
+      const token = await grecaptcha.execute(reCaptchaV3SiteKey, {
+        action: action
+      });
       resolve(token);
     });
   });
