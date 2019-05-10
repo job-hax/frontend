@@ -50,7 +50,7 @@ export const authenticateRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     },
     body: {
       client_id: jobHaxClientId,
@@ -67,7 +67,7 @@ export const getJobAppsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -79,7 +79,7 @@ export const addJobAppsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -91,7 +91,7 @@ export const syncUserEmailsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -103,7 +103,7 @@ export const updateJobStatusRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -115,7 +115,7 @@ export const loginUserRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     },
     body: {
       client_id: jobHaxClientId,
@@ -131,7 +131,7 @@ export const registerUserRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     },
     body: {
       client_id: jobHaxClientId,
@@ -147,7 +147,7 @@ export const logOutUserRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     },
     body: {
       client_id: jobHaxClientId,
@@ -165,7 +165,7 @@ export const getTotalAppsCountRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -177,7 +177,7 @@ export const getAppsCountByMonthRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -189,7 +189,7 @@ export const getAppsCountByMonthWithTotalRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -201,7 +201,7 @@ export const getCountByStatusesRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -213,7 +213,7 @@ export const getCountByJobtitleAndStatusesRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -225,7 +225,7 @@ export const getWordCountRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -237,7 +237,7 @@ export const getTrendingRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -249,7 +249,7 @@ export const getStatisticsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -261,7 +261,7 @@ export const getMonthlyApplicationCountRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -274,7 +274,7 @@ export const updateNoteRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -286,7 +286,7 @@ export const addNoteRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -298,7 +298,7 @@ export const deleteNoteRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -310,7 +310,7 @@ export const getNotesRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -322,7 +322,7 @@ export const deleteJobRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -335,7 +335,7 @@ export const getPollRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -347,7 +347,7 @@ export const votePollRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -360,7 +360,7 @@ export const notificationsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -373,7 +373,7 @@ export const updateProfilePhotoRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -385,7 +385,7 @@ export const getProfileRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -397,7 +397,7 @@ export const getEmploymentStatusesRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -409,7 +409,7 @@ export const updateProfileRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -422,7 +422,7 @@ export const feedbackRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -435,7 +435,7 @@ export const reviewSubmitRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -447,7 +447,7 @@ export const getSourceTypesRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -459,7 +459,7 @@ export const getReviewsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -471,7 +471,7 @@ export const getEmploymentAuthsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -484,7 +484,7 @@ export const getFAQsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -497,7 +497,7 @@ export const getBlogsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -509,7 +509,7 @@ export const getBlogRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -521,7 +521,7 @@ export const postBlogRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -535,7 +535,7 @@ export const getAgreementsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -549,7 +549,7 @@ export const getCompaniesRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -562,7 +562,7 @@ export const postUsersRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -574,7 +574,7 @@ export const getUsersRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -587,7 +587,7 @@ export const getPositionsRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };

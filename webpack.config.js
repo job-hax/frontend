@@ -1,11 +1,11 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const path = require('path');
+const path = require("path");
 
 module.exports = {
-  entry: './src/index.js',
+  entry: ["babel-polyfill", "./src/index.js"],
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist")
   },
   module: {
     rules: [
@@ -26,22 +26,26 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: [{
-          loader: 'style-loader'
-        }, {
-          loader: 'css-loader'
-        }, {
-          loader: 'sass-loader'
-        }]
+        use: [
+          {
+            loader: "style-loader"
+          },
+          {
+            loader: "css-loader"
+          },
+          {
+            loader: "sass-loader"
+          }
+        ]
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
         use: [
           {
-            loader: 'file-loader',
+            loader: "file-loader",
             options: {
-              name: "[path][name].[hash].[ext]",
-            },
+              name: "[path][name].[hash].[ext]"
+            }
           }
         ]
       }
@@ -54,12 +58,12 @@ module.exports = {
     })
   ],
   devServer: {
-    historyApiFallback: true,
-//     inline: false,
-//     host: '0.0.0.0',
-// allowedHosts: [
-//       '.jobhax.com',
-//       'backend.jobhax.com'
-//     ]
+    historyApiFallback: true
+    //     inline: false,
+    //     host: '0.0.0.0',
+    // allowedHosts: [
+    //       '.jobhax.com',
+    //       'backend.jobhax.com'
+    //     ]
   }
 };

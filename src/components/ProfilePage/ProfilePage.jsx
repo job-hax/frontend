@@ -9,7 +9,7 @@ import {
   IS_CONSOLE_LOG_OPEN
 } from "../../utils/constants/constants.js";
 
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   notificationsRequest,
   getEmploymentStatusesRequest,
@@ -78,10 +78,10 @@ class ProfilePage extends React.Component {
   getProfileData() {
     if (this.state.token != "" && this.state.data.length == 0) {
       getProfileRequest.config.headers.Authorization = this.props.token;
-      fetchApi(getProfileRequest.url, getProfileRequest.config).then(
+      axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
         response => {
-          if (response.ok) {
-            this.data = response.json.data;
+          if (response.statusText === "OK") {
+            this.data = response.data.data;
             this.setState({ data: this.data, isUpdated: true });
             if (this.data.dob) {
               this.setState({
@@ -97,10 +97,10 @@ class ProfilePage extends React.Component {
 
   checkNotifications() {
     notificationsRequest.config.headers.Authorization = this.props.token;
-    fetchApi(notificationsRequest.url, notificationsRequest.config).then(
+    axiosCaptcha(notificationsRequest.url, notificationsRequest.config).then(
       response => {
-        if (response.ok) {
-          this.notificationsList = response.json.data;
+        if (response.statusText === "OK") {
+          this.notificationsList = response.data.data;
           this.setState({
             notificationsList: this.notificationsList,
             isNotificationsChecking: false
@@ -113,12 +113,12 @@ class ProfilePage extends React.Component {
 
   getEmploymentStatuses() {
     getEmploymentStatusesRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
+    axiosCaptcha(
       getEmploymentStatusesRequest.url,
       getEmploymentStatusesRequest.config
     ).then(response => {
-      if (response.ok) {
-        this.employmentStatusList = response.json.data;
+      if (response.statusText === "OK") {
+        this.employmentStatusList = response.data.data;
         this.setState({
           employmentStatusList: this.employmentStatusList,
           isNotificationsChecking: false
@@ -143,11 +143,11 @@ class ProfilePage extends React.Component {
     updateProfileRequest.config.body = JSON.stringify(this.body);
     console.log(event.target, updateProfileRequest.config.body);
     console.log(updateProfileRequest);
-    fetchApi(updateProfileRequest.url, updateProfileRequest.config).then(
+    axiosCaptcha(updateProfileRequest.url, updateProfileRequest.config).then(
       response => {
-        if (response.ok) {
-          if (response.json.success === true) {
-            this.data = response.json.data;
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            this.data = response.data.data;
             this.setState({
               data: this.data,
               isUpdating: false,
@@ -163,11 +163,11 @@ class ProfilePage extends React.Component {
             console.log(this.state.data);
           } else {
             this.setState({ isUpdating: false });
-            console.log(response, response.json.error_message);
+            console.log(response, response.data.error_message);
             this.props.alert(
               5000,
               "error",
-              "Error: " + response.json.error_message
+              "Error: " + response.data.error_message
             );
           }
         } else {
@@ -192,11 +192,11 @@ class ProfilePage extends React.Component {
       }
       updateProfileRequest.config.body = JSON.stringify(this.settingsBody);
       console.log(updateProfileRequest.config.body);
-      fetchApi(updateProfileRequest.url, updateProfileRequest.config).then(
+      axiosCaptcha(updateProfileRequest.url, updateProfileRequest.config).then(
         response => {
-          if (response.ok) {
-            if (response.json.success === true) {
-              this.data = response.json.data;
+          if (response.statusText === "OK") {
+            if (response.data.success === true) {
+              this.data = response.data.data;
               this.setState({
                 data: this.data,
                 isUpdating: false,
@@ -211,11 +211,11 @@ class ProfilePage extends React.Component {
               console.log(this.state.data);
             } else {
               this.setState({ isUpdating: false });
-              console.log(response, response.json.error_message);
+              console.log(response, response.data.error_message);
               this.props.alert(
                 5000,
                 "error",
-                "Error:" + response.json.error_message
+                "Error:" + response.data.error_message
               );
             }
           } else {

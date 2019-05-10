@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { ReCaptcha } from "react-recaptcha-v3";
 import { Modal, Form, Input, Icon, Button, Checkbox } from "antd";
 
@@ -7,7 +8,7 @@ import Footer from "../../Partials/Footer/Footer.jsx";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import { googleClientId } from "../../../config/config.js";
 
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   authenticateRequest,
   loginUserRequest,
@@ -113,12 +114,12 @@ class SignInPage extends Component {
       postUsersRequest.config.body = JSON.stringify(
         postUsersRequest.config.body
       );
-      fetchApi(
+      axiosCaptcha(
         postUsersRequest.url("forgot_password"),
         postUsersRequest.config
       ).then(response => {
-        if (response.ok) {
-          if (response.json.success === true) {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
             this.toggleModal();
             this.props.alert(
               5000,
@@ -129,7 +130,7 @@ class SignInPage extends Component {
             this.props.alert(
               5000,
               "error",
-              "Error: " + response.json.error_message
+              "Error: " + response.data.error_message
             );
           }
         } else {
@@ -151,10 +152,10 @@ class SignInPage extends Component {
         username: this.state.username,
         password: this.state.password
       });
-      fetchApi(postUsersRequest.url(type), postUsersRequest.config).then(
+      axiosCaptcha(postUsersRequest.url(type), postUsersRequest.config).then(
         response => {
-          if (response.ok) {
-            if (response.json.success === true) {
+          if (response.statusText === "OK") {
+            if (response.data.success === true) {
               this.setState({
                 isVerificationReSendDisplaying: false,
                 username: "",
@@ -169,7 +170,7 @@ class SignInPage extends Component {
               this.props.alert(
                 5000,
                 "error",
-                "Error: " + response.json.error_message
+                "Error: " + response.data.error_message
               );
             }
           } else {
@@ -180,55 +181,58 @@ class SignInPage extends Component {
     }
   }
 
-  handleSignIn(event) {
+  async handleSignIn(event) {
     IS_CONSOLE_LOG_OPEN && console.log("handle sign in first");
     event.preventDefault();
     loginUserRequest.config.body.username = event.target[0].value;
     loginUserRequest.config.body.password = event.target[1].value;
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("handle sign in config body", loginUserRequest.config.body);
     loginUserRequest.config.body = JSON.stringify(loginUserRequest.config.body);
-    fetchApi(loginUserRequest.url, loginUserRequest.config).then(response => {
-      if (response.ok) {
-        if (response.json.success === true) {
-          this.token = `${
-            response.json.data.token_type
-          } ${response.json.data.access_token.trim()}`;
-          IS_CONSOLE_LOG_OPEN && console.log(this.token);
-          this.setState({
-            token: this.token
-          });
-          this.props.passStatesFromSignin(
-            this.token,
-            true,
-            response.json.data.profile_updated
-          );
-          this.setState({
-            isUserLoggedIn: true,
-            isAuthenticationChecking: false
-          });
-          this.props.setIsUserLoggedIn(true);
-          this.props.setIsAuthenticationChecking(false);
-        } else {
-          if (response.json.error_code === 13) {
-            this.setState({
-              isVerificationReSendDisplaying: true,
-              username: loginUserRequest.config.body.username,
-              password: loginUserRequest.config.body.password
-            });
-          } else {
-            console.log(response, response.json.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.json.error_message
-            );
-          }
-        }
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("handle sign in config", loginUserRequest);
+    const response = await axiosCaptcha(
+      loginUserRequest.url,
+      loginUserRequest.config
+    );
+    console.log(response);
+    if (response.statusText === "OK") {
+      if (response.data.success === true) {
+        this.token = `${
+          response.data.data.token_type
+        } ${response.data.data.access_token.trim()}`;
+        IS_CONSOLE_LOG_OPEN && console.log(this.token);
+        this.setState({
+          token: this.token
+        });
+        this.props.passStatesFromSignin(
+          this.token,
+          true,
+          response.data.data.profile_updated
+        );
+        this.setState({
+          isUserLoggedIn: true,
+          isAuthenticationChecking: false
+        });
+        this.props.setIsUserLoggedIn(true);
+        this.props.setIsAuthenticationChecking(false);
       } else {
-        this.props.alert(5000, "error", "Something went wrong!");
+        if (response.data.error_code === 13) {
+          this.setState({
+            isVerificationReSendDisplaying: true,
+            username: loginUserRequest.config.body.username,
+            password: loginUserRequest.config.body.password
+          });
+        } else {
+          console.log(response, response.data.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
       }
-    });
+    } else {
+      this.props.alert(5000, "error", "Something went wrong!");
+    }
     loginUserRequest.config.body = JSON.parse(loginUserRequest.config.body);
   }
 
@@ -262,22 +266,22 @@ class SignInPage extends Component {
                 .get()
                 .getAuthResponse().access_token;
               config.body = JSON.stringify(config.body);
-              fetchApi(url, config).then(response => {
-                if (response.ok) {
+              axiosCaptcha(url, config).then(response => {
+                if (response.statusText === "OK") {
                   this.token = `${
-                    response.json.data.token_type
-                  } ${response.json.data.access_token.trim()}`;
+                    response.data.data.token_type
+                  } ${response.data.data.access_token.trim()}`;
                   this.postGoogleProfilePhoto(photoUrl, this.token);
                   IS_CONSOLE_LOG_OPEN &&
                     console.log(
                       this.token,
                       "profile updated?",
-                      response.json.data.profile_updated
+                      response.data.data.profile_updated
                     );
                   this.props.passStatesFromSignin(
                     this.token,
                     true,
-                    response.json.data.profile_updated
+                    response.data.data.profile_updated
                   );
                   this.setState({ token: this.token });
                   this.setState({ isUserLoggedIn: true });
@@ -301,11 +305,11 @@ class SignInPage extends Component {
       photo_url: photoURL
     });
     console.log(updateProfilePhotoRequest);
-    fetchApi(
+    axiosCaptcha(
       updateProfilePhotoRequest.url,
       updateProfilePhotoRequest.config
     ).then(response => {
-      if (response.ok) {
+      if (response.statusText === "OK") {
         console.log(response);
       }
     });

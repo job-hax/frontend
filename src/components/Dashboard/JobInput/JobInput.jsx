@@ -3,7 +3,7 @@ import { ReCaptcha } from "react-recaptcha-v3";
 import classNames from "classnames";
 import { AutoComplete, Select, Icon, Menu } from "antd";
 
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { getPositionsRequest } from "../../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
@@ -44,11 +44,11 @@ class JobInput extends PureComponent {
         "Content-Type": "application/json"
       }
     };
-    fetchApi(url, config).then(response => {
-      if (response.ok) {
+    axiosCaptcha(url, config).then(response => {
+      if (response.statusText === "OK") {
         console.log(response);
         let bufferList = [];
-        response.json.forEach(company => bufferList.push(company.name));
+        response.data.forEach(company => bufferList.push(company.name));
         {
           /*<Select.Option
               key={Math.random()}
@@ -91,11 +91,11 @@ class JobInput extends PureComponent {
     const { url, config } = getPositionsRequest;
     let newUrl = url + "?q=" + value + "&count=5";
     config.headers.Authorization = this.props.token;
-    fetchApi(newUrl, config).then(response => {
-      if (response.ok) {
-        console.log(response.json);
+    axiosCaptcha(newUrl, config).then(response => {
+      if (response.statusText === "OK") {
+        console.log(response.data);
         let bufferPositionsList = [];
-        response.json.data.forEach(position =>
+        response.data.data.forEach(position =>
           bufferPositionsList.push(position.job_title)
         );
         this.setState({
@@ -139,7 +139,8 @@ class JobInput extends PureComponent {
     const addJobButtonClass = classNames({
       "column-addJob-form-button": true,
       "--addJob": true,
-      "--button-disabled": companyName.length < 1 || jobTitle.trim().length < 1
+      "--button-disabled":
+        companyName.trim().length < 1 || jobTitle.trim().length < 1
     });
     return showInput ? (
       <div>

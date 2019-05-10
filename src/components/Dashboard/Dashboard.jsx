@@ -5,7 +5,7 @@ import { ReCaptcha } from "react-recaptcha-v3";
 
 import Column from "./Column/Column.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   addJobAppsRequest,
   getJobAppsRequest,
@@ -73,18 +73,18 @@ class Dashboard extends Component {
       action: "dashboard"
     });
     postUsersRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
+    axiosCaptcha(
       postUsersRequest.url("verify_recaptcha"),
       postUsersRequest.config
     ).then(response => {
-      if (response.ok) {
-        if (response.json.success != true) {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
           this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
+          console.log(response, response.data.error_message);
           this.props.alert(
             5000,
             "error",
-            "Error: " + response.json.error_message
+            "Error: " + response.data.error_message
           );
         }
       }
@@ -105,23 +105,23 @@ class Dashboard extends Component {
       if (this.props.active) {
         const { url, config } = syncUserEmailsRequest;
         config.headers.Authorization = this.props.token;
-        fetchApi(url, config)
+        axiosCaptcha(url, config)
           .then(response => {
             return {
-              ok: response.ok
+              ok: response.statusText === "OK"
             };
           })
           .then(({ ok }) => {
             const { url, config } = getJobAppsRequest;
             config.headers.Authorization = this.props.token;
-            fetchApi(url, config).then(response => {
-              if (response.ok) {
-                this.sortJobApplications(response.json.data);
+            axiosCaptcha(url, config).then(response => {
+              if (response.statusText === "OK") {
+                this.sortJobApplications(response.data.data);
                 this.setState({ isWaitingResponse: false });
                 IS_CONSOLE_LOG_OPEN &&
                   console.log(
-                    "dashboard response json data",
-                    response.json.data
+                    "dashboard response.data data",
+                    response.data.data
                   );
               }
             });
@@ -204,8 +204,8 @@ class Dashboard extends Component {
     });
     config.headers.Authorization = this.props.token;
 
-    fetchApi(url, config).then(response => {
-      if (response.ok) {
+    axiosCaptcha(url, config).then(response => {
+      if (response.statusText === "OK") {
         this.setState(() => ({
           [dragColumnName]: removedItemColumn,
           [dropColumnName]: insertedItemColumn
@@ -227,10 +227,10 @@ class Dashboard extends Component {
         recaptcha_token: recaptchaToken
       });
 
-      fetchApi(url, config).then(response => {
-        if (response.ok) {
+      axiosCaptcha(url, config).then(response => {
+        if (response.statusText === "OK") {
           let insertedItemColumn = this.state[columnName].slice();
-          insertedItemColumn.unshift(response.json.data);
+          insertedItemColumn.unshift(response.data.data);
 
           this.setState(() => ({
             [columnName]: insertedItemColumn

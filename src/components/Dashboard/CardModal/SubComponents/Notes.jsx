@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import { ReCaptcha } from "react-recaptcha-v3";
 
-import { fetchApi } from "../../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../../utils/api/fetch_api";
 import {
   updateNoteRequest,
   addNoteRequest,
@@ -57,11 +57,11 @@ class Notes extends React.Component {
     IS_CONSOLE_LOG_OPEN && console.log("URL with params\n", url);
     IS_CONSOLE_LOG_OPEN && console.log("token\n", token);
     config.headers.Authorization = token;
-    fetchApi(url, config).then(response => {
-      if (response.ok) {
-        this.notes = response.json.data.reverse();
+    axiosCaptcha(url, config).then(response => {
+      if (response.statusText === "OK") {
+        this.notes = response.data.data.reverse();
         IS_CONSOLE_LOG_OPEN &&
-          console.log("getNotes.response.json.data\n", this.notes);
+          console.log("getNotes.response.data.data\n", this.notes);
         this.setState({
           notes: this.notes
         });
@@ -154,12 +154,12 @@ class Notes extends React.Component {
     IS_CONSOLE_LOG_OPEN && console.log("request body\n", reqBody);
     config.headers.Authorization = token;
     config.body = JSON.stringify(reqBody);
-    fetchApi(url, config)
+    axiosCaptcha(url, config)
       .catch(error => console.error(error))
       .then(response => {
-        IS_CONSOLE_LOG_OPEN && console.log("response json\n", response.json);
-        if (response.ok) {
-          this.saveNotes(response.json.data, reqBody, this.currentNote);
+        IS_CONSOLE_LOG_OPEN && console.log("response.data\n", response.data);
+        if (response.statusText === "OK") {
+          this.saveNotes(response.data.data, reqBody, this.currentNote);
         }
       });
   }
@@ -173,9 +173,9 @@ class Notes extends React.Component {
     config.headers.Authorization = token;
     IS_CONSOLE_LOG_OPEN && console.log("delete request body\n", body);
     config.body = JSON.stringify(body);
-    fetchApi(url, config).then(response => {
+    axiosCaptcha(url, config).then(response => {
       IS_CONSOLE_LOG_OPEN && console.log("delete request response\n", response);
-      if (response.ok) {
+      if (response.statusText === "OK") {
         this.getNotes();
       }
     });

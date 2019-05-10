@@ -2,7 +2,7 @@ import React from "react";
 import { Rate, Select, Radio, Checkbox } from "antd";
 import { ReCaptcha } from "react-recaptcha-v3";
 
-import { fetchApi } from "../../../../../utils/api/fetch_api.js";
+import { axiosCaptcha } from "../../../../../utils/api/fetch_api.js";
 import {
   reviewSubmitRequest,
   getSourceTypesRequest,
@@ -138,40 +138,40 @@ class ReviewInput extends React.Component {
       }
     }
     getSourceTypesRequest.config.headers.Authorization = this.props.token;
-    fetchApi(getSourceTypesRequest.url, getSourceTypesRequest.config).then(
+    axiosCaptcha(getSourceTypesRequest.url, getSourceTypesRequest.config).then(
       response => {
-        if (response.ok) {
-          if (response.json.success === true) {
-            console.log("getSourceTypesRequest response", response.json.data);
-            this.setState({ sourceTypes: response.json.data });
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            console.log("getSourceTypesRequest response", response.data.data);
+            this.setState({ sourceTypes: response.data.data });
           }
         }
       }
     );
     getEmploymentStatusesRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
+    axiosCaptcha(
       getEmploymentStatusesRequest.url,
       getEmploymentStatusesRequest.config
     ).then(response => {
-      if (response.ok) {
-        if (response.json.success === true) {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
           console.log(
             "getEmploymentStatusesRequest response",
-            response.json.data
+            response.data.data
           );
-          this.setState({ employmentStatuses: response.json.data });
+          this.setState({ employmentStatuses: response.data.data });
         }
       }
     });
     getEmploymentAuthsRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
+    axiosCaptcha(
       getEmploymentAuthsRequest.url,
       getEmploymentAuthsRequest.config
     ).then(response => {
-      if (response.ok) {
-        if (response.json.success === true) {
-          console.log("getEmploymentAuthsRequest response", response.json.data);
-          this.setState({ employmentAuths: response.json.data });
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          console.log("getEmploymentAuthsRequest response", response.data.data);
+          this.setState({ employmentAuths: response.data.data });
         }
       }
     });
@@ -192,13 +192,13 @@ class ReviewInput extends React.Component {
       "reviewSubmitRequest.config.body",
       reviewSubmitRequest.config.body
     );
-    fetchApi(reviewSubmitRequest.url, reviewSubmitRequest.config).then(
+    axiosCaptcha(reviewSubmitRequest.url, reviewSubmitRequest.config).then(
       response => {
-        if (response.ok) {
-          if (response.json.success === true) {
-            console.log("reviewSubmitRequest response", response.json.data);
-            this.props.setCompany(response.json.data.company);
-            this.props.setReview(response.json.data.review);
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            console.log("reviewSubmitRequest response", response.data.data);
+            this.props.setCompany(response.data.data.company);
+            this.props.setReview(response.data.data.review);
             this.props.alert(
               5000,
               "success",
@@ -209,7 +209,7 @@ class ReviewInput extends React.Component {
             this.props.alert(
               5000,
               "error",
-              "Error: " + response.json.error_message
+              "Error: " + response.data.error_message
             );
           }
         } else {

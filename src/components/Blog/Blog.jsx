@@ -4,7 +4,7 @@ import { ReCaptcha } from "react-recaptcha-v3";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { getBlogsRequest, postUsersRequest } from "../../utils/api/requests.js";
 import { makeTimeBeautiful } from "../../utils/constants/constants.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
@@ -55,18 +55,18 @@ class Blog extends React.Component {
       action: "blog"
     });
     postUsersRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
+    axiosCaptcha(
       postUsersRequest.url("verify_recaptcha"),
       postUsersRequest.config
     ).then(response => {
-      if (response.ok) {
-        if (response.json.success != true) {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
           this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
+          console.log(response, response.data.error_message);
           this.props.alert(
             5000,
             "error",
-            "Error: " + response.json.error_message
+            "Error: " + response.data.error_message
           );
         }
       }
@@ -88,19 +88,19 @@ class Blog extends React.Component {
       url + "?page=" + this.state.pageNo + "&page_size=" + this.state.pageSize;
     config.headers.Authorization = this.props.token;
     getBlogsRequest.config.headers.Authorization = this.props.token;
-    fetchApi(newUrl, config).then(response => {
-      if (response.ok) {
+    axiosCaptcha(newUrl, config).then(response => {
+      if (response.statusText === "OK") {
         if (requestType === "initialRequest") {
           this.setState({
-            blogList: response.json.data,
-            pagination: response.json.pagination,
+            blogList: response.data.data,
+            pagination: response.data.pagination,
             isWaitingResponse: false,
             isInitialRequest: false
           });
         } else if (requestType === "newPageRequest") {
           this.setState({
-            blogList: response.json.data,
-            pagination: response.json.pagination,
+            blogList: response.data.data,
+            pagination: response.data.pagination,
             isWaitingResponse: false,
             isNewPageRequested: false
           });
@@ -108,7 +108,7 @@ class Blog extends React.Component {
         IS_CONSOLE_LOG_OPEN &&
           console.log(
             "BlogRequest Response",
-            response.json,
+            response.data,
             this.state.pagination
           );
       }

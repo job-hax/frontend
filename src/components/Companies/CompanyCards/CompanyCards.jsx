@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import Reviews from "../Reviews/Reviews.jsx";
 import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   getCompaniesRequest,
   getReviewsRequest
@@ -37,15 +37,15 @@ class CompanyCards extends React.Component {
     let newPositionUrl =
       getCompaniesRequest.url + this.props.company.id + "/positions";
     getCompaniesRequest.config.headers.Authorization = this.props.token;
-    fetchApi(newPositionUrl, getCompaniesRequest.config).then(response => {
-      if (response.ok) {
+    axiosCaptcha(newPositionUrl, getCompaniesRequest.config).then(response => {
+      if (response.statusText === "OK") {
         this.setState({
-          positionsList: response.json.data
+          positionsList: response.data.data
         });
         IS_CONSOLE_LOG_OPEN &&
           console.log(
-            "company positions response json data",
-            response.json.data
+            "company positions response.data data",
+            response.data.data
           );
       }
     });
@@ -55,15 +55,15 @@ class CompanyCards extends React.Component {
       this.props.company.id +
       "&all_reviews=true";
     getReviewsRequest.config.headers.Authorization = this.props.token;
-    fetchApi(newReviewsUrl, getReviewsRequest.config).then(response => {
-      if (response.ok) {
+    axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
+      if (response.statusText === "OK") {
         this.setState({
-          reviewsList: response.json.data
+          reviewsList: response.data.data
         });
         IS_CONSOLE_LOG_OPEN &&
           console.log(
-            "company get all reviews response json data",
-            response.json.data
+            "company get all reviews response.data data",
+            response.data.data
           );
       }
     });

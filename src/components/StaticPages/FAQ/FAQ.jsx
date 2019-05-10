@@ -1,9 +1,10 @@
 import React from "react";
 import { Collapse } from "antd";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 import { getFAQsRequest } from "../../../utils/api/requests.js";
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import Footer from "../../Partials/Footer/Footer.jsx";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 
@@ -18,17 +19,9 @@ class FAQ extends React.Component {
     this.state = { isRequested: false, faqList: [] };
   }
 
-  componentDidMount() {
-    fetchApi(getFAQsRequest.url, getFAQsRequest.config).then(response => {
-      if (response.ok) {
-        this.setState({
-          isRequested: true
-        });
-        this.setState({
-          faqList: response.json.data
-        });
-      }
-    });
+  async componentDidMount() {
+    const response = await axios.get(getFAQsRequest.url, getFAQsRequest.config);
+    this.setState({ faqList: response.data.data });
   }
 
   generateTopButtons() {

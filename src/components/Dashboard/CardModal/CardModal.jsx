@@ -7,7 +7,7 @@ import Notes from "./SubComponents/Notes.jsx";
 import ReviewInput from "./SubComponents/ReviewInput/ReviewInput.jsx";
 import CompanyStats from "../../Partials/CompanyStats/CompanyStats.jsx";
 import Reviews from "../../Companies/Reviews/Reviews.jsx";
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   getReviewsRequest,
   postUsersRequest
@@ -49,13 +49,13 @@ class CardModal extends PureComponent {
         "?review_id=" +
         this.props.card.companyObject.review_id;
       getReviewsRequest.config.headers.Authorization = this.props.token;
-      fetchApi(newReviewsUrl, getReviewsRequest.config).then(response => {
-        if (response.ok) {
-          this.setState({ review: response.json.data });
+      axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
+        if (response.statusText === "OK") {
+          this.setState({ review: response.data.data });
           IS_CONSOLE_LOG_OPEN &&
             console.log(
               "card modal position old review",
-              response.json.data,
+              response.data.data,
               this.state.review
             );
         }
@@ -71,18 +71,18 @@ class CardModal extends PureComponent {
       action: "card_modal"
     });
     postUsersRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
+    axiosCaptcha(
       postUsersRequest.url("verify_recaptcha"),
       postUsersRequest.config
     ).then(response => {
-      if (response.ok) {
-        if (response.json.success != true) {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
           this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
+          console.log(response, response.data.error_message);
           this.props.alert(
             5000,
             "error",
-            "Error: " + response.json.error_message
+            "Error: " + response.data.error_message
           );
         }
       }
@@ -104,14 +104,14 @@ class CardModal extends PureComponent {
         this.props.card.position.id +
         "&all_reviews=true";
       getReviewsRequest.config.headers.Authorization = this.props.token;
-      fetchApi(newReviewsUrl, getReviewsRequest.config).then(response => {
-        if (response.ok) {
-          this.setState({ reviewsList: response.json.data });
+      axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
+        if (response.statusText === "OK") {
+          this.setState({ reviewsList: response.data.data });
           this.setState({ isReviewsDisplaying: true });
           IS_CONSOLE_LOG_OPEN &&
             console.log(
-              "card modal position reviews response json data",
-              response.json.data
+              "card modal position reviews response.data data",
+              response.data.data
             );
         }
       });
