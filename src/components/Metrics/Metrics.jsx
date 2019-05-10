@@ -8,7 +8,7 @@ import MonthlyApplicationGraph from "./SubComponents/MonthlyApplicationGraph.jsx
 import MonthlyApplicationLineGraph from "./SubComponents/MonthlyApplicationLineGraph.jsx";
 import StagesOfApplicationsPieChart from "./SubComponents/StagesOfApplicationsPieChart.jsx";
 import StagesInPositions from "./SubComponents/StagesInPositions.jsx";
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   getTotalAppsCountRequest,
   getAppsCountByMonthRequest,
@@ -71,18 +71,18 @@ class Metrics extends PureComponent {
       action: "metrics"
     });
     postUsersRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
+    axiosCaptcha(
       postUsersRequest.url("verify_recaptcha"),
       postUsersRequest.config
     ).then(response => {
-      if (response.ok) {
-        if (response.json.success != true) {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
           this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
+          console.log(response, response.data.error_message);
           this.props.alert(
             5000,
             "error",
-            "Error: " + response.json.error_message
+            "Error: " + response.data.error_message
           );
         }
       }
@@ -97,31 +97,31 @@ class Metrics extends PureComponent {
       IS_CONSOLE_LOG_OPEN && console.log("active?", this.props.active);
       getTotalAppsCountRequest.config.headers.Authorization = this.props.token;
       IS_CONSOLE_LOG_OPEN && console.log(getTotalAppsCountRequest.config);
-      fetchApi(
+      axiosCaptcha(
         getTotalAppsCountRequest.url,
         getTotalAppsCountRequest.config
       ).then(response => {
-        if (response.ok) {
-          this.totalAppsCountRequest = response.json.data;
+        if (response.statusText === "OK") {
+          this.totalAppsCountRequest = response.data.data;
           this.setState({
             totalAppsCountRequest: this.totalAppsCountRequest
           });
         }
       });
       getAppsCountByMonthRequest.config.headers.Authorization = this.props.token;
-      fetchApi(
+      axiosCaptcha(
         getAppsCountByMonthRequest.url,
         getAppsCountByMonthRequest.config
       ).then(response => {
-        if (response.ok) {
-          this.appsCountByMonthRequest = response.json.data[0];
+        if (response.statusText === "OK") {
+          this.appsCountByMonthRequest = response.data.data[0];
           this.appsCountByMonthRequest.forEach(element => {
             element["name"] = element["source"];
             delete element["source"];
             element["type"] = "bar";
             element["stack"] = "Company";
           });
-          this.currentMonthsOfLastYear = response.json.data[1];
+          this.currentMonthsOfLastYear = response.data.data[1];
           this.setState({
             appsCountByMonthRequest: this.appsCountByMonthRequest,
             currentMonthsOfLastYear: this.currentMonthsOfLastYear
@@ -135,12 +135,12 @@ class Metrics extends PureComponent {
         }
       });
       getAppsCountByMonthWithTotalRequest.config.headers.Authorization = this.props.token;
-      fetchApi(
+      axiosCaptcha(
         getAppsCountByMonthWithTotalRequest.url,
         getAppsCountByMonthWithTotalRequest.config
       ).then(response => {
-        if (response.ok) {
-          this.appsCountByMonthWithTotalRequest = response.json.data[0];
+        if (response.statusText === "OK") {
+          this.appsCountByMonthWithTotalRequest = response.data.data[0];
           this.appsCountByMonthWithTotalRequest.forEach(element => {
             element["name"] = element["source"];
             delete element["source"];
@@ -159,12 +159,12 @@ class Metrics extends PureComponent {
         }
       });
       getCountByJobtitleAndStatusesRequest.config.headers.Authorization = this.props.token;
-      fetchApi(
+      axiosCaptcha(
         getCountByJobtitleAndStatusesRequest.url,
         getCountByJobtitleAndStatusesRequest.config
       ).then(response => {
-        if (response.ok) {
-          this.countByJobtitleAndStatusesRequest = response.json.data;
+        if (response.statusText === "OK") {
+          this.countByJobtitleAndStatusesRequest = response.data.data;
           this.countByJobtitleAndStatusesRequest.data.forEach(element => {
             element["type"] = "bar";
             element["stack"] = "Company";
@@ -176,12 +176,12 @@ class Metrics extends PureComponent {
         }
       });
       getCountByStatusesRequest.config.headers.Authorization = this.props.token;
-      fetchApi(
+      axiosCaptcha(
         getCountByStatusesRequest.url,
         getCountByStatusesRequest.config
       ).then(response => {
-        if (response.ok) {
-          this.countByStatusesRequest = response.json.data;
+        if (response.statusText === "OK") {
+          this.countByStatusesRequest = response.data.data;
           this.setState({ isWaitingResponse: false });
           this.setState({
             countByStatusesRequest: this.countByStatusesRequest
@@ -189,10 +189,10 @@ class Metrics extends PureComponent {
         }
       });
       getWordCountRequest.config.headers.Authorization = this.props.token;
-      fetchApi(getWordCountRequest.url, getWordCountRequest.config).then(
+      axiosCaptcha(getWordCountRequest.url, getWordCountRequest.config).then(
         response => {
-          if (response.ok) {
-            this.wordCountRequest = response.json.data;
+          if (response.statusText === "OK") {
+            this.wordCountRequest = response.data.data;
             this.setState({
               wordCountRequest: this.wordCountRequest
             });

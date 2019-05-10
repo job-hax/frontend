@@ -5,7 +5,7 @@ import Spinner from "../Partials/Spinner/Spinner.jsx";
 import FeatureArea from "./SubComponents/FeatureArea.jsx";
 import TrendingBarGraph from "./SubComponents/TrendingBarGraph.jsx";
 import PeakLineGraph from "./SubComponents/PeakLineGraph.jsx";
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   getMonthlyApplicationCountRequest,
   getStatisticsRequest,
@@ -88,18 +88,18 @@ class MetricsGlobal extends PureComponent {
       action: "metrics_global"
     });
     postUsersRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
+    axiosCaptcha(
       postUsersRequest.url("verify_recaptcha"),
       postUsersRequest.config
     ).then(response => {
-      if (response.ok) {
-        if (response.json.success != true) {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
           this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
+          console.log(response, response.data.error_message);
           this.props.alert(
             5000,
             "error",
-            "Error: " + response.json.error_message
+            "Error: " + response.data.error_message
           );
         }
       }
@@ -121,11 +121,11 @@ class MetricsGlobal extends PureComponent {
           this.state.isWaitingResponse
         );
       getStatisticsRequest.config.headers.Authorization = this.props.token;
-      fetchApi(getStatisticsRequest.url, getStatisticsRequest.config).then(
+      axiosCaptcha(getStatisticsRequest.url, getStatisticsRequest.config).then(
         response => {
-          if (response.ok) {
+          if (response.statusText === "OK") {
             this.setState({
-              statistics: response.json.data,
+              statistics: response.data.data,
               isWaitingResponse: false
             });
           }
@@ -148,12 +148,12 @@ class MetricsGlobal extends PureComponent {
           this.state.isWaitingResponse
         );
       getMonthlyApplicationCountRequest.config.headers.Authorization = this.props.token;
-      fetchApi(
+      axiosCaptcha(
         getMonthlyApplicationCountRequest.url,
         getMonthlyApplicationCountRequest.config
       ).then(response => {
-        if (response.ok) {
-          this.appsCountByMonthWithTotal = response.json.data[0];
+        if (response.statusText === "OK") {
+          this.appsCountByMonthWithTotal = response.data.data[0];
           this.appsCountByMonthWithTotal.forEach(element => {
             element["name"] = element["source"];
             delete element["source"];
@@ -165,7 +165,7 @@ class MetricsGlobal extends PureComponent {
               data: [{ type: "average", name: "average" }]
             };
           });
-          this.currentMonthsOfLastYear = response.json.data[1];
+          this.currentMonthsOfLastYear = response.data.data[1];
           this.setState({
             appsCountByMonthWithTotal: this.appsCountByMonthWithTotal,
             currentMonthsOfLastYear: this.currentMonthsOfLastYear
@@ -194,16 +194,16 @@ class MetricsGlobal extends PureComponent {
       );
     this.setState({ isWaitingResponse: true });
     getTrendingRequest.config.headers.Authorization = this.props.token;
-    fetchApi(trendingUrl, getTrendingRequest.config).then(response => {
-      if (response.ok) {
+    axiosCaptcha(trendingUrl, getTrendingRequest.config).then(response => {
+      if (response.statusText === "OK") {
         IS_CONSOLE_LOG_OPEN &&
           console.log(
             "top companies request",
             getTrendingRequest,
             "response",
-            response.json.data
+            response.data.data
           );
-        response.json.data.map(element => {
+        response.data.data.map(element => {
           this.trendingDataNames.push(element.company);
           this.trendingDataAmounts.push(element.count);
         });

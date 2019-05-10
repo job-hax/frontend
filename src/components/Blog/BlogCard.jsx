@@ -3,7 +3,7 @@ import { Icon } from "antd";
 import { ReCaptcha } from "react-recaptcha-v3";
 import parse from "html-react-parser";
 
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { getBlogRequest, postBlogRequest } from "../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 
@@ -47,22 +47,22 @@ class BlogCard extends React.Component {
 
   getBlogDetail() {
     getBlogRequest.config.headers.Authorization = this.props.token;
-    fetchApi(getBlogRequest.url(this.props.id), getBlogRequest.config).then(
+    axiosCaptcha(getBlogRequest.url(this.props.id), getBlogRequest.config).then(
       response => {
-        if (response.ok) {
-          if (response.json.success === true) {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
             this.setState({
-              blog: response.json.data
+              blog: response.data.data
             });
             this.setState({ isDetailsShowing: true });
             IS_CONSOLE_LOG_OPEN && console.log(this.state.blog.content);
           } else {
             this.setState({ isUpdating: false });
-            console.log(response, response.json.error_message);
+            console.log(response, response.data.error_message);
             this.props.alert(
               5000,
               "error",
-              "Error: " + response.json.error_message
+              "Error: " + response.data.error_message
             );
           }
         } else {
@@ -76,31 +76,31 @@ class BlogCard extends React.Component {
   postBlogStats(type) {
     postBlogRequest.config.headers.Authorization = this.props.token;
     let newUrl = postBlogRequest.url(this.props.id) + "/" + type + "/";
-    fetchApi(newUrl, postBlogRequest.config).then(response => {
-      if (response.ok) {
-        if (response.json.success === true) {
-          IS_CONSOLE_LOG_OPEN && console.log(response.json);
+    axiosCaptcha(newUrl, postBlogRequest.config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          IS_CONSOLE_LOG_OPEN && console.log(response.data);
           if (type === "upvote") {
             this.setState({
-              upVote: response.json.data.upvote,
-              downVote: response.json.data.downvote
+              upVote: response.data.data.upvote,
+              downVote: response.data.data.downvote
             });
           }
           if (type === "downvote") {
             this.setState({
-              upVote: response.json.data.upvote,
-              downVote: response.json.data.downvote
+              upVote: response.data.data.upvote,
+              downVote: response.data.data.downvote
             });
           }
           if (type === "view") {
             this.setState({ viewCount: this.state.viewCount + 1 });
           }
         } else {
-          console.log(response, response.json.error_message);
+          console.log(response, response.data.error_message);
           this.props.alert(
             5000,
             "error",
-            "Error: " + response.json.error_message
+            "Error: " + response.data.error_message
           );
         }
       } else {

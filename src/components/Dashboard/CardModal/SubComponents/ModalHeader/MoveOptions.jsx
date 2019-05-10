@@ -4,7 +4,7 @@ import {
   APPLICATION_STATUSES_IN_ORDER,
   IS_CONSOLE_LOG_OPEN
 } from "../../../../../utils/constants/constants.js";
-import { fetchApi } from "../../../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../../../utils/api/fetch_api";
 import {
   deleteJobRequest,
   updateJobStatusRequest
@@ -36,10 +36,10 @@ class MoveOptions extends React.Component {
     config.headers.Authorization = token;
     IS_CONSOLE_LOG_OPEN && console.log("delete job request body\n", body);
     config.body = JSON.stringify(body);
-    fetchApi(url, config).then(response => {
+    axiosCaptcha(url, config).then(response => {
       IS_CONSOLE_LOG_OPEN &&
         console.log("delete job request response\n", response, card);
-      if (response.ok) {
+      if (response.statusText === "OK") {
         IS_CONSOLE_LOG_OPEN && console.log("function ", columnName, card.id);
         deleteJobFromList(columnName, card.id, card.isRejected);
       }
@@ -59,10 +59,10 @@ class MoveOptions extends React.Component {
     IS_CONSOLE_LOG_OPEN &&
       console.log("update to rejected request body\n", body);
     config.body = JSON.stringify(body);
-    fetchApi(url, config).then(response => {
+    axiosCaptcha(url, config).then(response => {
       IS_CONSOLE_LOG_OPEN &&
         console.log("update to rejected request response\n", response, card);
-      if (response.ok) {
+      if (response.statusText === "OK") {
         IS_CONSOLE_LOG_OPEN && console.log("function ", columnName, card.id);
         moveToRejected(columnName, card, isRejected);
       }
