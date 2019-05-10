@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { getUsersRequest } from "../../../utils/api/requests.js";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import ChangePassword from "../ChangePassword/ChangePassword.jsx";
@@ -25,12 +25,12 @@ class Action extends React.Component {
       const code = params[1].split("=")[1];
       this.setState({ code: code });
       console.log("action : ", action, "\ncode : ", code);
-      fetchApi(
+      axiosCaptcha(
         getUsersRequest.url(action + "?code=" + code),
         getUsersRequest.config
       ).then(response => {
-        if (response.ok) {
-          if (response.json.success === true) {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
             if (action === "activate") {
               this.setState({ redirect: "signin" });
               this.props.alert(

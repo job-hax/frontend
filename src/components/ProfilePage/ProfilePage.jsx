@@ -1,6 +1,5 @@
 import React from "react";
 import DatePicker from "react-datepicker";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
@@ -9,7 +8,7 @@ import {
   IS_CONSOLE_LOG_OPEN
 } from "../../utils/constants/constants.js";
 
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   notificationsRequest,
   getEmploymentStatusesRequest,
@@ -51,7 +50,6 @@ class ProfilePage extends React.Component {
     this.handleSettingsSubmit = this.handleSettingsSubmit.bind(this);
     this.handleItuMailChange = this.handleItuMailChange.bind(this);
     this.handlePhoneNumberChange = this.handlePhoneNumberChange.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
@@ -68,20 +66,13 @@ class ProfilePage extends React.Component {
     }
   }
 
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    this.body["recaptcha_token"] = recaptchaToken;
-    this.settingsBody["recaptcha_token"] = recaptchaToken;
-  }
-
   getProfileData() {
     if (this.state.token != "" && this.state.data.length == 0) {
       getProfileRequest.config.headers.Authorization = this.props.token;
-      fetchApi(getProfileRequest.url, getProfileRequest.config).then(
+      axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
         response => {
-          if (response.ok) {
-            this.data = response.json.data;
+          if (response.statusText === "OK") {
+            this.data = response.data.data;
             this.setState({ data: this.data, isUpdated: true });
             if (this.data.dob) {
               this.setState({
@@ -97,10 +88,10 @@ class ProfilePage extends React.Component {
 
   checkNotifications() {
     notificationsRequest.config.headers.Authorization = this.props.token;
-    fetchApi(notificationsRequest.url, notificationsRequest.config).then(
+    axiosCaptcha(notificationsRequest.url, notificationsRequest.config).then(
       response => {
-        if (response.ok) {
-          this.notificationsList = response.json.data;
+        if (response.statusText === "OK") {
+          this.notificationsList = response.data.data;
           this.setState({
             notificationsList: this.notificationsList,
             isNotificationsChecking: false
@@ -113,12 +104,12 @@ class ProfilePage extends React.Component {
 
   getEmploymentStatuses() {
     getEmploymentStatusesRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
+    axiosCaptcha(
       getEmploymentStatusesRequest.url,
       getEmploymentStatusesRequest.config
     ).then(response => {
-      if (response.ok) {
-        this.employmentStatusList = response.json.data;
+      if (response.statusText === "OK") {
+        this.employmentStatusList = response.data.data;
         this.setState({
           employmentStatusList: this.employmentStatusList,
           isNotificationsChecking: false
@@ -140,42 +131,44 @@ class ProfilePage extends React.Component {
     if (event.target[5].value.trim() != (null || "")) {
       this.state.body[" last_name"] = event.target[5].value.trim();
     }
-    updateProfileRequest.config.body = JSON.stringify(this.body);
+    updateProfileRequest.config.body = this.body;
     console.log(event.target, updateProfileRequest.config.body);
     console.log(updateProfileRequest);
-    fetchApi(updateProfileRequest.url, updateProfileRequest.config).then(
-      response => {
-        if (response.ok) {
-          if (response.json.success === true) {
-            this.data = response.json.data;
-            this.setState({
-              data: this.data,
-              isUpdating: false,
-              isEditing: false,
-              isUpdated: true
-            });
-            this.props.alert(
-              5000,
-              "success",
-              "Your profile have been updated successfully!"
-            );
-            this.props.setIsProfileUpdated(true);
-            console.log(this.state.data);
-          } else {
-            this.setState({ isUpdating: false });
-            console.log(response, response.json.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.json.error_message
-            );
-          }
+    axiosCaptcha(
+      updateProfileRequest.url,
+      updateProfileRequest.config,
+      "update_profile"
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          this.data = response.data.data;
+          this.setState({
+            data: this.data,
+            isUpdating: false,
+            isEditing: false,
+            isUpdated: true
+          });
+          this.props.alert(
+            5000,
+            "success",
+            "Your profile have been updated successfully!"
+          );
+          this.props.setIsProfileUpdated(true);
+          console.log(this.state.data);
         } else {
           this.setState({ isUpdating: false });
-          this.props.alert(5000, "error", "Something went wrong!");
+          console.log(response, response.data.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
         }
+      } else {
+        this.setState({ isUpdating: false });
+        this.props.alert(5000, "error", "Something went wrong!");
       }
-    );
+    });
     this.body = {};
   }
 
@@ -190,40 +183,42 @@ class ProfilePage extends React.Component {
       if (event.target[0].value != (null || "")) {
         this.settingsBody["username"] = event.target[0].value;
       }
-      updateProfileRequest.config.body = JSON.stringify(this.settingsBody);
+      updateProfileRequest.config.body = this.settingsBody;
       console.log(updateProfileRequest.config.body);
-      fetchApi(updateProfileRequest.url, updateProfileRequest.config).then(
-        response => {
-          if (response.ok) {
-            if (response.json.success === true) {
-              this.data = response.json.data;
-              this.setState({
-                data: this.data,
-                isUpdating: false,
-                isProfileSettingsOpen: false,
-                isUpdated: true
-              });
-              this.props.alert(
-                5000,
-                "success",
-                "Your settings have been updated successfully!"
-              );
-              console.log(this.state.data);
-            } else {
-              this.setState({ isUpdating: false });
-              console.log(response, response.json.error_message);
-              this.props.alert(
-                5000,
-                "error",
-                "Error:" + response.json.error_message
-              );
-            }
+      axiosCaptcha(
+        updateProfileRequest.url,
+        updateProfileRequest.config,
+        "update_profile"
+      ).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            this.data = response.data.data;
+            this.setState({
+              data: this.data,
+              isUpdating: false,
+              isProfileSettingsOpen: false,
+              isUpdated: true
+            });
+            this.props.alert(
+              5000,
+              "success",
+              "Your settings have been updated successfully!"
+            );
+            console.log(this.state.data);
           } else {
             this.setState({ isUpdating: false });
-            this.props.alert(5000, "error", "Something went wrong!");
+            console.log(response, response.data.error_message);
+            this.props.alert(
+              5000,
+              "error",
+              "Error:" + response.data.error_message
+            );
           }
+        } else {
+          this.setState({ isUpdating: false });
+          this.props.alert(5000, "error", "Something went wrong!");
         }
-      );
+      });
       this.settingsBody = {};
     } else
       this.props.alert(
@@ -764,13 +759,6 @@ class ProfilePage extends React.Component {
               </div>
             )}
           </div>
-        </div>
-        <div>
-          <ReCaptcha
-            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-            action="update_profile"
-            verifyCallback={this.verifyReCaptchaCallback}
-          />
         </div>
       </div>
     );

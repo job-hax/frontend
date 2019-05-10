@@ -3,7 +3,7 @@ import { Rate, Radio, Select } from "antd";
 
 import CompanyRating from "./CompanyRating/CompanyRating.jsx";
 import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { getReviewsRequest } from "../../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
@@ -40,13 +40,13 @@ class Reviews extends React.Component {
       value +
       "&all_reviews=true";
     getReviewsRequest.config.headers.Authorization = this.props.token;
-    fetchApi(newReviewsUrl, getReviewsRequest.config).then(response => {
-      if (response.ok) {
-        this.setState({ reviewsList: response.json.data });
+    axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
+      if (response.statusText === "OK") {
+        this.setState({ reviewsList: response.data.data });
         IS_CONSOLE_LOG_OPEN &&
           console.log(
-            "company reviews filter reviews by position  response json data",
-            response.json.data
+            "company reviews filter reviews by position  response.data data",
+            response.data.data
           );
       }
     });

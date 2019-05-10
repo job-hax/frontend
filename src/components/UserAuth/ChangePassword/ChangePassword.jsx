@@ -2,7 +2,7 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 import { Form, Input, Button } from "antd";
 
-import { fetchApi } from "../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { postUsersRequest } from "../../../utils/api/requests.js";
 
 import "./style.scss";
@@ -26,17 +26,17 @@ class ChangePassword extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log("Received values of form: ", values);
-        postUsersRequest.config.body = JSON.stringify({
+        postUsersRequest.config.body = {
           code: this.props.code,
           password: values.password
-        });
+        };
         console.log(postUsersRequest);
-        fetchApi(
+        axiosCaptcha(
           postUsersRequest.url("reset_password"),
           postUsersRequest.config
         ).then(response => {
-          if (response.ok) {
-            if (response.json.success === true) {
+          if (response.statusText === "OK") {
+            if (response.data.success === true) {
               this.setState({ redirect: "signin" });
               this.props.alert(
                 5000,

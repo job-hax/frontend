@@ -1,10 +1,9 @@
 import React from "react";
 import { Pagination, Icon } from "antd";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { getBlogsRequest, postUsersRequest } from "../../utils/api/requests.js";
 import { makeTimeBeautiful } from "../../utils/constants/constants.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
@@ -27,10 +26,27 @@ class Blog extends React.Component {
 
     this.getData = this.getData.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
+    postUsersRequest.config.headers.Authorization = this.props.token;
+    axiosCaptcha(
+      postUsersRequest.url("verify_recaptcha"),
+      postUsersRequest.config,
+      "blog"
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
+          this.setState({ isUpdating: false });
+          console.log(response, response.data.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
+      }
+    });
     this.getData("initialRequest");
   }
 
@@ -47,33 +63,6 @@ class Blog extends React.Component {
     }
   }
 
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    postUsersRequest.config["body"] = JSON.stringify({
-      recaptcha_token: recaptchaToken,
-      action: "blog"
-    });
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    fetchApi(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config
-    ).then(response => {
-      if (response.ok) {
-        if (response.json.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response, response.json.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.json.error_message
-          );
-        }
-      }
-      postUsersRequest.config["body"] = {};
-    });
-  }
-
   getData(requestType) {
     this.setState({ isWaitingResponse: true });
     IS_CONSOLE_LOG_OPEN &&
@@ -88,19 +77,19 @@ class Blog extends React.Component {
       url + "?page=" + this.state.pageNo + "&page_size=" + this.state.pageSize;
     config.headers.Authorization = this.props.token;
     getBlogsRequest.config.headers.Authorization = this.props.token;
-    fetchApi(newUrl, config).then(response => {
-      if (response.ok) {
+    axiosCaptcha(newUrl, config).then(response => {
+      if (response.statusText === "OK") {
         if (requestType === "initialRequest") {
           this.setState({
-            blogList: response.json.data,
-            pagination: response.json.pagination,
+            blogList: response.data.data,
+            pagination: response.data.pagination,
             isWaitingResponse: false,
             isInitialRequest: false
           });
         } else if (requestType === "newPageRequest") {
           this.setState({
-            blogList: response.json.data,
-            pagination: response.json.pagination,
+            blogList: response.data.data,
+            pagination: response.data.pagination,
             isWaitingResponse: false,
             isNewPageRequested: false
           });
@@ -108,7 +97,7 @@ class Blog extends React.Component {
         IS_CONSOLE_LOG_OPEN &&
           console.log(
             "BlogRequest Response",
-            response.json,
+            response.data,
             this.state.pagination
           );
       }
@@ -167,13 +156,6 @@ class Blog extends React.Component {
                 total={this.state.pagination.total_count}
               />
             </div>
-          </div>
-          <div>
-            <ReCaptcha
-              sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-              action="blog"
-              verifyCallback={this.verifyReCaptchaCallback}
-            />
           </div>
           <div className="footer-blog">
             <Footer />

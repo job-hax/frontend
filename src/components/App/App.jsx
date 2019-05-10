@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Redirect } from "react-router-dom";
-import { loadReCaptcha } from "react-recaptcha-v3";
 import { Alert } from "antd";
 
 import Header from "../Partials/Header/Header.jsx";
@@ -23,7 +22,7 @@ import SignIn from "../UserAuth/SignIn/SignIn.jsx";
 import SignUp from "..//UserAuth/SignUp/SignUp.jsx";
 import Action from "../UserAuth/Action/Action.jsx";
 import ProfilePage from "../ProfilePage/ProfilePage.jsx";
-import { fetchApi } from "../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../utils/api/fetch_api";
 
 import { googleClientId } from "../../config/config.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
@@ -66,6 +65,7 @@ class App extends Component {
     this.toggleNotificationsDisplay = this.toggleNotificationsDisplay.bind(
       this
     );
+    this.setIsProfileUpdated = this.setIsProfileUpdated.bind(this);
     this.passStatesFromSignin = this.passStatesFromSignin.bind(this);
     this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this);
     this.setIsUserAuthenticated = this.setIsUserAuthenticated.bind(this);
@@ -76,7 +76,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    loadReCaptcha("6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY");
     window.gapi.load("client:auth2", () => {
       window.gapi.client
         .init({
@@ -93,13 +92,11 @@ class App extends Component {
           config.body.token = this.googleAuth.currentUser
             .get()
             .getAuthResponse().access_token;
-          config.body = JSON.stringify(config.body);
-          fetchApi(url, config).then(response => {
-            console.log(config, response);
-            if (response.ok) {
+          axiosCaptcha(url, config, "signin").then(response => {
+            if (response.statusText === "OK") {
               this.token = `${
-                response.json.data.token_type
-              } ${response.json.data.access_token.trim()}`;
+                response.data.data.token_type
+              } ${response.data.data.access_token.trim()}`;
               IS_CONSOLE_LOG_OPEN && console.log(this.token);
               this.active = true;
               this.setState({
@@ -110,7 +107,6 @@ class App extends Component {
             }
           });
           this.setState({ isAuthenticationChecking: false });
-          config.body = JSON.parse(config.body);
         });
     });
   }
@@ -118,9 +114,9 @@ class App extends Component {
   componentDidUpdate() {
     if (this.state.token != "" && this.state.isPollChecking) {
       getPollRequest.config.headers.Authorization = this.state.token;
-      fetchApi(getPollRequest.url, getPollRequest.config).then(response => {
-        if (response.ok) {
-          this.pollData = response.json.data;
+      axiosCaptcha(getPollRequest.url, getPollRequest.config).then(response => {
+        if (response.statusText === "OK") {
+          this.pollData = response.data.data;
           this.setState({ pollData: this.pollData, isPollChecking: false });
           this.state.pollData.map(
             poll =>
@@ -132,10 +128,10 @@ class App extends Component {
     }
     if (this.state.token != "" && this.state.profileData.length == 0) {
       getProfileRequest.config.headers.Authorization = this.state.token;
-      fetchApi(getProfileRequest.url, getProfileRequest.config).then(
+      axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
         response => {
-          if (response.ok) {
-            this.profileData = response.json.data;
+          if (response.statusText === "OK") {
+            this.profileData = response.data.data;
             this.setState({ profileData: this.profileData });
             console.log("profileData", this.state.profileData);
           }
@@ -180,10 +176,10 @@ class App extends Component {
 
   checkNotifications() {
     notificationsRequest.config.headers.Authorization = this.state.token;
-    fetchApi(notificationsRequest.url, notificationsRequest.config).then(
+    axiosCaptcha(notificationsRequest.url, notificationsRequest.config).then(
       response => {
-        if (response.ok) {
-          this.notificationsList = response.json.data;
+        if (response.statusText === "OK") {
+          this.notificationsList = response.data.data;
           this.setState({
             notificationsList: this.notificationsList
           });
@@ -205,40 +201,38 @@ class App extends Component {
     IS_CONSOLE_LOG_OPEN &&
       console.log("handle signout config body", logOutUserRequest.config.body);
     logOutUserRequest.config.body.token = this.state.token;
-    logOutUserRequest.config.body = JSON.stringify(
-      logOutUserRequest.config.body
-    );
-    fetchApi(logOutUserRequest.url, logOutUserRequest.config).then(response => {
-      if (response.ok) {
-        console.log(response.json);
-        if (response.json.success === true) {
-          this.googleAuth.signOut();
-          this.googleAuth.disconnect();
-          this.setState({
-            isUserAuthenticated: false,
-            token: "",
-            isProfileUpdated: false,
-            active: false,
-            isUserLoggedIn: false,
-            pollData: [],
-            notificationsList: [],
-            profileData: []
-          });
-          IS_CONSOLE_LOG_OPEN &&
-            console.log(
-              "handle signOut isUserLoggedIn",
-              this.state.isUserLoggedIn
-            );
-          <Redirect to="/home" />;
+    axiosCaptcha(logOutUserRequest.url, logOutUserRequest.config, false).then(
+      response => {
+        if (response.statusText === "OK") {
+          console.log(response.data);
+          if (response.data.success === true) {
+            this.googleAuth.signOut();
+            this.googleAuth.disconnect();
+            this.setState({
+              isUserAuthenticated: false,
+              token: "",
+              isProfileUpdated: false,
+              active: false,
+              isUserLoggedIn: false,
+              pollData: [],
+              notificationsList: [],
+              profileData: []
+            });
+            IS_CONSOLE_LOG_OPEN &&
+              console.log(
+                "handle signOut isUserLoggedIn",
+                this.state.isUserLoggedIn
+              );
+            <Redirect to="/home" />;
+          } else {
+            console.log(response, response.data.error_message);
+            showAlert(5000, "error", "Error: " + response.data.error_message);
+          }
         } else {
-          console.log(response, response.json.error_message);
-          showAlert(5000, "error", "Error: " + response.json.error_message);
+          showAlert(5000, "error", "Something went wrong!");
         }
-      } else {
-        showAlert(5000, "error", "Something went wrong!");
       }
-    });
-    logOutUserRequest.config.body = JSON.parse(logOutUserRequest.config.body);
+    );
   }
 
   showAlert(time, type, message) {
