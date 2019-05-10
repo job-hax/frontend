@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Redirect } from "react-router-dom";
-import { loadReCaptcha } from "react-recaptcha-v3";
 import { Alert } from "antd";
 
 import Header from "../Partials/Header/Header.jsx";
@@ -66,6 +65,7 @@ class App extends Component {
     this.toggleNotificationsDisplay = this.toggleNotificationsDisplay.bind(
       this
     );
+    this.setIsProfileUpdated = this.setIsProfileUpdated.bind(this);
     this.passStatesFromSignin = this.passStatesFromSignin.bind(this);
     this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this);
     this.setIsUserAuthenticated = this.setIsUserAuthenticated.bind(this);
@@ -76,7 +76,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    loadReCaptcha("6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY");
     window.gapi.load("client:auth2", () => {
       window.gapi.client
         .init({
@@ -93,9 +92,7 @@ class App extends Component {
           config.body.token = this.googleAuth.currentUser
             .get()
             .getAuthResponse().access_token;
-          config.body = JSON.stringify(config.body);
-          axiosCaptcha(url, config).then(response => {
-            console.log(config, response);
+          axiosCaptcha(url, config, "signin").then(response => {
             if (response.statusText === "OK") {
               this.token = `${
                 response.data.data.token_type
@@ -110,7 +107,6 @@ class App extends Component {
             }
           });
           this.setState({ isAuthenticationChecking: false });
-          config.body = JSON.parse(config.body);
         });
     });
   }
@@ -205,10 +201,7 @@ class App extends Component {
     IS_CONSOLE_LOG_OPEN &&
       console.log("handle signout config body", logOutUserRequest.config.body);
     logOutUserRequest.config.body.token = this.state.token;
-    logOutUserRequest.config.body = JSON.stringify(
-      logOutUserRequest.config.body
-    );
-    axiosCaptcha(logOutUserRequest.url, logOutUserRequest.config).then(
+    axiosCaptcha(logOutUserRequest.url, logOutUserRequest.config, false).then(
       response => {
         if (response.statusText === "OK") {
           console.log(response.data);
@@ -240,7 +233,6 @@ class App extends Component {
         }
       }
     );
-    logOutUserRequest.config.body = JSON.parse(logOutUserRequest.config.body);
   }
 
   showAlert(time, type, message) {

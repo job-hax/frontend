@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { ReCaptcha } from "react-recaptcha-v3";
 import { Form, Input, Icon, Select, Checkbox, Button } from "antd";
 
 import { googleClientId } from "../../../config/config.js";
@@ -33,14 +32,7 @@ class SignUpPage extends Component {
     this.compareToFirstPassword = this.compareToFirstPassword.bind(this);
     this.validateToNextPassword = this.validateToNextPassword.bind(this);
     this.handleConfirmBlur = this.handleConfirmBlur.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
     this.handleGoogleSignIn = this.handleGoogleSignIn.bind(this);
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    registerUserRequest.config.body.recaptcha_token = recaptchaToken;
   }
 
   compareToFirstPassword(rule, value, callback) {
@@ -94,8 +86,7 @@ class SignUpPage extends Component {
               config.body.token = this.googleAuth.currentUser
                 .get()
                 .getAuthResponse().access_token;
-              config.body = JSON.stringify(config.body);
-              axiosCaptcha(url, config).then(response => {
+              axiosCaptcha(url, config, "signin").then(response => {
                 if (response.statusText === "OK") {
                   this.token = `${
                     response.data.data.token_type
@@ -121,7 +112,6 @@ class SignUpPage extends Component {
               this.props.setIsAuthenticationChecking(
                 this.state.isAuthenticationChecking
               );
-              config.body = JSON.parse(config.body);
             }
           });
         });
@@ -130,9 +120,9 @@ class SignUpPage extends Component {
 
   postGoogleProfilePhoto(photoURL, token) {
     updateProfilePhotoRequest.config.headers.Authorization = token;
-    updateProfilePhotoRequest.config.body = JSON.stringify({
+    updateProfilePhotoRequest.config.body = {
       photo_url: photoURL
-    });
+    };
     console.log(updateProfilePhotoRequest);
     axiosCaptcha(
       updateProfilePhotoRequest.url,
@@ -161,48 +151,35 @@ class SignUpPage extends Component {
         registerUserRequest.config.body.email = event.target[1].value;
         registerUserRequest.config.body.password = event.target[2].value;
         registerUserRequest.config.body.password2 = event.target[3].value;
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "handle sign up config body",
-            registerUserRequest.config.body
-          );
-        registerUserRequest.config.body = JSON.stringify(
-          registerUserRequest.config.body
-        );
-        axiosCaptcha(registerUserRequest.url, registerUserRequest.config).then(
-          response => {
-            if (response.statusText === "OK") {
-              console.log(response.data);
-              if (response.data.success === true) {
-                this.props.alert(
-                  5000,
-                  "success",
-                  "Registration mail has sent to your email successfully! \nPlease click the link on your email to activate your account!"
-                );
-              } else {
-                console.log(response, response.data.error_message);
-                this.props.alert(
-                  5000,
-                  "error",
-                  "Error: " + response.data.error_message
-                );
-              }
+        axiosCaptcha(
+          registerUserRequest.url,
+          registerUserRequest.config,
+          "signup"
+        ).then(response => {
+          if (response.statusText === "OK") {
+            console.log(response.data);
+            if (response.data.success === true) {
+              this.props.alert(
+                5000,
+                "success",
+                "Registration mail has sent to your email successfully! \nPlease click the link on your email to activate your account!"
+              );
             } else {
-              if (response.data == "500") {
-                this.props.alert(
-                  3000,
-                  "error",
-                  "You have to fill out all from!"
-                );
-              } else {
-                this.props.alert(5000, "error", "Something went wrong!");
-              }
+              console.log(response, response.data.error_message);
+              this.props.alert(
+                5000,
+                "error",
+                "Error: " + response.data.error_message
+              );
+            }
+          } else {
+            if (response.data == "500") {
+              this.props.alert(3000, "error", "You have to fill out all from!");
+            } else {
+              this.props.alert(5000, "error", "Something went wrong!");
             }
           }
-        );
-        registerUserRequest.config.body = JSON.parse(
-          registerUserRequest.config.body
-        );
+        });
       } else {
         this.props.alert(
           3000,
@@ -377,13 +354,6 @@ class SignUpPage extends Component {
         </Form.Item>
         <div style={{ fontSize: "90%" }}>
           Do you have an account? Go <Link to="/signin">sign in!</Link>
-        </div>
-        <div>
-          <ReCaptcha
-            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-            action="signup"
-            verifyCallback={this.verifyReCaptchaCallback}
-          />
         </div>
       </Form>
     );

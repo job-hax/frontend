@@ -1,6 +1,5 @@
 import React from "react";
 import { Pagination, Icon } from "antd";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
@@ -27,10 +26,27 @@ class Blog extends React.Component {
 
     this.getData = this.getData.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
+    postUsersRequest.config.headers.Authorization = this.props.token;
+    axiosCaptcha(
+      postUsersRequest.url("verify_recaptcha"),
+      postUsersRequest.config,
+      "blog"
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
+          this.setState({ isUpdating: false });
+          console.log(response, response.data.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
+      }
+    });
     this.getData("initialRequest");
   }
 
@@ -45,33 +61,6 @@ class Blog extends React.Component {
         this.setState({ isNewPageRequested: false });
       }
     }
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    postUsersRequest.config["body"] = JSON.stringify({
-      recaptcha_token: recaptchaToken,
-      action: "blog"
-    });
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    axiosCaptcha(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response, response.data.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
-        }
-      }
-      postUsersRequest.config["body"] = {};
-    });
   }
 
   getData(requestType) {
@@ -167,13 +156,6 @@ class Blog extends React.Component {
                 total={this.state.pagination.total_count}
               />
             </div>
-          </div>
-          <div>
-            <ReCaptcha
-              sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-              action="blog"
-              verifyCallback={this.verifyReCaptchaCallback}
-            />
           </div>
           <div className="footer-blog">
             <Footer />

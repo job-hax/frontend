@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import { ReCaptcha } from "react-recaptcha-v3";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import FeatureArea from "./SubComponents/FeatureArea.jsx";
@@ -53,10 +52,26 @@ class MetricsGlobal extends PureComponent {
     this.setTrendingDataCount = this.setTrendingDataCount.bind(this);
     this.setTrendingDataYear = this.setTrendingDataYear.bind(this);
     this.setTrendingDataStatus = this.setTrendingDataStatus.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
   }
 
   componentDidMount() {
+    postUsersRequest.config.headers.Authorization = this.props.token;
+    axiosCaptcha(
+      postUsersRequest.url("verify_recaptcha"),
+      postUsersRequest.config,
+      "metrics_global"
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success != true) {
+          this.setState({ isUpdating: false });
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
+      }
+    });
     this.setState({
       trendingUrl:
         apiRoot +
@@ -78,33 +93,6 @@ class MetricsGlobal extends PureComponent {
     ) {
       this.getTrendingData(this.state.trendingUrl);
     }
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
-    postUsersRequest.config["body"] = JSON.stringify({
-      recaptcha_token: recaptchaToken,
-      action: "metrics_global"
-    });
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    axiosCaptcha(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response, response.data.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
-        }
-      }
-      postUsersRequest.config["body"] = {};
-    });
   }
 
   getStatisticsData() {
@@ -337,13 +325,6 @@ class MetricsGlobal extends PureComponent {
             data={this.state.appsMonthSourcesWithTotal}
             months={this.state.currentMonthsOfLastYear}
             series={this.state.appsCountByMonthWithTotal}
-          />
-        </div>
-        <div>
-          <ReCaptcha
-            sitekey="6LfOH6IUAAAAAL4Ezv-g8eUzkkERCWlnnPq_SdkY"
-            action="metrics_global"
-            verifyCallback={this.verifyReCaptchaCallback}
           />
         </div>
       </div>

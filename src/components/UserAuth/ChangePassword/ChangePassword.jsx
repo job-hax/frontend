@@ -26,10 +26,10 @@ class ChangePassword extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log("Received values of form: ", values);
-        postUsersRequest.config.body = JSON.stringify({
+        postUsersRequest.config.body = {
           code: this.props.code,
           password: values.password
-        });
+        };
         console.log(postUsersRequest);
         axiosCaptcha(
           postUsersRequest.url("reset_password"),

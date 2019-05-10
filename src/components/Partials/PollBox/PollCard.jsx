@@ -24,9 +24,9 @@ class PollCard extends React.Component {
     const urlFunction = votePollRequest.url;
     votePollRequest.url = votePollRequest.url(event.target.id);
     votePollRequest.config.headers.Authorization = this.props.token;
-    votePollRequest.config.body = JSON.stringify({
+    votePollRequest.config.body = {
       item_id: this.state.selectedAnswer
-    });
+    };
     console.log(votePollRequest);
     axiosCaptcha(votePollRequest.url, votePollRequest.config).then(response => {
       votePollRequest.url = urlFunction;
