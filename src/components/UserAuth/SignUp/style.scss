@@ -28,11 +28,12 @@
         .social-buttons-container {
             padding-top: 8px;
             display: flex;
-            justify-content: end;
+            justify-content: center;
             cursor: default;
 
             .social-buttons-google {
                 border: none;
+                width: 288px;
                 border-bottom: 1px solid rgba(150, 150, 150, 0.4);
                 padding: 0 0 8px 0;
                 background-color: white;
@@ -43,8 +44,8 @@
 
                 img {
                     cursor: pointer;
-                    width: 70%;
-                    height: auto;
+                    width: 186px;
+                    height: 42px;
                 }
             }
         }
