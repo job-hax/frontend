@@ -294,6 +294,8 @@ class App extends Component {
             {window.location.pathname != "/home" && (
               <Header
                 handleSignOut={this.handleSignOut}
+                token={this.state.token}
+                alert={this.showAlert}
                 notificationsList={this.state.notificationsList}
                 notificationCheck={this.checkNotifications}
                 isNotificationsShowing={this.state.isNotificationsShowing}

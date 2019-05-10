@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
+import { syncUserEmailsRequest } from "../../../utils/api/requests.js";
 import NotificationsBox from "../NotificationsBox/NotificationsBox.jsx";
 import "./style.scss";
 
@@ -10,6 +12,7 @@ class Header extends Component {
 
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.handleSyncUserEmail = this.handleSyncUserEmail.bind(this);
   }
 
   componentWillMount() {
@@ -33,6 +36,13 @@ class Header extends Component {
   handleNotifications() {
     this.props.notificationCheck();
     this.props.toggleNotifications(true);
+  }
+
+  handleSyncUserEmail() {
+    this.props.alert(3000, "info", "Syncing with your email...");
+    const { url, config } = syncUserEmailsRequest;
+    config.headers.Authorization = this.props.token;
+    axiosCaptcha(url, config);
   }
 
   render() {
@@ -60,13 +70,16 @@ class Header extends Component {
         </div>
         <div className="right-container">
           <div className="header-icon general tooltips">
-            <Link to="/dashboard">
-              {window.location.pathname == "/dashboard" ? (
-                <img src="../../../src/assets/icons/SyncIcon@3x.png" />
-              ) : (
-                <img src="../../../src/assets/icons/BoardIcon@3x.png" />
-              )}
-            </Link>
+            {window.location.pathname == "/dashboard" ? (
+              <img
+                onClick={this.handleSyncUserEmail}
+                src="../../../src/assets/icons/SyncIcon@3x.png"
+              />
+            ) : (
+              <Link to="/dashboard">
+                (<img src="../../../src/assets/icons/BoardIcon@3x.png" />)
+              </Link>
+            )}
             <span>
               {window.location.pathname == "/dashboard"
                 ? "Refresh"
