@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Redirect } from "react-router-dom";
+import { withCookies } from "react-cookie";
 import { Alert } from "antd";
 
 import Header from "../Partials/Header/Header.jsx";
@@ -73,47 +74,29 @@ class App extends Component {
       this
     );
     this.showAlert = this.showAlert.bind(this);
+    this.cookie = this.cookie.bind(this);
   }
 
   componentDidMount() {
     window.gapi.load("client:auth2", () => {
-      window.gapi.client
-        .init({
-          clientId: googleClientId,
-          scope: "email https://www.googleapis.com/auth/gmail.readonly"
-        })
-        .then(() => {
-          this.googleAuth = window.gapi.auth2.getAuthInstance();
-          this.setState(() => ({
-            isUserAuthenticated: this.googleAuth.isSignedIn.get()
-          }));
-          this.googleAuth.isSignedIn.listen(this.onAuthUpdate);
-          const { url, config } = authenticateRequest;
-          config.body.token = this.googleAuth.currentUser
-            .get()
-            .getAuthResponse().access_token;
-          axiosCaptcha(url, config, "signin").then(response => {
-            if (response.statusText === "OK") {
-              this.token = `${
-                response.data.data.token_type
-              } ${response.data.data.access_token.trim()}`;
-              IS_CONSOLE_LOG_OPEN && console.log(this.token);
-              this.active = true;
-              this.setState({
-                token: this.token,
-                active: this.active,
-                isUserLoggedIn: true
-              });
-            }
-          });
-          this.setState({ isAuthenticationChecking: false });
-        });
+      window.gapi.client.init({
+        apiKey: "AIzaSyBnF8loY6Vqhs4QWTM_fWCP93Xidbh1kYo",
+        clientId: googleClientId,
+        scope: "email https://www.googleapis.com/auth/gmail.readonly"
+      });
     });
+    let token = this.props.cookies.get("jobhax_access_token");
+    if (token) {
+      this.setState({ token: token, active: true, isUserLoggedIn: true });
+    }
+    this.setState({ isAuthenticationChecking: false });
   }
 
   componentDidUpdate() {
     if (this.state.token != "" && this.state.isPollChecking) {
-      getPollRequest.config.headers.Authorization = this.state.token;
+      getPollRequest.config.headers.Authorization = this.props.cookies.get(
+        "jobhax_access_token"
+      );
       axiosCaptcha(getPollRequest.url, getPollRequest.config).then(response => {
         if (response.statusText === "OK") {
           this.pollData = response.data.data;
@@ -127,7 +110,9 @@ class App extends Component {
       });
     }
     if (this.state.token != "" && this.state.profileData.length == 0) {
-      getProfileRequest.config.headers.Authorization = this.state.token;
+      getProfileRequest.config.headers.Authorization = this.props.cookies.get(
+        "jobhax_access_token"
+      );
       axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
         response => {
           if (response.statusText === "OK") {
@@ -174,6 +159,24 @@ class App extends Component {
     this.setState({ isProfileUpdated: isProfileUpdated });
   }
 
+  cookie(method, name, data, path, expires) {
+    const { cookies } = this.props;
+    if (method.toUpperCase() === "GET") {
+      cookies.get(name);
+    } else if (method.toUpperCase() === "SET") {
+      cookies.set(name, data, { path: path, expires: expires });
+    } else if (method === "remove_all") {
+      cookies.get("jobhax_access_token") &&
+        cookies.remove("jobhax_access_token", { path: "/" });
+      cookies.remove("jobhax_refresh_token", { path: "/" });
+      cookies.remove("jobhax_expires_in", { path: "/" });
+      cookies.remove("google_access_token", { path: "/" });
+      cookies.remove("google_refresh_token", { path: "/" });
+      cookies.remove("google_expires_in", { path: "/" });
+      cookies.remove("remember_me", { path: "/" });
+    }
+  }
+
   checkNotifications() {
     notificationsRequest.config.headers.Authorization = this.state.token;
     axiosCaptcha(notificationsRequest.url, notificationsRequest.config).then(
@@ -206,8 +209,8 @@ class App extends Component {
         if (response.statusText === "OK") {
           console.log(response.data);
           if (response.data.success === true) {
-            this.googleAuth.signOut();
-            this.googleAuth.disconnect();
+            window.gapi.auth2.getAuthInstance().signOut();
+            this.cookie("remove_all");
             this.setState({
               isUserAuthenticated: false,
               token: "",
@@ -276,12 +279,16 @@ class App extends Component {
       console.log(
         "app isUserLoggedIn",
         isUserLoggedIn,
+        "app isUserAuthenticated",
+        isUserAuthenticated,
         "\n--token",
         this.state.token,
         "\n--active?",
         this.state.active,
         "\n profile updated?",
-        this.state.isProfileUpdated
+        this.state.isProfileUpdated,
+        "\n cookies",
+        this.props.cookies.getAll()
       );
     if (this.state.isAuthenticationChecking)
       return <Spinner message="Connecting..." />;
@@ -474,6 +481,7 @@ class App extends Component {
                   setIsUserAuthenticated={this.setIsUserAuthenticated}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
                   alert={this.showAlert}
+                  cookie={this.cookie}
                 />
               )}
             />
@@ -488,6 +496,7 @@ class App extends Component {
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
                   passStatesFromSignin={this.passStatesFromSignin}
                   setIsUserLoggedIn={this.setIsUserLoggedIn}
+                  cookie={this.cookie}
                 />
               )}
             />
@@ -518,4 +527,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withCookies(App);

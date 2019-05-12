@@ -61,6 +61,7 @@ class SignUpPage extends Component {
     window.gapi.load("client:auth2", () => {
       window.gapi.client
         .init({
+          apiKey: "AIzaSyBnF8loY6Vqhs4QWTM_fWCP93Xidbh1kYo",
           clientId: googleClientId,
           scope: "email https://www.googleapis.com/auth/gmail.readonly"
         })
@@ -74,23 +75,41 @@ class SignUpPage extends Component {
           this.googleAuth.signIn().then(response => {
             IS_CONSOLE_LOG_OPEN && console.log("signIn response", response);
             if (response.Zi.token_type === "Bearer") {
-              IS_CONSOLE_LOG_OPEN &&
-                console.log(
-                  "google access_token:",
-                  response.Zi.access_token,
-                  response,
-                  response.w3.Paa
-                );
               let photoUrl = response.w3.Paa;
               const { url, config } = authenticateRequest;
               config.body.token = this.googleAuth.currentUser
                 .get()
                 .getAuthResponse().access_token;
+              this.props.cookie(
+                "set",
+                "google_access_token",
+                config.body.token
+              );
               axiosCaptcha(url, config, "signin").then(response => {
                 if (response.statusText === "OK") {
                   this.token = `${
                     response.data.data.token_type
                   } ${response.data.data.access_token.trim()}`;
+                  IS_CONSOLE_LOG_OPEN && console.log(this.token);
+                  this.refresh_token = response.data.data.refresh_token;
+                  let date = new Date();
+                  date.setSeconds(
+                    date.getSeconds() + response.data.data.expires_in
+                  );
+                  this.expires_in = date;
+                  this.props.cookie(
+                    "set",
+                    "jobhax_access_token",
+                    this.token,
+                    "/",
+                    date
+                  );
+                  this.props.cookie(
+                    "set",
+                    "jobhax_refresh_token",
+                    this.refresh_token,
+                    "/"
+                  );
                   this.postGoogleProfilePhoto(photoUrl, this.token);
                   IS_CONSOLE_LOG_OPEN &&
                     console.log(

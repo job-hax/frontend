@@ -77,7 +77,7 @@ class Header extends Component {
               />
             ) : (
               <Link to="/dashboard">
-                (<img src="../../../src/assets/icons/BoardIcon@3x.png" />)
+                <img src="../../../src/assets/icons/BoardIcon@3x.png" />
               </Link>
             )}
             <span>
