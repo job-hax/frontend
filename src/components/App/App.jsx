@@ -48,6 +48,8 @@ class App extends Component {
       active: false,
       isUserLoggedIn: false,
       isAuthenticationChecking: true,
+      isInitialRequest: true,
+      isGapiReady: false,
       isFirstLogin: false,
       isPollChecking: true,
       isPollShowing: false,
@@ -78,50 +80,67 @@ class App extends Component {
     this.showAlert = this.showAlert.bind(this);
     this.cookie = this.cookie.bind(this);
     this.handleTokenExpiration = this.handleTokenExpiration.bind(this);
+  }
 
+  componentDidMount() {
+    this.loadGoogleInit();
+  }
+
+  async componentDidUpdate() {
+    if (this.state.isGapiReady && this.state.isInitialRequest) {
+      await this.handleTokenExpiration("app componentDidUpdate");
+      let token = this.props.cookies.get("jobhax_access_token");
+      if (token) {
+        this.setState({ token: token, active: true, isUserLoggedIn: true });
+        axiosCaptcha(getPollRequest.url, getPollRequest.config).then(
+          response => {
+            if (response.statusText === "OK") {
+              this.pollData = response.data.data;
+              this.setState({ pollData: this.pollData, isPollChecking: false });
+              this.state.pollData.map(
+                poll =>
+                  poll.is_published === true &&
+                  this.setState({ isPollShowing: true })
+              );
+            }
+          }
+        );
+        axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
+          response => {
+            if (response.statusText === "OK") {
+              this.profilePhotoUrl = response.data.data.profile_photo;
+              this.setState(
+                { profilePhotoUrl: this.profilePhotoUrl },
+                IS_CONSOLE_LOG_OPEN &&
+                  console.log("profilePhotoUrl", this.state.profilePhotoUrl)
+              );
+            }
+          }
+        );
+      }
+      this.setState({
+        isInitialRequest: false,
+        isAuthenticationChecking: false
+      });
+    }
+  }
+
+  loadGoogleInit() {
+    console.log("loading gapi");
     window.gapi.load("client:auth2", () => {
       window.gapi.client.init({
         clientId: googleClientId,
         scope: "email https://www.googleapis.com/auth/gmail.readonly",
         prompt: "select_account"
       });
+      console.log("gapi loaded");
+      this.setState({ isGapiReady: true });
     });
   }
 
-  async componentDidMount() {
-    await this.handleTokenExpiration();
-    let token = this.props.cookies.get("jobhax_access_token");
-    if (token) {
-      this.setState({ token: token, active: true, isUserLoggedIn: true });
-      axiosCaptcha(getPollRequest.url, getPollRequest.config).then(response => {
-        if (response.statusText === "OK") {
-          this.pollData = response.data.data;
-          this.setState({ pollData: this.pollData, isPollChecking: false });
-          this.state.pollData.map(
-            poll =>
-              poll.is_published === true &&
-              this.setState({ isPollShowing: true })
-          );
-        }
-      });
-      axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
-        response => {
-          if (response.statusText === "OK") {
-            this.profilePhotoUrl = response.data.data.profile_photo;
-            this.setState(
-              { profilePhotoUrl: this.profilePhotoUrl },
-              IS_CONSOLE_LOG_OPEN &&
-                console.log("profilePhotoUrl", this.state.profilePhotoUrl)
-            );
-          }
-        }
-      );
-    }
-    this.setState({ isAuthenticationChecking: false });
-  }
-
-  async handleTokenExpiration() {
-    IS_CONSOLE_LOG_OPEN && console.log("test");
+  async handleTokenExpiration(whatRequested) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("token expiration check requested by:\n", whatRequested);
     let date = new Date();
     let now = date.getTime();
     let jobhax_access_token = this.props.cookies.get("jobhax_access_token");
@@ -201,7 +220,7 @@ class App extends Component {
           );
         if (
           google_access_token_expiration &&
-          google_access_token_expiration - parseFloat(now) < 5 * 60 * 1000
+          google_access_token_expiration - parseFloat(now) < 59 * 60 * 1000
         ) {
           IS_CONSOLE_LOG_OPEN && console.log("updating google access token");
           this.reloadGoogle = await window.gapi.auth2
@@ -284,7 +303,7 @@ class App extends Component {
   }
 
   async checkNotifications() {
-    await this.handleTokenExpiration();
+    await this.handleTokenExpiration("app checkNotifications");
     axiosCaptcha(notificationsRequest.url, notificationsRequest.config).then(
       response => {
         if (response.statusText === "OK") {
@@ -530,7 +549,13 @@ class App extends Component {
             <Route
               exact
               path="/signup"
-              render={() => <Redirect to="/profile" />}
+              render={() =>
+                this.state.isFirstLogin === false ? (
+                  <Redirect to="/dashboard" />
+                ) : (
+                  <Redirect to="/profile" />
+                )
+              }
             />
             <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
             <Route
@@ -593,6 +618,21 @@ class App extends Component {
               exact
               path="/dashboard"
               render={() => <Redirect to="signin" />}
+            />
+            <Route
+              exact
+              path="/metrics"
+              render={() => <Redirect to="/signin" />}
+            />
+            <Route
+              exact
+              path="/metricsGlobal"
+              render={() => <Redirect to="/signin" />}
+            />
+            <Route
+              exact
+              path="/companies"
+              render={() => <Redirect to="/signin" />}
             />
             <Route
               exact

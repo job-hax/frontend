@@ -67,7 +67,7 @@ class Blog extends React.Component {
     const { url, config } = getBlogsRequest;
     let newUrl =
       url + "?page=" + this.state.pageNo + "&page_size=" + this.state.pageSize;
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("blog getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         if (requestType === "initialRequest") {

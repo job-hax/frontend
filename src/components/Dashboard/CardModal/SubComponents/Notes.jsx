@@ -43,7 +43,7 @@ class Notes extends React.Component {
   }
 
   async getNotes() {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("notes getNotes");
     const { card } = this.props;
     let { url, config } = getNotesRequest;
     url = url + "?jopapp_id=" + card.id;
@@ -114,7 +114,7 @@ class Notes extends React.Component {
 
   async addNote(note) {
     IS_CONSOLE_LOG_OPEN && console.log("add note requested!", note);
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("notes addNote");
     const { card } = this.props;
     const { addNoteForm, updateNoteForm } = this.state;
     IS_CONSOLE_LOG_OPEN &&
@@ -153,7 +153,7 @@ class Notes extends React.Component {
   }
 
   async deleteNote(id) {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("notes deleteNote");
     const body = {
       jobapp_note_id: id
     };
