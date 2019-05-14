@@ -34,34 +34,32 @@ class Companies extends React.Component {
     this.handlePageChange = this.handlePageChange.bind(this);
   }
 
-  componentDidMount() {
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    axiosCaptcha(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config,
-      "companies"
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response, response.data.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
+  async componentDidMount() {
+    if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
+      this.setState({ isInitialRequest: true });
+      await this.getData("initialRequest");
+      axiosCaptcha(
+        postUsersRequest.url("verify_recaptcha"),
+        postUsersRequest.config,
+        "companies"
+      ).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success != true) {
+            this.setState({ isUpdating: false });
+            console.log(response, response.data.error_message);
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
         }
-      }
-    });
-    this.getData("initialRequest");
+      });
+    }
   }
 
   componentDidUpdate() {
-    if (this.props.active === true) {
-      if (this.state.isInitialRequest === "beforeRequest") {
-        this.setState({ isInitialRequest: true });
-        this.getData("initialRequest");
-      }
+    if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       if (this.state.isNewPageRequested === true) {
         this.getData("newPageRequest");
         this.setState({ isNewPageRequested: false });
@@ -73,15 +71,8 @@ class Companies extends React.Component {
     }
   }
 
-  getData(requestType) {
+  async getData(requestType) {
     this.setState({ isWaitingResponse: true });
-    IS_CONSOLE_LOG_OPEN &&
-      console.log(
-        "companies token",
-        this.props.token,
-        "\nactive?",
-        this.props.active
-      );
     const { url, config } = getCompaniesRequest;
     let newUrl =
       url +
@@ -91,7 +82,7 @@ class Companies extends React.Component {
       this.state.pageSize +
       "&q=" +
       this.state.query;
-    config.headers.Authorization = this.props.token;
+    await this.props.handleTokenExpiration();
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         if (requestType === "initialRequest") {
@@ -137,26 +128,22 @@ class Companies extends React.Component {
   generateCompanyCards() {
     return this.state.companies.data.map(company => (
       <div key={company.id}>
-        <CompanyCards company={company} token={this.props.token} />
+        <CompanyCards
+          company={company}
+          handleTokenExpiration={this.props.handleTokenExpiration}
+        />
       </div>
     ));
   }
 
   render() {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log(
-        "companies token",
-        this.props.token,
-        "initialrequest",
-        this.state.isInitialRequest
-      );
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing companies..." />;
     if (this.state.isNewPageRequested === true)
       return <Spinner message={"Preparing page " + this.state.pageNo} />;
-    if (this.props.active && this.state.isInitialRequest === false) {
+    if (this.state.isInitialRequest === false) {
       return (
         <div>
           <div className="reviews-container">
@@ -195,7 +182,15 @@ class Companies extends React.Component {
               </div>
             </div>
           </div>
-          <Footer />
+          <div
+            className={
+              this.state.companies.pagination.total_count < 2
+                ? "bottom-fixed-footer"
+                : ""
+            }
+          >
+            <Footer />
+          </div>
         </div>
       );
     }

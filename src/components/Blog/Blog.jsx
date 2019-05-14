@@ -28,34 +28,33 @@ class Blog extends React.Component {
     this.handlePageChange = this.handlePageChange.bind(this);
   }
 
-  componentDidMount() {
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    axiosCaptcha(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config,
-      "blog"
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response, response.data.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
+  async componentDidMount() {
+    if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
+      this.setState({ isInitialRequest: true });
+      await this.getData("initialRequest");
+      axiosCaptcha(
+        postUsersRequest.url("verify_recaptcha"),
+        postUsersRequest.config,
+        "blog"
+      ).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success != true) {
+            this.setState({ isUpdating: false });
+            IS_CONSOLE_LOG_OPEN &&
+              console.log(response, response.data.error_message);
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
         }
-      }
-    });
-    this.getData("initialRequest");
+      });
+    }
   }
 
   componentDidUpdate() {
-    if (this.props.active === true) {
-      if (this.state.isInitialRequest === "beforeRequest") {
-        this.setState({ isInitialRequest: true });
-        this.getData("initialRequest");
-      }
+    if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       if (this.state.isNewPageRequested === true) {
         this.getData("newPageRequest");
         this.setState({ isNewPageRequested: false });
@@ -63,20 +62,12 @@ class Blog extends React.Component {
     }
   }
 
-  getData(requestType) {
+  async getData(requestType) {
     this.setState({ isWaitingResponse: true });
-    IS_CONSOLE_LOG_OPEN &&
-      console.log(
-        "companies token",
-        this.props.token,
-        "\nactive?",
-        this.props.active
-      );
     const { url, config } = getBlogsRequest;
     let newUrl =
       url + "?page=" + this.state.pageNo + "&page_size=" + this.state.pageSize;
-    config.headers.Authorization = this.props.token;
-    getBlogsRequest.config.headers.Authorization = this.props.token;
+    await this.props.handleTokenExpiration();
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         if (requestType === "initialRequest") {
@@ -130,8 +121,8 @@ class Blog extends React.Component {
           viewCount={blog.view_count}
           upVote={blog.upvote}
           downVote={blog.downvote}
-          token={this.props.token}
           alert={this.props.alert}
+          handleTokenExpiration={this.props.handleTokenExpiration}
         />
       </div>
     ));

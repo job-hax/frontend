@@ -35,7 +35,8 @@ class ProfilePage extends React.Component {
       selectedDateShowing: new Date(),
       selectedDatePost: null,
       data: [],
-      body: {}
+      body: {},
+      isInitialRequest: "beforeRequest"
     };
 
     this.body = {};
@@ -52,28 +53,27 @@ class ProfilePage extends React.Component {
     this.handlePhoneNumberChange = this.handlePhoneNumberChange.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({ isNotificationsChecking: true });
-  }
-
-  componentDidUpdate() {
-    if (this.props.token != "" && this.state.isNotificationsChecking) {
+  async componentDidMount() {
+    if (this.props.cookie("get", "jobhax_access_token") != "") {
+      await this.props.handleTokenExpiration();
       this.checkNotifications();
       this.getEmploymentStatuses();
-    }
-    if (this.props.token != "" && !this.state.isUpdated) {
-      this.getProfileData();
+      this.getProfileData(false);
     }
   }
 
-  getProfileData() {
-    if (this.state.token != "" && this.state.data.length == 0) {
-      getProfileRequest.config.headers.Authorization = this.props.token;
+  async getProfileData(isTokenExpirationChecking) {
+    if (this.state.data.length == 0) {
+      isTokenExpirationChecking && (await this.props.handleTokenExpiration());
       axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
         response => {
           if (response.statusText === "OK") {
             this.data = response.data.data;
-            this.setState({ data: this.data, isUpdated: true });
+            this.setState({
+              data: this.data,
+              isUpdated: true,
+              isInitialRequest: false
+            });
             if (this.data.dob) {
               this.setState({
                 selectedDateShowing: new Date(this.data.dob + "T06:00:00")
@@ -87,7 +87,6 @@ class ProfilePage extends React.Component {
   }
 
   checkNotifications() {
-    notificationsRequest.config.headers.Authorization = this.props.token;
     axiosCaptcha(notificationsRequest.url, notificationsRequest.config).then(
       response => {
         if (response.statusText === "OK") {
@@ -103,7 +102,6 @@ class ProfilePage extends React.Component {
   }
 
   getEmploymentStatuses() {
-    getEmploymentStatusesRequest.config.headers.Authorization = this.props.token;
     axiosCaptcha(
       getEmploymentStatusesRequest.url,
       getEmploymentStatusesRequest.config
@@ -121,18 +119,22 @@ class ProfilePage extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    this.submitProfileUpdate(event.target);
+  }
+
+  async submitProfileUpdate(target) {
+    await this.props.handleTokenExpiration();
     this.setState({
       isUpdating: true
     });
-    updateProfileRequest.config.headers.Authorization = this.props.token;
-    if (event.target[4].value.trim() != (null || "")) {
-      this.body["first_name"] = event.target[4].value.trim();
+    if (target[4].value.trim() != (null || "")) {
+      this.body["first_name"] = target[4].value.trim();
     }
-    if (event.target[5].value.trim() != (null || "")) {
-      this.state.body[" last_name"] = event.target[5].value.trim();
+    if (target[5].value.trim() != (null || "")) {
+      this.state.body[" last_name"] = target[5].value.trim();
     }
     updateProfileRequest.config.body = this.body;
-    console.log(event.target, updateProfileRequest.config.body);
+    console.log(target, updateProfileRequest.config.body);
     console.log(updateProfileRequest);
     axiosCaptcha(
       updateProfileRequest.url,
@@ -153,7 +155,7 @@ class ProfilePage extends React.Component {
             "success",
             "Your profile have been updated successfully!"
           );
-          this.props.setIsProfileUpdated(true);
+          this.props.setIsFirstLogin(true);
           console.log(this.state.data);
         } else {
           this.setState({ isUpdating: false });
@@ -174,14 +176,18 @@ class ProfilePage extends React.Component {
 
   handleSettingsSubmit(event) {
     event.preventDefault();
-    updateProfileRequest.config.headers.Authorization = this.props.token;
-    if (event.target[1].value === event.target[2].value) {
+    this.submitProfileUpdate(event.target);
+  }
+
+  async submitProfileUpdate(target) {
+    await this.props.handleTokenExpiration();
+    if (target[1].value === target[2].value) {
       this.setState({ isUpdating: true });
-      if (event.target[1].value != (null || "")) {
-        this.settingsBody["password"] = event.target[1].value;
+      if (target[1].value != (null || "")) {
+        this.settingsBody["password"] = target[1].value;
       }
-      if (event.target[0].value != (null || "")) {
-        this.settingsBody["username"] = event.target[0].value;
+      if (target[0].value != (null || "")) {
+        this.settingsBody["username"] = target[0].value;
       }
       updateProfileRequest.config.body = this.settingsBody;
       console.log(updateProfileRequest.config.body);
@@ -656,6 +662,8 @@ class ProfilePage extends React.Component {
       position: "relative"
     };
     console.log("render run! \n data:", this.state.data);
+    if (this.state.isInitialRequest === "beforeRequest")
+      return <Spinner message="Reaching your account..." />;
     if (this.state.data.length == 0) {
       return <Spinner message="Reaching profile data..." />;
     }

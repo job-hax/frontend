@@ -27,13 +27,13 @@ class MoveOptions extends React.Component {
     }));
   }
 
-  deleteJobFunction() {
-    const { card, token, deleteJobFromList, columnName } = this.props;
+  async deleteJobFunction() {
+    await this.props.handleTokenExpiration();
+    const { card, deleteJobFromList, columnName } = this.props;
     const body = {
       jobapp_id: card.id
     };
     let { url, config } = deleteJobRequest;
-    config.headers.Authorization = token;
     IS_CONSOLE_LOG_OPEN && console.log("delete job request body\n", body);
     config.body = body;
     axiosCaptcha(url, config).then(response => {
@@ -46,8 +46,9 @@ class MoveOptions extends React.Component {
     });
   }
 
-  updateAsRejected() {
-    const { card, token, moveToRejected, columnName } = this.props;
+  async updateAsRejected() {
+    await this.props.handleTokenExpiration();
+    const { card, moveToRejected, columnName } = this.props;
     var isRejected = !card.isRejected;
     const body = {
       jobapp_id: card.id,
@@ -55,7 +56,6 @@ class MoveOptions extends React.Component {
       rejected: isRejected
     };
     let { url, config } = updateJobStatusRequest;
-    config.headers.Authorization = token;
     IS_CONSOLE_LOG_OPEN &&
       console.log("update to rejected request body\n", body);
     config.body = body;

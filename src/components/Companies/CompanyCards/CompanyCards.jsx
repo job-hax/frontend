@@ -33,10 +33,10 @@ class CompanyCards extends React.Component {
     });
   }
 
-  handleSeeReviews() {
+  async handleSeeReviews() {
+    await this.props.handleTokenExpiration();
     let newPositionUrl =
       getCompaniesRequest.url + this.props.company.id + "/positions";
-    getCompaniesRequest.config.headers.Authorization = this.props.token;
     axiosCaptcha(newPositionUrl, getCompaniesRequest.config).then(response => {
       if (response.statusText === "OK") {
         this.setState({
@@ -54,7 +54,6 @@ class CompanyCards extends React.Component {
       "?company_id=" +
       this.props.company.id +
       "&all_reviews=true";
-    getReviewsRequest.config.headers.Authorization = this.props.token;
     axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
       if (response.statusText === "OK") {
         this.setState({
@@ -119,7 +118,7 @@ class CompanyCards extends React.Component {
               reviewsList={this.state.reviewsList}
               positionsList={this.state.positionsList}
               company_id={this.props.company.id}
-              token={this.props.token}
+              handleTokenExpiration={this.props.handleTokenExpiration}
               filterDisplay={true}
               style={{ paddingTop: 0, maxHeight: "50vh" }}
               reviewContainerStyle={{
