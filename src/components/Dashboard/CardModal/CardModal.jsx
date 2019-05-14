@@ -40,8 +40,7 @@ class CardModal extends PureComponent {
     this.setReview = this.setReview.bind(this);
   }
 
-  componentDidMount() {
-    postUsersRequest.config.headers.Authorization = this.props.token;
+  async componentDidMount() {
     axiosCaptcha(
       postUsersRequest.url("verify_recaptcha"),
       postUsersRequest.config,
@@ -60,20 +59,16 @@ class CardModal extends PureComponent {
       }
     });
     if (this.props.card.companyObject.review_id) {
+      await this.props.handleTokenExpiration();
       let newReviewsUrl =
         getReviewsRequest.url +
         "?review_id=" +
         this.props.card.companyObject.review_id;
-      getReviewsRequest.config.headers.Authorization = this.props.token;
       axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
         if (response.statusText === "OK") {
           this.setState({ review: response.data.data });
           IS_CONSOLE_LOG_OPEN &&
-            console.log(
-              "card modal position old review",
-              response.data.data,
-              this.state.review
-            );
+            console.log("card modal position old review", response.data.data);
         }
       });
     }
@@ -83,8 +78,9 @@ class CardModal extends PureComponent {
     this.setState({ isEnteringReview: !this.state.isEnteringReview });
   }
 
-  toggleReviewDisplay() {
+  async toggleReviewDisplay() {
     if (!this.state.isReviewsDisplaying) {
+      await this.props.handleTokenExpiration();
       let newReviewsUrl =
         getReviewsRequest.url +
         "?company_id=" +
@@ -92,7 +88,6 @@ class CardModal extends PureComponent {
         "&position_id=" +
         this.props.card.position.id +
         "&all_reviews=true";
-      getReviewsRequest.config.headers.Authorization = this.props.token;
       axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
         if (response.statusText === "OK") {
           this.setState({ reviewsList: response.data.data });
@@ -162,10 +157,10 @@ class CardModal extends PureComponent {
               icon={this.props.icon}
               id={this.props.id}
               columnName={this.props.columnName}
-              token={this.props.token}
               deleteJobFromList={this.props.deleteJobFromList}
               moveToRejected={this.props.moveToRejected}
               updateApplications={this.props.updateApplications}
+              handleTokenExpiration={this.props.handleTokenExpiration}
             />
 
             <div className="modal-body">
@@ -211,7 +206,6 @@ class CardModal extends PureComponent {
                           reviewsList={this.state.reviewsList}
                           positionsList={[]}
                           company_id={this.props.card.companyObject.id}
-                          token={this.props.token}
                           filterDisplay={false}
                           style={{
                             height: "auto",
@@ -249,20 +243,25 @@ class CardModal extends PureComponent {
                     ) : (
                       <div className="modal-reviews-container">
                         <ReviewInput
-                          token={this.props.token}
                           toggleReview={this.toggleReviewEdit}
                           card={this.props.card}
                           setCompany={this.props.updateCard}
                           setReview={this.setReview}
                           oldReview={this.state.review}
                           alert={this.props.alert}
+                          handleTokenExpiration={
+                            this.props.handleTokenExpiration
+                          }
                         />
                       </div>
                     )}
                   </div>
                 </div>
                 <div className="modal-body main notes">
-                  <Notes card={this.props.card} token={this.props.token} />
+                  <Notes
+                    card={this.props.card}
+                    handleTokenExpiration={this.props.handleTokenExpiration}
+                  />
                 </div>
               </div>
             </div>

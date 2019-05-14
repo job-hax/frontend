@@ -35,8 +35,8 @@ class BlogCard extends React.Component {
     });
   }
 
+  // Do not need to check if token expired because when you get blog details you also post BlogsStats which does the check//
   getBlogDetail() {
-    getBlogRequest.config.headers.Authorization = this.props.token;
     axiosCaptcha(getBlogRequest.url(this.props.id), getBlogRequest.config).then(
       response => {
         if (response.statusText === "OK") {
@@ -48,7 +48,8 @@ class BlogCard extends React.Component {
             IS_CONSOLE_LOG_OPEN && console.log(this.state.blog.content);
           } else {
             this.setState({ isUpdating: false });
-            console.log(response, response.data.error_message);
+            IS_CONSOLE_LOG_OPEN &&
+              console.log(response, response.data.error_message);
             this.props.alert(
               5000,
               "error",
@@ -63,9 +64,9 @@ class BlogCard extends React.Component {
     );
   }
 
-  postBlogStats(type) {
-    postBlogRequest.config.headers.Authorization = this.props.token;
+  async postBlogStats(type) {
     let newUrl = postBlogRequest.url(this.props.id) + "/" + type + "/";
+    await this.props.handleTokenExpiration();
     axiosCaptcha(newUrl, postBlogRequest.config, "blog_stats").then(
       response => {
         if (response.statusText === "OK") {
@@ -87,7 +88,8 @@ class BlogCard extends React.Component {
               this.setState({ viewCount: this.state.viewCount + 1 });
             }
           } else {
-            console.log(response, response.data.error_message);
+            IS_CONSOLE_LOG_OPEN &&
+              console.log(response, response.data.error_message);
             this.props.alert(
               5000,
               "error",
@@ -108,7 +110,7 @@ class BlogCard extends React.Component {
   }
 
   generateBlogCard() {
-    console.log(this.state.isDetailsShowing);
+    IS_CONSOLE_LOG_OPEN && console.log(this.state.isDetailsShowing);
     return (
       <div className="blog-card-container">
         <div className="blog-card-initial">

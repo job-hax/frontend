@@ -31,7 +31,8 @@ class Reviews extends React.Component {
     this.setState({ reviewsList: this.props.reviewsList });
   }
 
-  handlePositionFilterChange(value) {
+  async handlePositionFilterChange(value) {
+    await this.props.handleTokenExpiration();
     let newReviewsUrl =
       getReviewsRequest.url +
       "?company_id=" +
@@ -39,7 +40,6 @@ class Reviews extends React.Component {
       "&position_id=" +
       value +
       "&all_reviews=true";
-    getReviewsRequest.config.headers.Authorization = this.props.token;
     axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
       if (response.statusText === "OK") {
         this.setState({ reviewsList: response.data.data });

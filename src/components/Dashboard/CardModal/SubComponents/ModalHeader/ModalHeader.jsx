@@ -46,10 +46,10 @@ class ModalHeader extends React.Component {
             icon={this.props.icon}
             id={this.props.id}
             columnName={this.props.columnName}
-            token={this.props.token}
             deleteJobFromList={this.props.deleteJobFromList}
             moveToRejected={this.props.moveToRejected}
             updateApplications={this.props.updateApplications}
+            handleTokenExpiration={this.props.handleTokenExpiration}
           />
         </div>
       </div>

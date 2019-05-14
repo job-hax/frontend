@@ -35,7 +35,7 @@ class Metrics extends PureComponent {
       countByStatusesRequest: [],
       wordCountRequest: [],
       currentMonthsOfLastYear: [],
-      isWaitingResponse: "beforeRequest",
+      isInitialRequest: "beforeRequest",
       isMonthlyLine: false,
       selectedGraph: "Bar"
     };
@@ -53,38 +53,41 @@ class Metrics extends PureComponent {
     this.graphSelector = this.graphSelector.bind(this);
   }
 
-  componentDidMount() {
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    axiosCaptcha(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config,
-      "metrics"
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response, response.data.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
+  async componentDidMount() {
+    if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
+      await this.getData();
+      axiosCaptcha(
+        postUsersRequest.url("verify_recaptcha"),
+        postUsersRequest.config,
+        "metrics"
+      ).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success != true) {
+            this.setState({ isUpdating: false });
+            console.log(response, response.data.error_message);
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
         }
-      }
-    });
-    this.getData();
+      });
+    }
   }
 
   componentDidUpdate() {
     this.getData();
   }
 
-  getData() {
-    if (this.props.active && this.state.isWaitingResponse === "beforeRequest") {
-      this.setState({ isWaitingResponse: true });
-      IS_CONSOLE_LOG_OPEN && console.log("metrics token:", this.props.token);
+  async getData() {
+    if (
+      this.props.cookie("get", "jobhax_access_token") != ("" || null) &&
+      this.state.isInitialRequest === "beforeRequest"
+    ) {
+      this.setState({ isInitialRequest: true });
+      await this.props.handleTokenExpiration();
       IS_CONSOLE_LOG_OPEN && console.log("active?", this.props.active);
-      getTotalAppsCountRequest.config.headers.Authorization = this.props.token;
       IS_CONSOLE_LOG_OPEN && console.log(getTotalAppsCountRequest.config);
       axiosCaptcha(
         getTotalAppsCountRequest.url,
@@ -97,7 +100,6 @@ class Metrics extends PureComponent {
           });
         }
       });
-      getAppsCountByMonthRequest.config.headers.Authorization = this.props.token;
       axiosCaptcha(
         getAppsCountByMonthRequest.url,
         getAppsCountByMonthRequest.config
@@ -123,7 +125,6 @@ class Metrics extends PureComponent {
           });
         }
       });
-      getAppsCountByMonthWithTotalRequest.config.headers.Authorization = this.props.token;
       axiosCaptcha(
         getAppsCountByMonthWithTotalRequest.url,
         getAppsCountByMonthWithTotalRequest.config
@@ -147,7 +148,6 @@ class Metrics extends PureComponent {
           });
         }
       });
-      getCountByJobtitleAndStatusesRequest.config.headers.Authorization = this.props.token;
       axiosCaptcha(
         getCountByJobtitleAndStatusesRequest.url,
         getCountByJobtitleAndStatusesRequest.config
@@ -164,20 +164,18 @@ class Metrics extends PureComponent {
           });
         }
       });
-      getCountByStatusesRequest.config.headers.Authorization = this.props.token;
       axiosCaptcha(
         getCountByStatusesRequest.url,
         getCountByStatusesRequest.config
       ).then(response => {
         if (response.statusText === "OK") {
           this.countByStatusesRequest = response.data.data;
-          this.setState({ isWaitingResponse: false });
+          this.setState({ isInitialRequest: false });
           this.setState({
             countByStatusesRequest: this.countByStatusesRequest
           });
         }
       });
-      getWordCountRequest.config.headers.Authorization = this.props.token;
       axiosCaptcha(getWordCountRequest.url, getWordCountRequest.config).then(
         response => {
           if (response.statusText === "OK") {
@@ -196,10 +194,9 @@ class Metrics extends PureComponent {
   }
 
   render() {
-    IS_CONSOLE_LOG_OPEN && console.log("metrics token", this.props.token);
-    if (this.state.isWaitingResponse === "beforeRequest")
+    if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
-    if (this.state.isWaitingResponse === true)
+    if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing your metrics..." />;
     return (
       <div>

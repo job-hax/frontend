@@ -40,8 +40,8 @@ class PollBox extends React.Component {
               <div key={poll.id}>
                 <PollCard
                   poll={poll}
-                  token={this.props.token}
                   alert={this.props.alert}
+                  handleTokenExpiration={this.props.handleTokenExpiration}
                 />
               </div>
             )

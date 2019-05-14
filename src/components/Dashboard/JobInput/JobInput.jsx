@@ -76,11 +76,11 @@ class JobInput extends PureComponent {
     });
   }
 
-  handlePositionsSearch(value) {
+  async handlePositionsSearch(value) {
     this.setState({ jobTitle: value });
+    await this.props.handleTokenExpiration();
     const { url, config } = getPositionsRequest;
     let newUrl = url + "?q=" + value + "&count=5";
-    config.headers.Authorization = this.props.token;
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         console.log(response.data);
