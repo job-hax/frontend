@@ -53,11 +53,12 @@ class Column extends Component {
       cardsRejecteds,
       name,
       updateApplications,
-      token,
       deleteJobFromList,
       moveToRejected,
+      handleTokenExpiration,
       icon,
-      id
+      id,
+      alert
     } = this.props;
 
     if (this.state.showRejectedCards) {
@@ -65,7 +66,7 @@ class Column extends Component {
         cardsRejecteds &&
         cardsRejecteds.map(card => (
           <Card
-            token={token}
+            handleTokenExpiration={handleTokenExpiration}
             key={card.id}
             card={card}
             columnName={name}
@@ -74,7 +75,7 @@ class Column extends Component {
             updateApplications={updateApplications}
             icon={icon}
             id={id}
-            alert={this.props.alert}
+            alert={alert}
           />
         ))
       );
@@ -83,7 +84,7 @@ class Column extends Component {
       cards &&
       cards.map(card => (
         <Card
-          token={token}
+          handleTokenExpiration={handleTokenExpiration}
           columnName={name}
           key={card.id}
           card={card}
@@ -93,7 +94,7 @@ class Column extends Component {
           updateApplications={updateApplications}
           icon={icon}
           id={id}
-          alert={this.props.alert}
+          alert={alert}
         />
       ))
     );
@@ -138,8 +139,8 @@ class Column extends Component {
             showInput={showJobInput}
             toggleJobInput={this.toggleJobInput}
             columnName={name}
-            token={this.props.token}
             alert={this.props.alert}
+            handleTokenExpiration={this.props.handleTokenExpiration}
           />
         </div>
       </div>

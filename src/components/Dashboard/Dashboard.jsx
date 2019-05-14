@@ -35,7 +35,7 @@ class Dashboard extends Component {
       phoneScreenRejected: [],
       onsiteInterviewRejected: [],
       offerRejected: [],
-      isWaitingResponse: "beforeRequest"
+      isInitialRequest: "beforeRequest"
     };
 
     this.toApply = [];
@@ -54,49 +54,57 @@ class Dashboard extends Component {
     this.moveToRejected = this.moveToRejected.bind(this);
   }
 
-  componentDidMount() {
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    axiosCaptcha(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config,
-      "dashboard"
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response.data.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
+  async componentDidMount() {
+    if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
+      await this.getData();
+      axiosCaptcha(
+        postUsersRequest.url("verify_recaptcha"),
+        postUsersRequest.config,
+        "dashboard"
+      ).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success != true) {
+            this.setState({ isUpdating: false });
+            IS_CONSOLE_LOG_OPEN && console.log(response.data.error_message);
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
         }
-      }
-    });
-    this.getData();
+      });
+    }
   }
 
   componentDidUpdate() {
     this.getData();
   }
 
-  getData() {
+  async getData() {
     if (IS_MOCKING) {
       this.sortJobApplications(mockJobApps.data);
       return;
     }
-    if (this.props.active && this.state.isWaitingResponse === "beforeRequest") {
-      this.setState({ isWaitingResponse: true });
-      IS_CONSOLE_LOG_OPEN && console.log("dashboard token", this.props.token),
+    if (
+      this.props.cookie("get", "jobhax_access_token") != ("" || null) &&
+      this.state.isInitialRequest === "beforeRequest"
+    ) {
+      this.setState({ isInitialRequest: true });
+      IS_CONSOLE_LOG_OPEN &&
+        console.log(
+          "dashboard token",
+          this.props.cookie("get", "jobhax_access_token")
+        ),
         "\ndashboard active?",
         this.props.active;
       if (this.props.active) {
+        await this.props.handleTokenExpiration();
         const { url, config } = getJobAppsRequest;
-        config.headers.Authorization = this.props.token;
         axiosCaptcha(url, config).then(response => {
           if (response.statusText === "OK") {
             this.sortJobApplications(response.data.data);
-            this.setState({ isWaitingResponse: false });
+            this.setState({ isInitialRequest: false });
             IS_CONSOLE_LOG_OPEN &&
               console.log("dashboard response.data data", response.data.data);
           }
@@ -159,7 +167,7 @@ class Dashboard extends Component {
     });
   }
 
-  updateApplications(card, dragColumnName, dropColumnName) {
+  async updateApplications(card, dragColumnName, dropColumnName) {
     if (dragColumnName === dropColumnName) {
       return;
     }
@@ -170,15 +178,14 @@ class Dashboard extends Component {
     card.applicationStatus = UPDATE_APPLICATION_STATUS[dropColumnName];
     let insertedItemColumn = this.state[dropColumnName].slice();
     insertedItemColumn.unshift(card);
-
+    await this.props.handleTokenExpiration();
+    console.log("ok? after");
     let { url, config } = updateJobStatusRequest;
     config.body = {
       jobapp_id: card.id,
       status_id: card.applicationStatus.id,
       rejected: false
     };
-    config.headers.Authorization = this.props.token;
-
     axiosCaptcha(url, config).then(response => {
       if (response.statusText === "OK") {
         this.setState(() => ({
@@ -189,30 +196,25 @@ class Dashboard extends Component {
     });
   }
 
-  addNewApplication({ name, title, columnName }) {
-    return new Promise(resolve => {
-      const { url, config } = addJobAppsRequest;
-      config.headers.Authorization = this.props.token;
-      config.body = {
-        job_title: title,
-        status_id: UPDATE_APPLICATION_STATUS[columnName].id,
-        company: name,
-        application_date: generateCurrentDate(),
-        source: "N/A"
-      };
+  async addNewApplication({ name, title, columnName }) {
+    await this.props.handleTokenExpiration();
+    const { url, config } = addJobAppsRequest;
+    config.body = {
+      job_title: title,
+      status_id: UPDATE_APPLICATION_STATUS[columnName].id,
+      company: name,
+      application_date: generateCurrentDate(),
+      source: "N/A"
+    };
 
-      axiosCaptcha(url, config, "add_job").then(response => {
-        if (response.statusText === "OK") {
-          let insertedItemColumn = this.state[columnName].slice();
-          insertedItemColumn.unshift(response.data.data);
-
-          this.setState(() => ({
-            [columnName]: insertedItemColumn
-          }));
-
-          resolve({ ok: true });
-        }
-      });
+    axiosCaptcha(url, config, "add_job").then(response => {
+      if (response.statusText === "OK") {
+        let insertedItemColumn = this.state[columnName].slice();
+        insertedItemColumn.unshift(response.data.data);
+        this.setState(() => ({
+          [columnName]: insertedItemColumn
+        }));
+      }
     });
   }
 
@@ -249,16 +251,10 @@ class Dashboard extends Component {
   }
 
   render() {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log(
-        "Dashboard opened!",
-        this.props.active,
-        this.state.isWaitingResponse,
-        this.props.token
-      );
-    if (this.state.isWaitingResponse === "beforeRequest")
+    IS_CONSOLE_LOG_OPEN && console.log("Dashboard opened!");
+    if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
-    if (this.state.isWaitingResponse && !IS_MOCKING)
+    if (this.state.isInitialRequest && !IS_MOCKING)
       return <Spinner message="Preparing your dashboard..." />;
     return (
       <div>
@@ -273,7 +269,7 @@ class Dashboard extends Component {
             title="TO APPLY"
             totalCount={this.state.toApply.length}
             cards={this.state.toApply}
-            token={this.props.token}
+            handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
           />
           <div className="column-divider" />
@@ -292,7 +288,7 @@ class Dashboard extends Component {
             cards={this.state.applied}
             cardsRejecteds={this.state.appliedRejected}
             message="rejected without any interview"
-            token={this.props.token}
+            handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
           />
           <div className="column-divider" />
@@ -312,7 +308,7 @@ class Dashboard extends Component {
             cards={this.state.phoneScreen}
             cardsRejecteds={this.state.phoneScreenRejected}
             message="rejected after phone screens"
-            token={this.props.token}
+            handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
           />
           <div className="column-divider" />
@@ -332,7 +328,7 @@ class Dashboard extends Component {
             cards={this.state.onsiteInterview}
             cardsRejecteds={this.state.onsiteInterviewRejected}
             message="rejected after interviews"
-            token={this.props.token}
+            handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
           />
           <div className="column-divider" />
@@ -351,7 +347,7 @@ class Dashboard extends Component {
             cards={this.state.offer}
             cardsRejecteds={this.state.offerRejected}
             message="you rejected their offer"
-            token={this.props.token}
+            handleTokenExpiration={this.props.handleTokenExpiration}
             isLastColumn={true}
             alert={this.props.alert}
           />

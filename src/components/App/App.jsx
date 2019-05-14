@@ -28,7 +28,8 @@ import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { googleClientId } from "../../config/config.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import {
-  authenticateRequest,
+  refreshTokenRequest,
+  updateGoogleTokenRequest,
   logOutUserRequest,
   getPollRequest,
   notificationsRequest,
@@ -47,16 +48,17 @@ class App extends Component {
       active: false,
       isUserLoggedIn: false,
       isAuthenticationChecking: true,
-      isProfileUpdated: true,
+      isFirstLogin: false,
       isPollChecking: true,
       isPollShowing: false,
       isAlertShowing: false,
+      isNotificationsShowing: false,
+      isAppReRenderRequested: false,
       alertType: "",
       alertMessage: "",
-      isNotificationsShowing: false,
+      profilePhotoUrl: "",
       pollData: [],
-      notificationsList: [],
-      profileData: []
+      notificationsList: []
     };
     this.notificationsList = [];
     this.onAuthUpdate = this.onAuthUpdate.bind(this);
@@ -66,7 +68,7 @@ class App extends Component {
     this.toggleNotificationsDisplay = this.toggleNotificationsDisplay.bind(
       this
     );
-    this.setIsProfileUpdated = this.setIsProfileUpdated.bind(this);
+    this.setIsFirstLogin = this.setIsFirstLogin.bind(this);
     this.passStatesFromSignin = this.passStatesFromSignin.bind(this);
     this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this);
     this.setIsUserAuthenticated = this.setIsUserAuthenticated.bind(this);
@@ -75,28 +77,22 @@ class App extends Component {
     );
     this.showAlert = this.showAlert.bind(this);
     this.cookie = this.cookie.bind(this);
-  }
+    this.handleTokenExpiration = this.handleTokenExpiration.bind(this);
 
-  componentDidMount() {
     window.gapi.load("client:auth2", () => {
       window.gapi.client.init({
-        apiKey: "AIzaSyBnF8loY6Vqhs4QWTM_fWCP93Xidbh1kYo",
         clientId: googleClientId,
-        scope: "email https://www.googleapis.com/auth/gmail.readonly"
+        scope: "email https://www.googleapis.com/auth/gmail.readonly",
+        prompt: "select_account"
       });
     });
+  }
+
+  async componentDidMount() {
+    await this.handleTokenExpiration();
     let token = this.props.cookies.get("jobhax_access_token");
     if (token) {
       this.setState({ token: token, active: true, isUserLoggedIn: true });
-    }
-    this.setState({ isAuthenticationChecking: false });
-  }
-
-  componentDidUpdate() {
-    if (this.state.token != "" && this.state.isPollChecking) {
-      getPollRequest.config.headers.Authorization = this.props.cookies.get(
-        "jobhax_access_token"
-      );
       axiosCaptcha(getPollRequest.url, getPollRequest.config).then(response => {
         if (response.statusText === "OK") {
           this.pollData = response.data.data;
@@ -108,20 +104,132 @@ class App extends Component {
           );
         }
       });
-    }
-    if (this.state.token != "" && this.state.profileData.length == 0) {
-      getProfileRequest.config.headers.Authorization = this.props.cookies.get(
-        "jobhax_access_token"
-      );
       axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
         response => {
           if (response.statusText === "OK") {
-            this.profileData = response.data.data;
-            this.setState({ profileData: this.profileData });
-            console.log("profileData", this.state.profileData);
+            this.profilePhotoUrl = response.data.data.profile_photo;
+            this.setState(
+              { profilePhotoUrl: this.profilePhotoUrl },
+              IS_CONSOLE_LOG_OPEN &&
+                console.log("profilePhotoUrl", this.state.profilePhotoUrl)
+            );
           }
         }
       );
+    }
+    this.setState({ isAuthenticationChecking: false });
+  }
+
+  async handleTokenExpiration() {
+    IS_CONSOLE_LOG_OPEN && console.log("test");
+    let date = new Date();
+    let now = date.getTime();
+    let jobhax_access_token = this.props.cookies.get("jobhax_access_token");
+    this.jobhax_refresh_token = this.props.cookies.get("jobhax_refresh_token");
+    let jobhax_access_token_expiration = parseFloat(
+      this.props.cookies.get("jobhax_access_token_expiration")
+    );
+    let google_access_token_expiration = parseFloat(
+      this.props.cookies.get("google_access_token_expiration")
+    );
+    let remember_me = this.props.cookies.get("remember_me");
+    if (jobhax_access_token === null) {
+      this.handleSignOut();
+      this.showAlert(5000, "info", "Your session time is over!");
+    } else {
+      if (jobhax_access_token_expiration === null) {
+        this.handleSignOut();
+        this.showAlert(5000, "info", "Your session time is over!");
+      }
+      let expiresIn = jobhax_access_token_expiration - parseFloat(now);
+      let expirationWarning = 5 * 60 * 1000;
+      if (expiresIn < expirationWarning) {
+        IS_CONSOLE_LOG_OPEN &&
+          console.log(
+            "expiration time checked",
+            jobhax_access_token_expiration,
+            now,
+            "\n expires in",
+            expiresIn,
+            expirationWarning,
+            "jobhax_refresh_token",
+            this.jobhax_refresh_token
+          );
+        if (remember_me === "true") {
+          const { url, config } = refreshTokenRequest;
+          config.body["refresh_token"] = this.jobhax_refresh_token;
+          const response = await axiosCaptcha(url, config, false);
+          if (response.statusText === "OK") {
+            this.token = `${
+              response.data.data.token_type
+            } ${response.data.data.access_token.trim()}`;
+            this.refresh_token = response.data.data.refresh_token;
+            this.setState({ token: this.token });
+            let date = new Date();
+            date.setSeconds(date.getSeconds() + response.data.data.expires_in);
+            this.props.cookies.set(
+              "jobhax_access_token",
+              this.token,
+              { path: "/" },
+              date
+            );
+            this.props.cookies.set(
+              "jobhax_access_token_expiration",
+              parseFloat(date.getTime()),
+              { path: "/" }
+            );
+            this.props.cookies.set("jobhax_refresh_token", this.refresh_token, {
+              path: "/"
+            });
+            IS_CONSOLE_LOG_OPEN && console.log("I am returning ok? true");
+            return true;
+          }
+        } else {
+          this.cookie("remove_all");
+          this.handleSignOut();
+          this.showAlert(5000, "info", "Your session time is over!");
+        }
+      } else {
+        IS_CONSOLE_LOG_OPEN &&
+          console.log(
+            "expiration time checked else",
+            jobhax_access_token_expiration,
+            now,
+            "\n expires in",
+            expiresIn,
+            expirationWarning
+          );
+        if (
+          google_access_token_expiration &&
+          google_access_token_expiration - parseFloat(now) < 5 * 60 * 1000
+        ) {
+          IS_CONSOLE_LOG_OPEN && console.log("updating google access token");
+          this.reloadGoogle = await window.gapi.auth2
+            .getAuthInstance()
+            .currentUser.get()
+            .reloadAuthResponse();
+          let newGoogleToken = this.reloadGoogle.access_token;
+          let newExpiresIn = this.reloadGoogle.expires_in;
+          let googleAccessTokenExpiresOn = new Date();
+          googleAccessTokenExpiresOn.setSeconds(
+            googleAccessTokenExpiresOn.getSeconds() + newExpiresIn
+          );
+          this.props.cookies.set(
+            "google_access_token_expiration",
+            googleAccessTokenExpiresOn.getTime(),
+            { path: "/" }
+          );
+          const { url, config } = updateGoogleTokenRequest;
+          config["body"] = { token: newGoogleToken };
+          axiosCaptcha(url, config, false);
+          IS_CONSOLE_LOG_OPEN &&
+            console.log("google token refreshed", newGoogleToken);
+          return true;
+        } else {
+          IS_CONSOLE_LOG_OPEN && console.log("google is also okay!");
+          return true;
+        }
+      }
     }
   }
 
@@ -135,11 +243,11 @@ class App extends Component {
     });
   }
 
-  passStatesFromSignin(token, active, isProfileUpdated) {
+  passStatesFromSignin(token, active, isFirstLogin) {
     this.setState({
       token: token,
       active: active,
-      isProfileUpdated: isProfileUpdated
+      isFirstLogin: isFirstLogin
     });
   }
 
@@ -155,30 +263,28 @@ class App extends Component {
     this.setState({ isAuthenticationChecking: isAuthenticationChecking });
   }
 
-  setIsProfileUpdated(isProfileUpdated) {
-    this.setState({ isProfileUpdated: isProfileUpdated });
+  setIsFirstLogin(isFirstLogin) {
+    this.setState({ isFirstLogin: isFirstLogin });
   }
 
   cookie(method, name, data, path, expires) {
     const { cookies } = this.props;
     if (method.toUpperCase() === "GET") {
-      cookies.get(name);
+      return cookies.get(name);
     } else if (method.toUpperCase() === "SET") {
       cookies.set(name, data, { path: path, expires: expires });
     } else if (method === "remove_all") {
-      cookies.get("jobhax_access_token") &&
-        cookies.remove("jobhax_access_token", { path: "/" });
+      IS_CONSOLE_LOG_OPEN && console.log("cookies removing");
+      cookies.remove("jobhax_access_token", { path: "/" });
       cookies.remove("jobhax_refresh_token", { path: "/" });
-      cookies.remove("jobhax_expires_in", { path: "/" });
-      cookies.remove("google_access_token", { path: "/" });
-      cookies.remove("google_refresh_token", { path: "/" });
-      cookies.remove("google_expires_in", { path: "/" });
+      cookies.remove("google_access_token_expiration", { path: "/" });
+      cookies.remove("jobhax_access_token_expiration", { path: "/" });
       cookies.remove("remember_me", { path: "/" });
     }
   }
 
-  checkNotifications() {
-    notificationsRequest.config.headers.Authorization = this.state.token;
+  async checkNotifications() {
+    await this.handleTokenExpiration();
     axiosCaptcha(notificationsRequest.url, notificationsRequest.config).then(
       response => {
         if (response.statusText === "OK") {
@@ -186,7 +292,7 @@ class App extends Component {
           this.setState({
             notificationsList: this.notificationsList
           });
-          console.log(this.state.notificationsList);
+          IS_CONSOLE_LOG_OPEN && console.log(this.state.notificationsList);
         }
       }
     );
@@ -200,23 +306,28 @@ class App extends Component {
 
   handleSignOut() {
     IS_CONSOLE_LOG_OPEN && console.log("handle signout first");
-    event.preventDefault();
+    this.cookie("remove_all");
+    this.setState({
+      isUserLoggedIn: false,
+      isUserAuthenticated: false
+    });
+    event && event.preventDefault();
     IS_CONSOLE_LOG_OPEN &&
       console.log("handle signout config body", logOutUserRequest.config.body);
-    logOutUserRequest.config.body.token = this.state.token;
+    logOutUserRequest.config.body.token = this.state.token.replace(
+      "Bearer ",
+      ""
+    );
     axiosCaptcha(logOutUserRequest.url, logOutUserRequest.config, false).then(
       response => {
         if (response.statusText === "OK") {
           console.log(response.data);
           if (response.data.success === true) {
             window.gapi.auth2.getAuthInstance().signOut();
-            this.cookie("remove_all");
             this.setState({
-              isUserAuthenticated: false,
               token: "",
-              isProfileUpdated: false,
+              isFirstLogin: false,
               active: false,
-              isUserLoggedIn: false,
               pollData: [],
               notificationsList: [],
               profileData: []
@@ -229,10 +340,14 @@ class App extends Component {
             <Redirect to="/home" />;
           } else {
             console.log(response, response.data.error_message);
-            showAlert(5000, "error", "Error: " + response.data.error_message);
+            this.showAlert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
           }
         } else {
-          showAlert(5000, "error", "Something went wrong!");
+          this.showAlert(5000, "error", "Something went wrong!");
         }
       }
     );
@@ -254,7 +369,7 @@ class App extends Component {
     return (
       <div
         style={{
-          position: "absolute",
+          position: "fixed",
           bottom: bottom,
           width: "100%",
           display: "flex",
@@ -285,8 +400,6 @@ class App extends Component {
         this.state.token,
         "\n--active?",
         this.state.active,
-        "\n profile updated?",
-        this.state.isProfileUpdated,
         "\n cookies",
         this.props.cookies.getAll()
       );
@@ -301,22 +414,27 @@ class App extends Component {
             {window.location.pathname != "/home" && (
               <Header
                 handleSignOut={this.handleSignOut}
-                token={this.state.token}
                 alert={this.showAlert}
                 notificationsList={this.state.notificationsList}
                 notificationCheck={this.checkNotifications}
                 isNotificationsShowing={this.state.isNotificationsShowing}
                 toggleNotifications={this.toggleNotificationsDisplay}
-                userData={this.state.profileData}
+                profilePhotoUrl={this.state.profilePhotoUrl}
+                cookie={this.cookie}
+                handleTokenExpiration={this.handleTokenExpiration}
               />
             )}
-            <FeedBack token={this.state.token} alert={this.showAlert} />
+            <FeedBack
+              alert={this.showAlert}
+              handleTokenExpiration={this.handleTokenExpiration}
+            />
             {this.state.isPollShowing && (
               <PollBox
                 data={this.pollData}
                 togglePollDisplay={this.toggleIsPollShowing}
-                token={this.state.token}
                 alert={this.showAlert}
+                cookie={this.cookie}
+                handleTokenExpiration={this.handleTokenExpiration}
               />
             )}
             {this.state.isAlertShowing && <div>{this.generateAlert()}</div>}
@@ -325,10 +443,11 @@ class App extends Component {
               path="/profile"
               render={() => (
                 <ProfilePage
-                  token={this.state.token}
                   active={this.state.active}
-                  setIsProfileUpdated={this.setIsProfileUpdated}
+                  setIsFirstLogin={this.setIsFirstLogin}
                   alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
                 />
               )}
             />
@@ -337,9 +456,10 @@ class App extends Component {
               path="/blogs"
               render={() => (
                 <Blog
-                  token={this.state.token}
                   active={this.state.active}
                   alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
                 />
               )}
             />
@@ -354,8 +474,9 @@ class App extends Component {
               render={() => (
                 <Dashboard
                   active={this.state.active}
-                  token={this.state.token}
                   alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
                 />
               )}
             />
@@ -365,8 +486,9 @@ class App extends Component {
               render={() => (
                 <Metrics
                   active={this.state.active}
-                  token={this.state.token}
                   alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
                 />
               )}
             />
@@ -376,8 +498,9 @@ class App extends Component {
               render={() => (
                 <MetricsGlobal
                   active={this.state.active}
-                  token={this.state.token}
                   alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
                 />
               )}
             />
@@ -387,8 +510,9 @@ class App extends Component {
               render={() => (
                 <Companies
                   active={this.state.active}
-                  token={this.state.token}
                   alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
                 />
               )}
             />
@@ -396,7 +520,7 @@ class App extends Component {
               exact
               path="/signin"
               render={() =>
-                this.state.isProfileUpdated === true ? (
+                this.state.isFirstLogin === false ? (
                   <Redirect to="/dashboard" />
                 ) : (
                   <Redirect to="/profile" />

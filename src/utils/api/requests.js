@@ -38,7 +38,9 @@ import {
   GET_COMPANIES,
   GET_AGREEMENTS,
   USERS,
-  POSITIONS
+  POSITIONS,
+  REFRESH_JOBHAX_TOKEN,
+  UPDATE_GOOGLE_TOKEN
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -56,6 +58,34 @@ export const authenticateRequest = {
       client_id: jobHaxClientId,
       client_secret: jobHaxClientSecret,
       provider: "google-oauth2"
+    }
+  }
+};
+
+export const refreshTokenRequest = {
+  url: REFRESH_JOBHAX_TOKEN,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    body: {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret
+    }
+  }
+};
+
+export const updateGoogleTokenRequest = {
+  url: UPDATE_GOOGLE_TOKEN,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };

@@ -25,8 +25,7 @@ class Notes extends React.Component {
       addNoteForm: "",
       updateNoteForm: "",
       notes: [],
-      textareaHeight: 16,
-      recaptchaToken: ""
+      textareaHeight: 16
     };
     this.notes = [];
     this.currentNote = null;
@@ -35,6 +34,7 @@ class Notes extends React.Component {
     this.setToDefault = this.setToDefault.bind(this);
     this.onChange = this.onChange.bind(this);
     this.addNote = this.addNote.bind(this);
+    this.handleAddNote = this.handleAddNote.bind(this);
     this.saveNotes = this.saveNotes.bind(this);
   }
 
@@ -42,11 +42,11 @@ class Notes extends React.Component {
     this.getNotes();
   }
 
-  getNotes() {
-    const { card, token } = this.props;
+  async getNotes() {
+    await this.props.handleTokenExpiration();
+    const { card } = this.props;
     let { url, config } = getNotesRequest;
     url = url + "?jopapp_id=" + card.id;
-    config.headers.Authorization = token;
     axiosCaptcha(url, config).then(response => {
       if (response.statusText === "OK") {
         this.notes = response.data.data.reverse();
@@ -107,10 +107,15 @@ class Notes extends React.Component {
     }
   }
 
-  addNote(e) {
-    IS_CONSOLE_LOG_OPEN && console.log("add note requested!", e.target.value);
+  handleAddNote(e) {
     e.preventDefault();
-    const { card, token } = this.props;
+    this.addNote(e.target.value);
+  }
+
+  async addNote(note) {
+    IS_CONSOLE_LOG_OPEN && console.log("add note requested!", note);
+    await this.props.handleTokenExpiration();
+    const { card } = this.props;
     const { addNoteForm, updateNoteForm } = this.state;
     IS_CONSOLE_LOG_OPEN &&
       console.log(
@@ -119,7 +124,7 @@ class Notes extends React.Component {
         "\n--update note form",
         updateNoteForm,
         "\n--value",
-        e.target.value
+        note
       );
     IS_CONSOLE_LOG_OPEN &&
       console.log("addnoteform currentNote", this.currentNote);
@@ -137,30 +142,24 @@ class Notes extends React.Component {
           };
     let { url, config } =
       this.currentNote == null ? addNoteRequest : updateNoteRequest;
-    IS_CONSOLE_LOG_OPEN && console.log("request body\n", reqBody);
-    config.headers.Authorization = token;
     config.body = reqBody;
     axiosCaptcha(url, config, "jobapp_note")
       .catch(error => console.error(error))
       .then(response => {
-        IS_CONSOLE_LOG_OPEN && console.log("response.data\n", response.data);
         if (response.statusText === "OK") {
           this.saveNotes(response.data.data, reqBody, this.currentNote);
         }
       });
   }
 
-  deleteNote(id) {
-    const { token } = this.props;
+  async deleteNote(id) {
+    await this.props.handleTokenExpiration();
     const body = {
       jobapp_note_id: id
     };
     let { url, config } = deleteNoteRequest;
-    config.headers.Authorization = token;
-    IS_CONSOLE_LOG_OPEN && console.log("delete request body\n", body);
     config.body = body;
     axiosCaptcha(url, config).then(response => {
-      IS_CONSOLE_LOG_OPEN && console.log("delete request response\n", response);
       if (response.statusText === "OK") {
         this.getNotes();
       }
@@ -177,7 +176,6 @@ class Notes extends React.Component {
           new Date().toString().split("GMT")[0] + " UTC"
         ).toISOString()
       };
-      IS_CONSOLE_LOG_OPEN && console.log(noteUpdated);
       const notesUpdated = this.state.notes.filter(note => {
         return note.id !== request.jobapp_note_id;
       });
@@ -265,7 +263,7 @@ class Notes extends React.Component {
             ) : (
               <form
                 className="add-note-area"
-                onSubmit={this.addNote}
+                onSubmit={this.handleAddNote}
                 style={{ borderBottom: "1px solid rgba(32, 32, 32, 0.1)" }}
               >
                 <div>
@@ -306,7 +304,7 @@ class Notes extends React.Component {
       <div>
         <div>
           {this.state.isEditing ? (
-            <form className="add-note-area" onSubmit={this.addNote}>
+            <form className="add-note-area" onSubmit={this.handleAddNote}>
               <div>
                 <textarea
                   name="addNoteForm"

@@ -94,13 +94,14 @@ class Card extends PureComponent {
         position,
         isRejected,
         app_source,
-        token,
+        handleTokenExpiration,
         columnName,
         deleteJobFromList,
         moveToRejected,
         updateApplications,
         icon,
-        id
+        id,
+        alert
       },
       isDragging
     } = this.props;
@@ -117,7 +118,7 @@ class Card extends PureComponent {
       <div>
         {showModal && (
           <CardModal
-            token={token}
+            handleTokenExpiration={handleTokenExpiration}
             columnName={columnName}
             toggleModal={this.toggleModal}
             deleteJobFromList={deleteJobFromList}
@@ -126,7 +127,7 @@ class Card extends PureComponent {
             icon={icon}
             id={id}
             updateCard={this.updateCard}
-            alert={this.props.alert}
+            alert={alert}
             {...this.props}
           />
         )}

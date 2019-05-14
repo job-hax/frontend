@@ -81,7 +81,8 @@ class ReviewInput extends React.Component {
     );
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.props.handleTokenExpiration();
     console.log("oldReview is", this.props.oldReview);
     if (this.props.oldReview.id != -1) {
       this.body["review_id"] = this.props.oldReview.id;
@@ -134,7 +135,6 @@ class ReviewInput extends React.Component {
         this.setState({ anonymous: this.props.oldReview.anonymous });
       }
     }
-    getSourceTypesRequest.config.headers.Authorization = this.props.token;
     axiosCaptcha(getSourceTypesRequest.url, getSourceTypesRequest.config).then(
       response => {
         if (response.statusText === "OK") {
@@ -145,7 +145,6 @@ class ReviewInput extends React.Component {
         }
       }
     );
-    getEmploymentStatusesRequest.config.headers.Authorization = this.props.token;
     axiosCaptcha(
       getEmploymentStatusesRequest.url,
       getEmploymentStatusesRequest.config
@@ -160,7 +159,6 @@ class ReviewInput extends React.Component {
         }
       }
     });
-    getEmploymentAuthsRequest.config.headers.Authorization = this.props.token;
     axiosCaptcha(
       getEmploymentAuthsRequest.url,
       getEmploymentAuthsRequest.config
@@ -174,10 +172,10 @@ class ReviewInput extends React.Component {
     });
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
+    await this.props.handleTokenExpiration();
     this.props.toggleReview();
-    reviewSubmitRequest.config.headers.Authorization = this.props.token;
     reviewSubmitRequest.config.body = this.body;
     console.log(
       "reviewSubmitRequest.config.body",
