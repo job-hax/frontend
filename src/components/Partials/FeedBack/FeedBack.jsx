@@ -40,7 +40,7 @@ class FeedBack extends React.Component {
   }
 
   async submit(feedback) {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("feedback submit");
     if (feedback.trim() != (null || "")) {
       this.body["text"] = this.state.textValue.trim();
     }

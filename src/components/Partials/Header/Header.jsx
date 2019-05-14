@@ -41,7 +41,7 @@ class Header extends Component {
   async handleSyncUserEmail() {
     this.props.alert(3000, "info", "Syncing with your email...");
     const { url, config } = syncUserEmailsRequest;
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("header handleSyncUserEmail");
     axiosCaptcha(url, config);
   }
 
