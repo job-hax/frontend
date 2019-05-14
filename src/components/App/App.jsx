@@ -142,7 +142,7 @@ class App extends Component {
         this.showAlert(5000, "info", "Your session time is over!");
       }
       let expiresIn = jobhax_access_token_expiration - parseFloat(now);
-      let expirationWarning = 59 * 60 * 1000;
+      let expirationWarning = 5 * 60 * 1000;
       if (expiresIn < expirationWarning) {
         IS_CONSOLE_LOG_OPEN &&
           console.log(
