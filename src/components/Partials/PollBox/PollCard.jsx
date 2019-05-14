@@ -21,9 +21,13 @@ class PollCard extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    this.submit(event.target.id);
+  }
+
+  async submit(id) {
+    await this.props.handleTokenExpiration();
     const urlFunction = votePollRequest.url;
-    votePollRequest.url = votePollRequest.url(event.target.id);
-    votePollRequest.config.headers.Authorization = this.props.token;
+    votePollRequest.url = votePollRequest.url(id);
     votePollRequest.config.body = {
       item_id: this.state.selectedAnswer
     };

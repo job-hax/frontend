@@ -26,12 +26,6 @@ class FeedBack extends React.Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
-    this.verifyReCaptchaCallback = this.verifyReCaptchaCallback.bind(this);
-  }
-
-  verifyReCaptchaCallback(recaptchaToken) {
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("\n\nyour recaptcha token:", recaptchaToken, "\n");
   }
 
   showModal() {
@@ -40,10 +34,14 @@ class FeedBack extends React.Component {
     });
   }
 
-  async handleSubmit(event) {
+  handleSubmit(event) {
     event.preventDefault();
-    feedbackRequest.config.headers.Authorization = this.props.token;
-    if (event.target[0].value.trim() != (null || "")) {
+    this.submit(event.target[0].value);
+  }
+
+  async submit(feedback) {
+    await this.props.handleTokenExpiration();
+    if (feedback.trim() != (null || "")) {
       this.body["text"] = this.state.textValue.trim();
     }
     feedbackRequest.config.body = this.body;

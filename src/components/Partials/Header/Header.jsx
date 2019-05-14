@@ -38,15 +38,14 @@ class Header extends Component {
     this.props.toggleNotifications(true);
   }
 
-  handleSyncUserEmail() {
+  async handleSyncUserEmail() {
     this.props.alert(3000, "info", "Syncing with your email...");
     const { url, config } = syncUserEmailsRequest;
-    config.headers.Authorization = this.props.token;
+    await this.props.handleTokenExpiration();
     axiosCaptcha(url, config);
   }
 
   render() {
-    console.log("photoUrl", this.props.userPhoto);
     return (
       <div className="header-container">
         <div className="left-container">
@@ -126,10 +125,10 @@ class Header extends Component {
               />
             </div>
           )}
-          {this.props.userData.profile_photo != "" ? (
+          {this.props.profilePhotoUrl != "" ? (
             <div className="header-icon user-icon">
               <Link to="/profile">
-                <img src={this.props.userData.profile_photo} />
+                <img src={this.props.profilePhotoUrl} />
               </Link>
             </div>
           ) : (

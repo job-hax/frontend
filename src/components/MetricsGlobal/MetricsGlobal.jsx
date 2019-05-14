@@ -29,7 +29,7 @@ class MetricsGlobal extends PureComponent {
       trendingCompaniesWordCount: [],
       statistics: {},
 
-      isWaitingResponse: "beforeRequest",
+      isInitialRequest: "beforeRequest",
       isChangingGraph: false,
       trendingDataType: GET_TOP_COMPANIES,
       trendingCount: "&count=10",
@@ -54,134 +54,113 @@ class MetricsGlobal extends PureComponent {
     this.setTrendingDataStatus = this.setTrendingDataStatus.bind(this);
   }
 
-  componentDidMount() {
-    postUsersRequest.config.headers.Authorization = this.props.token;
-    axiosCaptcha(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config,
-      "metrics_global"
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success != true) {
-          this.setState({ isUpdating: false });
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
-        }
-      }
-    });
-    this.setState({
-      trendingUrl:
+  async componentDidMount() {
+    if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
+      let trendingUrl =
         apiRoot +
         this.state.trendingDataType +
         "?" +
         this.state.trendingCount +
         this.state.trendingYear +
-        this.state.tredingStatus
-    });
-  }
-
-  componentDidUpdate() {
-    this.getStatisticsData();
-    this.getPeakData();
-    if (
-      this.props.active &&
-      this.state.trendingUrl &&
-      this.state.isWaitingResponse === "beforeRequest"
-    ) {
-      this.getTrendingData(this.state.trendingUrl);
-    }
-  }
-
-  getStatisticsData() {
-    if (
-      this.props.active &&
-      this.state.isWaitingResponse === "beforeRequest" &&
-      this.state.isChangingGraph === false
-    ) {
-      this.setState({ isWaitingResponse: true });
-      IS_CONSOLE_LOG_OPEN &&
-        console.log(
-          "metrics global statistics request run!",
-          "\n-----isWaitingResponse",
-          this.state.isWaitingResponse
-        );
-      getStatisticsRequest.config.headers.Authorization = this.props.token;
-      axiosCaptcha(getStatisticsRequest.url, getStatisticsRequest.config).then(
-        response => {
-          if (response.statusText === "OK") {
-            this.setState({
-              statistics: response.data.data,
-              isWaitingResponse: false
-            });
-          }
-        }
-      );
-    }
-  }
-
-  getPeakData() {
-    if (
-      this.props.active &&
-      this.state.isWaitingResponse === "beforeRequest" &&
-      this.state.isChangingGraph === false
-    ) {
-      this.setState({ isWaitingResponse: true });
-      IS_CONSOLE_LOG_OPEN &&
-        console.log(
-          "metrics global count request run!",
-          "\n-----isWaitingResponse",
-          this.state.isWaitingResponse
-        );
-      getMonthlyApplicationCountRequest.config.headers.Authorization = this.props.token;
+        this.state.tredingStatus;
+      await this.getFirstData(trendingUrl);
       axiosCaptcha(
-        getMonthlyApplicationCountRequest.url,
-        getMonthlyApplicationCountRequest.config
+        postUsersRequest.url("verify_recaptcha"),
+        postUsersRequest.config,
+        "metrics_global"
       ).then(response => {
         if (response.statusText === "OK") {
-          this.appsCountByMonthWithTotal = response.data.data[0];
-          this.appsCountByMonthWithTotal.forEach(element => {
-            element["name"] = element["source"];
-            delete element["source"];
-            element["type"] = "line";
-            element["markPoint"] = {
-              data: [{ type: "max", name: "max" }]
-            };
-            element["markLine"] = {
-              data: [{ type: "average", name: "average" }]
-            };
-          });
-          this.currentMonthsOfLastYear = response.data.data[1];
-          this.setState({
-            appsCountByMonthWithTotal: this.appsCountByMonthWithTotal,
-            currentMonthsOfLastYear: this.currentMonthsOfLastYear
-          });
-          this.state.appsCountByMonthWithTotal.map(item =>
-            this.appsMonthSourcesWithTotal.push(item.name)
-          );
-          this.setState({
-            appsMonthSourcesWithTotal: this.appsMonthSourcesWithTotal,
-            isWaitingResponse: false
-          });
+          if (response.data.success != true) {
+            this.setState({ isUpdating: false });
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
         }
       });
     }
   }
 
-  getTrendingData(trendingUrl) {
+  async getFirstData(trendingUrl) {
+    await this.props.handleTokenExpiration();
+    this.getStatisticsData();
+    this.getPeakData();
+    this.getTrendingData(trendingUrl, false);
+  }
+
+  getStatisticsData() {
+    this.setState({ isInitialRequest: true });
+    IS_CONSOLE_LOG_OPEN &&
+      console.log(
+        "metrics global statistics request run!",
+        "\n-----isInitialRequest",
+        this.state.isInitialRequest
+      );
+    axiosCaptcha(getStatisticsRequest.url, getStatisticsRequest.config).then(
+      response => {
+        if (response.statusText === "OK") {
+          this.setState({
+            statistics: response.data.data
+          });
+        }
+      }
+    );
+  }
+
+  getPeakData() {
+    this.setState({ isInitialRequest: true });
+    IS_CONSOLE_LOG_OPEN &&
+      console.log(
+        "metrics global count request run!",
+        "\n-----isInitialRequest",
+        this.state.isInitialRequest
+      );
+    axiosCaptcha(
+      getMonthlyApplicationCountRequest.url,
+      getMonthlyApplicationCountRequest.config
+    ).then(response => {
+      if (response.statusText === "OK") {
+        this.appsCountByMonthWithTotal = response.data.data[0];
+        this.appsCountByMonthWithTotal.forEach(element => {
+          element["name"] = element["source"];
+          delete element["source"];
+          element["type"] = "line";
+          element["markPoint"] = {
+            data: [{ type: "max", name: "max" }]
+          };
+          element["markLine"] = {
+            data: [{ type: "average", name: "average" }]
+          };
+        });
+        this.currentMonthsOfLastYear = response.data.data[1];
+        this.setState({
+          appsCountByMonthWithTotal: this.appsCountByMonthWithTotal,
+          currentMonthsOfLastYear: this.currentMonthsOfLastYear
+        });
+        this.state.appsCountByMonthWithTotal.map(item =>
+          this.appsMonthSourcesWithTotal.push(item.name)
+        );
+        this.setState({
+          appsMonthSourcesWithTotal: this.appsMonthSourcesWithTotal
+        });
+      }
+    });
+  }
+
+  async getTrendingData(trendingUrl, isTokenExpirationChecking) {
     IS_CONSOLE_LOG_OPEN &&
       console.log(
         "***********TRENDING RUN!*********\n***********\ntrending Url before request",
         trendingUrl,
-        "\n-----isWaitingResponse",
-        this.state.isWaitingResponse,
+        "\n-----isInitialRequest",
+        this.state.isInitialRequest,
         "\n-----isChangingGraph",
         this.state.isChangingGraph
       );
-    this.setState({ isWaitingResponse: true });
-    getTrendingRequest.config.headers.Authorization = this.props.token;
+    isTokenExpirationChecking && (await this.props.handleTokenExpiration());
+    this.setState({ isInitialRequest: true });
     axiosCaptcha(trendingUrl, getTrendingRequest.config).then(response => {
       if (response.statusText === "OK") {
         IS_CONSOLE_LOG_OPEN &&
@@ -201,7 +180,7 @@ class MetricsGlobal extends PureComponent {
           isChangingGraph: false
         });
         this.setState({
-          isWaitingResponse: false
+          isInitialRequest: false
         });
       }
     });
@@ -223,7 +202,7 @@ class MetricsGlobal extends PureComponent {
       this.state.trendingCount +
       this.state.trendingYear +
       this.state.tredingStatus;
-    this.getTrendingData(trendingUrl);
+    this.getTrendingData(trendingUrl, true);
     this.setState({
       trendingDataType: dataType,
       currentType: typeName
@@ -240,7 +219,7 @@ class MetricsGlobal extends PureComponent {
       this.state.trendingCount +
       dataYear +
       this.state.tredingStatus;
-    this.getTrendingData(trendingUrl);
+    this.getTrendingData(trendingUrl, true);
     this.setState({
       trendingYear: dataYear,
       currentYear: year
@@ -257,7 +236,7 @@ class MetricsGlobal extends PureComponent {
       dataCount +
       this.state.trendingYear +
       this.state.tredingStatus;
-    this.getTrendingData(trendingUrl);
+    this.getTrendingData(trendingUrl, true);
     this.setState({
       trendingCount: dataCount,
       currentCount: count
@@ -274,7 +253,7 @@ class MetricsGlobal extends PureComponent {
       this.state.trendingCount +
       this.state.trendingYear +
       dataStatus;
-    this.getTrendingData(trendingUrl);
+    this.getTrendingData(trendingUrl, true);
     this.setState({
       tredingStatus: dataStatus,
       currentStatus: statusName
@@ -288,17 +267,17 @@ class MetricsGlobal extends PureComponent {
       console.log(
         "render ACTIVE! metrics global active",
         this.props.active,
-        "\n----isWaitingResponse",
-        this.state.isWaitingResponse,
+        "\n----isInitialRequest",
+        this.state.isInitialRequest,
         "\n----isChangingGraph",
         this.state.isChangingGraph,
         "\n----trendingUrl",
         this.state.trendingUrl
       );
-    if (this.state.isWaitingResponse === "beforeRequest")
+    if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     if (
-      this.state.isWaitingResponse === true &&
+      this.state.isInitialRequest === true &&
       this.state.isChangingGraph === false
     )
       return <Spinner message="Preparing your aggregated metrics..." />;

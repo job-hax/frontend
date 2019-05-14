@@ -156,6 +156,7 @@ class SignInPage extends Component {
   handleSignIn(event) {
     IS_CONSOLE_LOG_OPEN && console.log("handle sign in first");
     event.preventDefault();
+    let rememberMe = event.target[2].checked;
     loginUserRequest.config.body.username = event.target[0].value;
     loginUserRequest.config.body.password = event.target[1].value;
     axiosCaptcha(loginUserRequest.url, loginUserRequest.config, "signin").then(
@@ -170,12 +171,19 @@ class SignInPage extends Component {
             let date = new Date();
             date.setSeconds(date.getSeconds() + response.data.data.expires_in);
             this.expires_in = date;
+            this.props.cookie("set", "remember_me", rememberMe, "/");
             this.props.cookie(
               "set",
               "jobhax_access_token",
               this.token,
               "/",
               date
+            );
+            this.props.cookie(
+              "set",
+              "jobhax_access_token_expiration",
+              date.getTime(),
+              "/"
             );
             this.props.cookie(
               "set",
@@ -189,7 +197,7 @@ class SignInPage extends Component {
             this.props.passStatesFromSignin(
               this.token,
               true,
-              response.data.data.profile_updated
+              response.data.data.first_login
             );
             this.setState({
               isUserLoggedIn: true,
@@ -225,7 +233,8 @@ class SignInPage extends Component {
         .init({
           apiKey: "AIzaSyBnF8loY6Vqhs4QWTM_fWCP93Xidbh1kYo",
           clientId: googleClientId,
-          scope: "email https://www.googleapis.com/auth/gmail.readonly"
+          scope: "email https://www.googleapis.com/auth/gmail.readonly",
+          prompt: "select_account"
         })
         .then(() => {
           this.googleAuth = window.gapi.auth2.getAuthInstance();
@@ -238,15 +247,14 @@ class SignInPage extends Component {
             IS_CONSOLE_LOG_OPEN && console.log("signIn response", response);
             if (response.Zi.token_type === "Bearer") {
               let photoUrl = response.w3.Paa;
+              let googleAccessTokenExpiresOn = new Date();
+              googleAccessTokenExpiresOn.setSeconds(
+                googleAccessTokenExpiresOn.getSeconds() + response.Zi.expires_in
+              );
               const { url, config } = authenticateRequest;
               config.body.token = this.googleAuth.currentUser
                 .get()
                 .getAuthResponse().access_token;
-              this.props.cookie(
-                "set",
-                "google_access_token",
-                config.body.token
-              );
               axiosCaptcha(url, config, "signin").then(response => {
                 if (response.statusText === "OK") {
                   this.token = `${
@@ -258,7 +266,13 @@ class SignInPage extends Component {
                   date.setSeconds(
                     date.getSeconds() + response.data.data.expires_in
                   );
-                  this.expires_in = date;
+                  this.props.cookie(
+                    "set",
+                    "google_access_token_expiration",
+                    googleAccessTokenExpiresOn.getTime(),
+                    "/",
+                    googleAccessTokenExpiresOn
+                  );
                   this.props.cookie(
                     "set",
                     "jobhax_access_token",
@@ -268,21 +282,28 @@ class SignInPage extends Component {
                   );
                   this.props.cookie(
                     "set",
+                    "jobhax_access_token_expiration",
+                    date.getTime(),
+                    "/"
+                  );
+                  this.props.cookie(
+                    "set",
                     "jobhax_refresh_token",
                     this.refresh_token,
                     "/"
                   );
+                  this.props.cookie("set", "remember_me", true, "/");
                   this.postGoogleProfilePhoto(photoUrl, this.token);
                   IS_CONSOLE_LOG_OPEN &&
                     console.log(
                       this.token,
                       "profile updated?",
-                      response.data.data.profile_updated
+                      response.data.data.first_login
                     );
                   this.props.passStatesFromSignin(
                     this.token,
                     true,
-                    response.data.data.profile_updated
+                    response.data.data.first_login
                   );
                   this.setState({ token: this.token });
                   this.setState({ isUserLoggedIn: true });

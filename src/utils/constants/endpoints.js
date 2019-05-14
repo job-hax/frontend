@@ -12,6 +12,10 @@ export const AUTHENTICATE = `${apiRoot}api/users/auth_social_user`;
 
 export const REGISTER_USER = `${apiRoot}api/users/register`;
 
+export const REFRESH_JOBHAX_TOKEN = `${apiRoot}api/users/refresh_token`;
+
+export const UPDATE_GOOGLE_TOKEN = `${apiRoot}api/users/update_gmail_token`;
+
 export const LOGIN_USER = `${apiRoot}api/users/login`;
 
 export const LOGOUT_USER = `${apiRoot}api/users/logout`;
