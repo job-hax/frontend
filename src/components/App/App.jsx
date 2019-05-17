@@ -27,6 +27,7 @@ import { axiosCaptcha } from "../../utils/api/fetch_api";
 
 import { googleClientId } from "../../config/config.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import { apiRoot } from "../../utils/constants/endpoints.js";
 import {
   refreshTokenRequest,
   updateGoogleTokenRequest,
@@ -126,11 +127,17 @@ class App extends Component {
         response => {
           console.log("photo first");
           if (response.statusText === "OK") {
-            this.profilePhotoUrl = response.data.data.profile_photo;
+            let profilePhotoUrl = "";
+            if (response.data.data.profile_photo_custom == null) {
+              profilePhotoUrl = response.data.data.profile_photo_social;
+            } else {
+              profilePhotoUrl =
+                apiRoot + response.data.data.profile_photo_custom;
+            }
             this.setState(
-              { profilePhotoUrl: this.profilePhotoUrl },
+              { profilePhotoUrl: profilePhotoUrl },
               IS_CONSOLE_LOG_OPEN &&
-                console.log("profilePhotoUrl", this.profilePhotoUrl)
+                console.log("profilePhotoUrl", profilePhotoUrl)
             );
           }
         }
