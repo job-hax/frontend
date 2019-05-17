@@ -44,10 +44,12 @@ class App extends Component {
     super(props);
     this.state = {
       isUserAuthenticated: false,
-      token: "",
+      token: this.cookie("get", "jobhax_access_token"),
       active: false,
       isUserLoggedIn: false,
       isAuthenticationChecking: true,
+      isInitialRequest: "beforeRequest",
+      isGapiReady: false,
       isFirstLogin: false,
       isPollChecking: true,
       isPollShowing: false,
@@ -78,21 +80,37 @@ class App extends Component {
     this.showAlert = this.showAlert.bind(this);
     this.cookie = this.cookie.bind(this);
     this.handleTokenExpiration = this.handleTokenExpiration.bind(this);
+  }
 
+  componentDidMount() {
+    IS_CONSOLE_LOG_OPEN && console.log("loading gapi");
     window.gapi.load("client:auth2", () => {
       window.gapi.client.init({
         clientId: googleClientId,
         scope: "email https://www.googleapis.com/auth/gmail.readonly",
         prompt: "select_account"
       });
+      IS_CONSOLE_LOG_OPEN && console.log("gapi loaded");
+      this.handleTokenExpiration("app getPollAndProfileData").then(() => {
+        this.setState({
+          isInitialRequest: true,
+          isAuthenticationChecking: false
+        });
+        this.state.token != (null || "" || undefined) &&
+          this.setState({ isUserLoggedIn: true });
+      });
     });
   }
 
-  async componentDidMount() {
-    await this.handleTokenExpiration();
-    let token = this.props.cookies.get("jobhax_access_token");
-    if (token) {
-      this.setState({ token: token, active: true, isUserLoggedIn: true });
+  componentDidUpdate() {
+    if (
+      this.state.isInitialRequest === true &&
+      this.state.isUserLoggedIn === true
+    ) {
+      this.setState({
+        active: true,
+        isInitialRequest: false
+      });
       axiosCaptcha(getPollRequest.url, getPollRequest.config).then(response => {
         if (response.statusText === "OK") {
           this.pollData = response.data.data;
@@ -106,31 +124,31 @@ class App extends Component {
       });
       axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
         response => {
+          console.log("photo first");
           if (response.statusText === "OK") {
             this.profilePhotoUrl = response.data.data.profile_photo;
             this.setState(
               { profilePhotoUrl: this.profilePhotoUrl },
               IS_CONSOLE_LOG_OPEN &&
-                console.log("profilePhotoUrl", this.state.profilePhotoUrl)
+                console.log("profilePhotoUrl", this.profilePhotoUrl)
             );
           }
         }
       );
+      this.setState({
+        isAuthenticationChecking: false
+      });
     }
-    this.setState({ isAuthenticationChecking: false });
   }
 
-  async handleTokenExpiration() {
-    IS_CONSOLE_LOG_OPEN && console.log("test");
+  async handleTokenExpiration(whatRequested) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("token expiration check requested by:\n", whatRequested);
     let date = new Date();
     let now = date.getTime();
     let jobhax_access_token = this.props.cookies.get("jobhax_access_token");
-    this.jobhax_refresh_token = this.props.cookies.get("jobhax_refresh_token");
     let jobhax_access_token_expiration = parseFloat(
       this.props.cookies.get("jobhax_access_token_expiration")
-    );
-    let google_access_token_expiration = parseFloat(
-      this.props.cookies.get("google_access_token_expiration")
     );
     let remember_me = this.props.cookies.get("remember_me");
     if (jobhax_access_token === null) {
@@ -146,90 +164,98 @@ class App extends Component {
       if (expiresIn < expirationWarning) {
         IS_CONSOLE_LOG_OPEN &&
           console.log(
-            "expiration time checked",
+            "jobhax token expiration time checked",
             jobhax_access_token_expiration,
             now,
-            "\n expires in",
+            "\n jobhax token expires in",
             expiresIn,
-            expirationWarning,
-            "jobhax_refresh_token",
-            this.jobhax_refresh_token
+            expirationWarning
           );
         if (remember_me === "true") {
-          const { url, config } = refreshTokenRequest;
-          config.body["refresh_token"] = this.jobhax_refresh_token;
-          const response = await axiosCaptcha(url, config, false);
-          if (response.statusText === "OK") {
-            this.token = `${
-              response.data.data.token_type
-            } ${response.data.data.access_token.trim()}`;
-            this.refresh_token = response.data.data.refresh_token;
-            this.setState({ token: this.token });
-            let date = new Date();
-            date.setSeconds(date.getSeconds() + response.data.data.expires_in);
-            this.props.cookies.set(
-              "jobhax_access_token",
-              this.token,
-              { path: "/" },
-              date
-            );
-            this.props.cookies.set(
-              "jobhax_access_token_expiration",
-              parseFloat(date.getTime()),
-              { path: "/" }
-            );
-            this.props.cookies.set("jobhax_refresh_token", this.refresh_token, {
-              path: "/"
-            });
-            IS_CONSOLE_LOG_OPEN && console.log("I am returning ok? true");
-            return true;
-          }
+          await this.refreshJobhaxToken();
         } else {
           this.cookie("remove_all");
           this.handleSignOut();
           this.showAlert(5000, "info", "Your session time is over!");
         }
       } else {
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "expiration time checked else",
-            jobhax_access_token_expiration,
-            now,
-            "\n expires in",
-            expiresIn,
-            expirationWarning
-          );
-        if (
-          google_access_token_expiration &&
-          google_access_token_expiration - parseFloat(now) < 5 * 60 * 1000
-        ) {
-          IS_CONSOLE_LOG_OPEN && console.log("updating google access token");
-          this.reloadGoogle = await window.gapi.auth2
-            .getAuthInstance()
-            .currentUser.get()
-            .reloadAuthResponse();
-          let newGoogleToken = this.reloadGoogle.access_token;
-          let newExpiresIn = this.reloadGoogle.expires_in;
-          let googleAccessTokenExpiresOn = new Date();
-          googleAccessTokenExpiresOn.setSeconds(
-            googleAccessTokenExpiresOn.getSeconds() + newExpiresIn
-          );
-          this.props.cookies.set(
-            "google_access_token_expiration",
-            googleAccessTokenExpiresOn.getTime(),
-            { path: "/" }
-          );
-          const { url, config } = updateGoogleTokenRequest;
-          config["body"] = { token: newGoogleToken };
-          axiosCaptcha(url, config, false);
-          IS_CONSOLE_LOG_OPEN &&
-            console.log("google token refreshed", newGoogleToken);
-          return true;
-        } else {
-          IS_CONSOLE_LOG_OPEN && console.log("google is also okay!");
-          return true;
-        }
+        await this.checkGoogleTokenExpiration(now);
       }
+    }
+  }
+
+  async refreshJobhaxToken() {
+    this.jobhax_refresh_token = this.props.cookies.get("jobhax_refresh_token");
+    const { url, config } = refreshTokenRequest;
+    config.body["refresh_token"] = this.jobhax_refresh_token;
+    const response = await axiosCaptcha(url, config, false);
+    if (response.statusText === "OK") {
+      this.token = `${
+        response.data.data.token_type
+      } ${response.data.data.access_token.trim()}`;
+      this.refresh_token = response.data.data.refresh_token;
+      this.setState({ token: this.token });
+      let date = new Date();
+      date.setSeconds(date.getSeconds() + response.data.data.expires_in);
+      this.props.cookies.set(
+        "jobhax_access_token",
+        this.token,
+        { path: "/" },
+        date
+      );
+      this.props.cookies.set(
+        "jobhax_access_token_expiration",
+        parseFloat(date.getTime()),
+        { path: "/" }
+      );
+      this.props.cookies.set("jobhax_refresh_token", this.refresh_token, {
+        path: "/"
+      });
+    }
+  }
+
+  async checkGoogleTokenExpiration(now) {
+    let google_access_token_expiration = parseFloat(
+      this.props.cookies.get("google_access_token_expiration")
+    );
+    let expiresIn = google_access_token_expiration - parseFloat(now);
+    let expirationWarning = 10 * 60 * 1000;
+    IS_CONSOLE_LOG_OPEN &&
+      console.log(
+        "google token expiration time checked",
+        google_access_token_expiration,
+        now,
+        "\n google token expires in",
+        expiresIn,
+        expirationWarning
+      );
+    if (
+      google_access_token_expiration &&
+      google_access_token_expiration - parseFloat(now) < 59 * 60 * 1000
+    ) {
+      IS_CONSOLE_LOG_OPEN && console.log("updating google access token");
+      this.reloadGoogle = await window.gapi.auth2
+        .getAuthInstance()
+        .currentUser.get()
+        .reloadAuthResponse();
+      let newGoogleToken = this.reloadGoogle.access_token;
+      let newExpiresIn = this.reloadGoogle.expires_in;
+      let googleAccessTokenExpiresOn = new Date();
+      googleAccessTokenExpiresOn.setSeconds(
+        googleAccessTokenExpiresOn.getSeconds() + newExpiresIn
+      );
+      this.props.cookies.set(
+        "google_access_token_expiration",
+        googleAccessTokenExpiresOn.getTime(),
+        { path: "/" }
+      );
+      const { url, config } = updateGoogleTokenRequest;
+      config["body"] = { token: newGoogleToken };
+      axiosCaptcha(url, config, false);
+      IS_CONSOLE_LOG_OPEN &&
+        console.log("google token refreshed", newGoogleToken);
+    } else {
+      IS_CONSOLE_LOG_OPEN && console.log("google is also okay!");
     }
   }
 
@@ -284,7 +310,7 @@ class App extends Component {
   }
 
   async checkNotifications() {
-    await this.handleTokenExpiration();
+    await this.handleTokenExpiration("app checkNotifications");
     axiosCaptcha(notificationsRequest.url, notificationsRequest.config).then(
       response => {
         if (response.statusText === "OK") {
@@ -337,7 +363,7 @@ class App extends Component {
                 "handle signOut isUserLoggedIn",
                 this.state.isUserLoggedIn
               );
-            <Redirect to="/home" />;
+            window.location = "/home";
           } else {
             console.log(response, response.data.error_message);
             this.showAlert(
@@ -520,7 +546,10 @@ class App extends Component {
               exact
               path="/signin"
               render={() =>
-                this.state.isFirstLogin === false ? (
+                window.location.search.split("=")[1] ===
+                "reCapthcaCouldNotPassed" ? (
+                  <Spinner message="checking reCaptcha..." />
+                ) : this.state.isFirstLogin === false ? (
                   <Redirect to="/dashboard" />
                 ) : (
                   <Redirect to="/profile" />
@@ -530,7 +559,13 @@ class App extends Component {
             <Route
               exact
               path="/signup"
-              render={() => <Redirect to="/profile" />}
+              render={() =>
+                this.state.isFirstLogin === false ? (
+                  <Redirect to="/dashboard" />
+                ) : (
+                  <Redirect to="/profile" />
+                )
+              }
             />
             <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
             <Route
@@ -593,6 +628,21 @@ class App extends Component {
               exact
               path="/dashboard"
               render={() => <Redirect to="signin" />}
+            />
+            <Route
+              exact
+              path="/metrics"
+              render={() => <Redirect to="/signin" />}
+            />
+            <Route
+              exact
+              path="/metricsGlobal"
+              render={() => <Redirect to="/signin" />}
+            />
+            <Route
+              exact
+              path="/companies"
+              render={() => <Redirect to="/signin" />}
             />
             <Route
               exact

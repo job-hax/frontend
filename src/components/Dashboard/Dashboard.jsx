@@ -99,7 +99,7 @@ class Dashboard extends Component {
         "\ndashboard active?",
         this.props.active;
       if (this.props.active) {
-        await this.props.handleTokenExpiration();
+        await this.props.handleTokenExpiration("dashboard getData");
         const { url, config } = getJobAppsRequest;
         axiosCaptcha(url, config).then(response => {
           if (response.statusText === "OK") {
@@ -178,7 +178,7 @@ class Dashboard extends Component {
     card.applicationStatus = UPDATE_APPLICATION_STATUS[dropColumnName];
     let insertedItemColumn = this.state[dropColumnName].slice();
     insertedItemColumn.unshift(card);
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("dashboard updateApplications");
     console.log("ok? after");
     let { url, config } = updateJobStatusRequest;
     config.body = {
@@ -197,7 +197,7 @@ class Dashboard extends Component {
   }
 
   async addNewApplication({ name, title, columnName }) {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("dashboard addNewApplication");
     const { url, config } = addJobAppsRequest;
     config.body = {
       job_title: title,

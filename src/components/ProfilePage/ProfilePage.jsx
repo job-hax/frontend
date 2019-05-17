@@ -55,7 +55,7 @@ class ProfilePage extends React.Component {
 
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != "") {
-      await this.props.handleTokenExpiration();
+      await this.props.handleTokenExpiration("profilePage componentDidMount");
       this.checkNotifications();
       this.getEmploymentStatuses();
       this.getProfileData(false);
@@ -64,7 +64,8 @@ class ProfilePage extends React.Component {
 
   async getProfileData(isTokenExpirationChecking) {
     if (this.state.data.length == 0) {
-      isTokenExpirationChecking && (await this.props.handleTokenExpiration());
+      isTokenExpirationChecking &&
+        (await this.props.handleTokenExpiration("profilePage getProfileData"));
       axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
         response => {
           if (response.statusText === "OK") {
@@ -123,7 +124,7 @@ class ProfilePage extends React.Component {
   }
 
   async submitProfileUpdate(target) {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("profilePage submitProfileUpdate");
     this.setState({
       isUpdating: true
     });
@@ -176,11 +177,11 @@ class ProfilePage extends React.Component {
 
   handleSettingsSubmit(event) {
     event.preventDefault();
-    this.submitProfileUpdate(event.target);
+    this.submitSettingsUpdate(event.target);
   }
 
-  async submitProfileUpdate(target) {
-    await this.props.handleTokenExpiration();
+  async submitSettingsUpdate(target) {
+    await this.props.handleTokenExpiration("profilePage submitSettingsUpdate");
     if (target[1].value === target[2].value) {
       this.setState({ isUpdating: true });
       if (target[1].value != (null || "")) {

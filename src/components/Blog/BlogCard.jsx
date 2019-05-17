@@ -66,7 +66,7 @@ class BlogCard extends React.Component {
 
   async postBlogStats(type) {
     let newUrl = postBlogRequest.url(this.props.id) + "/" + type + "/";
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("blogCard postBlogStats");
     axiosCaptcha(newUrl, postBlogRequest.config, "blog_stats").then(
       response => {
         if (response.statusText === "OK") {

@@ -82,7 +82,7 @@ class Companies extends React.Component {
       this.state.pageSize +
       "&q=" +
       this.state.query;
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("companies getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         if (requestType === "initialRequest") {

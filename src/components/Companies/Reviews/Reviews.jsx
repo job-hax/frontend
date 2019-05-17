@@ -32,7 +32,9 @@ class Reviews extends React.Component {
   }
 
   async handlePositionFilterChange(value) {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration(
+      "reviews handlePositionFilterChange"
+    );
     let newReviewsUrl =
       getReviewsRequest.url +
       "?company_id=" +

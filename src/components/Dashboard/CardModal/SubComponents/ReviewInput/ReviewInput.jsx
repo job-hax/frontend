@@ -82,7 +82,7 @@ class ReviewInput extends React.Component {
   }
 
   async componentDidMount() {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("reviewInput componentDidMount");
     console.log("oldReview is", this.props.oldReview);
     if (this.props.oldReview.id != -1) {
       this.body["review_id"] = this.props.oldReview.id;
@@ -174,7 +174,7 @@ class ReviewInput extends React.Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("reviewInput handleSubmit");
     this.props.toggleReview();
     reviewSubmitRequest.config.body = this.body;
     console.log(

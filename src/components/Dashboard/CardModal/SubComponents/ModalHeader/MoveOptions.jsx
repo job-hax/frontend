@@ -28,7 +28,7 @@ class MoveOptions extends React.Component {
   }
 
   async deleteJobFunction() {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("moveOptions deleteJobFunction");
     const { card, deleteJobFromList, columnName } = this.props;
     const body = {
       jobapp_id: card.id
@@ -47,7 +47,7 @@ class MoveOptions extends React.Component {
   }
 
   async updateAsRejected() {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("moveOptions updateAsRejected");
     const { card, moveToRejected, columnName } = this.props;
     var isRejected = !card.isRejected;
     const body = {
