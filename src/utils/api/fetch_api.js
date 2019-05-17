@@ -1,6 +1,9 @@
 import axios from "axios";
 
-import { reCaptchaV3SiteKey } from "../../config/config.js";
+import {
+  reCaptchaV3SiteKey,
+  IS_RECAPTCHA_ENABLED
+} from "../../config/config.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 
 const script = document.createElement("script");
@@ -49,6 +52,19 @@ function getCookie(cname) {
   return "";
 }
 
+function removeAllCookies() {
+  document.cookie =
+    "google_access_token_expiration=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "jobhax_access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "jobhax_access_token_expiration=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "jobhax_refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "remember_me=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
 export async function axiosCaptcha(url, config, action) {
   let response = null;
   config.headers.Authorization = getCookie("jobhax_access_token");
@@ -56,8 +72,13 @@ export async function axiosCaptcha(url, config, action) {
     response = await axios.get(url, config).catch(error => {
       console.log(error);
     });
+    log(url, config, response);
   } else if (config.method === "POST") {
-    if (action != false) {
+    if (
+      action != false &&
+      grecaptcha != null &&
+      IS_RECAPTCHA_ENABLED === true
+    ) {
       const recaptchaToken = await reCaptchaToken(action);
       if (config.body) {
         config.body["recaptcha_token"] = recaptchaToken;
@@ -66,16 +87,36 @@ export async function axiosCaptcha(url, config, action) {
         config["body"] = { recaptcha_token: recaptchaToken };
         config.body["action"] = action;
       }
+      if (url.split("api")[1] === "/users/verify_recaptcha") {
+        response = await axios({
+          method: "POST",
+          url: url,
+          data: JSON.stringify(config.body),
+          headers: config.headers
+        }).catch(error => {
+          console.log(error);
+        });
+        log(url, config, response);
+      }
     }
-    response = await axios({
-      method: "POST",
-      url: url,
-      data: JSON.stringify(config.body),
-      headers: config.headers
-    }).catch(error => {
-      console.log(error);
-    });
+    if (url.split("api")[1] != "/users/verify_recaptcha") {
+      response = await axios({
+        method: "POST",
+        url: url,
+        data: JSON.stringify(config.body),
+        headers: config.headers
+      }).catch(error => {
+        console.log(error);
+      });
+      log(url, config, response);
+    }
   }
-  log(url, config, response);
-  return response;
+
+  if (response != null) {
+    if (response.data.error_code === 99) {
+      removeAllCookies();
+      window.location = "/signin?alert=reCapthcaCouldNotPassed";
+    }
+    return response;
+  }
 }

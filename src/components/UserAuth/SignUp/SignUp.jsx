@@ -233,7 +233,7 @@ class SignUpPage extends Component {
             alt="JobHax-logo"
           />
         </Link>
-        <Link to="/">
+        <Link to="/home">
           <button>Home</button>
         </Link>
       </div>
