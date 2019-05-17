@@ -25,7 +25,7 @@ class PollCard extends React.Component {
   }
 
   async submit(id) {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("pollCard submit");
     const urlFunction = votePollRequest.url;
     votePollRequest.url = votePollRequest.url(id);
     votePollRequest.config.body = {

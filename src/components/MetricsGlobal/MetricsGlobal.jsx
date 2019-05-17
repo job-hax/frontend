@@ -84,7 +84,7 @@ class MetricsGlobal extends PureComponent {
   }
 
   async getFirstData(trendingUrl) {
-    await this.props.handleTokenExpiration();
+    await this.props.handleTokenExpiration("metricsGlobal getFirstData");
     this.getStatisticsData();
     this.getPeakData();
     this.getTrendingData(trendingUrl, false);
@@ -159,7 +159,8 @@ class MetricsGlobal extends PureComponent {
         "\n-----isChangingGraph",
         this.state.isChangingGraph
       );
-    isTokenExpirationChecking && (await this.props.handleTokenExpiration());
+    isTokenExpirationChecking &&
+      (await this.props.handleTokenExpiration("metricsGlobal getTrendingData"));
     this.setState({ isInitialRequest: true });
     axiosCaptcha(trendingUrl, getTrendingRequest.config).then(response => {
       if (response.statusText === "OK") {

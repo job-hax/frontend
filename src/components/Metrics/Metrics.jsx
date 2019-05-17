@@ -86,7 +86,7 @@ class Metrics extends PureComponent {
       this.state.isInitialRequest === "beforeRequest"
     ) {
       this.setState({ isInitialRequest: true });
-      await this.props.handleTokenExpiration();
+      await this.props.handleTokenExpiration("metrics getData");
       IS_CONSOLE_LOG_OPEN && console.log("active?", this.props.active);
       IS_CONSOLE_LOG_OPEN && console.log(getTotalAppsCountRequest.config);
       axiosCaptcha(

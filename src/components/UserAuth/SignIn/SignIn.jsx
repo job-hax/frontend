@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Modal, Form, Input, Icon, Button, Checkbox } from "antd";
+import { Modal, Form, Input, Icon, Button, Checkbox, Alert } from "antd";
 
 import Footer from "../../Partials/Footer/Footer.jsx";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
@@ -203,6 +203,12 @@ class SignInPage extends Component {
               isUserLoggedIn: true,
               isAuthenticationChecking: false
             });
+            //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn:true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
+            if (
+              window.location.search.split("=")[1] === "reCapthcaCouldNotPassed"
+            ) {
+              window.location = "/signin";
+            }
             this.props.setIsUserLoggedIn(true);
             this.props.setIsAuthenticationChecking(false);
           } else {
@@ -306,8 +312,15 @@ class SignInPage extends Component {
                     response.data.data.first_login
                   );
                   this.setState({ token: this.token });
+                  //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn:true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
+                  if (
+                    window.location.search.split("=")[1] ===
+                    "reCapthcaCouldNotPassed"
+                  ) {
+                    window.location = "/signin";
+                  }
                   this.setState({ isUserLoggedIn: true });
-                  this.props.setIsUserLoggedIn(this.state.isUserLoggedIn);
+                  this.props.setIsUserLoggedIn(true);
                 }
               });
               this.setState({ isAuthenticationChecking: false });
@@ -346,7 +359,7 @@ class SignInPage extends Component {
             alt="JobHax-logo"
           />
         </Link>
-        <Link to="/">
+        <Link to="/home">
           <button>Home</button>
         </Link>
       </div>
@@ -441,6 +454,31 @@ class SignInPage extends Component {
     );
   }
 
+  generateReCaptchaAlert() {
+    if (window.location.search.split("=")[1] === "reCapthcaCouldNotPassed") {
+      return (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            zIndex: 100
+          }}
+        >
+          <div>
+            <Alert
+              type="error"
+              message="You could not pass the reCaptcha challenge! Please sign in again!"
+              showIcon
+            />
+          </div>
+        </div>
+      );
+    }
+  }
+
   generateSignIn() {
     return (
       <div className="sign_in-form-container">
@@ -456,6 +494,7 @@ class SignInPage extends Component {
     IS_CONSOLE_LOG_OPEN && console.log("signIn page render run");
     return (
       <div>
+        {this.generateReCaptchaAlert()}
         <div className="sign_in-background">{this.generateTopButtons()}</div>
         <div className="sign_in-vertical-container">
           <div className="sign_in-container">{this.generateSignIn()}</div>

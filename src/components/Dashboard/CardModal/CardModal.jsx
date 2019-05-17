@@ -41,25 +41,8 @@ class CardModal extends PureComponent {
   }
 
   async componentDidMount() {
-    axiosCaptcha(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config,
-      "card_modal"
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success != true) {
-          this.setState({ isUpdating: false });
-          console.log(response, response.data.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
-        }
-      }
-    });
     if (this.props.card.companyObject.review_id) {
-      await this.props.handleTokenExpiration();
+      //await this.props.handleTokenExpiration("cardModal componentDidMount"); //I am not checking if token expired here because getNotes from Notes.jsx is already checking right before this one is executed!!!
       let newReviewsUrl =
         getReviewsRequest.url +
         "?review_id=" +
@@ -71,6 +54,23 @@ class CardModal extends PureComponent {
             console.log("card modal position old review", response.data.data);
         }
       });
+      axiosCaptcha(
+        postUsersRequest.url("verify_recaptcha"),
+        postUsersRequest.config,
+        "card_modal"
+      ).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success != true) {
+            this.setState({ isUpdating: false });
+            console.log(response, response.data.error_message);
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
+        }
+      });
     }
   }
 
@@ -80,7 +80,7 @@ class CardModal extends PureComponent {
 
   async toggleReviewDisplay() {
     if (!this.state.isReviewsDisplaying) {
-      await this.props.handleTokenExpiration();
+      await this.props.handleTokenExpiration("cardModal toggleReviewDisplay");
       let newReviewsUrl =
         getReviewsRequest.url +
         "?company_id=" +
