@@ -132,12 +132,12 @@ export const TRENDING_TYPE_OPTIONS = [
   {
     id: 0,
     value: "Companies",
-    param: "api/metrics/get_top_companies"
+    param: "/api/metrics/get_top_companies"
   },
   {
     id: 1,
     value: "Positions",
-    param: "api/metrics/get_top_positions"
+    param: "/api/metrics/get_top_positions"
   }
 ];
 
