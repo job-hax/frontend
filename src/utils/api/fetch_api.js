@@ -68,6 +68,8 @@ function removeAllCookies() {
 export async function axiosCaptcha(url, config, action) {
   let response = null;
   config.headers.Authorization = getCookie("jobhax_access_token");
+  const recaptchaToken = await reCaptchaToken(action);
+  //console.log(action, recaptchaToken);
   if (config.method === "GET") {
     response = await axios.get(url, config).catch(error => {
       console.log(error);
@@ -77,7 +79,7 @@ export async function axiosCaptcha(url, config, action) {
     if (
       action != false &&
       grecaptcha != null &&
-      IS_RECAPTCHA_ENABLED === true
+      IS_RECAPTCHA_ENABLED === false
     ) {
       const recaptchaToken = await reCaptchaToken(action);
       if (config.body) {
@@ -103,7 +105,10 @@ export async function axiosCaptcha(url, config, action) {
       response = await axios({
         method: "POST",
         url: url,
-        data: JSON.stringify(config.body),
+        data:
+          config.headers["Content-Type"] != "multipart/form-data"
+            ? JSON.stringify(config.body)
+            : config.body,
         headers: config.headers
       }).catch(error => {
         console.log(error);

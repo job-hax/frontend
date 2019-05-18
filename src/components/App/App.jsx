@@ -78,6 +78,7 @@ class App extends Component {
     this.setIsAuthenticationChecking = this.setIsAuthenticationChecking.bind(
       this
     );
+    this.reRunComponentDidUpdate = this.reRunComponentDidUpdate.bind(this);
     this.showAlert = this.showAlert.bind(this);
     this.cookie = this.cookie.bind(this);
     this.handleTokenExpiration = this.handleTokenExpiration.bind(this);
@@ -146,6 +147,10 @@ class App extends Component {
         isAuthenticationChecking: false
       });
     }
+  }
+
+  reRunComponentDidUpdate() {
+    this.setState({ isInitialRequest: true });
   }
 
   async handleTokenExpiration(whatRequested) {
@@ -370,7 +375,6 @@ class App extends Component {
                 "handle signOut isUserLoggedIn",
                 this.state.isUserLoggedIn
               );
-            window.location = "/home";
           } else {
             console.log(response, response.data.error_message);
             this.showAlert(
@@ -481,6 +485,7 @@ class App extends Component {
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
+                  setProfilePhotoUrlInHeader={this.reRunComponentDidUpdate}
                 />
               )}
             />
