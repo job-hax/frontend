@@ -403,7 +403,7 @@ export const updateProfilePhotoRequest = {
     mode: "cors",
     cache: "no-cache",
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
+      "Content-Type": "multipart/form-data"
     }
   }
 };
