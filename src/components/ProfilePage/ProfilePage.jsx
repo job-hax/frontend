@@ -1,5 +1,6 @@
 import React from "react";
 import DatePicker from "react-datepicker";
+import { Upload, message, Button, Icon } from "antd";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
@@ -7,13 +8,14 @@ import {
   makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN
 } from "../../utils/constants/constants.js";
-
+import { apiRoot } from "../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   notificationsRequest,
   getEmploymentStatusesRequest,
   updateProfileRequest,
-  getProfileRequest
+  getProfileRequest,
+  updateProfilePhotoRequest
 } from "../../utils/api/requests.js";
 
 import "./react-datepicker.scss";
@@ -51,6 +53,7 @@ class ProfilePage extends React.Component {
     this.handleSettingsSubmit = this.handleSettingsSubmit.bind(this);
     this.handleItuMailChange = this.handleItuMailChange.bind(this);
     this.handlePhoneNumberChange = this.handlePhoneNumberChange.bind(this);
+    this.handleProfilePhotoUpdate = this.handleProfilePhotoUpdate.bind(this);
   }
 
   async componentDidMount() {
@@ -265,17 +268,88 @@ class ProfilePage extends React.Component {
     this.body["dob"] = event.toISOString().split("T")[0];
   }
 
+  async handleProfilePhotoUpdate(file) {
+    console.log(file);
+    if (
+      file.type === "image/png" ||
+      file.type === "image/jpg" ||
+      file.type === "image/jpeg"
+    ) {
+      await this.props.handleTokenExpiration(
+        "profilePage handleProfilePhotoUpdate"
+      );
+      let bodyFormData = new FormData();
+      bodyFormData.append("photo", file);
+      updateProfilePhotoRequest.config.body = bodyFormData;
+      axiosCaptcha(
+        updateProfilePhotoRequest.url,
+        updateProfilePhotoRequest.config
+      ).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            this.data = response.data.data;
+            this.setState({ data: this.data });
+            this.props.setProfilePhotoUrlInHeader();
+            console.log("response update profile photo", this.data);
+            this.props.alert(
+              5000,
+              "success",
+              "Your profile have been updated successfully!"
+            );
+            this.props.setIsFirstLogin(true);
+            console.log(this.state.data);
+          } else {
+            this.setState({ isUpdating: false });
+            console.log(response, response.data.error_message);
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
+        } else {
+          this.props.alert(5000, "error", "Something went wrong!");
+        }
+      });
+    } else {
+      this.props.alert(3000, "error", "Profile photo must be PNG, JPG or JPEG");
+    }
+  }
+
   generateNonEditableProfileMainArea() {
+    const props = {
+      name: "file",
+      showUploadList: false,
+      action: file => {
+        this.handleProfilePhotoUpdate(file);
+      }
+    };
+
     return (
       <div className="profile-page-left">
         <div className="profile-page-left-first">
           <div className="profile-page-left-first-inside">
             <div className="profile-image">
-              {this.state.data.length != 0 && this.state.data.profile_photo ? (
-                <img src={this.state.data.profile_photo} />
-              ) : (
-                <img src="../../src/assets/icons/SeyfoIcon@3x.png" />
+              {this.state.data.length != 0 && (
+                <img
+                  src={
+                    this.state.data.profile_photo_custom == null
+                      ? this.state.data.profile_photo_social
+                        ? this.state.data.profile_photo_social
+                        : "../../src/assets/icons/SeyfoIcon@3x.png"
+                      : apiRoot + this.state.data.profile_photo_custom
+                  }
+                />
               )}
+            </div>
+            <div className="profile-image-update-container">
+              <div>
+                <Upload {...props}>
+                  <Button>
+                    <Icon type="upload" /> Update Profile Photo
+                  </Button>
+                </Upload>
+              </div>
             </div>
             <div className="register-date">
               {this.state.data.length != 0 &&
@@ -458,11 +532,16 @@ class ProfilePage extends React.Component {
           <div className="profile-page-left-first">
             <div className="profile-page-left-first-inside">
               <div className="profile-image">
-                {this.state.data.length != 0 &&
-                this.state.data.profile_photo ? (
-                  <img src={this.state.data.profile_photo} />
-                ) : (
-                  <img src="../../src/assets/icons/SeyfoIcon@3x.png" />
+                {this.state.data.length != 0 && (
+                  <img
+                    src={
+                      this.state.data.profile_photo_custom == null
+                        ? this.state.data.profile_photo_social
+                          ? this.state.data.profile_photo_social
+                          : "../../src/assets/icons/SeyfoIcon@3x.png"
+                        : apiRoot + this.state.data.profile_photo_custom
+                    }
+                  />
                 )}
               </div>
               <div className="register-date">
