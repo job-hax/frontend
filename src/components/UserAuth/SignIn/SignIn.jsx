@@ -299,7 +299,7 @@ class SignInPage extends Component {
                     "/"
                   );
                   this.props.cookie("set", "remember_me", true, "/");
-                  this.postGoogleProfilePhoto(photoUrl, this.token);
+                  this.postGoogleProfilePhoto(photoUrl);
                   IS_CONSOLE_LOG_OPEN &&
                     console.log(
                       this.token,
@@ -333,11 +333,10 @@ class SignInPage extends Component {
     });
   }
 
-  postGoogleProfilePhoto(photoURL, token) {
-    updateProfilePhotoRequest.config.headers.Authorization = token;
-    updateProfilePhotoRequest.config.body = {
-      photo_url: photoURL
-    };
+  postGoogleProfilePhoto(photoURL) {
+    let bodyFormData = new FormData();
+    bodyFormData.set("photo_url", photoURL);
+    updateProfilePhotoRequest.config.body = bodyFormData;
     console.log(updateProfilePhotoRequest);
     axiosCaptcha(
       updateProfilePhotoRequest.url,

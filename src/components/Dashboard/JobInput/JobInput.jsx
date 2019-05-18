@@ -139,14 +139,14 @@ class JobInput extends PureComponent {
         >
           <AutoComplete
             dataSource={this.state.autoCompleteCompanyData}
-            style={{ width: 200, marginTop: "4px" }}
+            style={{ width: "90%", marginTop: "4px" }}
             onSearch={this.handleSearch}
             placeholder="Company Name"
             value={companyName}
           />
           <AutoComplete
             dataSource={this.state.autoCompletePositionsData}
-            style={{ width: 200, marginTop: "4px" }}
+            style={{ width: "90%", marginTop: "4px" }}
             onSearch={this.handlePositionsSearch}
             placeholder="Job Title"
             value={jobTitle}
