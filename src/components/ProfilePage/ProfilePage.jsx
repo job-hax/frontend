@@ -275,45 +275,62 @@ class ProfilePage extends React.Component {
       file.type === "image/jpg" ||
       file.type === "image/jpeg"
     ) {
-      await this.props.handleTokenExpiration(
-        "profilePage handleProfilePhotoUpdate"
-      );
-      let bodyFormData = new FormData();
-      bodyFormData.append("photo", file);
-      updateProfilePhotoRequest.config.body = bodyFormData;
-      axiosCaptcha(
-        updateProfilePhotoRequest.url,
-        updateProfilePhotoRequest.config
-      ).then(response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            this.data = response.data.data;
-            this.setState({ data: this.data });
-            this.props.setProfilePhotoUrlInHeader();
-            console.log("response update profile photo", this.data);
-            this.props.alert(
-              5000,
-              "success",
-              "Your profile have been updated successfully!"
-            );
-            this.props.setIsFirstLogin(true);
-            console.log(this.state.data);
+      if (file.size < 1024 * 1024 * 2) {
+        this.props.alert(5000, "info", "Photo is being uploaded!");
+        await this.props.handleTokenExpiration(
+          "profilePage handleProfilePhotoUpdate"
+        );
+        let bodyFormData = new FormData();
+        bodyFormData.append("photo", file);
+        updateProfilePhotoRequest.config.body = bodyFormData;
+        axiosCaptcha(
+          updateProfilePhotoRequest.url,
+          updateProfilePhotoRequest.config
+        ).then(response => {
+          if (response.statusText === "OK") {
+            if (response.data.success === true) {
+              this.data = response.data.data;
+              this.setState({ data: this.data });
+              this.props.setProfilePhotoUrlInHeader();
+              console.log("response update profile photo", this.data);
+              this.props.alert(
+                5000,
+                "success",
+                "Your profile have been updated successfully!"
+              );
+              this.props.setIsFirstLogin(true);
+              console.log(this.state.data);
+            } else {
+              this.setState({ isUpdating: false });
+              console.log(response, response.data.error_message);
+              this.props.alert(
+                5000,
+                "error",
+                "Error: " + response.data.error_message
+              );
+            }
           } else {
-            this.setState({ isUpdating: false });
-            console.log(response, response.data.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
+            this.props.alert(5000, "error", "Something went wrong!");
           }
-        } else {
-          this.props.alert(5000, "error", "Something went wrong!");
-        }
-      });
+        });
+      } else {
+        this.props.alert(
+          3000,
+          "error",
+          "Profile photo must be smaller than 2MB!"
+        );
+      }
     } else {
-      this.props.alert(3000, "error", "Profile photo must be PNG, JPG or JPEG");
+      this.props.alert(
+        3000,
+        "error",
+        "Profile photo must be PNG, JPG or JPEG!"
+      );
     }
+  }
+
+  generatePhoneCountryCodeOptions() {
+    //return this.state.countryCodes.map(() => <Option key={} value={}> flag name code </Option>);
   }
 
   generateNonEditableProfileMainArea() {
