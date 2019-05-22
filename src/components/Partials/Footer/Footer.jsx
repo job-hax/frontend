@@ -29,6 +29,15 @@ class Footer extends Component {
         <div className="footer-content footer-social-links">
           <div>
             <Link to="/blogs">
+              <img
+                src="../../../src/assets/icons/beta_flag_2.png"
+                style={{
+                  position: "absolute",
+                  height: "24px",
+                  width: "auto",
+                  margin: "0px 0 0 38px"
+                }}
+              />
               <span>Blogs</span>
             </Link>
             <a href="https://github.com/job-hax">

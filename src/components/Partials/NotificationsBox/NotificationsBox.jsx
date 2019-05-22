@@ -35,7 +35,18 @@ class NotificationsBox extends React.Component {
         className="notification-box-container"
         style={this.props.customBoxStyle}
       >
-        <div className="notification-box-header">Notifications</div>
+        <div className="notification-box-header">
+          <img
+            src="../../../src/assets/icons/beta_flag.png"
+            style={{
+              position: "absolute",
+              height: "24px",
+              width: "auto",
+              margin: "-8px 0 0 240px"
+            }}
+          />
+          Notifications
+        </div>
         {this.props.notificationsList.length == 0 ? (
           <div className="notification-notice">
             {" "}
