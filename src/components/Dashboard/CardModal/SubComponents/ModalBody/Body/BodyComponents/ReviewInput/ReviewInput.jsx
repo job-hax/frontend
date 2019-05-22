@@ -1,16 +1,15 @@
 import React from "react";
 import { Rate, Select, Radio, Checkbox } from "antd";
 
-import { axiosCaptcha } from "../../../../../utils/api/fetch_api.js";
+import { axiosCaptcha } from "../../../../../../../../utils/api/fetch_api.js";
 import {
   reviewSubmitRequest,
   getSourceTypesRequest,
   getEmploymentStatusesRequest,
   getEmploymentAuthsRequest
-} from "../../../../../utils/api/requests.js";
+} from "../../../../../../../../utils/api/requests.js";
 
 import "./style.scss";
-import "../../../../../assets/libraryScss/antd-scss/antd.scss";
 
 const desc = ["terrible", "bad", "normal", "good", "perfect"];
 const descDifficulty = ["too easy", "easy", "normal", "hard", "too hard"];
@@ -83,6 +82,41 @@ class ReviewInput extends React.Component {
 
   async componentDidMount() {
     await this.props.handleTokenExpiration("reviewInput componentDidMount");
+    axiosCaptcha(getSourceTypesRequest.url, getSourceTypesRequest.config).then(
+      response => {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            console.log("getSourceTypesRequest response", response.data.data);
+            this.setState({ sourceTypes: response.data.data });
+          }
+        }
+      }
+    );
+    axiosCaptcha(
+      getEmploymentStatusesRequest.url,
+      getEmploymentStatusesRequest.config
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          console.log(
+            "getEmploymentStatusesRequest response",
+            response.data.data
+          );
+          this.setState({ employmentStatuses: response.data.data });
+        }
+      }
+    });
+    axiosCaptcha(
+      getEmploymentAuthsRequest.url,
+      getEmploymentAuthsRequest.config
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          console.log("getEmploymentAuthsRequest response", response.data.data);
+          this.setState({ employmentAuths: response.data.data });
+        }
+      }
+    });
     console.log("oldReview is", this.props.oldReview);
     if (this.props.oldReview.id != -1) {
       this.body["review_id"] = this.props.oldReview.id;
@@ -93,7 +127,7 @@ class ReviewInput extends React.Component {
             (temporaryAuths.filter(
               preSetAuth =>
                 preSetAuth.employment_auth.id == auth.employment_auth.id
-            )[0].value = auth.value)
+            )[0].value = auth.value.toString())
         );
         this.setState({ emp_auths: temporaryAuths });
       }
@@ -135,41 +169,6 @@ class ReviewInput extends React.Component {
         this.setState({ anonymous: this.props.oldReview.anonymous });
       }
     }
-    axiosCaptcha(getSourceTypesRequest.url, getSourceTypesRequest.config).then(
-      response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            console.log("getSourceTypesRequest response", response.data.data);
-            this.setState({ sourceTypes: response.data.data });
-          }
-        }
-      }
-    );
-    axiosCaptcha(
-      getEmploymentStatusesRequest.url,
-      getEmploymentStatusesRequest.config
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success === true) {
-          console.log(
-            "getEmploymentStatusesRequest response",
-            response.data.data
-          );
-          this.setState({ employmentStatuses: response.data.data });
-        }
-      }
-    });
-    axiosCaptcha(
-      getEmploymentAuthsRequest.url,
-      getEmploymentAuthsRequest.config
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success === true) {
-          console.log("getEmploymentAuthsRequest response", response.data.data);
-          this.setState({ employmentAuths: response.data.data });
-        }
-      }
-    });
   }
 
   async handleSubmit(event) {
@@ -191,6 +190,7 @@ class ReviewInput extends React.Component {
           console.log("reviewSubmitRequest response", response.data.data);
           this.props.setCompany(response.data.data.company);
           this.props.setReview(response.data.data.review);
+          this.props.renewReviews();
           this.props.alert(
             5000,
             "success",
@@ -217,7 +217,8 @@ class ReviewInput extends React.Component {
   }
 
   handleEmploymentAuthChange(value, id) {
-    let object = { id: Number(id), value: value };
+    let realValue = value == "true" ? true : false;
+    let object = { id: Number(id), value: realValue };
     if (!this.body.emp_auths) {
       this.body["emp_auths"] = [];
       this.body["emp_auths"].push(object);
@@ -323,7 +324,7 @@ class ReviewInput extends React.Component {
             name="emp_status"
             value={this.state.emp_status.value}
             onChange={() => this.handleInputChange(event)}
-            style={{ width: 200, position: "relative" }}
+            style={{ width: 212, position: "relative" }}
           >
             {this.state.employmentStatuses.map(status => (
               <Option
@@ -350,15 +351,15 @@ class ReviewInput extends React.Component {
                   )[0].value
                 }
                 type="dropdown"
-                style={{ width: 150, position: "relative" }}
+                style={{ width: 162, position: "relative" }}
                 onChange={value =>
                   this.handleEmploymentAuthChange(value, auth.id)
                 }
               >
-                <Option id="employment-auth-cpt-yes" value={true}>
+                <Option id="employment-auth-cpt-yes" value="true">
                   Supported
                 </Option>
-                <Option id="employment-auth-cpt-no" value={false}>
+                <Option id="employment-auth-cpt-no" value="false">
                   Not Supported
                 </Option>
               </Select>
@@ -409,7 +410,7 @@ class ReviewInput extends React.Component {
             name="source_type"
             value={this.state.source_type.value}
             onChange={() => this.handleInputChange(event)}
-            style={{ width: 200, position: "relative" }}
+            style={{ width: 212, position: "relative" }}
           >
             {this.state.sourceTypes.map(source => (
               <Option
@@ -455,7 +456,7 @@ class ReviewInput extends React.Component {
                 checked={this.state.anonymous}
                 type="checkbox"
                 onChange={this.handleInputChange}
-                style={{ marginLeft: "80px", marginTop: "20px" }}
+                style={{ marginLeft: "80px", marginTop: "12px" }}
               >
                 Anonymous
               </Checkbox>

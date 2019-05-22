@@ -1,17 +1,17 @@
 import React from "react";
 import classNames from "classnames";
 
-import { axiosCaptcha } from "../../../../utils/api/fetch_api";
+import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api";
 import {
   updateNoteRequest,
   addNoteRequest,
   deleteNoteRequest,
   getNotesRequest
-} from "../../../../utils/api/requests.js";
+} from "../../../../../../../utils/api/requests.js";
 import {
   IS_CONSOLE_LOG_OPEN,
   makeTimeBeautiful
-} from "../../../../utils/constants/constants.js";
+} from "../../../../../../../utils/constants/constants.js";
 
 class Notes extends React.Component {
   constructor(props) {
@@ -25,17 +25,19 @@ class Notes extends React.Component {
       addNoteForm: "",
       updateNoteForm: "",
       notes: [],
-      textareaHeight: 16
+      editNoteTextAreaHeight: 16,
+      addNoteTextAreaHeight: 40
     };
     this.notes = [];
     this.currentNote = null;
     this.toggleNotes = this.toggleNotes.bind(this);
     this.toggleEdit = this.toggleEdit.bind(this);
     this.setToDefault = this.setToDefault.bind(this);
-    this.onChange = this.onChange.bind(this);
+    this.onAddNoteChange = this.onAddNoteChange.bind(this);
     this.addNote = this.addNote.bind(this);
     this.handleAddNote = this.handleAddNote.bind(this);
     this.saveNotes = this.saveNotes.bind(this);
+    this.onEditNoteChange = this.onEditNoteChange.bind(this);
   }
 
   componentDidMount() {
@@ -76,35 +78,39 @@ class Notes extends React.Component {
     var resetValue = this.refs.addNoteFormDefault;
     resetValue.value = "";
     this.setState({
-      addNoteForm: ""
+      addNoteForm: "",
+      addNoteTextAreaHeight: 40
     });
   }
 
   setCurrentNote(item) {
     this.currentNote = item;
+    let height = item.description.split("").length * 0.5;
     IS_CONSOLE_LOG_OPEN && console.log("set current note\n", this.currentNote);
     this.setState(state => ({
-      showNotePad: !state.showNotePad
+      showNotePad: !state.showNotePad,
+      editNoteTextAreaHeight: height
     }));
   }
 
-  onChange(e) {
+  onAddNoteChange(event) {
+    let height = event.target.value.split("").length * 0.5;
+    this.setState({});
     this.setState({
-      [e.target.name]: e.target.value
+      [event.target.name]: event.target.value,
+      addNoteTextAreaHeight: height
     });
-    IS_CONSOLE_LOG_OPEN && console.log("value", e.target.value);
+    IS_CONSOLE_LOG_OPEN && console.log("value", event.target);
   }
 
-  handleKeyUp(evt) {
-    if (this.state.textareaHeight != 64) {
-      this.setState({
-        textareaHeight: 64
-      });
-    } else {
-      this.setState({
-        textareaHeight: 28
-      });
-    }
+  onEditNoteChange(event) {
+    let height = event.target.value.split("").length * 0.5;
+    this.setState({});
+    this.setState({
+      [event.target.name]: event.target.value,
+      editNoteTextAreaHeight: height
+    });
+    IS_CONSOLE_LOG_OPEN && console.log("value", event);
   }
 
   handleAddNote(e) {
@@ -206,10 +212,11 @@ class Notes extends React.Component {
 
   noteContainerGenerate() {
     let textareaStyle = {
-      height: this.state.textareaHeight,
-      maxWidth: "452px",
-      minWidth: "452px",
-      width: "452px"
+      height: this.state.editNoteTextAreaHeight,
+      maxHeight: "400px",
+      maxWidth: "482px",
+      minWidth: "482px",
+      width: "482px"
     };
     IS_CONSOLE_LOG_OPEN &&
       console.log("notecontainergenerator currentNote?", this.currentNote);
@@ -269,9 +276,8 @@ class Notes extends React.Component {
                 <div>
                   <textarea
                     name="updateNoteForm"
-                    onChange={this.onChange}
+                    onChange={this.onEditNoteChange}
                     defaultValue={item.description}
-                    onDoubleClick={this.handleKeyUp.bind(this)}
                     style={textareaStyle}
                   />
                 </div>
@@ -309,8 +315,9 @@ class Notes extends React.Component {
                 <textarea
                   name="addNoteForm"
                   placeholder="+ Add note"
-                  onChange={this.onChange}
+                  onChange={this.onAddNoteChange}
                   ref="addNoteFormDefault"
+                  style={{ height: this.state.addNoteTextAreaHeight }}
                 />
               </div>
               <div className="notepad-buttons">
