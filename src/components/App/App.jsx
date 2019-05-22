@@ -243,7 +243,7 @@ class App extends Component {
       );
     if (
       google_access_token_expiration &&
-      google_access_token_expiration - parseFloat(now) < 59 * 60 * 1000
+      google_access_token_expiration - parseFloat(now) < expirationWarning
     ) {
       IS_CONSOLE_LOG_OPEN && console.log("updating google access token");
       this.reloadGoogle = await window.gapi.auth2
