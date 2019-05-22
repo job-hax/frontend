@@ -47,7 +47,10 @@ class App extends Component {
       isUserAuthenticated: false,
       token: this.cookie("get", "jobhax_access_token"),
       active: false,
-      isUserLoggedIn: false,
+      isUserLoggedIn:
+        this.cookie("get", "jobhax_access_token") == ("" || null)
+          ? false
+          : true,
       isAuthenticationChecking: true,
       isInitialRequest: "beforeRequest",
       isGapiReady: false,
