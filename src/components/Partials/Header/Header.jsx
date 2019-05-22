@@ -108,6 +108,14 @@ class Header extends Component {
               className="header-icon general tooltips"
               onClick={() => this.handleNotifications()}
             >
+              <img
+                src="../../../src/assets/icons/beta_flag_2.png"
+                style={{
+                  position: "absolute",
+                  height: "24px",
+                  margin: "0px 0px 0 -2px"
+                }}
+              />
               <img src="../../../src/assets/icons/NotifIcon@3x.png" />
               <span>Notifications</span>
             </div>
