@@ -1,6 +1,7 @@
 import React from "react";
 import DatePicker from "react-datepicker";
 import { Upload, message, Button, Icon } from "antd";
+import ReactTelInput from "react-telephone-input/lib/withStyles";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
@@ -51,7 +52,7 @@ class ProfilePage extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDatePickerChange = this.handleDatePickerChange.bind(this);
     this.handleSettingsSubmit = this.handleSettingsSubmit.bind(this);
-    this.handleItuMailChange = this.handleItuMailChange.bind(this);
+    this.handleStudentMailChange = this.handleStudentMailChange.bind(this);
     this.handlePhoneNumberChange = this.handlePhoneNumberChange.bind(this);
     this.handleProfilePhotoUpdate = this.handleProfilePhotoUpdate.bind(this);
   }
@@ -238,19 +239,28 @@ class ProfilePage extends React.Component {
       );
   }
 
-  handlePhoneNumberChange(event) {
-    event.preventDefault();
-    if (isNaN(event.target.value)) {
-      this.props.alert(5000, "error", "Please enter only numbers!");
-      var resetValue = this.refs.phoneNumber;
-      resetValue.value = null;
-      delete this.body.phone_number;
-    }
-    this.body["phone_number"] = event.target.value;
+  handlePhoneNumberChange(telNumber, selectedCountry) {
+    console.log(
+      "input changed. number: ",
+      telNumber,
+      "selected country: ",
+      selectedCountry
+    );
+    this.body["phone_number"] = telNumber;
   }
 
-  handleItuMailChange(event) {
-    this.body["itu_email"] = event.target.value.trim() + "@students.itu.edu";
+  handlePhoneNumberBlur(telNumber, selectedCountry) {
+    console.log(
+      "Focus off the ReactTelephoneInput component. Tel number entered is: ",
+      telNumber,
+      " selected country is: ",
+      selectedCountry
+    );
+  }
+
+  handleStudentMailChange(event) {
+    this.body["student_email"] =
+      event.target.value.trim() + "@students.itu.edu";
   }
 
   handleGenderClick(event) {
@@ -327,10 +337,6 @@ class ProfilePage extends React.Component {
         "Profile photo must be PNG, JPG or JPEG!"
       );
     }
-  }
-
-  generatePhoneCountryCodeOptions() {
-    //return this.state.countryCodes.map(() => <Option key={} value={}> flag name code </Option>);
   }
 
   generateNonEditableProfileMainArea() {
@@ -483,11 +489,13 @@ class ProfilePage extends React.Component {
                   </div>
                 </div>
                 <div className="info-content-body-item">
-                  <div className="info-content-body-item-label">ITU email:</div>
+                  <div className="info-content-body-item-label">
+                    Student email:
+                  </div>
                   <div className="info-content-body-item-text">
                     {this.state.data.length != 0 &&
-                    this.state.data.itu_email ? (
-                      this.state.data.itu_email
+                    this.state.data.student_email ? (
+                      this.state.data.student_email
                     ) : (
                       <span className="not-specified-notice">
                         Not specified!
@@ -685,17 +693,18 @@ class ProfilePage extends React.Component {
                   </div>
                   <div className="info-content-body-item">
                     <div className="info-content-body-item-label">
-                      ITU email:
+                      Student email:
                     </div>
                     <div className="info-content-body-item-text">
                       <label>
                         <input
-                          onChange={this.handleItuMailChange}
+                          className="input"
+                          onChange={this.handleStudentMailChange}
                           placeholder={
                             this.state.data.length != 0 &&
-                            this.state.data.itu_email
-                              ? this.state.data.itu_email.split("@")[0]
-                              : "your ITU email"
+                            this.state.data.student_email
+                              ? this.state.data.student_email.split("@")[0]
+                              : "your student email"
                           }
                         />{" "}
                         @students.itu.edu
@@ -705,15 +714,13 @@ class ProfilePage extends React.Component {
                   <div className="info-content-body-item">
                     <div className="info-content-body-item-label">Phone:</div>
                     <div className="info-content-body-item-text">
-                      <input
+                      <ReactTelInput
+                        defaultCountry="us"
+                        preferredCountries={["us"]}
+                        value={this.state.data.phone_number}
+                        flagsImagePath={require("../../assets/icons/flags.png")}
                         onChange={this.handlePhoneNumberChange}
-                        ref="phoneNumber"
-                        placeholder={
-                          this.state.data.length != 0 &&
-                          this.state.data.phone_number
-                            ? this.state.data.phone_number
-                            : "only numbers"
-                        }
+                        onBlur={this.handlePhoneNumberBlur}
                       />
                     </div>
                   </div>
