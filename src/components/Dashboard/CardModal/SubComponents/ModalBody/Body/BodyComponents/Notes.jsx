@@ -51,7 +51,7 @@ class Notes extends React.Component {
     url = url + "?jopapp_id=" + card.id;
     axiosCaptcha(url, config).then(response => {
       if (response.statusText === "OK") {
-        this.notes = response.data.data.reverse();
+        this.notes = response.data.data;
         this.setState({
           notes: this.notes
         });
