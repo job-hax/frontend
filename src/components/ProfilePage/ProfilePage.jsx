@@ -1,7 +1,7 @@
 import React from "react";
 import DatePicker from "react-datepicker";
 import { Upload, message, Button, Icon } from "antd";
-import ReactTelInput from "react-telephone-input/lib/withStyles";
+import ReactTelInput from "react-telephone-input";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
@@ -20,6 +20,7 @@ import {
 } from "../../utils/api/requests.js";
 
 import "./react-datepicker.scss";
+import "./area-code.scss";
 import "./style.scss";
 
 class ProfilePage extends React.Component {
@@ -84,7 +85,8 @@ class ProfilePage extends React.Component {
                 selectedDateShowing: new Date(this.data.dob + "T06:00:00")
               });
             }
-            console.log("profile page received data", this.state.data);
+            IS_CONSOLE_LOG_OPEN &&
+              console.log("profile page received data", this.state.data);
           }
         }
       );
@@ -100,7 +102,6 @@ class ProfilePage extends React.Component {
             notificationsList: this.notificationsList,
             isNotificationsChecking: false
           });
-          console.log(this.state.notificationsList);
         }
       }
     );
@@ -117,7 +118,6 @@ class ProfilePage extends React.Component {
           employmentStatusList: this.employmentStatusList,
           isNotificationsChecking: false
         });
-        console.log(this.state.employmentStatusList);
       }
     });
   }
@@ -139,8 +139,6 @@ class ProfilePage extends React.Component {
       this.state.body[" last_name"] = target[5].value.trim();
     }
     updateProfileRequest.config.body = this.body;
-    console.log(target, updateProfileRequest.config.body);
-    console.log(updateProfileRequest);
     axiosCaptcha(
       updateProfileRequest.url,
       updateProfileRequest.config,
@@ -161,10 +159,8 @@ class ProfilePage extends React.Component {
             "Your profile have been updated successfully!"
           );
           this.props.setIsFirstLogin(true);
-          console.log(this.state.data);
         } else {
           this.setState({ isUpdating: false });
-          console.log(response, response.data.error_message);
           this.props.alert(
             5000,
             "error",
@@ -195,7 +191,6 @@ class ProfilePage extends React.Component {
         this.settingsBody["username"] = target[0].value;
       }
       updateProfileRequest.config.body = this.settingsBody;
-      console.log(updateProfileRequest.config.body);
       axiosCaptcha(
         updateProfileRequest.url,
         updateProfileRequest.config,
@@ -215,10 +210,8 @@ class ProfilePage extends React.Component {
               "success",
               "Your settings have been updated successfully!"
             );
-            console.log(this.state.data);
           } else {
             this.setState({ isUpdating: false });
-            console.log(response, response.data.error_message);
             this.props.alert(
               5000,
               "error",
@@ -249,7 +242,6 @@ class ProfilePage extends React.Component {
   }
 
   handleGenderClick(event) {
-    console.log(event.target.value);
     this.body["gender"] = event.target.value;
   }
 
@@ -258,13 +250,11 @@ class ProfilePage extends React.Component {
   }
 
   handleDatePickerChange(event) {
-    console.log(event.toISOString().split("T")[0]);
     this.setState({ selectedDateShowing: event });
     this.body["dob"] = event.toISOString().split("T")[0];
   }
 
   async handleProfilePhotoUpdate(file) {
-    console.log(file);
     if (
       file.type === "image/png" ||
       file.type === "image/jpg" ||
@@ -287,17 +277,14 @@ class ProfilePage extends React.Component {
               this.data = response.data.data;
               this.setState({ data: this.data });
               this.props.setProfilePhotoUrlInHeader();
-              console.log("response update profile photo", this.data);
               this.props.alert(
                 5000,
                 "success",
                 "Your profile have been updated successfully!"
               );
               this.props.setIsFirstLogin(true);
-              console.log(this.state.data);
             } else {
               this.setState({ isUpdating: false });
-              console.log(response, response.data.error_message);
               this.props.alert(
                 5000,
                 "error",
@@ -749,7 +736,8 @@ class ProfilePage extends React.Component {
       notificationsBoxHeight,
       position: "relative"
     };
-    console.log("render run! \n data:", this.state.data);
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("profile pagerender run! \n data:", this.state.data);
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     if (this.state.data.length == 0) {
