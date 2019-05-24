@@ -8,7 +8,7 @@ class ModalBody extends React.Component {
     super(props);
 
     this.state = {
-      displaying: "Company"
+      displaying: "Job Details"
     };
 
     this.setDisplaying = this.setDisplaying.bind(this);
@@ -22,7 +22,7 @@ class ModalBody extends React.Component {
     return (
       <div className="modal-body">
         <NavigationPanel
-          sections={["Company", "Contacts", "Reviews", "Notes"]}
+          sections={["Job Details", "Contacts", "Reviews", "Notes"]}
           setDisplaying={this.setDisplaying}
           displaying={this.state.displaying}
         />
