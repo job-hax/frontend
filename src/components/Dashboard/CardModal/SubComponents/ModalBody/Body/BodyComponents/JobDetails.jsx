@@ -3,7 +3,7 @@ import React from "react";
 import { makeTimeBeautiful } from "../../../../../../../utils/constants/constants.js";
 import CompanyStats from "../../../../../../Partials/CompanyStats/CompanyStats.jsx";
 
-class Company extends React.Component {
+class JobDetails extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -33,12 +33,12 @@ class Company extends React.Component {
             }
           ])}
         </div>
-        <div className="company-stats-container">
+        {/*<div className="company-stats-container">
           <CompanyStats company={card.companyObject} />
-        </div>
+        </div>*/}
       </div>
     );
   }
 }
 
-export default Company;
+export default JobDetails;
