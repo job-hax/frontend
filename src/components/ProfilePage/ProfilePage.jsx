@@ -239,23 +239,8 @@ class ProfilePage extends React.Component {
       );
   }
 
-  handlePhoneNumberChange(telNumber, selectedCountry) {
-    console.log(
-      "input changed. number: ",
-      telNumber,
-      "selected country: ",
-      selectedCountry
-    );
+  handlePhoneNumberChange(telNumber) {
     this.body["phone_number"] = telNumber;
-  }
-
-  handlePhoneNumberBlur(telNumber, selectedCountry) {
-    console.log(
-      "Focus off the ReactTelephoneInput component. Tel number entered is: ",
-      telNumber,
-      " selected country is: ",
-      selectedCountry
-    );
   }
 
   handleStudentMailChange(event) {
@@ -720,7 +705,6 @@ class ProfilePage extends React.Component {
                         value={this.state.data.phone_number}
                         flagsImagePath={require("../../assets/icons/flags.png")}
                         onChange={this.handlePhoneNumberChange}
-                        onBlur={this.handlePhoneNumberBlur}
                       />
                     </div>
                   </div>

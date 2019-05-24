@@ -1,6 +1,6 @@
 import React from "react";
 
-import Company from "./BodyComponents/Company.jsx";
+import JobDetails from "./BodyComponents/JobDetails.jsx";
 import Contacts from "./BodyComponents/Contacts.jsx";
 import PositonReviews from "./BodyComponents/Reviews.jsx";
 import Notes from "./BodyComponents/Notes.jsx";
@@ -12,8 +12,8 @@ class BodyComponents extends React.Component {
 
   displaySelector() {
     switch (this.props.displaying) {
-      case "Company":
-        return <Company card={this.props.card} />;
+      case "Job Details":
+        return <JobDetails card={this.props.card} />;
       case "Contacts":
         return <Contacts />;
       case "Reviews":
