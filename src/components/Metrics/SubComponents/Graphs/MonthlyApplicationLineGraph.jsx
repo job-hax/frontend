@@ -51,6 +51,7 @@ class MonthlyApplicationLineGraph extends React.Component {
         top: "0px"
       },
       tooltip: {
+        show: this.props.style.height != "160px" ? true : false,
         trigger: "axis"
       },
       /*legend: {
