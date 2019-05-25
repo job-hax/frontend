@@ -1,12 +1,7 @@
 import React, { PureComponent } from "react";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
-import DropDownSelector from "../Partials/DropDown/DropDownSelector.jsx";
-import FeatureArea from "./SubComponents/FeatureArea.jsx";
-import MonthlyApplicationGraph from "./SubComponents/MonthlyApplicationGraph.jsx";
-import MonthlyApplicationLineGraph from "./SubComponents/MonthlyApplicationLineGraph.jsx";
-import StagesOfApplicationsPieChart from "./SubComponents/StagesOfApplicationsPieChart.jsx";
-import StagesInPositions from "./SubComponents/StagesInPositions.jsx";
+import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   getTotalAppsCountRequest,
@@ -18,6 +13,8 @@ import {
   postUsersRequest
 } from "../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import Map from "./SubComponents/Map/Map.jsx";
+import IndividualMetrics from "./SubComponents/IndividualMetrics/IndividualMetrics.jsx";
 
 import "./style.scss";
 
@@ -36,8 +33,7 @@ class Metrics extends PureComponent {
       wordCountRequest: [],
       currentMonthsOfLastYear: [],
       isInitialRequest: "beforeRequest",
-      isMonthlyLine: false,
-      selectedGraph: "Bar"
+      isMonthlyLine: false
     };
 
     this.totalAppsCountRequest = [];
@@ -49,8 +45,7 @@ class Metrics extends PureComponent {
     this.countByStatusesRequest = [];
     this.wordCountRequest = [];
     this.currentMonthsOfLastYear = [];
-
-    this.graphSelector = this.graphSelector.bind(this);
+    this.listData = [];
   }
 
   async componentDidMount() {
@@ -112,6 +107,16 @@ class Metrics extends PureComponent {
             element["type"] = "bar";
             element["stack"] = "Company";
           });
+          this.appsCountByMonthRequest.forEach(element => {
+            let total = 0;
+            element["data"].forEach(month => {
+              total = total + month;
+            });
+            this.listData.push({ id: element.name, value: total });
+          });
+          this.listData
+            .sort((a, b) => parseFloat(a.value) - parseFloat(b.value))
+            .reverse();
           this.currentMonthsOfLastYear = response.data.data[1];
           this.setState({
             appsCountByMonthRequest: this.appsCountByMonthRequest,
@@ -189,10 +194,6 @@ class Metrics extends PureComponent {
     }
   }
 
-  graphSelector(param, value) {
-    this.setState({ isMonthlyLine: param, selectedGraph: value });
-  }
-
   render() {
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
@@ -200,44 +201,43 @@ class Metrics extends PureComponent {
       return <Spinner message="Preparing your metrics..." />;
     return (
       <div>
-        <FeatureArea count={this.state.totalAppsCountRequest.count} />
-        <div className="selection-menu-container">
-          <div className="selection-menu">
-            <div className="filter-indicator">Selected:</div>
-            <DropDownSelector
-              itemList={[
-                { id: 0, value: "Bar", param: false },
-                { id: 1, value: "Line", param: true }
-              ]}
-              selector={this.graphSelector}
-              menuName={this.state.selectedGraph}
-            />
-          </div>
+        <div style={{ margin: "0 0 0px 0", zIndex: "999" }}>
+          <Map
+            defaultCenter={{ lat: 37.3729, lng: -121.856 }}
+            positions={[
+              { lat: 37.3729, lng: -121.856 },
+              { lat: 39.3729, lng: -121.856 }
+            ]}
+          />
         </div>
-        <div className="graph-container-dark-background">
-          {this.state.isMonthlyLine ? (
-            <MonthlyApplicationLineGraph
-              legendData={this.state.appsMonthSourcesWithTotal}
-              months={this.currentMonthsOfLastYear}
-              series={this.state.appsCountByMonthWithTotalRequest}
-            />
-          ) : (
-            <MonthlyApplicationGraph
-              legendData={this.state.appsMonthSources}
-              months={this.currentMonthsOfLastYear}
-              series={this.state.appsCountByMonthRequest}
-            />
-          )}
+        <div className="metric-big-group">
+          <IndividualMetrics
+            MonthlyApplicationGraph={{
+              legendData: this.state.appsMonthSources,
+              months: this.currentMonthsOfLastYear,
+              series: this.state.appsCountByMonthRequest
+            }}
+            MonthlyApplicationLineGraph={{
+              legendData: this.state.appsMonthSourcesWithTotal,
+              months: this.currentMonthsOfLastYear,
+              series: this.state.appsCountByMonthWithTotalRequest
+            }}
+            StagesOfApplicationsPieChart={{
+              legendData: this.state.appsMonthSources,
+              seriesData: this.state.countByStatusesRequest
+            }}
+            StagesInPositions={{
+              legendData: this.state.countByJobtitleAndStatusesRequest.statuses,
+              xData: this.state.countByJobtitleAndStatusesRequest.jobs,
+              series: this.state.countByJobtitleAndStatusesRequest.data
+            }}
+            listData={this.listData}
+            value={this.state.totalAppsCountRequest.count}
+          />
         </div>
-        <StagesOfApplicationsPieChart
-          legendData={this.state.appsMonthSources}
-          seriesData={this.state.countByStatusesRequest}
-        />
-        <StagesInPositions
-          legendData={this.state.countByJobtitleAndStatusesRequest.statuses}
-          xData={this.state.countByJobtitleAndStatusesRequest.jobs}
-          series={this.state.countByJobtitleAndStatusesRequest.data}
-        />
+        <div>
+          <Footer />
+        </div>
       </div>
     );
   }

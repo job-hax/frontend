@@ -44,9 +44,11 @@
     "react-datepicker": "^2.5.0",
     "react-dnd": "^7.3.1",
     "react-dnd-html5-backend": "^7.2.0",
+    "react-google-maps": "^9.4.5",
     "react-redux": "^6.0.1",
     "react-router-dom": "^4.3.1",
     "react-telephone-input": "^4.73.4",
+    "recompose": "^0.30.0",
     "semantic-ui-react": "^0.86.0"
   }
 }

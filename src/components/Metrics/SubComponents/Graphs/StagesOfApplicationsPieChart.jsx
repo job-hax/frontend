@@ -10,14 +10,14 @@ class StagesOfApplicationsPieChart extends React.Component {
   chartThemeCreator() {
     echarts.registerTheme("stagesofapplications", {
       color: ["#F4EBC1", "#A0C1B8", "#709FB0", "#726A95", "#351F39"],
-      backgroundColor: "rgb(92, 39, 195)",
+      backgroundColor: "white",
       textStyle: {
         fontType: "Exo",
-        color: "white"
+        color: "#261268"
       },
       title: {
         textStyle: {
-          color: "white"
+          color: "#261268"
         }
       }
     });
@@ -28,24 +28,24 @@ class StagesOfApplicationsPieChart extends React.Component {
     return {
       title: {
         text: "Stages of Applications",
-        x: "center"
+        x: "left"
       },
       tooltip: {
         trigger: "item",
         formatter: "{a} <br/>{b} : {c} ({d}%)"
       },
-      legend: {
+      /*legend: {
         orient: "vertical",
         left: "right",
         data: this.props.legendData
-      },
+      },*/
       toolbox: {
         show: true,
         feature: {
           saveAsImage: {
             show: true,
             title: "save",
-            iconStyle: { color: "white", emphasis: { color: "white" } }
+            iconStyle: { color: "#261268", emphasis: { color: "#261268" } }
           }
         }
       },
@@ -71,14 +71,11 @@ class StagesOfApplicationsPieChart extends React.Component {
   render() {
     return (
       <div>
-        <div
-          className="graph-container-light-background"
-          id="applicationstages"
-        >
-          <div className="graph-dark">
+        <div id="applicationstages">
+          <div>
             <ReactEcharts
               option={this.buildStagesOfApplicationsPieChart()}
-              style={{ height: "440px", width: "740px", margin: "30px" }}
+              style={this.props.style}
               theme="stagesofapplications"
             />
           </div>

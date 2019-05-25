@@ -2,13 +2,13 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import echarts from "echarts";
 
-class MonthlyApplicationGraph extends React.Component {
+class MonthlyApplicationLineGraph extends React.Component {
   constructor(props) {
     super(props);
   }
 
   chartThemeCreator() {
-    echarts.registerTheme("monthlyapplications", {
+    echarts.registerTheme("monthlyapplicationsline", {
       color: [
         "#E82F3A",
         "#0077B5",
@@ -40,28 +40,27 @@ class MonthlyApplicationGraph extends React.Component {
     });
   }
 
-  buildMonthlyApplicationGraph() {
+  buildMonthlyApplicationLineGraph() {
     this.chartThemeCreator();
     return {
       title: {
-        text: "Monthly Application Graph",
+        show: this.props.style.height != "160px" ? true : false,
+        text: "Application Trend",
         subtext: "",
-        x: "center",
+        x: "left",
         top: "0px"
       },
       tooltip: {
-        trigger: "axis",
-        axisPointer: {
-          type: "shadow"
-        }
+        trigger: "axis"
       },
-      legend: {
+      /*legend: {
         data: this.props.legendData,
+        textStyle: { color: "#261268" },
         x: "center",
         top: "28px"
-      },
+      },*/
       toolbox: {
-        show: true,
+        show: this.props.style.height != "160px" ? true : false,
         title: "save",
         feature: {
           saveAsImage: {
@@ -77,34 +76,26 @@ class MonthlyApplicationGraph extends React.Component {
         bottom: "3%",
         containLabel: true
       },
-      xAxis: [
-        {
-          type: "category",
-          data: this.props.months
-        }
-      ],
-      yAxis: [
-        {
-          type: "value"
-        }
-      ],
+      xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: this.props.months
+      },
+      yAxis: {
+        type: "value"
+      },
       series: this.props.series
     };
   }
 
   render() {
     return (
-      <div id="monthlyapplication">
-        <div className="graph" style={{ marginTop: "40px" }}>
+      <div id="applicationtrend">
+        <div>
           <ReactEcharts
-            option={this.buildMonthlyApplicationGraph()}
-            style={{
-              height: "440px",
-              width: "740px",
-              margin: "30px",
-              paddingTop: "30px"
-            }}
-            theme="monthlyapplications"
+            option={this.buildMonthlyApplicationLineGraph()}
+            style={this.props.style}
+            theme="monthlyapplicationsline"
           />
         </div>
       </div>
@@ -112,4 +103,4 @@ class MonthlyApplicationGraph extends React.Component {
   }
 }
 
-export default MonthlyApplicationGraph;
+export default MonthlyApplicationLineGraph;
