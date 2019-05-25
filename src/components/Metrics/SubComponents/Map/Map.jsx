@@ -6,6 +6,7 @@ import {
   GoogleMap,
   Marker
 } from "react-google-maps";
+import MarkerClusterer from "react-google-maps/lib/components/addons/MarkerClusterer";
 
 import { googleApiKey } from "../../../../config/config.js";
 
@@ -22,10 +23,20 @@ const MapComponent = compose(
   withScriptjs,
   withGoogleMap
 )(props => (
-  <GoogleMap defaultZoom={8} defaultCenter={props.defaultCenter}>
-    {props.isMarkerShown && (
-      <Marker position={props.positions} onClick={props.onMarkerClick} />
-    )}
+  <GoogleMap
+    id="marker-example"
+    mapContainerStyle={{
+      height: "400px",
+      width: "800px"
+    }}
+    zoom={8}
+    center={props.defaultCenter}
+  >
+    <MarkerClusterer>
+      {props.positions.map((location, i) => (
+        <Marker key={i} position={location} />
+      ))}
+    </MarkerClusterer>
   </GoogleMap>
 ));
 

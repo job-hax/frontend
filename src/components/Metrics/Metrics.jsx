@@ -201,12 +201,14 @@ class Metrics extends PureComponent {
       return <Spinner message="Preparing your metrics..." />;
     return (
       <div>
-        <div style={{ margin: "0 0 0px 0", zIndex: "999" }}>
+        <div style={{ margin: "0 0 0px 0", zIndex: "999", height: 400 }}>
           <Map
             defaultCenter={{ lat: 37.3729, lng: -121.856 }}
             positions={[
               { lat: 37.3729, lng: -121.856 },
-              { lat: 39.3729, lng: -121.856 }
+              { lat: 37.4174343, lng: -122.0874049 },
+              { lat: 37.4850753, lng: -122.1496129 },
+              { lat: 37.3317042, lng: -122.0325086 }
             ]}
           />
         </div>
