@@ -29,7 +29,7 @@ const MapComponent = compose(
       height: "400px",
       width: "800px"
     }}
-    zoom={8}
+    zoom={10}
     center={props.defaultCenter}
   >
     <MarkerClusterer>
