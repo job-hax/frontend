@@ -31,7 +31,7 @@ class DetailedMetricsGroup extends React.Component {
               <div
                 style={{
                   height: 14,
-                  width: (source.value / 86) * 180,
+                  width: (source.value / total) * 180,
                   backgroundColor: "#261268"
                 }}
               />
