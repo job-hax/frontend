@@ -44,22 +44,23 @@ class StagesInPositions extends React.Component {
     this.chartThemeCreator();
     return {
       title: {
-        text: "Position by Stages Graph",
+        text: "Position by Stages",
         subtext: "",
-        x: "center",
+        x: "left",
         top: "0px"
       },
       tooltip: {
         trigger: "axis",
         axisPointer: {
           type: "shadow"
-        }
+        },
+        position: "absolute"
       },
-      legend: {
+      /*legend: {
         data: this.props.legendData,
         x: "center",
         top: "30px"
-      },
+      },*/
       toolbox: {
         show: true,
         title: "save",
@@ -74,7 +75,7 @@ class StagesInPositions extends React.Component {
       grid: {
         left: "3%",
         right: "4%",
-        bottom: "5%",
+        bottom: "3%",
         containLabel: true
       },
       xAxis: {
@@ -93,16 +94,13 @@ class StagesInPositions extends React.Component {
   render() {
     return (
       <div>
-        <div className="graph-container-dark-background" id="stagesinpositions">
-          <div className="graph">
+        <div id="stagesinpositions">
+          <div>
             <ReactEcharts
               option={this.buildPositionsByStagesGraph()}
-              style={{ height: "440px", width: "740px", margin: "30px" }}
+              style={this.props.style}
               theme="positionsbystages"
             />
-            <div className="positions-stages-graph-xAxis-name-container">
-              <p className="positions-stages-graph-xAxis-name">positions</p>
-            </div>
           </div>
         </div>
       </div>
