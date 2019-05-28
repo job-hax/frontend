@@ -2,13 +2,13 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import echarts from "echarts";
 
-class StagesInPositions extends React.Component {
+class LineGraph extends React.Component {
   constructor(props) {
     super(props);
   }
 
   chartThemeCreator() {
-    echarts.registerTheme("positionsbystages", {
+    echarts.registerTheme("line", {
       color: [
         "#E82F3A",
         "#0077B5",
@@ -40,28 +40,28 @@ class StagesInPositions extends React.Component {
     });
   }
 
-  buildPositionsByStagesGraph() {
+  buildLineGraph() {
     this.chartThemeCreator();
     return {
       title: {
-        text: "Position by Stages Graph",
+        show: this.props.style.height != "160px" ? true : false,
+        text: this.props.metric.title,
         subtext: "",
-        x: "center",
+        x: "left",
         top: "0px"
       },
       tooltip: {
-        trigger: "axis",
-        axisPointer: {
-          type: "shadow"
-        }
+        show: this.props.style.height != "160px" ? true : false,
+        trigger: "axis"
       },
-      legend: {
-        data: this.props.legendData,
+      /*legend: {
+        data: this.props.metric.legend,
+        textStyle: { color: "#261268" },
         x: "center",
-        top: "30px"
-      },
+        top: "28px"
+      },*/
       toolbox: {
-        show: true,
+        show: this.props.style.height != "160px" ? true : false,
         title: "save",
         feature: {
           saveAsImage: {
@@ -74,40 +74,34 @@ class StagesInPositions extends React.Component {
       grid: {
         left: "3%",
         right: "4%",
-        bottom: "5%",
+        bottom: "3%",
         containLabel: true
       },
       xAxis: {
         type: "category",
-        axisLabel: { show: false },
-        data: this.props.xData
+        boundaryGap: false,
+        data: this.props.metric.xAxis
       },
       yAxis: {
-        type: "value",
-        axisLabel: { splitLine: 1 }
+        type: "value"
       },
-      series: this.props.series
+      series: this.props.metric.series
     };
   }
 
   render() {
     return (
-      <div>
-        <div className="graph-container-dark-background" id="stagesinpositions">
-          <div className="graph">
-            <ReactEcharts
-              option={this.buildPositionsByStagesGraph()}
-              style={{ height: "440px", width: "740px", margin: "30px" }}
-              theme="positionsbystages"
-            />
-            <div className="positions-stages-graph-xAxis-name-container">
-              <p className="positions-stages-graph-xAxis-name">positions</p>
-            </div>
-          </div>
+      <div id="applicationtrend">
+        <div>
+          <ReactEcharts
+            option={this.buildLineGraph()}
+            style={this.props.style}
+            theme="line"
+          />
         </div>
       </div>
     );
   }
 }
 
-export default StagesInPositions;
+export default LineGraph;

@@ -1,61 +1,23 @@
 import React, { PureComponent } from "react";
 
-import Spinner from "../Partials/Spinner/Spinner.jsx";
-import DropDownSelector from "../Partials/DropDown/DropDownSelector.jsx";
-import FeatureArea from "./SubComponents/FeatureArea.jsx";
-import MonthlyApplicationGraph from "./SubComponents/MonthlyApplicationGraph.jsx";
-import MonthlyApplicationLineGraph from "./SubComponents/MonthlyApplicationLineGraph.jsx";
-import StagesOfApplicationsPieChart from "./SubComponents/StagesOfApplicationsPieChart.jsx";
-import StagesInPositions from "./SubComponents/StagesInPositions.jsx";
+import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import {
-  getTotalAppsCountRequest,
-  getAppsCountByMonthRequest,
-  getAppsCountByMonthWithTotalRequest,
-  getCountByJobtitleAndStatusesRequest,
-  getCountByStatusesRequest,
-  getWordCountRequest,
-  postUsersRequest
-} from "../../utils/api/requests.js";
+import { postUsersRequest } from "../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import Map from "./SubComponents/Map/Map.jsx";
+import IndividualMetrics from "./SubComponents/IndividualMetrics/IndividualMetrics.jsx";
+import UniversityMetrics from "./SubComponents/UniversityMetrics/UniversityMetrics.jsx";
 
 import "./style.scss";
 
 class Metrics extends PureComponent {
   constructor(props) {
     super(props);
-
-    this.state = {
-      totalAppsCountRequest: [],
-      appsCountByMonthRequest: [],
-      appsMonthSources: [],
-      appsCountByMonthWithTotalRequest: [],
-      appsMonthSourcesWithTotal: [],
-      countByJobtitleAndStatusesRequest: [],
-      countByStatusesRequest: [],
-      wordCountRequest: [],
-      currentMonthsOfLastYear: [],
-      isInitialRequest: "beforeRequest",
-      isMonthlyLine: false,
-      selectedGraph: "Bar"
-    };
-
-    this.totalAppsCountRequest = [];
-    this.appsCountByMonthRequest = [];
-    this.appsMonthSources = [];
-    this.appsCountByMonthWithTotalRequest = [];
-    this.appsMonthSourcesWithTotal = [];
-    this.countByJobtitleAndStatusesRequest = [];
-    this.countByStatusesRequest = [];
-    this.wordCountRequest = [];
-    this.currentMonthsOfLastYear = [];
-
-    this.graphSelector = this.graphSelector.bind(this);
   }
 
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
-      await this.getData();
+      await this.props.handleTokenExpiration("metrics getData");
       axiosCaptcha(
         postUsersRequest.url("verify_recaptcha"),
         postUsersRequest.config,
@@ -76,168 +38,38 @@ class Metrics extends PureComponent {
     }
   }
 
-  componentDidUpdate() {
-    this.getData();
-  }
-
-  async getData() {
-    if (
-      this.props.cookie("get", "jobhax_access_token") != ("" || null) &&
-      this.state.isInitialRequest === "beforeRequest"
-    ) {
-      this.setState({ isInitialRequest: true });
-      await this.props.handleTokenExpiration("metrics getData");
-      IS_CONSOLE_LOG_OPEN && console.log("active?", this.props.active);
-      IS_CONSOLE_LOG_OPEN && console.log(getTotalAppsCountRequest.config);
-      axiosCaptcha(
-        getTotalAppsCountRequest.url,
-        getTotalAppsCountRequest.config
-      ).then(response => {
-        if (response.statusText === "OK") {
-          this.totalAppsCountRequest = response.data.data;
-          this.setState({
-            totalAppsCountRequest: this.totalAppsCountRequest
-          });
-        }
-      });
-      axiosCaptcha(
-        getAppsCountByMonthRequest.url,
-        getAppsCountByMonthRequest.config
-      ).then(response => {
-        if (response.statusText === "OK") {
-          this.appsCountByMonthRequest = response.data.data[0];
-          this.appsCountByMonthRequest.forEach(element => {
-            element["name"] = element["source"];
-            delete element["source"];
-            element["type"] = "bar";
-            element["stack"] = "Company";
-          });
-          this.currentMonthsOfLastYear = response.data.data[1];
-          this.setState({
-            appsCountByMonthRequest: this.appsCountByMonthRequest,
-            currentMonthsOfLastYear: this.currentMonthsOfLastYear
-          });
-          this.state.appsCountByMonthRequest.map(item =>
-            this.appsMonthSources.push(item.name)
-          );
-          this.setState({
-            appsMonthSources: this.appsMonthSources
-          });
-        }
-      });
-      axiosCaptcha(
-        getAppsCountByMonthWithTotalRequest.url,
-        getAppsCountByMonthWithTotalRequest.config
-      ).then(response => {
-        if (response.statusText === "OK") {
-          this.appsCountByMonthWithTotalRequest = response.data.data[0];
-          this.appsCountByMonthWithTotalRequest.forEach(element => {
-            element["name"] = element["source"];
-            delete element["source"];
-            element["type"] = "line";
-          });
-          this.setState({
-            appsCountByMonthWithTotalRequest: this
-              .appsCountByMonthWithTotalRequest
-          });
-          this.state.appsCountByMonthWithTotalRequest.map(item =>
-            this.appsMonthSourcesWithTotal.push(item.name)
-          );
-          this.setState({
-            appsMonthSourcesWithTotal: this.appsMonthSourcesWithTotal
-          });
-        }
-      });
-      axiosCaptcha(
-        getCountByJobtitleAndStatusesRequest.url,
-        getCountByJobtitleAndStatusesRequest.config
-      ).then(response => {
-        if (response.statusText === "OK") {
-          this.countByJobtitleAndStatusesRequest = response.data.data;
-          this.countByJobtitleAndStatusesRequest.data.forEach(element => {
-            element["type"] = "bar";
-            element["stack"] = "Company";
-          });
-          this.setState({
-            countByJobtitleAndStatusesRequest: this
-              .countByJobtitleAndStatusesRequest
-          });
-        }
-      });
-      axiosCaptcha(
-        getCountByStatusesRequest.url,
-        getCountByStatusesRequest.config
-      ).then(response => {
-        if (response.statusText === "OK") {
-          this.countByStatusesRequest = response.data.data;
-          this.setState({ isInitialRequest: false });
-          this.setState({
-            countByStatusesRequest: this.countByStatusesRequest
-          });
-        }
-      });
-      axiosCaptcha(getWordCountRequest.url, getWordCountRequest.config).then(
-        response => {
-          if (response.statusText === "OK") {
-            this.wordCountRequest = response.data.data;
-            this.setState({
-              wordCountRequest: this.wordCountRequest
-            });
-          }
-        }
-      );
-    }
-  }
-
-  graphSelector(param, value) {
-    this.setState({ isMonthlyLine: param, selectedGraph: value });
-  }
-
   render() {
-    if (this.state.isInitialRequest === "beforeRequest")
-      return <Spinner message="Reaching your account..." />;
-    if (this.state.isInitialRequest === true)
-      return <Spinner message="Preparing your metrics..." />;
     return (
       <div>
-        <FeatureArea count={this.state.totalAppsCountRequest.count} />
-        <div className="selection-menu-container">
-          <div className="selection-menu">
-            <div className="filter-indicator">Selected:</div>
-            <DropDownSelector
-              itemList={[
-                { id: 0, value: "Bar", param: false },
-                { id: 1, value: "Line", param: true }
-              ]}
-              selector={this.graphSelector}
-              menuName={this.state.selectedGraph}
-            />
+        <div style={{ margin: "0 0 0px 0", height: 400 }}>
+          <Map
+            defaultCenter={{ lat: 37.3729, lng: -121.856 }}
+            positions={[
+              { lat: 37.3729, lng: -121.856 },
+              { lat: 37.4174343, lng: -122.0874049 },
+              { lat: 37.4850753, lng: -122.1496129 },
+              { lat: 37.3317042, lng: -122.0325086 }
+            ]}
+          />
+        </div>
+        <div className="metric-big-group">
+          <IndividualMetrics cookie={this.props.cookie} />
+        </div>
+        <div>
+          <div className="university-metrics-header-container">
+            <div className="header-line" />
+            <div className="university-metrics-header">
+              University Job Metrics
+            </div>
+            <div className="header-line" />
+          </div>
+          <div className="metric-big-group">
+            <UniversityMetrics cookie={this.props.cookie} />
           </div>
         </div>
-        <div className="graph-container-dark-background">
-          {this.state.isMonthlyLine ? (
-            <MonthlyApplicationLineGraph
-              legendData={this.state.appsMonthSourcesWithTotal}
-              months={this.currentMonthsOfLastYear}
-              series={this.state.appsCountByMonthWithTotalRequest}
-            />
-          ) : (
-            <MonthlyApplicationGraph
-              legendData={this.state.appsMonthSources}
-              months={this.currentMonthsOfLastYear}
-              series={this.state.appsCountByMonthRequest}
-            />
-          )}
+        <div>
+          <Footer />
         </div>
-        <StagesOfApplicationsPieChart
-          legendData={this.state.appsMonthSources}
-          seriesData={this.state.countByStatusesRequest}
-        />
-        <StagesInPositions
-          legendData={this.state.countByJobtitleAndStatusesRequest.statuses}
-          xData={this.state.countByJobtitleAndStatusesRequest.jobs}
-          series={this.state.countByJobtitleAndStatusesRequest.data}
-        />
       </div>
     );
   }

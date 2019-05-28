@@ -89,3 +89,5 @@ export const GET_COMPANIES = `${apiRoot}/api/companies/`;
 export const USERS = type => `${apiRoot}/api/users/${type}`;
 
 export const POSITIONS = `${apiRoot}/api/positions/`;
+
+export const METRICS = type => `${apiRoot}/api/metrics/${type}`;
