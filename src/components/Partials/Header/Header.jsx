@@ -91,12 +91,12 @@ class Header extends Component {
               <span>Metrics</span>
             </Link>
           </div>
-          <div className="header-icon general tooltips">
+          {/*<div className="header-icon general tooltips">
             <Link to="/metricsGlobal">
               <img src="../../../src/assets/icons/globe.png" />
               <span>Aggregated Metrics</span>
             </Link>
-          </div>
+          </div>*/}
           <div className="header-icon general tooltips">
             <Link to="/companies">
               <img src="../../../src/assets/icons/company_icon.png" />

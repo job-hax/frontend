@@ -2,50 +2,51 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import echarts from "echarts";
 
-class StagesOfApplicationsPieChart extends React.Component {
+class PieChart extends React.Component {
   constructor(props) {
     super(props);
   }
 
   chartThemeCreator() {
-    echarts.registerTheme("stagesofapplications", {
+    echarts.registerTheme("pie", {
       color: ["#F4EBC1", "#A0C1B8", "#709FB0", "#726A95", "#351F39"],
-      backgroundColor: "rgb(92, 39, 195)",
+      backgroundColor: "white",
       textStyle: {
         fontType: "Exo",
-        color: "white"
+        color: "#261268"
       },
       title: {
         textStyle: {
-          color: "white"
+          color: "#261268"
         }
       }
     });
   }
 
-  buildStagesOfApplicationsPieChart() {
+  buildPieChart() {
     this.chartThemeCreator();
     return {
       title: {
-        text: "Stages of Applications",
-        x: "center"
+        text: this.props.metric.title,
+        x: "left"
       },
       tooltip: {
+        show: this.props.style.heigth > 180 ? true : false,
         trigger: "item",
         formatter: "{a} <br/>{b} : {c} ({d}%)"
       },
-      legend: {
+      /*legend: {
         orient: "vertical",
         left: "right",
-        data: this.props.legendData
-      },
+        data: this.props.metric.legend
+      },*/
       toolbox: {
         show: true,
         feature: {
           saveAsImage: {
             show: true,
             title: "save",
-            iconStyle: { color: "white", emphasis: { color: "white" } }
+            iconStyle: { color: "#261268", emphasis: { color: "#261268" } }
           }
         }
       },
@@ -55,7 +56,10 @@ class StagesOfApplicationsPieChart extends React.Component {
           type: "pie",
           radius: "55%",
           center: ["50%", "60%"],
-          data: this.props.seriesData,
+          label: {
+            normal: { show: false }
+          },
+          data: this.props.metric.series,
           itemStyle: {
             emphasis: {
               shadowBlur: 10,
@@ -71,15 +75,12 @@ class StagesOfApplicationsPieChart extends React.Component {
   render() {
     return (
       <div>
-        <div
-          className="graph-container-light-background"
-          id="applicationstages"
-        >
-          <div className="graph-dark">
+        <div id="pie">
+          <div>
             <ReactEcharts
-              option={this.buildStagesOfApplicationsPieChart()}
-              style={{ height: "440px", width: "740px", margin: "30px" }}
-              theme="stagesofapplications"
+              option={this.buildPieChart()}
+              style={this.props.style}
+              theme="pie"
             />
           </div>
         </div>
@@ -88,4 +89,4 @@ class StagesOfApplicationsPieChart extends React.Component {
   }
 }
 
-export default StagesOfApplicationsPieChart;
+export default PieChart;
