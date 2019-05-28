@@ -2,13 +2,13 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import echarts from "echarts";
 
-class MonthlyApplicationGraph extends React.Component {
+class BarGraph extends React.Component {
   constructor(props) {
     super(props);
   }
 
   chartThemeCreator() {
-    echarts.registerTheme("monthlyapplications", {
+    echarts.registerTheme("bar", {
       color: [
         "#E82F3A",
         "#0077B5",
@@ -40,11 +40,11 @@ class MonthlyApplicationGraph extends React.Component {
     });
   }
 
-  buildMonthlyApplicationGraph() {
+  buildBarGraph() {
     this.chartThemeCreator();
     return {
       title: {
-        text: "Monthly Application",
+        text: this.props.title,
         subtext: "",
         x: "left",
         top: "0px"
@@ -80,7 +80,8 @@ class MonthlyApplicationGraph extends React.Component {
       xAxis: [
         {
           type: "category",
-          data: this.props.months
+          axisLabel: { show: this.props.xData.length > 12 ? false : true },
+          data: this.props.xData
         }
       ],
       yAxis: [
@@ -97,9 +98,9 @@ class MonthlyApplicationGraph extends React.Component {
       <div id="monthlyapplication">
         <div>
           <ReactEcharts
-            option={this.buildMonthlyApplicationGraph()}
+            option={this.buildBarGraph()}
             style={this.props.style}
-            theme="monthlyapplications"
+            theme="bar"
           />
         </div>
       </div>
@@ -107,4 +108,4 @@ class MonthlyApplicationGraph extends React.Component {
   }
 }
 
-export default MonthlyApplicationGraph;
+export default BarGraph;

@@ -15,6 +15,7 @@ import {
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import Map from "./SubComponents/Map/Map.jsx";
 import IndividualMetrics from "./SubComponents/IndividualMetrics/IndividualMetrics.jsx";
+import UniversityMetrics from "./SubComponents/UniversityMetrics/UniversityMetrics.jsx";
 
 import "./style.scss";
 
@@ -214,21 +215,21 @@ class Metrics extends PureComponent {
         </div>
         <div className="metric-big-group">
           <IndividualMetrics
-            MonthlyApplicationGraph={{
+            BarGraph={{
               legendData: this.state.appsMonthSources,
-              months: this.currentMonthsOfLastYear,
+              xData: this.currentMonthsOfLastYear,
               series: this.state.appsCountByMonthRequest
             }}
-            MonthlyApplicationLineGraph={{
+            LineGraph={{
               legendData: this.state.appsMonthSourcesWithTotal,
-              months: this.currentMonthsOfLastYear,
+              xData: this.currentMonthsOfLastYear,
               series: this.state.appsCountByMonthWithTotalRequest
             }}
-            StagesOfApplicationsPieChart={{
+            PieChart={{
               legendData: this.state.appsMonthSources,
               seriesData: this.state.countByStatusesRequest
             }}
-            StagesInPositions={{
+            BarGraphPositions={{
               legendData: this.state.countByJobtitleAndStatusesRequest.statuses,
               xData: this.state.countByJobtitleAndStatusesRequest.jobs,
               series: this.state.countByJobtitleAndStatusesRequest.data
@@ -236,6 +237,41 @@ class Metrics extends PureComponent {
             listData={this.listData}
             value={this.state.totalAppsCountRequest.count}
           />
+        </div>
+        <div>
+          <div className="university-metrics-header-container">
+            <div className="header-line" />
+            <div className="university-metrics-header">
+              University Job Metrics
+            </div>
+            <div className="header-line" />
+          </div>
+          <div className="metric-big-group">
+            <UniversityMetrics
+              BarGraph={{
+                legendData: this.state.appsMonthSources,
+                xData: this.currentMonthsOfLastYear,
+                series: this.state.appsCountByMonthRequest
+              }}
+              LineGraph={{
+                legendData: this.state.appsMonthSourcesWithTotal,
+                xData: this.currentMonthsOfLastYear,
+                series: this.state.appsCountByMonthWithTotalRequest
+              }}
+              PieChart={{
+                legendData: this.state.appsMonthSources,
+                seriesData: this.state.countByStatusesRequest
+              }}
+              BarGraphPositions={{
+                legendData: this.state.countByJobtitleAndStatusesRequest
+                  .statuses,
+                xData: this.state.countByJobtitleAndStatusesRequest.jobs,
+                series: this.state.countByJobtitleAndStatusesRequest.data
+              }}
+              listData={this.listData}
+              value={this.state.totalAppsCountRequest.count}
+            />
+          </div>
         </div>
         <div>
           <Footer />

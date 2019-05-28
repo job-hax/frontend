@@ -120,6 +120,25 @@
     }
 }
 
+.university-metrics-header-container {
+    display: flex;
+    justify-content: center;
+    margin-top: -40px;
+
+    .university-metrics-header {
+        margin: 0px 20px 20px 20px;
+        font-size: 110%;
+        font-weight: 500;
+    }
+
+    .header-line {
+        margin: 10px 0 0 0;
+        width: 460px;
+        height: 1px;
+        background-color: #261268;
+    }
+}
+
 .graph-container-light-background {
     height: 700px;
     width: 100%;

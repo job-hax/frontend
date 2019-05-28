@@ -2,7 +2,7 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import echarts from "echarts";
 
-class StagesOfApplicationsPieChart extends React.Component {
+class PieChart extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -23,7 +23,7 @@ class StagesOfApplicationsPieChart extends React.Component {
     });
   }
 
-  buildStagesOfApplicationsPieChart() {
+  buildPieChart() {
     this.chartThemeCreator();
     return {
       title: {
@@ -74,7 +74,7 @@ class StagesOfApplicationsPieChart extends React.Component {
         <div id="applicationstages">
           <div>
             <ReactEcharts
-              option={this.buildStagesOfApplicationsPieChart()}
+              option={this.buildPieChart()}
               style={this.props.style}
               theme="stagesofapplications"
             />
@@ -85,4 +85,4 @@ class StagesOfApplicationsPieChart extends React.Component {
   }
 }
 
-export default StagesOfApplicationsPieChart;
+export default PieChart;

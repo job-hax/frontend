@@ -6,7 +6,7 @@ import BarGraph from "../Graphs/BarGraph.jsx";
 import LineGraph from "../Graphs/LineGraph.jsx";
 import PieChart from "../Graphs/PieChart.jsx";
 
-class IndividualMetrics extends React.Component {
+class UniversityMetrics extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -30,33 +30,8 @@ class IndividualMetrics extends React.Component {
                     }}
                   />
                 ),
-                title: "Phone Screen Rate",
-                value:
-                  (this.props.PieChart.seriesData &&
-                    this.props.PieChart.seriesData.filter(
-                      each => each.name == "PHONE SCREEN"
-                    ).value) + "%",
-                description: "12% INCREASE from last Month"
-              },
-              {
-                graph: (
-                  <LineGraph
-                    legendData={this.props.LineGraph.legendData}
-                    xData={this.props.LineGraph.xData}
-                    series={this.props.LineGraph.series}
-                    style={{
-                      height: "160px",
-                      width: "120px",
-                      margin: "0 10px 10px 10px"
-                    }}
-                  />
-                ),
-                title: "Onsite Interview Rate",
-                value:
-                  (this.props.PieChart.seriesData &&
-                    this.props.PieChart.seriesData.filter(
-                      each => each.name == "ONSITE INTERVIEW"
-                    ).value) + "%",
+                title: "Total Jobs Applied",
+                value: this.props.value,
                 description: "12% INCREASE from last Month"
               },
               {
@@ -89,9 +64,25 @@ class IndividualMetrics extends React.Component {
                     }}
                   />
                 ),
-                title: "Total Jobs Rejected",
-                value:
-                  Math.floor(this.props.value / 3) + "/" + this.props.value,
+                title: "Total Jobs Applied",
+                value: this.props.value,
+                description: "12% INCREASE from last Month"
+              },
+              {
+                graph: (
+                  <LineGraph
+                    legendData={this.props.LineGraph.legendData}
+                    xData={this.props.LineGraph.xData}
+                    series={this.props.LineGraph.series}
+                    style={{
+                      height: "160px",
+                      width: "120px",
+                      margin: "0 10px 10px 10px"
+                    }}
+                  />
+                ),
+                title: "Total Jobs Applied",
+                value: this.props.value,
                 description: "12% INCREASE from last Month"
               }
             ]}
@@ -170,14 +161,8 @@ class IndividualMetrics extends React.Component {
   }
 
   render() {
-    console.log(
-      "piechart",
-      this.props.PieChart,
-      this.props.PieChart.seriesData.filter(each => each.name == "PHONE SCREEN")
-        .value
-    );
     return <div>{this.generateDetailedMetricsGroup()}</div>;
   }
 }
 
-export default IndividualMetrics;
+export default UniversityMetrics;
