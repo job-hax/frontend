@@ -40,7 +40,8 @@ import {
   USERS,
   POSITIONS,
   REFRESH_JOBHAX_TOKEN,
-  UPDATE_GOOGLE_TOKEN
+  UPDATE_GOOGLE_TOKEN,
+  METRICS
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -187,6 +188,18 @@ export const logOutUserRequest = {
 };
 
 //METRICS DATA REQUESTS//
+
+export const getMetrics = {
+  url: METRICS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
 
 export const getTotalAppsCountRequest = {
   url: GET_TOTAL_APPLICATION_COUNT,
