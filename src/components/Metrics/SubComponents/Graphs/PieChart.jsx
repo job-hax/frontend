@@ -31,6 +31,7 @@ class PieChart extends React.Component {
         x: "left"
       },
       tooltip: {
+        show: this.props.style.heigth > 180 ? true : false,
         trigger: "item",
         formatter: "{a} <br/>{b} : {c} ({d}%)"
       },
@@ -55,6 +56,9 @@ class PieChart extends React.Component {
           type: "pie",
           radius: "55%",
           center: ["50%", "60%"],
+          label: {
+            normal: { show: false }
+          },
           data: this.props.metric.series,
           itemStyle: {
             emphasis: {
