@@ -71,7 +71,7 @@ class PieChart extends React.Component {
   render() {
     return (
       <div>
-        <div id="applicationstages">
+        <div id="pie">
           <div>
             <ReactEcharts
               option={this.buildPieChart()}

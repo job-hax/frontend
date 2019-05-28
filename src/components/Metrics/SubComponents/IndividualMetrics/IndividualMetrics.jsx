@@ -73,10 +73,6 @@ class IndividualMetrics extends React.Component {
   }
 
   render() {
-    if (this.state.isInitialRequest === "beforeRequest")
-      return <Spinner message="Reaching your account..." />;
-    if (this.state.isInitialRequest === true)
-      return <Spinner message="Preparing your metrics..." />;
     return <div>{this.generateDetailedMetricsGroup()}</div>;
   }
 }

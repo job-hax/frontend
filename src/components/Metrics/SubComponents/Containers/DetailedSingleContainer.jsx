@@ -49,9 +49,14 @@ class DetailedMetricSingle extends React.Component {
 
   graphSelector() {
     const style = {
-      height: "200px",
+      height: "240px",
       width: "240px",
       margin: "10px"
+    };
+    const radarStyle = {
+      height: "216px",
+      width: "246px",
+      margin: "24px 0 0 10px"
     };
     switch (this.props.graph.type) {
       case "line":
@@ -61,7 +66,7 @@ class DetailedMetricSingle extends React.Component {
       case "bar":
         return <BarGraph metric={this.props.graph} style={style} />;
       case "radar":
-        return <Radar metric={this.props.graph} style={style} />;
+        return <Radar metric={this.props.graph} style={radarStyle} />;
     }
   }
 
