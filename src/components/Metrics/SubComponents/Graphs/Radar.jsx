@@ -48,7 +48,7 @@ class Radar extends React.Component {
         text: this.props.metric.title
       },
       tooltip: {
-        trigger: "axis"
+        trigger: "item"
       },
       /*legend: {
         orient: "vertical",

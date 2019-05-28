@@ -29,14 +29,23 @@ class SummaryMetricSingle extends React.Component {
     return (
       <div className="metric-summary-container">
         <div className="metric-summary">
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div style={{ margin: "0px 0 0 12px" }}>{this.graphSelector()}</div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "left",
+              maxWidth: 270,
+              padding: 12
+            }}
+          >
+            <div style={{ margin: "-12px 0px 0 0px" }}>
+              {this.graphSelector()}
+            </div>
             <div>
               <div
                 style={{
                   fontSize: "150%",
                   fontWeight: "600",
-                  margin: "72px 0 0 12px"
+                  margin: "60px 0 0 0px"
                 }}
               >
                 {this.props.metric.value}
@@ -45,7 +54,7 @@ class SummaryMetricSingle extends React.Component {
                 style={{
                   fontSize: "110%",
                   fontWeight: "450",
-                  margin: "0px 0 0 12px"
+                  margin: "0px 0 0 0px"
                 }}
               >
                 {this.props.metric.title}
