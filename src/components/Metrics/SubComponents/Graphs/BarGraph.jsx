@@ -44,7 +44,7 @@ class BarGraph extends React.Component {
     this.chartThemeCreator();
     return {
       title: {
-        text: this.props.title,
+        text: this.props.metric.title,
         subtext: "",
         x: "left",
         top: "0px"
@@ -56,7 +56,7 @@ class BarGraph extends React.Component {
         }
       },
       /*legend: {
-        data: this.props.legendData,
+        data: this.props.metric.legend,
         x: "center",
         top: "28px"
       },*/
@@ -80,8 +80,10 @@ class BarGraph extends React.Component {
       xAxis: [
         {
           type: "category",
-          axisLabel: { show: this.props.xData.length > 12 ? false : true },
-          data: this.props.xData
+          axisLabel: {
+            show: this.props.metric.xAxis.length > 12 ? false : true
+          },
+          data: this.props.metric.xAxis
         }
       ],
       yAxis: [
@@ -89,7 +91,7 @@ class BarGraph extends React.Component {
           type: "value"
         }
       ],
-      series: this.props.series
+      series: this.props.metric.series
     };
   }
 

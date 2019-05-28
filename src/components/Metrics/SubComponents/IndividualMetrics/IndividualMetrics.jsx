@@ -1,168 +1,71 @@
 import React from "react";
 
 import DetailedMetricsGroup from "../Containers/DetailedGroupContainer.jsx";
-import SummaryGroupContainer from "../Containers/SummaryGroupContainer.jsx";
-import BarGraph from "../Graphs/BarGraph.jsx";
-import LineGraph from "../Graphs/LineGraph.jsx";
-import PieChart from "../Graphs/PieChart.jsx";
+import SummaryMetricsGroup from "../Containers/SummaryGroupContainer.jsx";
+import { axiosCaptcha } from "../../../../utils/api/fetch_api.js";
+import { getMetrics } from "../../../../utils/api/requests.js";
+import Spinner from "../../../Partials/Spinner/Spinner.jsx";
 
 class IndividualMetrics extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      genericData: [],
+      detailedData: [],
+      isInitialRequest: "beforeRequest"
+    };
+  }
+
+  componentDidMount() {
+    if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
+      this.getData();
+    }
+  }
+
+  getData() {
+    if (
+      this.props.cookie("get", "jobhax_access_token") != ("" || null) &&
+      this.state.isInitialRequest === "beforeRequest"
+    ) {
+      this.setState({ isInitialRequest: true });
+      axiosCaptcha(getMetrics.url("personal/generic"), getMetrics.config).then(
+        response => {
+          if (response.statusText === "OK") {
+            this.data = response.data.data;
+            this.setState({
+              genericData: this.data
+            });
+          }
+        }
+      );
+      axiosCaptcha(getMetrics.url("personal/detailed"), getMetrics.config).then(
+        response => {
+          if (response.statusText === "OK") {
+            this.data = response.data.data;
+            this.setState({
+              detailedData: this.data,
+              isInitialRequest: false
+            });
+          }
+        }
+      );
+    }
   }
 
   generateDetailedMetricsGroup() {
     return (
       <div>
         <div>
-          <SummaryGroupContainer
-            metrics={[
-              {
-                graph: (
-                  <LineGraph
-                    legendData={this.props.LineGraph.legendData}
-                    xData={this.props.LineGraph.xData}
-                    series={this.props.LineGraph.series}
-                    style={{
-                      height: "160px",
-                      width: "120px",
-                      margin: "0 10px 10px 10px"
-                    }}
-                  />
-                ),
-                title: "Phone Screen Rate",
-                value:
-                  (this.props.PieChart.seriesData &&
-                    this.props.PieChart.seriesData.filter(
-                      each => each.name == "PHONE SCREEN"
-                    ).value) + "%",
-                description: "12% INCREASE from last Month"
-              },
-              {
-                graph: (
-                  <LineGraph
-                    legendData={this.props.LineGraph.legendData}
-                    xData={this.props.LineGraph.xData}
-                    series={this.props.LineGraph.series}
-                    style={{
-                      height: "160px",
-                      width: "120px",
-                      margin: "0 10px 10px 10px"
-                    }}
-                  />
-                ),
-                title: "Onsite Interview Rate",
-                value:
-                  (this.props.PieChart.seriesData &&
-                    this.props.PieChart.seriesData.filter(
-                      each => each.name == "ONSITE INTERVIEW"
-                    ).value) + "%",
-                description: "12% INCREASE from last Month"
-              },
-              {
-                graph: (
-                  <LineGraph
-                    legendData={this.props.LineGraph.legendData}
-                    xData={this.props.LineGraph.xData}
-                    series={this.props.LineGraph.series}
-                    style={{
-                      height: "160px",
-                      width: "120px",
-                      margin: "0 10px 10px 10px"
-                    }}
-                  />
-                ),
-                title: "Total Jobs Applied",
-                value: this.props.value,
-                description: "12% INCREASE from last Month"
-              },
-              {
-                graph: (
-                  <LineGraph
-                    legendData={this.props.LineGraph.legendData}
-                    xData={this.props.LineGraph.xData}
-                    series={this.props.LineGraph.series}
-                    style={{
-                      height: "160px",
-                      width: "120px",
-                      margin: "0 10px 10px 10px"
-                    }}
-                  />
-                ),
-                title: "Total Jobs Rejected",
-                value:
-                  Math.floor(this.props.value / 3) + "/" + this.props.value,
-                description: "12% INCREASE from last Month"
-              }
-            ]}
+          <SummaryMetricsGroup
+            cookie={this.props.cookie}
+            data={this.state.genericData}
           />
         </div>
         <div>
           <DetailedMetricsGroup
-            metrics={[
-              {
-                graph: (
-                  <BarGraph
-                    title="Monthly Applications"
-                    legendData={this.props.BarGraph.legendData}
-                    xData={this.props.BarGraph.xData}
-                    series={this.props.BarGraph.series}
-                    style={{
-                      height: "200px",
-                      width: "240px",
-                      margin: "10px"
-                    }}
-                  />
-                ),
-                list: ["selam"]
-              },
-              {
-                graph: (
-                  <LineGraph
-                    legendData={this.props.LineGraph.legendData}
-                    xData={this.props.LineGraph.xData}
-                    series={this.props.LineGraph.series}
-                    style={{
-                      height: "200px",
-                      width: "240px",
-                      margin: "10px"
-                    }}
-                  />
-                ),
-                list: ["selam"]
-              },
-              {
-                graph: (
-                  <PieChart
-                    legendData={this.props.PieChart.legendData}
-                    seriesData={this.props.PieChart.seriesData}
-                    style={{
-                      height: "200px",
-                      width: "240px",
-                      margin: "10px"
-                    }}
-                  />
-                ),
-                list: ["selam"]
-              },
-              {
-                graph: (
-                  <BarGraph
-                    title="Stages In Positions"
-                    legendData={this.props.BarGraphPositions.legendData}
-                    xData={this.props.BarGraphPositions.xData}
-                    series={this.props.BarGraphPositions.series}
-                    style={{
-                      height: "200px",
-                      width: "240px",
-                      margin: "10px"
-                    }}
-                  />
-                ),
-                list: ["selam"]
-              }
-            ]}
-            listData={this.props.listData}
+            cookie={this.props.cookie}
+            data={this.state.detailedData}
           />
         </div>
       </div>
@@ -170,12 +73,10 @@ class IndividualMetrics extends React.Component {
   }
 
   render() {
-    console.log(
-      "piechart",
-      this.props.PieChart,
-      this.props.PieChart.seriesData.filter(each => each.name == "PHONE SCREEN")
-        .value
-    );
+    if (this.state.isInitialRequest === "beforeRequest")
+      return <Spinner message="Reaching your account..." />;
+    if (this.state.isInitialRequest === true)
+      return <Spinner message="Preparing your metrics..." />;
     return <div>{this.generateDetailedMetricsGroup()}</div>;
   }
 }

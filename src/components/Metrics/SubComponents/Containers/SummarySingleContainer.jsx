@@ -1,8 +1,28 @@
 import React from "react";
 
+import LineGraph from "../Graphs/LineGraph.jsx";
+import PieChart from "../Graphs/PieChart.jsx";
+import BarGraph from "../Graphs/BarGraph.jsx";
+
 class SummaryMetricSingle extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  graphSelector() {
+    const style = {
+      height: "160px",
+      width: "120px",
+      margin: "0 10px 10px 10px"
+    };
+    switch (this.props.metric.graph.type) {
+      case "line":
+        return <LineGraph metric={this.props.metric.graph} style={style} />;
+      case "pie":
+        return <PieChart metric={this.props.metric.graph} style={style} />;
+      case "bar":
+        return <BarGraph metric={this.props.metric.graph} style={style} />;
+    }
   }
 
   render() {
@@ -10,7 +30,7 @@ class SummaryMetricSingle extends React.Component {
       <div className="metric-summary-container">
         <div className="metric-summary">
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div style={{ margin: "0px 0 0 12px" }}>{this.props.graph}</div>
+            <div style={{ margin: "0px 0 0 12px" }}>{this.graphSelector()}</div>
             <div>
               <div
                 style={{
@@ -19,7 +39,7 @@ class SummaryMetricSingle extends React.Component {
                   margin: "72px 0 0 12px"
                 }}
               >
-                {this.props.value}
+                {this.props.metric.value}
               </div>
               <div
                 style={{
@@ -28,14 +48,14 @@ class SummaryMetricSingle extends React.Component {
                   margin: "0px 0 0 12px"
                 }}
               >
-                {this.props.title}
+                {this.props.metric.title}
               </div>
             </div>
           </div>
           <div
             style={{ marginTop: 0, padding: 12, borderTop: "1px solid grey" }}
           >
-            {this.props.description}
+            {this.props.metric.description}
           </div>
         </div>
       </div>
