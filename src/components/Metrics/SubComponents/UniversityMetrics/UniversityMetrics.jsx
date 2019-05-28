@@ -4,7 +4,6 @@ import DetailedMetricsGroup from "../Containers/DetailedGroupContainer.jsx";
 import SummaryMetricsGroup from "../Containers/SummaryGroupContainer.jsx";
 import { axiosCaptcha } from "../../../../utils/api/fetch_api.js";
 import { getMetrics } from "../../../../utils/api/requests.js";
-import Spinner from "../../../Partials/Spinner/Spinner.jsx";
 
 class UniversityMetrics extends React.Component {
   constructor(props) {
@@ -29,33 +28,35 @@ class UniversityMetrics extends React.Component {
       this.state.isInitialRequest === "beforeRequest"
     ) {
       this.setState({ isInitialRequest: true });
-      axiosCaptcha(getMetrics.url("personal/generic"), getMetrics.config).then(
-        response => {
-          if (response.statusText === "OK") {
-            this.data = response.data.data;
-            this.setState({
-              genericData: this.data
-            });
-          }
+      axiosCaptcha(
+        getMetrics.url("aggregated/generic"),
+        getMetrics.config
+      ).then(response => {
+        if (response.statusText === "OK") {
+          this.data = response.data.data;
+          this.setState({
+            genericData: this.data
+          });
         }
-      );
-      axiosCaptcha(getMetrics.url("personal/detailed"), getMetrics.config).then(
-        response => {
-          if (response.statusText === "OK") {
-            this.data = response.data.data;
-            this.setState({
-              detailedData: this.data,
-              isInitialRequest: false
-            });
-          }
+      });
+      axiosCaptcha(
+        getMetrics.url("aggregated/detailed"),
+        getMetrics.config
+      ).then(response => {
+        if (response.statusText === "OK") {
+          this.data = response.data.data;
+          this.setState({
+            detailedData: this.data,
+            isInitialRequest: false
+          });
         }
-      );
+      });
     }
   }
 
   generateDetailedMetricsGroup() {
     return (
-      <div>
+      <div style={{ marginBottom: 80 }}>
         <div>
           <SummaryMetricsGroup
             cookie={this.props.cookie}
@@ -73,10 +74,6 @@ class UniversityMetrics extends React.Component {
   }
 
   render() {
-    if (this.state.isInitialRequest === "beforeRequest")
-      return <Spinner message="Reaching your account..." />;
-    if (this.state.isInitialRequest === true)
-      return <Spinner message="Preparing your metrics..." />;
     return <div>{this.generateDetailedMetricsGroup()}</div>;
   }
 }

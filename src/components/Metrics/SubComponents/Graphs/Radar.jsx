@@ -9,7 +9,14 @@ class Radar extends React.Component {
 
   chartThemeCreator() {
     echarts.registerTheme("radar", {
-      color: ["#F4EBC1", "#A0C1B8", "#709FB0", "#726A95", "#351F39"],
+      color: [
+        "#E82F3A",
+        "#0077B5",
+        "#2164f4",
+        "rgb(64,151,219)",
+        "#261268",
+        "rgb(0,0,0)"
+      ],
       backgroundColor: "white",
       textStyle: {
         fontType: "Exo",
@@ -19,6 +26,16 @@ class Radar extends React.Component {
         textStyle: {
           color: "#261268"
         }
+      },
+      splitLine: {
+        lineStyle: {
+          color: "#261268"
+        }
+      },
+      line: {
+        smooth: true,
+        symbol: "emptyCircle",
+        symbolSize: 3
       }
     });
   }
@@ -27,8 +44,8 @@ class Radar extends React.Component {
     this.chartThemeCreator();
     return {
       title: {
-        text: this.props.metric.title,
-        x: "left"
+        show: false,
+        text: this.props.metric.title
       },
       tooltip: {
         trigger: "axis"
@@ -39,7 +56,7 @@ class Radar extends React.Component {
         data: this.props.metric.legend && this.props.metric.legend
       },*/
       toolbox: {
-        show: true,
+        show: false,
         feature: {
           saveAsImage: {
             show: true,
@@ -48,7 +65,8 @@ class Radar extends React.Component {
           }
         }
       },
-      polar: this.props.metric.polar,
+      radar: this.props.metric.polar,
+      calculable: true,
       series: [
         {
           name: this.props.metric.title,
@@ -62,7 +80,30 @@ class Radar extends React.Component {
   render() {
     return (
       <div>
-        <div id="applicationstages">
+        <div id="radar">
+          <div
+            style={{
+              width: 260,
+              height: 40,
+              margin: "10px 0 -40px 16px",
+              display: "flex",
+              justifyContent: "space-between"
+            }}
+          >
+            <div style={{ fontWeight: "bold", fontSize: "130%" }}>
+              {this.props.metric.title}
+            </div>
+            <img
+              style={{
+                width: 40,
+                height: 40,
+                margin: "-12px 0 0px 204px",
+                position: "absolute",
+                zIndex: "20"
+              }}
+              src="../../../../src/assets/icons/beta_flag_2.png"
+            />
+          </div>
           <div>
             <ReactEcharts
               option={this.buildRadar()}

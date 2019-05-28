@@ -53,6 +53,23 @@ class SummaryMetricSingle extends React.Component {
             </div>
           </div>
           <div
+            style={{
+              width: 270,
+              margin: "0 0 0px 0px"
+            }}
+          >
+            <img
+              style={{
+                width: 30,
+                height: 30,
+                margin: "-1px 0 0px 242px",
+                position: "absolute",
+                zIndex: "20"
+              }}
+              src="../../../../src/assets/icons/beta_flag_2.png"
+            />
+          </div>
+          <div
             style={{ marginTop: 0, padding: 12, borderTop: "1px solid grey" }}
           >
             {this.props.metric.description}
