@@ -45,7 +45,7 @@ class LineGraph extends React.Component {
     return {
       title: {
         show: this.props.style.height != "160px" ? true : false,
-        text: "Application Trend",
+        text: this.props.metric.title,
         subtext: "",
         x: "left",
         top: "0px"
@@ -55,7 +55,7 @@ class LineGraph extends React.Component {
         trigger: "axis"
       },
       /*legend: {
-        data: this.props.legendData,
+        data: this.props.metric.legend,
         textStyle: { color: "#261268" },
         x: "center",
         top: "28px"
@@ -80,12 +80,12 @@ class LineGraph extends React.Component {
       xAxis: {
         type: "category",
         boundaryGap: false,
-        data: this.props.xData
+        data: this.props.metric.xAxis
       },
       yAxis: {
         type: "value"
       },
-      series: this.props.series
+      series: this.props.metric.series
     };
   }
 

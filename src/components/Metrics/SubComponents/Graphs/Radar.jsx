@@ -2,13 +2,13 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import echarts from "echarts";
 
-class PieChart extends React.Component {
+class Radar extends React.Component {
   constructor(props) {
     super(props);
   }
 
   chartThemeCreator() {
-    echarts.registerTheme("pie", {
+    echarts.registerTheme("radar", {
       color: ["#F4EBC1", "#A0C1B8", "#709FB0", "#726A95", "#351F39"],
       backgroundColor: "white",
       textStyle: {
@@ -23,7 +23,7 @@ class PieChart extends React.Component {
     });
   }
 
-  buildPieChart() {
+  buildRadar() {
     this.chartThemeCreator();
     return {
       title: {
@@ -31,13 +31,12 @@ class PieChart extends React.Component {
         x: "left"
       },
       tooltip: {
-        trigger: "item",
-        formatter: "{a} <br/>{b} : {c} ({d}%)"
+        trigger: "axis"
       },
       /*legend: {
         orient: "vertical",
         left: "right",
-        data: this.props.metric.legend
+        data: this.props.metric.legend && this.props.metric.legend
       },*/
       toolbox: {
         show: true,
@@ -49,20 +48,12 @@ class PieChart extends React.Component {
           }
         }
       },
+      polar: this.props.metric.polar,
       series: [
         {
-          name: "Stages",
-          type: "pie",
-          radius: "55%",
-          center: ["50%", "60%"],
-          data: this.props.metric.series,
-          itemStyle: {
-            emphasis: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: "rgba(0, 0, 0, 0.5)"
-            }
-          }
+          name: this.props.metric.title,
+          type: "radar",
+          data: this.props.metric.series
         }
       ]
     };
@@ -74,9 +65,9 @@ class PieChart extends React.Component {
         <div id="applicationstages">
           <div>
             <ReactEcharts
-              option={this.buildPieChart()}
+              option={this.buildRadar()}
               style={this.props.style}
-              theme="pie"
+              theme="radar"
             />
           </div>
         </div>
@@ -85,4 +76,4 @@ class PieChart extends React.Component {
   }
 }
 
-export default PieChart;
+export default Radar;

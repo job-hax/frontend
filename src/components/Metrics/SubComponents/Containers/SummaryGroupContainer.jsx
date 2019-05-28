@@ -8,14 +8,9 @@ class SummaryMetricsGroup extends React.Component {
   }
 
   generateGroup() {
-    return this.props.metrics.map(metric => (
-      <div key={this.props.metrics.indexOf(metric)}>
-        <SummaryMetricSingle
-          graph={metric.graph}
-          title={metric.title}
-          description={metric.description}
-          value={metric.value}
-        />
+    return this.props.data.map(metric => (
+      <div key={this.props.data.indexOf(metric)}>
+        <SummaryMetricSingle metric={metric} />
       </div>
     ));
   }
