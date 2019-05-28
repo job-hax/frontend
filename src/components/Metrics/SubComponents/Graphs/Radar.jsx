@@ -87,7 +87,7 @@ class Radar extends React.Component {
               height: 40,
               margin: "10px 0 -40px 16px",
               display: "flex",
-              justifyContent: "space-between"
+              justifyContent: "left"
             }}
           >
             <div style={{ fontWeight: "bold", fontSize: "130%" }}>
@@ -97,8 +97,7 @@ class Radar extends React.Component {
               style={{
                 width: 40,
                 height: 40,
-                margin: "-12px 0 0px 204px",
-                position: "absolute",
+                margin: "-12px 0 0px 90px",
                 zIndex: "20"
               }}
               src="../../../../src/assets/icons/beta_flag_2.png"

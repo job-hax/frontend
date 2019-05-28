@@ -55,15 +55,14 @@ class SummaryMetricSingle extends React.Component {
           <div
             style={{
               width: 270,
-              margin: "0 0 0px 0px"
+              margin: "0 0 -30px 0px"
             }}
           >
             <img
               style={{
                 width: 30,
                 height: 30,
-                margin: "-1px 0 0px 242px",
-                position: "absolute",
+                margin: "-4px 0 0px 240px",
                 zIndex: "20"
               }}
               src="../../../../src/assets/icons/beta_flag_2.png"
