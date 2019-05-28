@@ -2,13 +2,13 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import echarts from "echarts";
 
-class MonthlyApplicationLineGraph extends React.Component {
+class LineGraph extends React.Component {
   constructor(props) {
     super(props);
   }
 
   chartThemeCreator() {
-    echarts.registerTheme("monthlyapplicationsline", {
+    echarts.registerTheme("line", {
       color: [
         "#E82F3A",
         "#0077B5",
@@ -40,7 +40,7 @@ class MonthlyApplicationLineGraph extends React.Component {
     });
   }
 
-  buildMonthlyApplicationLineGraph() {
+  buildLineGraph() {
     this.chartThemeCreator();
     return {
       title: {
@@ -80,7 +80,7 @@ class MonthlyApplicationLineGraph extends React.Component {
       xAxis: {
         type: "category",
         boundaryGap: false,
-        data: this.props.months
+        data: this.props.xData
       },
       yAxis: {
         type: "value"
@@ -94,9 +94,9 @@ class MonthlyApplicationLineGraph extends React.Component {
       <div id="applicationtrend">
         <div>
           <ReactEcharts
-            option={this.buildMonthlyApplicationLineGraph()}
+            option={this.buildLineGraph()}
             style={this.props.style}
-            theme="monthlyapplicationsline"
+            theme="line"
           />
         </div>
       </div>
@@ -104,4 +104,4 @@ class MonthlyApplicationLineGraph extends React.Component {
   }
 }
 
-export default MonthlyApplicationLineGraph;
+export default LineGraph;
