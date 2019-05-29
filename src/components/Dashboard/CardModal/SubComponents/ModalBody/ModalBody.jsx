@@ -32,6 +32,8 @@ class ModalBody extends React.Component {
           handleTokenExpiration={this.props.handleTokenExpiration}
           alert={this.props.alert}
           setCompany={this.props.setCompany}
+          updateCard={this.props.updateCard}
+          updateHeader={this.props.updateHeader}
         />
       </div>
     );

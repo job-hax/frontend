@@ -20,18 +20,6 @@ export const LOGIN_USER = `${apiRoot}/api/users/login`;
 
 export const LOGOUT_USER = `${apiRoot}/api/users/logout`;
 
-export const GET_TOTAL_APPLICATION_COUNT = `${apiRoot}/api/metrics/get_total_application_count`;
-
-export const GET_APPLICATION_COUNT_BY_MONTH = `${apiRoot}/api/metrics/get_application_count_by_month`;
-
-export const GET_APPLICATION_COUNT_BY_MONTH_WITH_TOTAL = `${apiRoot}/api/metrics/get_application_count_by_month_with_total`;
-
-export const GET_COUNT_BY_STATUSES = `${apiRoot}/api/metrics/get_count_by_statuses`;
-
-export const GET_COUNT_BY_JOBTITLE_AND_STATUSES = `${apiRoot}/api/metrics/get_count_by_jobtitle_and_statuses`;
-
-export const GET_WORD_COUNT = `${apiRoot}/api/metrics/get_word_count`;
-
 export const GET_TOP_COMPANIES = `/api/metrics/get_top_companies`;
 
 export const GET_TOP_POSITIONS = `/api/metrics/get_top_positions`;
@@ -91,3 +79,7 @@ export const USERS = type => `${apiRoot}/api/users/${type}`;
 export const POSITIONS = `${apiRoot}/api/positions/`;
 
 export const METRICS = type => `${apiRoot}/api/metrics/${type}`;
+
+export const GET_SOURCES = `${apiRoot}/api/jobapps/get_sources`;
+
+export const EDIT_JOBAPP = `${apiRoot}/api/jobapps/edit_jobapp`;
