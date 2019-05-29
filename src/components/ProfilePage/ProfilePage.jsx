@@ -747,100 +747,105 @@ class ProfilePage extends React.Component {
     }
     return (
       <div className="profile-page-big-container">
-        <div className="profile-page-container">
-          {!this.state.isEditing
-            ? this.generateNonEditableProfileMainArea()
-            : this.generateEditableProfileMainArea()}
-          <div className="profile-page-right">
-            <div
-              className="edit-button"
-              onClick={() =>
-                this.setState({ isEditing: !this.state.isEditing })
-              }
-            >
-              {!this.state.isEditing ? "Edit" : "Cancel"}
-            </div>
-            <div className="profile-notifications" style={heightForSettings}>
-              <NotificationsBox
-                notificationsList={this.state.notificationsList}
-                customBoxStyle={customNotificationsBoxStyle}
-                itemListHeight={notificationsBoxHeight}
-              />
-            </div>
-            <div className="to-do-list" />
-            {this.state.isProfileSettingsOpen && (
-              <div className="settings-container">
-                <div className="settings-header">
-                  <div className="settings-icon">
-                    <img />
-                  </div>
-                  <div className="settings-title">Profile Settings </div>
-                </div>
-                <form onSubmit={this.handleSettingsSubmit}>
-                  <div className="settings">
-                    <div className="setting">
-                      <label>
-                        User Name:
-                        {this.state.data.length != 0 &&
-                        this.state.data.user.username
-                          ? " " + this.state.data.user.username
-                          : " Get one!"}
-                        <input
-                          defaultValue=""
-                          placeholder="Enter a new username"
-                        />
-                      </label>
-                    </div>
-                    <div className="setting">
-                      <label>
-                        Password:
-                        <input
-                          defaultValue=""
-                          placeholder="Enter a new password"
-                        />
-                      </label>
-                    </div>
-                    <div className="setting">
-                      <label>
-                        Password:
-                        <input
-                          defaultValue=""
-                          placeholder="Retype the new password"
-                        />
-                      </label>
-                    </div>
-                  </div>
-                  <div className="settings-buttons-container">
-                    <div>
-                      <button type="submit" className="settings-editing-button">
-                        Save
-                      </button>
-                    </div>
-                    <div
-                      onClick={() =>
-                        this.setState({ isProfileSettingsOpen: false })
-                      }
-                    >
-                      <button className="settings-editing-button">
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            )}
-            {!this.state.isProfileSettingsOpen && (
+        <div className="profile-page-medium-container">
+          <div className="profile-page-container">
+            {!this.state.isEditing
+              ? this.generateNonEditableProfileMainArea()
+              : this.generateEditableProfileMainArea()}
+            <div className="profile-page-right">
               <div
-                className="settings-button"
+                className="edit-button"
                 onClick={() =>
-                  this.setState({
-                    isProfileSettingsOpen: !this.state.isProfileSettingsOpen
-                  })
+                  this.setState({ isEditing: !this.state.isEditing })
                 }
               >
-                Profile Settings
+                {!this.state.isEditing ? "Edit" : "Cancel"}
               </div>
-            )}
+              <div className="profile-notifications" style={heightForSettings}>
+                <NotificationsBox
+                  notificationsList={this.state.notificationsList}
+                  customBoxStyle={customNotificationsBoxStyle}
+                  itemListHeight={notificationsBoxHeight}
+                />
+              </div>
+              <div className="to-do-list" />
+              {this.state.isProfileSettingsOpen && (
+                <div className="settings-container">
+                  <div className="settings-header">
+                    <div className="settings-icon">
+                      <img />
+                    </div>
+                    <div className="settings-title">Profile Settings </div>
+                  </div>
+                  <form onSubmit={this.handleSettingsSubmit}>
+                    <div className="settings">
+                      <div className="setting">
+                        <label>
+                          User Name:
+                          {this.state.data.length != 0 &&
+                          this.state.data.user.username
+                            ? " " + this.state.data.user.username
+                            : " Get one!"}
+                          <input
+                            defaultValue=""
+                            placeholder="Enter a new username"
+                          />
+                        </label>
+                      </div>
+                      <div className="setting">
+                        <label>
+                          Password:
+                          <input
+                            defaultValue=""
+                            placeholder="Enter a new password"
+                          />
+                        </label>
+                      </div>
+                      <div className="setting">
+                        <label>
+                          Password:
+                          <input
+                            defaultValue=""
+                            placeholder="Retype the new password"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                    <div className="settings-buttons-container">
+                      <div>
+                        <button
+                          type="submit"
+                          className="settings-editing-button"
+                        >
+                          Save
+                        </button>
+                      </div>
+                      <div
+                        onClick={() =>
+                          this.setState({ isProfileSettingsOpen: false })
+                        }
+                      >
+                        <button className="settings-editing-button">
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              )}
+              {!this.state.isProfileSettingsOpen && (
+                <div
+                  className="settings-button"
+                  onClick={() =>
+                    this.setState({
+                      isProfileSettingsOpen: !this.state.isProfileSettingsOpen
+                    })
+                  }
+                >
+                  Profile Settings
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

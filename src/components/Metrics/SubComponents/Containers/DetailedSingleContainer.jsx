@@ -75,7 +75,13 @@ class DetailedMetricSingle extends React.Component {
       <div className="metric-detailed-container">
         <div className="metric">
           <div>{this.graphSelector()}</div>
-          <div style={{ margin: "10px 0 0 20px", fontWeight: "bold" }}>
+          <div
+            style={{
+              margin: "10px 0 0 20px",
+              color: "#261268",
+              fontWeight: "bold"
+            }}
+          >
             {this.props.list.title}
           </div>
           <div className="list-container">

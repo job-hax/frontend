@@ -45,7 +45,8 @@ class SummaryMetricSingle extends React.Component {
                 style={{
                   fontSize: "150%",
                   fontWeight: "600",
-                  margin: "60px 0 0 0px"
+                  margin: "60px 0 0 0px",
+                  color: "#261268"
                 }}
               >
                 {this.props.metric.value}
