@@ -6,10 +6,23 @@ import MoveOptions from "./MoveOptions.jsx";
 class ModalHeader extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      updateHeader: this.props.updateHeader,
+      card: this.props.card
+    };
+  }
+
+  componentDidUpdate() {
+    this.state.updateHeader &&
+      this.setState({
+        card: this.props.card,
+        updateHeader: !this.props.updateHeader
+      });
   }
 
   generateModalHeader() {
-    const { card } = this.props;
+    const { card } = this.state;
     return (
       <div className="modal-header-container">
         <div className="modal-header">

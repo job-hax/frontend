@@ -6,7 +6,7 @@ import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
-import "../../../assets/libraryScss/antd-scss/antd.scss";
+import "../../../assets/libraryScss/antd-scss/newantd.scss";
 
 const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 

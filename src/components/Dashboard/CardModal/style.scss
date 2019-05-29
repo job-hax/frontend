@@ -119,7 +119,7 @@
           font-family: exo;
           padding-left: 16px;
           background-color: white;
-          border: 1px solid rgb(252, 252, 252);
+          border: 1px solid rgba(132, 100, 239, 0.2);
           z-index: 100;
 
           .options {
@@ -216,7 +216,7 @@
               min-width: auto;
               max-height: 16px;
               max-width: auto;
-              margin-left: 14px;
+              margin: -10px 0 0 14px;
               cursor: pointer;
             }
           }
@@ -236,9 +236,9 @@
           }
 
           .explanation {
-            padding-left: 16px;
+            padding: 0 0 4px 16px;
             margin-left: -16px;
-            padding-top: 10px;
+            padding-top: 6px;
             font-size: 90%;
             height: 26px;
             border-bottom: 0.5px solid rgba(132, 100, 239, 0.6);
@@ -300,26 +300,41 @@
         justify-content: space-between;
         height: fit-content;
         height: -moz-fit-content;
+        width: 292px;
 
         &.info {
           display: flex;
           justify-content: start;
-          width: 200px;
-          padding-bottom: 20px;
           margin-top: 0px;
           height: auto;
+          width: 272px;
 
           label {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 4px 10px 0;
             width: 68px;
           }
 
-          p {
-            margin-top: 0px;
+          .text {
+            width: 200px;
+            padding: 10px 0 10px 0;
+          }
+
+          .text-editable {
+            width: 200px;
+            padding: 10px 0 10px 0;
+          }
+
+          .text-editable:hover {
+            background-color: rgba(132, 100, 239, 0.05);
+            cursor: text;
           }
         }
 
         .company-stats-container {
           margin-left: 60px;
+
         }
 
       }

@@ -7,7 +7,7 @@ import { getBlogRequest, postBlogRequest } from "../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 
 import "./style.scss";
-import "../../assets/libraryScss/antd-scss/antd.scss";
+import "../../assets/libraryScss/antd-scss/newantd.scss";
 
 class BlogCard extends React.Component {
   constructor(props) {

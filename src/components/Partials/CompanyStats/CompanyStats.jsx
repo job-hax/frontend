@@ -1,7 +1,7 @@
 import React from "react";
 import { Rate, Statistic, Icon } from "antd";
 
-import "../../../assets/libraryScss/antd-scss/antd.scss";
+import "../../../assets/libraryScss/antd-scss/newantd.scss";
 
 class CompanyStats extends React.Component {
   constructor(props) {
