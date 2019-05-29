@@ -62,84 +62,91 @@
     }
 }
 
-.metric-big-group {
+.metrics-big-group-container {
     width: 100%;
     overflow-y: hidden;
-    padding: 8px 110px 20px 110px;
 
-    .metric-group {
-        display: flex;
-        justify-content: center;
+    .metric-big-group {
+        min-width: 1240px;
+        min-height: 700px;
+        padding: 8px 110px 20px 110px;
 
-        .metric-summary-container {
-            height: 180px;
-            width: 272px;
-            overflow: hidden;
-            border: 1px solid #261268;
-            margin: 0px 5px 0px 5px;
+        .metric-group {
+            display: flex;
+            justify-content: center;
 
-
-            .metric-summary {
-                margin: -40px 0px 0px 0px;
-                height: 220px;
+            .metric-summary-container {
+                height: 180px;
                 width: 272px;
-                background-color: white;
+                overflow: hidden;
+                border: 1px solid #261268;
+                margin: 0px 5px 0px 5px;
+
+
+                .metric-summary {
+                    margin: -40px 0px 0px 0px;
+                    height: 220px;
+                    width: 272px;
+                    background-color: white;
+                }
             }
-        }
 
-        .metric-detailed-container {
-            margin: 8px 11px 0 11px;
-            height: 500px;
-            width: 260px;
-            border: 1px solid #261268;
-            background-color: white;
-            border-radius: 8px;
-
-
-            .metric {
+            .metric-detailed-container {
+                margin: 8px 11px 0 11px;
                 height: 500px;
                 width: 260px;
+                border: 1px solid #261268;
+                background-color: white;
+                border-radius: 8px;
 
-                .list-container {
-                    overflow: hidden;
+
+                .metric {
+                    height: 500px;
                     width: 260px;
 
-                    .list {
+                    .list-container {
+                        overflow: hidden;
                         width: 260px;
-                        height: 208px;
-                        padding: 0 16px 0 0;
-                        margin: 4px 0px 0px 20px;
-                        overflow-x: hidden;
-                    }
-                }
 
+                        .list {
+                            width: 260px;
+                            height: 208px;
+                            padding: 0 16px 0 0;
+                            margin: 4px 0px 0px 20px;
+                            overflow-x: hidden;
+                        }
+                    }
+
+                }
             }
+
+
         }
 
+        .university-metrics-header-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
 
+            .university-metrics-header {
+                margin: 0px 20px 20px 20px;
+                font-size: 110%;
+                font-weight: 500;
+                text-align: center;
+                min-width: 240px;
+            }
+
+            .header-line {
+                margin: 10px 0 0 0;
+                width: 420px;
+                height: 1px;
+                background-color: #261268;
+            }
+        }
     }
 }
 
-.university-metrics-header-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
 
-    .university-metrics-header {
-        margin: 0px 20px 20px 20px;
-        font-size: 110%;
-        font-weight: 500;
-        text-align: center;
-        min-width: 240px;
-    }
-
-    .header-line {
-        margin: 10px 0 0 0;
-        width: 420px;
-        height: 1px;
-        background-color: #261268;
-    }
-}
 
 .graph-container-light-background {
     height: 700px;
