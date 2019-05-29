@@ -1,7 +1,7 @@
 import React from "react";
 import { Rate, Statistic, Icon } from "antd";
 
-import "../../../../assets/libraryScss/antd-scss/antd.scss";
+import "../../../../assets/libraryScss/antd-scss/newantd.scss";
 
 const desc = ["terrible", "bad", "normal", "good", "perfect"];
 

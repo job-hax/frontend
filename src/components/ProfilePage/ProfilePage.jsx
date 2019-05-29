@@ -619,7 +619,7 @@ class ProfilePage extends React.Component {
                     <div className="info-content-body-item-label">
                       Birthday:
                     </div>
-                    <div>
+                    <div style={{ zIndex: 99 }}>
                       <DatePicker
                         selected={this.state.selectedDateShowing}
                         onChange={this.handleDatePickerChange}
