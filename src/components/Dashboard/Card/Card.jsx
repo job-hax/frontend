@@ -49,6 +49,7 @@ class Card extends PureComponent {
       imageLoadError: true
     };
     this.toggleModal = this.toggleModal.bind(this);
+    this.updateCompany = this.updateCompany.bind(this);
     this.updateCard = this.updateCard.bind(this);
   }
 
@@ -58,8 +59,15 @@ class Card extends PureComponent {
     }));
   }
 
-  updateCard(newCompanyObject) {
+  updateCompany(newCompanyObject) {
     this.props.card.companyObject = newCompanyObject;
+  }
+
+  updateCard(companyObject, position, applyDate, app_source) {
+    this.props.card.companyObject = companyObject;
+    this.props.card.position = position;
+    this.props.card.applyDate = applyDate;
+    this.props.card.app_source = app_source;
   }
 
   sourceLogoSelector(source) {
@@ -126,6 +134,7 @@ class Card extends PureComponent {
             updateApplications={updateApplications}
             icon={icon}
             id={id}
+            updateCompany={this.updateCompany}
             updateCard={this.updateCard}
             alert={alert}
             {...this.props}

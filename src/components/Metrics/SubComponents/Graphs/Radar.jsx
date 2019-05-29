@@ -90,7 +90,9 @@ class Radar extends React.Component {
               justifyContent: "left"
             }}
           >
-            <div style={{ fontWeight: "bold", fontSize: "130%" }}>
+            <div
+              style={{ fontWeight: "bold", color: "#261268", fontSize: "130%" }}
+            >
               {this.props.metric.title}
             </div>
             <img
