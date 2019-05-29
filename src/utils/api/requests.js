@@ -4,14 +4,8 @@ import {
   AUTHENTICATE,
   DELETE_JOB,
   DELETE_NOTE,
-  GET_APPLICATION_COUNT_BY_MONTH,
-  GET_APPLICATION_COUNT_BY_MONTH_WITH_TOTAL,
-  GET_COUNT_BY_JOBTITLE_AND_STATUSES,
-  GET_COUNT_BY_STATUSES,
   GET_JOB_APPS,
   GET_NOTES,
-  GET_TOTAL_APPLICATION_COUNT,
-  GET_WORD_COUNT,
   GET_STATISTICS,
   GET_MONTHLY_APPLICATION_COUNT,
   LOGIN_USER,
@@ -41,7 +35,9 @@ import {
   POSITIONS,
   REFRESH_JOBHAX_TOKEN,
   UPDATE_GOOGLE_TOKEN,
-  METRICS
+  METRICS,
+  GET_SOURCES,
+  EDIT_JOBAPP
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -191,78 +187,6 @@ export const logOutUserRequest = {
 
 export const getMetrics = {
   url: METRICS,
-  config: {
-    method: "GET",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  }
-};
-
-export const getTotalAppsCountRequest = {
-  url: GET_TOTAL_APPLICATION_COUNT,
-  config: {
-    method: "GET",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  }
-};
-
-export const getAppsCountByMonthRequest = {
-  url: GET_APPLICATION_COUNT_BY_MONTH,
-  config: {
-    method: "GET",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  }
-};
-
-export const getAppsCountByMonthWithTotalRequest = {
-  url: GET_APPLICATION_COUNT_BY_MONTH_WITH_TOTAL,
-  config: {
-    method: "GET",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  }
-};
-
-export const getCountByStatusesRequest = {
-  url: GET_COUNT_BY_STATUSES,
-  config: {
-    method: "GET",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  }
-};
-
-export const getCountByJobtitleAndStatusesRequest = {
-  url: GET_COUNT_BY_JOBTITLE_AND_STATUSES,
-  config: {
-    method: "GET",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  }
-};
-
-export const getWordCountRequest = {
-  url: GET_WORD_COUNT,
   config: {
     method: "GET",
     mode: "cors",
@@ -627,6 +551,32 @@ export const getPositionsRequest = {
   url: POSITIONS,
   config: {
     method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
+
+//SOURCES REQUESTS//
+export const getSourcesRequest = {
+  url: GET_SOURCES,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
+
+//EDIT JOBAPP REQUEST//
+export const editJobAppRequest = {
+  url: EDIT_JOBAPP,
+  config: {
+    method: "POST",
     mode: "cors",
     cache: "no-cache",
     headers: {

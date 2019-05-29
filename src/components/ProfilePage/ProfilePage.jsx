@@ -37,7 +37,6 @@ class ProfilePage extends React.Component {
       notificationsList: [],
       employmentStatusList: [],
       selectedDateShowing: new Date(),
-      selectedDatePost: null,
       data: [],
       body: {},
       isInitialRequest: "beforeRequest"

@@ -18,8 +18,11 @@ class CardModal extends PureComponent {
     this.state = {
       imageLoadError: true,
       whatIsDisplaying: "company",
-      isUpdated: false
+      isUpdated: false,
+      updateHeader: false
     };
+
+    this.updateHeader = this.updateHeader.bind(this);
   }
 
   async componentDidMount() {
@@ -40,6 +43,10 @@ class CardModal extends PureComponent {
         }
       }
     });
+  }
+
+  updateHeader() {
+    this.setState({ updateHeader: !this.state.updateHeader });
   }
 
   render() {
@@ -65,13 +72,16 @@ class CardModal extends PureComponent {
                 moveToRejected={this.props.moveToRejected}
                 updateApplications={this.props.updateApplications}
                 handleTokenExpiration={this.props.handleTokenExpiration}
+                updateHeader={this.state.updateHeader}
               />
             </div>
             <div className="modal-body">
               <ModalBody
                 card={card}
                 handleTokenExpiration={this.props.handleTokenExpiration}
-                setCompany={this.props.updateCard}
+                setCompany={this.props.updateCompany}
+                updateCard={this.props.updateCard}
+                updateHeader={this.updateHeader}
                 alert={this.props.alert}
               />
             </div>
