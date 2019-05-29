@@ -4,15 +4,15 @@
   margin-right: 15px;
   width: 90%;
   height: 30px;
-  border-radius: 4px;
-  background-color: rgb(221, 170, 255);
-  color: rgb(132, 100, 239);
+  border-radius: 8px;
+  background-color: white;
   text-align: center;
   padding-top: 3%;
   cursor: pointer;
+  box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
 
   .button-inside {
-    margin-top: -6px;
+    margin-top: -7px;
   }
 }
 
