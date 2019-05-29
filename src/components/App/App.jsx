@@ -38,7 +38,7 @@ import {
 } from "../../utils/api/requests.js";
 
 import "./style.scss";
-import "../../assets/libraryScss/antd-scss/antd.scss";
+import "../../assets/libraryScss/antd-scss/newantd.scss";
 
 class App extends Component {
   constructor(props) {
