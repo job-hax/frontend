@@ -52,19 +52,23 @@ class Metrics extends PureComponent {
             ]}
           />
         </div>
-        <div className="metric-big-group">
-          <IndividualMetrics cookie={this.props.cookie} />
-        </div>
-        <div>
-          <div className="university-metrics-header-container">
-            <div className="header-line" />
-            <div className="university-metrics-header">
-              University Job Metrics
+        <div className="metrics-big-group-container">
+          <div>
+            <div className="metric-big-group">
+              <IndividualMetrics cookie={this.props.cookie} />
             </div>
-            <div className="header-line" />
-          </div>
-          <div className="metric-big-group">
-            <UniversityMetrics cookie={this.props.cookie} />
+            <div className="metric-big-group">
+              <div className="university-metrics-header-container">
+                <div className="header-line" />
+                <div className="university-metrics-header">
+                  University Job Metrics
+                </div>
+                <div className="header-line" />
+              </div>
+              <div>
+                <UniversityMetrics cookie={this.props.cookie} />
+              </div>
+            </div>
           </div>
         </div>
         <div>

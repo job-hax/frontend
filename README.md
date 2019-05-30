@@ -34,6 +34,8 @@
 	export const jobHaxClientSecret = '[TODO]';
 	
 	export const reCaptchaV3SiteKey = '[TODO]';
+	
+	export const googleApiKey = '[TODO]';
 	```
 
 4. Run:
