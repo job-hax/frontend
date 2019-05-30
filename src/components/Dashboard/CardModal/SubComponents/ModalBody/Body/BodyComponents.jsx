@@ -13,7 +13,14 @@ class BodyComponents extends React.Component {
   displaySelector() {
     switch (this.props.displaying) {
       case "Job Details":
-        return <JobDetails card={this.props.card} />;
+        return (
+          <JobDetails
+            card={this.props.card}
+            alert={this.props.alert}
+            updateCard={this.props.updateCard}
+            updateHeader={this.props.updateHeader}
+          />
+        );
       case "Contacts":
         return <Contacts />;
       case "Reviews":

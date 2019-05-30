@@ -68,8 +68,6 @@ function removeAllCookies() {
 export async function axiosCaptcha(url, config, action) {
   let response = null;
   config.headers.Authorization = getCookie("jobhax_access_token");
-  const recaptchaToken = await reCaptchaToken(action);
-  //console.log(action, recaptchaToken);
   if (config.method === "GET") {
     response = await axios.get(url, config).catch(error => {
       console.log(error);
