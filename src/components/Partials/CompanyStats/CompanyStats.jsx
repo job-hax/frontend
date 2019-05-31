@@ -40,33 +40,41 @@ class CompanyStats extends React.Component {
         key={stat.id}
         style={{ marginTop: "6px" }}
       >
-        <div style={{ display: "flex", justifyContent: "left" }}>
-          <label
-            style={{ marginRight: "20px", fontWeight: "450", marginTop: "6px" }}
-          >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: 188
+          }}
+        >
+          <label style={{ fontWeight: "450", marginTop: "6px" }}>
             {stat.value}
           </label>
-          <div style={{ marginRight: "12px" }}>
-            <Statistic
-              title="Hire"
-              value={
-                stat.yes == 0 ? 0 : (stat.yes / (stat.yes + stat.no)) * 100
-              }
-              precision={2}
-              valueStyle={{ color: "#3f8600" }}
-              prefix={<Icon type="arrow-up" />}
-              suffix="%"
-            />
-          </div>
-          <div style={{ marginRight: "12px" }}>
-            <Statistic
-              title="Nope"
-              value={stat.no == 0 ? 0 : (stat.no / (stat.yes + stat.no)) * 100}
-              precision={2}
-              valueStyle={{ color: "#cf1322" }}
-              prefix={<Icon type="arrow-down" />}
-              suffix="%"
-            />
+          <div style={{ display: "flex", justifyContent: "left" }}>
+            <div style={{ marginRight: "12px" }}>
+              <Statistic
+                title="Hire"
+                value={
+                  stat.yes == 0 ? 0 : (stat.yes / (stat.yes + stat.no)) * 100
+                }
+                precision={2}
+                valueStyle={{ color: "#3f8600" }}
+                prefix={<Icon type="arrow-up" />}
+                suffix="%"
+              />
+            </div>
+            <div style={{ marginRight: "12px" }}>
+              <Statistic
+                title="Nope"
+                value={
+                  stat.no == 0 ? 0 : (stat.no / (stat.yes + stat.no)) * 100
+                }
+                precision={2}
+                valueStyle={{ color: "#cf1322" }}
+                prefix={<Icon type="arrow-down" />}
+                suffix="%"
+              />
+            </div>
           </div>
         </div>
       </div>
