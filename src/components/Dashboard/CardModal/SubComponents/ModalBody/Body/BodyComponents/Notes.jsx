@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import { Input } from "antd";
 
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api";
 import {
@@ -13,6 +14,8 @@ import {
   makeTimeBeautiful
 } from "../../../../../../../utils/constants/constants.js";
 
+const { TextArea } = Input;
+
 class Notes extends React.Component {
   constructor(props) {
     super(props);
@@ -24,9 +27,7 @@ class Notes extends React.Component {
       whatIsDisplaying: "company",
       addNoteForm: "",
       updateNoteForm: "",
-      notes: [],
-      editNoteTextAreaHeight: 16,
-      addNoteTextAreaHeight: 40
+      notes: []
     };
     this.notes = [];
     this.currentNote = null;
@@ -78,37 +79,28 @@ class Notes extends React.Component {
     var resetValue = this.refs.addNoteFormDefault;
     resetValue.value = "";
     this.setState({
-      addNoteForm: "",
-      addNoteTextAreaHeight: 40
+      addNoteForm: ""
     });
   }
 
   setCurrentNote(item) {
     this.currentNote = item;
-    let height = item.description.split("").length * 0.5;
     IS_CONSOLE_LOG_OPEN && console.log("set current note\n", this.currentNote);
     this.setState(state => ({
-      showNotePad: !state.showNotePad,
-      editNoteTextAreaHeight: height
+      showNotePad: !state.showNotePad
     }));
   }
 
   onAddNoteChange(event) {
-    let height = event.target.value.split("").length * 0.5;
-    this.setState({});
     this.setState({
-      [event.target.name]: event.target.value,
-      addNoteTextAreaHeight: height
+      [event.target.name]: event.target.value
     });
     IS_CONSOLE_LOG_OPEN && console.log("value", event.target);
   }
 
   onEditNoteChange(event) {
-    let height = event.target.value.split("").length * 0.5;
-    this.setState({});
     this.setState({
-      [event.target.name]: event.target.value,
-      editNoteTextAreaHeight: height
+      [event.target.name]: event.target.value
     });
     IS_CONSOLE_LOG_OPEN && console.log("value", event);
   }
@@ -211,13 +203,6 @@ class Notes extends React.Component {
   }
 
   noteContainerGenerate() {
-    let textareaStyle = {
-      height: this.state.editNoteTextAreaHeight,
-      maxHeight: "400px",
-      maxWidth: "482px",
-      minWidth: "482px",
-      width: "482px"
-    };
     IS_CONSOLE_LOG_OPEN &&
       console.log("notecontainergenerator currentNote?", this.currentNote);
     if (this.state.notes.length == 0) {
@@ -274,11 +259,11 @@ class Notes extends React.Component {
                 style={{ borderBottom: "1px solid rgba(32, 32, 32, 0.1)" }}
               >
                 <div>
-                  <textarea
+                  <TextArea
                     name="updateNoteForm"
                     onChange={this.onEditNoteChange}
                     defaultValue={item.description}
-                    style={textareaStyle}
+                    autosize={{ maxRows: 12 }}
                   />
                 </div>
                 <div className="notepad-buttons">
@@ -312,12 +297,12 @@ class Notes extends React.Component {
           {this.state.isEditing ? (
             <form className="add-note-area" onSubmit={this.handleAddNote}>
               <div>
-                <textarea
+                <TextArea
                   name="addNoteForm"
                   placeholder="+ Add note"
                   onChange={this.onAddNoteChange}
                   ref="addNoteFormDefault"
-                  style={{ height: this.state.addNoteTextAreaHeight }}
+                  autosize={{ maxRows: 12 }}
                 />
               </div>
               <div className="notepad-buttons">
@@ -334,16 +319,15 @@ class Notes extends React.Component {
               </div>
             </form>
           ) : (
-            <form className="add-note-area">
-              <div>
-                <textarea
-                  className="add-note-area --height-min"
-                  placeholder="+ Add note"
-                  onClick={this.toggleEdit}
-                  ref="addNoteFormDefault"
-                />
-              </div>
-            </form>
+            <div style={{ margin: "0 0 8px 0" }}>
+              <TextArea
+                className="add-note-area --height-min"
+                placeholder="+ Add note"
+                onClick={this.toggleEdit}
+                ref="addNoteFormDefault"
+                autosize={{ maxRows: 12 }}
+              />
+            </div>
           )}
           <div>
             <div className={notesShowingClass}>
