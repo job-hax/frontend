@@ -228,9 +228,11 @@
             padding-top: 8px;
 
             img {
+              min-height: 8px;
+              min-width: auto;
+              max-height: 12px;
               padding-right: 6px;
-              height: 12px;
-              width: 12px;
+
               cursor: default;
             }
           }
