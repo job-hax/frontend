@@ -97,7 +97,7 @@ class PositonReviews extends React.Component {
       console.log("reviews render", this.state.reviewsList);
     const { card } = this.props;
     return (
-      <div>
+      <div style={{ height: "520px", overflowX: "hidden" }}>
         <div className="review-container">
           {!this.state.isEnteringReview && (
             <div className="review-entry-container">

@@ -22,7 +22,13 @@ class BodyComponents extends React.Component {
           />
         );
       case "Contacts":
-        return <Contacts />;
+        return (
+          <Contacts
+            card={this.props.card}
+            handleTokenExpiration={this.props.handleTokenExpiration}
+            alert={this.props.alert}
+          />
+        );
       case "Reviews":
         return (
           <PositonReviews
