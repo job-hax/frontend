@@ -39,6 +39,7 @@ import {
 
 import "./style.scss";
 import "../../assets/libraryScss/antd-scss/newantd.scss";
+import "../../assets/libraryScss/area-code.scss";
 
 class App extends Component {
   constructor(props) {
