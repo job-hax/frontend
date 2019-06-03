@@ -37,7 +37,9 @@ import {
   UPDATE_GOOGLE_TOKEN,
   METRICS,
   GET_SOURCES,
-  EDIT_JOBAPP
+  EDIT_JOBAPP,
+  GET_CONTACTS,
+  POST_CONTACTS
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -575,6 +577,30 @@ export const getSourcesRequest = {
 //EDIT JOBAPP REQUEST//
 export const editJobAppRequest = {
   url: EDIT_JOBAPP,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
+
+//CONTACTS REQUESTS//
+export const getContactsRequest = {
+  url: GET_CONTACTS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
+export const postContactsRequest = {
+  url: POST_CONTACTS,
   config: {
     method: "POST",
     mode: "cors",

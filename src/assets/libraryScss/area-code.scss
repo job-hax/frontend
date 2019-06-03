@@ -1,6 +1,11 @@
 .react-tel-input {
   position: relative;
-  width: 168px;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .react-tel-input .ad {
@@ -949,11 +954,10 @@
   padding-left: 44px;
   margin-left: 0;
   background: #ffffff;
-  border: 1px solid #cacaca;
+  border: 1px solid #d9d9d9;
   border-radius: 4px;
-  box-shadow: 0 1px 2px #e3e3e3 inset;
-  line-height: 25px;
-  height: 28px;
+  line-height: 90%;
+  height: 100%;
   width: 100%;
 }
 
@@ -962,17 +966,22 @@
   border-color: #ba42ff;
 }
 
+.react-tel-input input[type='text']:hover,
+.react-tel-input input[type='tel']:hover {
+  border-color: #ba42ff;
+}
+
 .react-tel-input input[type='text'].invalid-number,
 .react-tel-input input[type='tel'].invalid-number {
   border: 1px solid #d79f9f;
   background-color: white;
-  border-left-color: #cacaca;
+  border-left-color: #d9d9d9;
 }
 
 .react-tel-input input[type='text'].invalid-number:focus,
 .react-tel-input input[type='tel'].invalid-number:focus {
   border: 1px solid #d79f9f;
-  border-left-color: #cacaca;
+  border-left-color: #d9d9d9;
   background-color: white;
 }
 
@@ -982,7 +991,7 @@
   bottom: 0;
   padding: 0;
   background-color: white;
-  border: 1px solid #cacaca;
+  border: 1px solid #d9d9d9;
   border-radius: 3px 0 0 3px;
 }
 
