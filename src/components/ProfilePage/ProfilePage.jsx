@@ -20,7 +20,6 @@ import {
 } from "../../utils/api/requests.js";
 
 import "./react-datepicker.scss";
-import "./area-code.scss";
 import "./style.scss";
 
 class ProfilePage extends React.Component {
@@ -684,7 +683,10 @@ class ProfilePage extends React.Component {
                   </div>
                   <div className="info-content-body-item">
                     <div className="info-content-body-item-label">Phone:</div>
-                    <div className="info-content-body-item-text">
+                    <div
+                      className="info-content-body-item-text"
+                      style={{ width: 168, height: 28 }}
+                    >
                       <ReactTelInput
                         defaultCountry="us"
                         preferredCountries={["us"]}

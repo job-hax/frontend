@@ -83,3 +83,7 @@ export const METRICS = type => `${apiRoot}/api/metrics/${type}`;
 export const GET_SOURCES = `${apiRoot}/api/jobapps/get_sources`;
 
 export const EDIT_JOBAPP = `${apiRoot}/api/jobapps/edit_jobapp`;
+
+export const GET_CONTACTS = `${apiRoot}/api/jobapps/get_contacts`;
+
+export const POST_CONTACTS = type => `${apiRoot}/api/jobapps/${type}`;
