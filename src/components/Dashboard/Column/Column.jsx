@@ -63,21 +63,23 @@ class Column extends Component {
 
     if (this.state.showRejectedCards) {
       return (
-        cardsRejecteds &&
-        cardsRejecteds.map(card => (
-          <Card
-            handleTokenExpiration={handleTokenExpiration}
-            key={card.id}
-            card={card}
-            columnName={name}
-            deleteJobFromList={deleteJobFromList}
-            moveToRejected={moveToRejected}
-            updateApplications={updateApplications}
-            icon={icon}
-            id={id}
-            alert={alert}
-          />
-        ))
+        <div style={{ margin: "15px 0px 0px 0px" }}>
+          {cardsRejecteds &&
+            cardsRejecteds.map(card => (
+              <Card
+                handleTokenExpiration={handleTokenExpiration}
+                key={card.id}
+                card={card}
+                columnName={name}
+                deleteJobFromList={deleteJobFromList}
+                moveToRejected={moveToRejected}
+                updateApplications={updateApplications}
+                icon={icon}
+                id={id}
+                alert={alert}
+              />
+            ))}
+        </div>
       );
     }
     return (
@@ -163,8 +165,8 @@ class Column extends Component {
       "--column-active": canDropCardInColumn && isCardOverColumn
     });
 
-    const columnHeaderOngoingIndicatorClass = classNames({
-      "column-indicator-container ongoing-indicator": true
+    const columnHeaderRejectedIndicatorClass = classNames({
+      "column-indicator-container rejected-indicator": true
     });
 
     return (
@@ -184,7 +186,7 @@ class Column extends Component {
           />
         </div>
         {showRejectedCards && (
-          <div className={columnHeaderOngoingIndicatorClass}>
+          <div className={columnHeaderRejectedIndicatorClass}>
             <div>REJECTED ({totalCount - cards.length})</div>
             <div className="column-indicator-details">{message}</div>
           </div>
