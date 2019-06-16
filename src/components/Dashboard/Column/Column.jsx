@@ -163,8 +163,8 @@ class Column extends Component {
       "--column-active": canDropCardInColumn && isCardOverColumn
     });
 
-    const columnHeaderOngoingIndicatorClass = classNames({
-      "column-indicator-container ongoing-indicator": true
+    const columnHeaderRejectedIndicatorClass = classNames({
+      "column-indicator-container rejected-indicator": true
     });
 
     return (
@@ -184,7 +184,7 @@ class Column extends Component {
           />
         </div>
         {showRejectedCards && (
-          <div className={columnHeaderOngoingIndicatorClass}>
+          <div className={columnHeaderRejectedIndicatorClass}>
             <div>REJECTED ({totalCount - cards.length})</div>
             <div className="column-indicator-details">{message}</div>
           </div>
