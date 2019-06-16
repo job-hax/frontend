@@ -63,21 +63,23 @@ class Column extends Component {
 
     if (this.state.showRejectedCards) {
       return (
-        cardsRejecteds &&
-        cardsRejecteds.map(card => (
-          <Card
-            handleTokenExpiration={handleTokenExpiration}
-            key={card.id}
-            card={card}
-            columnName={name}
-            deleteJobFromList={deleteJobFromList}
-            moveToRejected={moveToRejected}
-            updateApplications={updateApplications}
-            icon={icon}
-            id={id}
-            alert={alert}
-          />
-        ))
+        <div style={{ margin: "15px 0px 0px 0px" }}>
+          {cardsRejecteds &&
+            cardsRejecteds.map(card => (
+              <Card
+                handleTokenExpiration={handleTokenExpiration}
+                key={card.id}
+                card={card}
+                columnName={name}
+                deleteJobFromList={deleteJobFromList}
+                moveToRejected={moveToRejected}
+                updateApplications={updateApplications}
+                icon={icon}
+                id={id}
+                alert={alert}
+              />
+            ))}
+        </div>
       );
     }
     return (
