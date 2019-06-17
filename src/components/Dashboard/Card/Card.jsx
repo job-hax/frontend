@@ -157,7 +157,7 @@ class Card extends PureComponent {
             </div>
           </div>
           <div className="card-job-details">
-            {this.sourceLogoSelector(app_source)}
+            {/*this.sourceLogoSelector(app_source)*/}
           </div>
         </div>
       </div>
