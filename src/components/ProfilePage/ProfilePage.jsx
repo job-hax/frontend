@@ -126,15 +126,16 @@ class ProfilePage extends React.Component {
   }
 
   async submitProfileUpdate(target) {
+    console.log(target);
     await this.props.handleTokenExpiration("profilePage submitProfileUpdate");
     this.setState({
       isUpdating: true
     });
-    if (target[4].value.trim() != (null || "")) {
-      this.body["first_name"] = target[4].value.trim();
+    if (target[6].value.trim() != (null || "")) {
+      this.body["first_name"] = target[6].value.trim();
     }
-    if (target[5].value.trim() != (null || "")) {
-      this.state.body[" last_name"] = target[5].value.trim();
+    if (target[7].value.trim() != (null || "")) {
+      this.state.body[" last_name"] = target[7].value.trim();
     }
     updateProfileRequest.config.body = this.body;
     axiosCaptcha(
@@ -417,11 +418,7 @@ class ProfilePage extends React.Component {
                   <div className="info-content-body-item-label">Birthday:</div>
                   <div className="info-content-body-item-text">
                     {this.state.data.length != 0 && this.state.data.dob ? (
-                      this.state.data.dob.split("-")[2] +
-                      "." +
-                      this.state.data.dob.split("-")[1] +
-                      "." +
-                      this.state.data.dob.split("-")[0]
+                      makeTimeBeautiful(this.state.data.dob + "T", "date")
                     ) : (
                       <span className="not-specified-notice">
                         Not specified!
@@ -521,6 +518,14 @@ class ProfilePage extends React.Component {
   }
 
   generateEditableProfileMainArea() {
+    const props = {
+      name: "file",
+      showUploadList: false,
+      action: file => {
+        this.handleProfilePhotoUpdate(file);
+      }
+    };
+
     return (
       <div className="profile-page-left">
         <form className="profile-page-left" onSubmit={this.handleSubmit}>
@@ -538,6 +543,15 @@ class ProfilePage extends React.Component {
                     }
                   />
                 )}
+              </div>
+              <div className="profile-image-update-container">
+                <div>
+                  <Upload {...props}>
+                    <Button>
+                      <Icon type="upload" /> Update Profile Photo
+                    </Button>
+                  </Upload>
+                </div>
               </div>
               <div className="register-date">
                 <span>Registered on </span>
@@ -577,7 +591,7 @@ class ProfilePage extends React.Component {
                     First Name:
                     <input
                       className="first-name"
-                      defaultValue={
+                      placeholder={
                         this.state.data.length != 0 &&
                         this.state.data.user.first_name
                           ? this.state.data.user.first_name
@@ -591,7 +605,7 @@ class ProfilePage extends React.Component {
                     Last Name:
                     <input
                       className="last-name"
-                      defaultValue={
+                      placeholder={
                         this.state.data.length != 0 &&
                         this.state.data.user.last_name
                           ? this.state.data.user.last_name
@@ -798,6 +812,7 @@ class ProfilePage extends React.Component {
                         <label>
                           Password:
                           <input
+                            type="password"
                             defaultValue=""
                             placeholder="Enter a new password"
                           />
@@ -807,6 +822,7 @@ class ProfilePage extends React.Component {
                         <label>
                           Password:
                           <input
+                            type="password"
                             defaultValue=""
                             placeholder="Retype the new password"
                           />
@@ -814,14 +830,6 @@ class ProfilePage extends React.Component {
                       </div>
                     </div>
                     <div className="settings-buttons-container">
-                      <div>
-                        <button
-                          type="submit"
-                          className="settings-editing-button"
-                        >
-                          Save
-                        </button>
-                      </div>
                       <div
                         onClick={() =>
                           this.setState({ isProfileSettingsOpen: false })
@@ -829,6 +837,14 @@ class ProfilePage extends React.Component {
                       >
                         <button className="settings-editing-button">
                           Cancel
+                        </button>
+                      </div>
+                      <div>
+                        <button
+                          type="submit"
+                          className="settings-editing-button"
+                        >
+                          Save
                         </button>
                       </div>
                     </div>
