@@ -375,6 +375,21 @@ class SignInPage extends Component {
     };
     return (
       <Form onSubmit={this.handleSignIn} className="login-form">
+        <div className="social-buttons-container">
+          <div>
+            <div className="social-buttons-google">
+              <img
+                onClick={this.handleGoogleSignIn}
+                src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="separator">
+          <div className="line" />
+          <div> or </div>
+          <div className="line" />
+        </div>
         <Form.Item>
           {getFieldDecorator("username", {
             rules: [{ required: true, message: "Please enter your username!" }]
@@ -437,16 +452,6 @@ class SignInPage extends Component {
             <Link to="/signup" style={{ fontSize: "90%" }}>
               register now!
             </Link>
-          </div>
-          <div className="social-buttons-container">
-            <div>
-              <div className="social-buttons-google">
-                <img
-                  onClick={this.handleGoogleSignIn}
-                  src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
-                />
-              </div>
-            </div>
           </div>
         </Form.Item>
       </Form>
