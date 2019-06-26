@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Form, Input, Icon, Select, Checkbox, Button } from "antd";
 
+import { linkedInOAuth } from "../../../utils/helpers/oAuthHelperFunctions.js";
 import { googleClientId } from "../../../config/config.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
@@ -24,15 +25,34 @@ class SignUpPage extends Component {
       isUserAuthenticated: false,
       isAuthenticationChecking: false,
       confirmDirty: false,
-      isEmailSignUpRequested: false
+      isEmailSignUpRequested: false,
+      level:
+        window.location.search.split("=")[1] == "synced" ? "submit" : "none",
+      accountType: "",
+      universityAccountType: "",
+      collegeName: "",
+      major: "",
+      graduationYear: null
     };
 
-    this.handleSignUp = this.handleSignUp.bind(this);
+    this.nextButtonStyle = {
+      borderRadius: 0,
+      width: "272px"
+    };
+
+    this.narrowInputStyle = {
+      width: "240px",
+      marginBottom: 16
+    };
+
+    this.handleSignUpFormNext = this.handleSignUpFormNext.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
     this.generateSignUpForm = this.generateSignUpForm.bind(this);
     this.compareToFirstPassword = this.compareToFirstPassword.bind(this);
     this.validateToNextPassword = this.validateToNextPassword.bind(this);
     this.handleConfirmBlur = this.handleConfirmBlur.bind(this);
     this.handleGoogleSignIn = this.handleGoogleSignIn.bind(this);
+    this.linkedInOAuthRequest = this.linkedInOAuthRequest.bind(this);
   }
 
   compareToFirstPassword(rule, value, callback) {
@@ -166,7 +186,45 @@ class SignUpPage extends Component {
     });
   }
 
-  handleSignUp(event) {
+  handleFinish() {
+    registerUserRequest.config.body.accountType = this.state.accountType;
+    registerUserRequest.config.body.universityAccountType = this.state.universityAccountType;
+    registerUserRequest.config.body.collegeName = this.state.collegeName;
+    registerUserRequest.config.body.major = this.state.major;
+    registerUserRequest.config.body.graduationYear = this.state.graduationYear;
+    axiosCaptcha(
+      registerUserRequest.url,
+      registerUserRequest.config,
+      "signup"
+    ).then(response => {
+      if (response.statusText === "OK") {
+        console.log(response.data);
+        if (response.data.success === true) {
+          this.setState({ level: "final" });
+          this.props.alert(
+            5000,
+            "success",
+            "Registration mail has sent to your email successfully! \nPlease click the link on your email to activate your account!"
+          );
+        } else {
+          console.log(response, response.data.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
+      } else {
+        if (response.data == "500") {
+          this.props.alert(3000, "error", "You have to fill out all from!");
+        } else {
+          this.props.alert(5000, "error", "Something went wrong!");
+        }
+      }
+    });
+  }
+
+  handleSignUpFormNext(event) {
     event.preventDefault();
     if (
       event.target[0].value.trim() === (null || "") ||
@@ -183,35 +241,7 @@ class SignUpPage extends Component {
         registerUserRequest.config.body.email = event.target[1].value;
         registerUserRequest.config.body.password = event.target[2].value;
         registerUserRequest.config.body.password2 = event.target[3].value;
-        axiosCaptcha(
-          registerUserRequest.url,
-          registerUserRequest.config,
-          "signup"
-        ).then(response => {
-          if (response.statusText === "OK") {
-            console.log(response.data);
-            if (response.data.success === true) {
-              this.props.alert(
-                5000,
-                "success",
-                "Registration mail has sent to your email successfully! \nPlease click the link on your email to activate your account!"
-              );
-            } else {
-              console.log(response, response.data.error_message);
-              this.props.alert(
-                5000,
-                "error",
-                "Error: " + response.data.error_message
-              );
-            }
-          } else {
-            if (response.data == "500") {
-              this.props.alert(3000, "error", "You have to fill out all from!");
-            } else {
-              this.props.alert(5000, "error", "Something went wrong!");
-            }
-          }
-        });
+        this.setState({ level: "intro" });
       } else {
         this.props.alert(
           3000,
@@ -243,7 +273,35 @@ class SignUpPage extends Component {
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <Form onSubmit={this.handleSignUp}>
+      <Form onSubmit={() => this.handleSignUpFormNext(event)}>
+        <div style={{ margin: "0px 0 16px 0" }}>
+          <div className="social-buttons-container">
+            {/*<div>
+              <div className="social-buttons-google">
+                <img
+                  style={{ marginLeft: 48 }}
+                  onClick={this.handleGoogleSignIn}
+                  src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
+                />
+              </div>
+            </div>*/}
+            <div>
+              <Button
+                type="primary"
+                icon="google"
+                onClick={this.handleGoogleSignIn}
+                style={{ width: "240px" }}
+              >
+                {" "}
+                Sign Up with Google
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div
+          className="separator"
+          style={{ margin: "12px 24px 12px 24px", width: 224 }}
+        />
         <Form.Item style={{ width: "272px" }}>
           {getFieldDecorator("Username", {
             rules: [
@@ -374,13 +432,9 @@ class SignUpPage extends Component {
             <Button
               type="primary"
               htmlType="submit"
-              style={{
-                width: "100%",
-                borderRadius: 0,
-                width: "272px"
-              }}
+              style={this.nextButtonStyle}
             >
-              Sign Up
+              Next
             </Button>
           </div>
         </Form.Item>
@@ -396,22 +450,53 @@ class SignUpPage extends Component {
       <div>
         <div>
           <div className="social-buttons-container">
-            <div>
+            {/*<div>
               <button className="social-buttons-google">
                 <img
                   onClick={this.handleGoogleSignIn}
                   src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
                 />
               </button>
+            </div>*/}
+            <div>
+              <Button
+                type="primary"
+                icon="google"
+                onClick={this.handleGoogleSignIn}
+                style={{ width: "240px" }}
+              >
+                {" "}
+                Sign Up with Google
+              </Button>
             </div>
           </div>
-          <div className="email-button-container">
+
+          {/*<div className="email-button-container">
             <div
               onClick={() => this.setState({ isEmailSignUpRequested: true })}
               className="email-button"
             >
               <Icon type="mail" />
               Sign Up with E-mail
+            </div>
+          </div>*/}
+          <div
+            className="separator"
+            style={{ width: "224px", margin: "12px 24px 0px 24px" }}
+          />
+          <div
+            className="social-buttons-container"
+            style={{ marginBottom: 20 }}
+          >
+            <div>
+              <Button
+                icon="mail"
+                onClick={() => this.setState({ isEmailSignUpRequested: true })}
+                style={{ width: "240px" }}
+              >
+                {" "}
+                Sign Up with Email
+              </Button>
             </div>
           </div>
         </div>
@@ -435,12 +520,279 @@ class SignUpPage extends Component {
     );
   }
 
+  generateLevelIntro() {
+    return (
+      <div>
+        <div className="level-title">Welcome to Jobhax!</div>
+        <div className="level-body">
+          Please confirm a few, quick details to activate your account.
+        </div>
+        <div>
+          <Button
+            type="primary"
+            onClick={() => this.setState({ level: "accountType" })}
+            style={this.nextButtonStyle}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  generateLevelAccountType() {
+    return (
+      <div>
+        <div className="level-title">
+          Are you affiliated with a College/University?
+        </div>
+        <div>
+          <div className="level-body">
+            Improve your Job search experience in a seamless & intuitive way.
+          </div>
+          <div>
+            <Button
+              type="primary"
+              onClick={() =>
+                this.setState({ level: "linkedin", accountType: "public" })
+              }
+              style={this.nextButtonStyle}
+            >
+              Public Sign Up
+            </Button>
+          </div>
+        </div>
+        <div className="separator" />
+        <div>
+          <div className="level-body">
+            Connect & engage with your University to launch your career!
+          </div>
+          <div>
+            <Button
+              type="primary"
+              onClick={() =>
+                this.setState({
+                  level: "university",
+                  accountType: "university"
+                })
+              }
+              style={this.nextButtonStyle}
+            >
+              University Portal
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  universityChoices(snippet, link, title) {
+    return (
+      <div>
+        <div className="level-body">{snippet}</div>
+        <div style={{ marginBottom: 16 }}>
+          <Button
+            type="primary"
+            onClick={() =>
+              this.setState({ level: link, universityAccountType: link })
+            }
+            style={this.nextButtonStyle}
+          >
+            {title}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  generateLevelUniversity() {
+    return (
+      <div>
+        <div className="level-title">
+          What kind of account do you want to create?
+        </div>
+        <div>
+          {this.universityChoices(
+            "Organize, track, & get assistance throughout your job search process.",
+            "student",
+            "Student"
+          )}
+        </div>
+        <div>
+          {this.universityChoices(
+            "Use your experience to guide students towards their career goals.",
+            "mentor",
+            "Mentor"
+          )}
+        </div>
+        <div>
+          {this.universityChoices(
+            "Connect with your cohort to providetargeted assistance & track progress.",
+            "careerServices",
+            "Career Services"
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  generateLevelStudent() {
+    return (
+      <div>
+        <div className="level-title">Connect with your College</div>
+        <div className="level-body">Please enter your College:</div>
+        <div>
+          <Input
+            placeholder="ex. Stanford University"
+            style={this.narrowInputStyle}
+            onChange={event =>
+              this.setState({ collegeName: event.target.value })
+            }
+          />
+        </div>
+        <div className="level-body">Please enter your Major:</div>
+        <div>
+          <Input
+            placeholder="ex. Computer Science"
+            style={this.narrowInputStyle}
+            onChange={event => this.setState({ major: event.target.value })}
+          />
+        </div>
+        <div className="level-body">Expected Graduation Year:</div>
+        <div>
+          <Input
+            placeholder="ex. 2019"
+            style={this.narrowInputStyle}
+            onChange={event =>
+              this.setState({ graduationYear: event.target.value })
+            }
+          />
+        </div>
+        <div style={{ marginTop: 8 }}>
+          <Button
+            type="primary"
+            onClick={() => this.setState({ level: "linkedin" })}
+            style={this.nextButtonStyle}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  linkedInOAuthRequest() {
+    linkedInOAuth();
+    this.setState({ level: "submit" });
+  }
+
+  generateLevelLinkedIn() {
+    return (
+      <div>
+        <div className="level-title">Welcome to Jobhax!</div>
+        <div className="level-body">
+          If you have a LinkedIn account, we can keep your information in sync,
+          aggregate your work experience & build custom resumes.
+        </div>
+        <div>
+          <Button
+            type="primary"
+            icon="linkedin"
+            onClick={() => this.linkedInOAuthRequest()}
+            style={this.nextButtonStyle}
+          >
+            {" "}
+            Connect With LinkedIn
+          </Button>
+        </div>
+        <div style={{ marginTop: 20 }}>
+          <Button
+            onClick={() => this.setState({ level: "submit" })}
+            style={this.nextButtonStyle}
+          >
+            Skip
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  generateLevelSubmit() {
+    return (
+      <div>
+        <div className="level-title" style={{ fontWeight: 500 }}>
+          You're all set!
+        </div>
+        <div>
+          <Button
+            type="primary"
+            onClick={() => this.handleFinish()}
+            style={this.nextButtonStyle}
+          >
+            Finish
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  generateLevelFinal() {
+    return (
+      <div>
+        <div className="level-title" style={{ fontWeight: 500 }}>
+          Congratulations!
+        </div>
+        <div className="level-body">
+          Registration mail has sent to your email successfully!
+        </div>
+        <div className="level-body">
+          Please click the link on your email to activate your account!
+        </div>
+      </div>
+    );
+  }
+
+  generateAdditionalInfoForms() {
+    switch (this.state.level) {
+      case "intro":
+        return this.generateLevelIntro();
+      case "accountType":
+        return this.generateLevelAccountType();
+      case "university":
+        return this.generateLevelUniversity();
+      case "student":
+        return this.generateLevelStudent();
+      case "mentor":
+        return this.generateLevelStudent();
+      case "careerServices":
+        return this.generateLevelStudent();
+      case "linkedin":
+        return this.generateLevelLinkedIn();
+      case "submit":
+        return this.generateLevelSubmit();
+      case "final":
+        return this.generateLevelFinal();
+    }
+  }
+
   render() {
     return (
       <div>
         <div className="sign_up-background">{this.generateTopButtons()}</div>
         <div className="sign_up-vertical-container">
-          <div className="sign_up-container">{this.generateSignUp()}</div>
+          <div className="sign_up-container">
+            {this.state.level === "none" ? (
+              this.generateSignUp()
+            ) : (
+              <div className="sign_up-form-container">
+                <div className="content-container">
+                  <div className="levels">
+                    {this.generateAdditionalInfoForms()}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <div className="bottom-fixed-footer-sign_up">
           <Footer />

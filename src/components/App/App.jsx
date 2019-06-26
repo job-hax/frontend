@@ -22,6 +22,7 @@ import FAQ from "../StaticPages/FAQ/FAQ.jsx";
 import SignIn from "../UserAuth/SignIn/SignIn.jsx";
 import SignUp from "..//UserAuth/SignUp/SignUp.jsx";
 import Action from "../UserAuth/Action/Action.jsx";
+import LinkedInOAuthAction from "../UserAuth/Action/LinkedInOAuthAction.jsx";
 import ProfilePage from "../ProfilePage/ProfilePage.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 
@@ -616,6 +617,11 @@ class App extends Component {
               path="/action"
               render={() => <Action alert={this.showAlert} />}
             />
+            <Route
+              exact
+              path="/action-linkedin-oauth2"
+              render={() => <LinkedInOAuthAction alert={this.showAlert} />}
+            />
           </div>
         </Router>
       ) : (
@@ -710,7 +716,16 @@ class App extends Component {
               path="/useragreement"
               render={() => <UserAgreement />}
             />
-            <Route exact path="/action" render={() => <Action />} />
+            <Route
+              exact
+              path="/action"
+              render={() => <Action alert={this.showAlert} />}
+            />
+            <Route
+              exact
+              path="/action-linkedin-oauth2"
+              render={() => <LinkedInOAuthAction alert={this.showAlert} />}
+            />
           </div>
         </Router>
       );

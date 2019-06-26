@@ -9,6 +9,7 @@ import {
   makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN
 } from "../../utils/constants/constants.js";
+import { linkedInOAuth } from "../../utils/helpers/oAuthHelperFunctions.js";
 import { apiRoot } from "../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
@@ -401,7 +402,9 @@ class ProfilePage extends React.Component {
                 )}
               </div>
             </div>
-            <div className="job-position" />
+            <div className="job-position" onClick={() => linkedInOAuth()}>
+              <Button type="primary">Sync With LinkedIn</Button>
+            </div>
             <div className="city-state" />
           </div>
           <div className="profile-info">

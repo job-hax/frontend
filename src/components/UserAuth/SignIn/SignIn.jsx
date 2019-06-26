@@ -156,9 +156,9 @@ class SignInPage extends Component {
   handleSignIn(event) {
     IS_CONSOLE_LOG_OPEN && console.log("handle sign in first");
     event.preventDefault();
-    let rememberMe = event.target[2].checked;
-    loginUserRequest.config.body.username = event.target[0].value;
-    loginUserRequest.config.body.password = event.target[1].value;
+    let rememberMe = event.target[3].checked;
+    loginUserRequest.config.body.username = event.target[1].value;
+    loginUserRequest.config.body.password = event.target[2].value;
     axiosCaptcha(loginUserRequest.url, loginUserRequest.config, "signin").then(
       response => {
         if (response.statusText === "OK") {
@@ -376,13 +376,24 @@ class SignInPage extends Component {
     return (
       <Form onSubmit={this.handleSignIn} className="login-form">
         <div className="social-buttons-container">
-          <div>
+          {/*<div>
             <div className="social-buttons-google">
               <img
                 onClick={this.handleGoogleSignIn}
                 src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
               />
             </div>
+          </div>*/}
+          <div>
+            <Button
+              type="primary"
+              icon="google"
+              onClick={this.handleGoogleSignIn}
+              style={{ width: "240px" }}
+            >
+              {" "}
+              Sign Up with Google
+            </Button>
           </div>
         </div>
         <div className="separator">
