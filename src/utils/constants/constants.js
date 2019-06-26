@@ -151,7 +151,26 @@ export function makeTimeBeautiful(time, type = "date") {
   var beautiful_time = "";
   var dateFull = time.toString().split("T");
   var datePart = dateFull[0].split("-");
-  var beautifulDatePart = datePart[1] + "." + datePart[2] + "." + datePart[0];
+  var monthsList = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
+  var beautifulDatePart =
+    datePart[2] +
+    "-" +
+    monthsList[parseInt(datePart[1]) - 1] +
+    "-" +
+    datePart[0];
   if (type == "date" || dateFull[1] == undefined) {
     beautiful_time = beautifulDatePart;
   }
