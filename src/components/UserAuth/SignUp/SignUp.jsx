@@ -227,10 +227,10 @@ class SignUpPage extends Component {
   handleSignUpFormNext(event) {
     event.preventDefault();
     if (
-      event.target[0].value.trim() === (null || "") ||
       event.target[1].value.trim() === (null || "") ||
       event.target[2].value.trim() === (null || "") ||
-      event.target[3].value.trim() === (null || "")
+      event.target[3].value.trim() === (null || "") ||
+      event.target[4].value.trim() === (null || "")
     ) {
       this.props.alert(3000, "error", "You have to fill out all sign up form!");
     } else {
