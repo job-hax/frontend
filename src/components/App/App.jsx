@@ -41,6 +41,7 @@ import {
 import "./style.scss";
 import "../../assets/libraryScss/antd-scss/newantd.scss";
 import "../../assets/libraryScss/area-code.scss";
+import Mentors from "../Mentors/Mentors.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -528,6 +529,18 @@ class App extends Component {
               path="/metrics"
               render={() => (
                 <Metrics
+                  active={this.state.active}
+                  alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/mentors"
+              render={() => (
+                <Mentors
                   active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}

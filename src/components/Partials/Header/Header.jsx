@@ -46,8 +46,11 @@ class Header extends Component {
   }
 
   render() {
+    const fixed = { position: "fixed" };
+    const normal = { margin: 0 };
+    const style = window.location.pathname === "/mentors" ? fixed : normal;
     return (
-      <div className="header-container">
+      <div className="header-container" style={style}>
         <div className="left-container">
           <div className="jobhax-logo-container">
             <Link to="/dashboard">
@@ -89,6 +92,12 @@ class Header extends Component {
             <Link to="/metrics">
               <img src="../../../src/assets/icons/StatsIcon@3x.png" />
               <span>Metrics</span>
+            </Link>
+          </div>
+          <div className="header-icon general tooltips">
+            <Link to="/mentors">
+              <img src="../../../src/assets/icons/MentorIcon.png" />
+              <span>Mentorship</span>
             </Link>
           </div>
           {/*<div className="header-icon general tooltips">
