@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
+import { Input, DatePicker } from "antd";
 
 import Column from "./Column/Column.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
@@ -21,11 +22,15 @@ import { generateCurrentDate } from "../../utils/helpers/helperFunctions.js";
 
 import "./style.scss";
 
+const { Search } = Input;
+const { RangePicker } = DatePicker;
+
 class Dashboard extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      allApplications: [],
       toApply: [],
       applied: [],
       phoneScreen: [],
@@ -52,6 +57,7 @@ class Dashboard extends Component {
     this.addNewApplication = this.addNewApplication.bind(this);
     this.deleteJobFromList = this.deleteJobFromList.bind(this);
     this.moveToRejected = this.moveToRejected.bind(this);
+    this.onDateQuery = this.onDateQuery.bind(this);
   }
 
   async componentDidMount() {
@@ -104,7 +110,10 @@ class Dashboard extends Component {
         axiosCaptcha(url, config).then(response => {
           if (response.statusText === "OK") {
             this.sortJobApplications(response.data.data);
-            this.setState({ isInitialRequest: false });
+            this.setState({
+              isInitialRequest: false,
+              allApplications: response.data.data
+            });
             IS_CONSOLE_LOG_OPEN &&
               console.log("dashboard response.data data", response.data.data);
           }
@@ -114,6 +123,15 @@ class Dashboard extends Component {
   }
 
   sortJobApplications(applications) {
+    this.toApply = [];
+    this.applied = [];
+    this.phoneScreen = [];
+    this.onsiteInterview = [];
+    this.offer = [];
+    this.appliedRejected = [];
+    this.phoneScreenRejected = [];
+    this.onsiteInterviewRejected = [];
+    this.offerRejected = [];
     for (let application of applications) {
       switch (application.applicationStatus.value.toLowerCase()) {
         case "to apply":
@@ -250,6 +268,39 @@ class Dashboard extends Component {
     }));
   }
 
+  onSearch(event) {
+    let value = event.target.value;
+    let queriedList = this.state.allApplications;
+    queriedList = queriedList.filter(application => {
+      return (
+        application.companyObject.company
+          .toLowerCase()
+          .match(value.trim().toLowerCase()) ||
+        application.position.job_title
+          .toLowerCase()
+          .match(value.trim().toLowerCase())
+      );
+    });
+    console.log(queriedList);
+    this.sortJobApplications(queriedList);
+  }
+
+  onDateQuery(date, dateString) {
+    console.log(date, dateString);
+    let mainList = this.state.allApplications;
+    let filteredList = [];
+    mainList.forEach(application => {
+      if (
+        date[0] <= new Date(application.applyDate) &&
+        new Date(application.applyDate) <= date[1]
+      ) {
+        filteredList.push(application);
+      }
+    });
+    console.log(filteredList);
+    this.sortJobApplications(filteredList);
+  }
+
   render() {
     IS_CONSOLE_LOG_OPEN && console.log("Dashboard opened!");
     if (this.state.isInitialRequest === "beforeRequest")
@@ -258,6 +309,22 @@ class Dashboard extends Component {
       return <Spinner message="Preparing your dashboard..." />;
     return (
       <div>
+        <div
+          style={{
+            position: "absolute",
+            margin: "-45px 0 0 80px",
+            display: "flex",
+            justifyContent: "space-between",
+            width: 440
+          }}
+        >
+          <Search
+            placeholder=""
+            onChange={event => this.onSearch(event)}
+            style={{ width: 200 }}
+          />
+          <RangePicker onChange={this.onDateQuery} style={{ width: 220 }} />
+        </div>
         <div className="dashboard-container">
           <Column
             name="toApply"
