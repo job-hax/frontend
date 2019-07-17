@@ -134,6 +134,62 @@ class Mentors extends PureComponent {
                 "https://backend.jobhax.com/media/b9686ee3-ccde-46b6-bc4f-7e4188e01012.png"
             }
           ]
+        },
+
+        {
+          cagetoryName: "Since you applied Google",
+          mentors: [
+            {
+              company: "Google",
+              position: "Product Manager",
+              university: "Virginia Tech",
+              graduationYear: 2015,
+              degree: "BS Computer Science",
+              fullName: "Suhas Avadhuta",
+              photoUrl:
+                "https://media.licdn.com/dms/image/C4E03AQGdaM6-jDB7oA/profile-displayphoto-shrink_800_800/0?e=1568851200&v=beta&t=UCjVGmJBbDd4VwcPu4CfQhi3uVuuRVJTALOmSlYNZNY"
+            },
+            {
+              company: "JobHax",
+              position: "Front-End Developer",
+              university: "ITU",
+              graduationYear: 2019,
+              degree: "MS Computer Science",
+              fullName: "Egemen Uslu",
+              photoUrl:
+                "https://backend.jobhax.com/media/65823394-c838-45ce-a08e-002e983bef7e.jpg"
+            },
+            {
+              company: "Evercoin",
+              position: "Android Developer",
+              university: "ITU",
+              graduationYear: 2019,
+              degree: "MS Software Engineering",
+              fullName: "Seyfullah Demirci",
+              photoUrl:
+                "https://backend.jobhax.com/media/b9686ee3-ccde-46b6-bc4f-7e4188e01012.png"
+            },
+            {
+              company: "Opengov",
+              position: "DevOps",
+              university: "ITU",
+              graduationYear: 2019,
+              degree: "MS Software Engineering",
+              fullName: "Sako M",
+              photoUrl:
+                "https://media.licdn.com/dms/image/C5603AQElIIuc89DUQg/profile-displayphoto-shrink_800_800/0?e=1568851200&v=beta&t=100zl9rFw6QhQEmafTriUJkD60n8bvcNbVwj-5x2JBM"
+            },
+            {
+              company: "Evercoin",
+              position: "Android Developer",
+              university: "ITU",
+              graduationYear: 2019,
+              degree: "MS Software Engineering",
+              fullName: "Seyfullah Demirci",
+              photoUrl:
+                "https://backend.jobhax.com/media/b9686ee3-ccde-46b6-bc4f-7e4188e01012.png"
+            }
+          ]
         }
       ]
     };
@@ -209,7 +265,6 @@ class Mentors extends PureComponent {
           <div style={{ height: 100 }} />
         )}
         <div className="mentor-categories-container">
-          {this.generateMentorCategories()}
           {this.generateMentorCategories()}
         </div>
         <div style={{ height: 100 }} />
