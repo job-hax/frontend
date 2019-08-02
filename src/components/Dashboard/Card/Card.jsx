@@ -82,10 +82,10 @@ class Card extends PureComponent {
     console.log(`checked = `, isSelected);
     this.setState({ isSelected: isSelected });
     if (isSelected === true) {
-      this.props.addToSelectedJobApplicationsList("add", this.props.card.id);
+      this.props.addToSelectedJobApplicationsList("add", this.props.card);
     }
     if (isSelected === false) {
-      this.props.addToSelectedJobApplicationsList("delete", this.props.card.id);
+      this.props.addToSelectedJobApplicationsList("delete", this.props.card);
     }
   }
 

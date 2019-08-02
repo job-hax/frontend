@@ -1,7 +1,16 @@
 import React, { Component } from "react";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
-import { Input, DatePicker, Checkbox } from "antd";
+import {
+  Input,
+  DatePicker,
+  Checkbox,
+  Menu,
+  Dropdown,
+  Icon,
+  Button,
+  message
+} from "antd";
 
 import Column from "./Column/Column.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
@@ -24,6 +33,7 @@ import "./style.scss";
 
 const { Search } = Input;
 const { RangePicker } = DatePicker;
+const { SubMenu } = Menu;
 
 class Dashboard extends Component {
   constructor(props) {
@@ -42,8 +52,7 @@ class Dashboard extends Component {
       offerRejected: [],
       isInitialRequest: "beforeRequest",
       selectedJobApplications: [],
-      displayingList: [],
-      isAllSelected: false
+      displayingList: []
     };
 
     this.toApply = [];
@@ -66,6 +75,11 @@ class Dashboard extends Component {
       this
     );
     this.onSelectAll = this.onSelectAll.bind(this);
+    this.handleMenuClick = this.handleMenuClick.bind(this);
+    this.moveMultipleOperation = this.moveMultipleOperation.bind(this);
+    this.moveMultipleToSpecificRejectedOperation = this.moveMultipleToSpecificRejectedOperation.bind(
+      this
+    );
   }
 
   async componentDidMount() {
@@ -196,14 +210,17 @@ class Dashboard extends Component {
     });
   }
 
-  addToSelectedJobApplicationsList(command, jobAppId) {
+  addToSelectedJobApplicationsList(command, card) {
     if (command === "add") {
-      this.selectedJobApplications.push({ jobApp_id: jobAppId });
+      this.selectedJobApplications.push({
+        jobApp_id: card.id,
+        applicationStatus: card.applicationStatus
+      });
     }
     if (command === "delete") {
       this.selectedJobApplications = this.selectedJobApplications.filter(
         job => {
-          return job.jobApp_id !== jobAppId;
+          return job.jobApp_id !== card.id;
         }
       );
     }
@@ -332,7 +349,6 @@ class Dashboard extends Component {
   async onSelectAll(event) {
     let isSelected = event.target.checked;
     console.log(`checkedAll = `, isSelected);
-    this.setState({ isALlSelected: isSelected });
     if (isSelected === true) {
       let selectedDisplayingList = this.state.displayingList;
       selectedDisplayingList.forEach(jobApp => (jobApp.isSelected = true));
@@ -340,7 +356,10 @@ class Dashboard extends Component {
       console.log(this.state.displayingList);
       this.selectedJobApplications = [];
       this.state.displayingList.forEach(jobApp =>
-        this.selectedJobApplications.push({ jobApp_id: jobApp.id })
+        this.selectedJobApplications.push({
+          jobApp_id: jobApp.id,
+          applicationStatus: jobApp.applicationStatus
+        })
       );
       await this.setState({
         selectedJobApplications: this.selectedJobApplications
@@ -368,7 +387,117 @@ class Dashboard extends Component {
     }
   }
 
+  moveMultipleOperation(status_id, status_name) {
+    let newList = this.state.displayingList;
+    this.state.selectedJobApplications.forEach(selectedJobApp =>
+      newList.forEach(displayingJobApp => {
+        if (displayingJobApp.id == selectedJobApp.jobApp_id) {
+          displayingJobApp.applicationStatus.id = status_id;
+          displayingJobApp.applicationStatus.value = status_name;
+        }
+      })
+    );
+    this.setState({ displayingList: newList, allApplications: newList });
+    this.sortJobApplications(newList);
+  }
+
+  moveMultipleToSpecificRejectedOperation(status_id, status_name) {
+    let newList = this.state.displayingList;
+    this.state.selectedJobApplications.forEach(selectedJobApp =>
+      newList.forEach(displayingJobApp => {
+        if (displayingJobApp.id == selectedJobApp.jobApp_id) {
+          displayingJobApp.applicationStatus.id = status_id;
+          displayingJobApp.applicationStatus.value = status_name;
+          displayingJobApp.isRejected = true;
+        }
+      })
+    );
+    this.setState({ displayingList: newList, allApplications: newList });
+    this.sortJobApplications(newList);
+  }
+
+  handleMenuClick(event) {
+    message.info("Its done!");
+    console.log("click", event);
+    if (event.key === "deleteAll") {
+      let newList = this.state.displayingList;
+      this.state.selectedJobApplications.forEach(selectedJobApp =>
+        newList.forEach(displayingJobApp => {
+          if (displayingJobApp.id == selectedJobApp.jobApp_id) {
+            newList.splice(newList.indexOf(displayingJobApp), 1);
+          }
+        })
+      );
+      this.setState({ displayingList: newList, allApplications: newList });
+      this.sortJobApplications(newList);
+    } else if (event.key === "currentR") {
+      let newList = this.state.displayingList;
+      this.state.selectedJobApplications.forEach(selectedJobApp =>
+        newList.forEach(displayingJobApp => {
+          if (
+            displayingJobApp.id == selectedJobApp.jobApp_id &&
+            selectedJobApp.applicationStatus.id != 2
+          ) {
+            displayingJobApp.isRejected = true;
+          }
+        })
+      );
+      this.setState({ displayingList: newList, allApplications: newList });
+      this.sortJobApplications(newList);
+    } else if (event.key === "toApply") {
+      let newList = this.state.displayingList;
+      this.state.selectedJobApplications.forEach(selectedJobApp =>
+        newList.forEach(displayingJobApp => {
+          if (
+            displayingJobApp.id == selectedJobApp.jobApp_id &&
+            displayingJobApp.isRejected == false
+          ) {
+            displayingJobApp.applicationStatus.id = 2;
+            displayingJobApp.applicationStatus.value = "TO APPLY";
+          }
+        })
+      );
+      this.setState({ displayingList: newList, allApplications: newList });
+      this.sortJobApplications(newList);
+    } else if (event.key === "applied") {
+      this.moveMultipleOperation(1, "Applied");
+    } else if (event.key === "phoneScreen") {
+      this.moveMultipleOperation(3, "PHONE SCREEN");
+    } else if (event.key === "onsiteInterview") {
+      this.moveMultipleOperation(4, "ONSITE INTERVIEW");
+    } else if (event.key === "offer") {
+      this.moveMultipleOperation(5, "OFFER");
+    } else if (event.key === "appliedR") {
+      this.moveMultipleToSpecificRejectedOperation(1, "Applied");
+    } else if (event.key === "phoneScreenR") {
+      this.moveMultipleToSpecificRejectedOperation(3, "PHONE SCREEN");
+    } else if (event.key === "onsiteInterviewR") {
+      this.moveMultipleToSpecificRejectedOperation(4, "ONSITE INTERVIEW");
+    } else if (event.key === "offerR") {
+      this.moveMultipleToSpecificRejectedOperation(5, "OFFER");
+    }
+    this.onSelectAll({ target: { checked: false } });
+  }
+
   render() {
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <SubMenu title="Rejected">
+          <Menu.Item key="currentR">Current Stages</Menu.Item>
+          <Menu.Item key="appliedR">Applied</Menu.Item>
+          <Menu.Item key="phoneScreenR">Phone Screen</Menu.Item>
+          <Menu.Item key="onsiteInterviewR">Onsite Interview</Menu.Item>
+          <Menu.Item key="offerR">Offer</Menu.Item>
+        </SubMenu>
+        <Menu.Item key="toApply">To Apply</Menu.Item>
+        <Menu.Item key="applied">Applied</Menu.Item>
+        <Menu.Item key="phoneScreen">Phone Screen</Menu.Item>
+        <Menu.Item key="onsiteInterview">Onsite Interview</Menu.Item>
+        <Menu.Item key="offer">Offer</Menu.Item>
+        <Menu.Item key="deleteAll">Delete All</Menu.Item>
+      </Menu>
+    );
+
     IS_CONSOLE_LOG_OPEN && console.log("Dashboard opened!");
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
@@ -382,7 +511,7 @@ class Dashboard extends Component {
             margin: "-45px 0 0 80px",
             display: "flex",
             justifyContent: "space-between",
-            width: this.state.selectedJobApplications.length > 0 ? 556 : 440
+            width: this.state.selectedJobApplications.length > 0 ? 718 : 440
           }}
         >
           <Search
@@ -392,20 +521,35 @@ class Dashboard extends Component {
           />
           <RangePicker onChange={this.onDateQuery} style={{ width: 220 }} />
           {this.state.selectedJobApplications.length > 0 && (
-            <Checkbox
-              style={{
-                padding: "6px 0px 0px 6px",
-                color: "rgba(0, 0, 0, 0.4)",
-                boxShadow: "inset 0px 0px 1px rgba(0,0,0,0.5)",
-                backgroundColor: "white",
-                borderRadius: 3,
-                width: "102px",
-                height: "32px"
-              }}
-              onChange={this.onSelectAll}
-            >
-              Select All
-            </Checkbox>
+            <div>
+              <Checkbox
+                style={{
+                  padding: "6px 0px 0px 6px",
+                  color: "rgba(0, 0, 0, 0.4)",
+                  boxShadow: "inset 0px 0px 1px rgba(0,0,0,0.5)",
+                  backgroundColor: "white",
+                  borderRadius: 3,
+                  width: "102px",
+                  height: "32px"
+                }}
+                onChange={this.onSelectAll}
+              >
+                Select All
+              </Checkbox>
+              <Dropdown overlay={menu}>
+                <Button
+                  className="ant-dropdown-link"
+                  style={{
+                    margin: "0px 0px 0px 16px",
+                    color: "rgba(0, 0, 0, 0.4)",
+                    width: "140px",
+                    height: "32px"
+                  }}
+                >
+                  Move Selected <Icon type="down" />
+                </Button>
+              </Dropdown>
+            </div>
           )}
         </div>
         <div className="dashboard-container">

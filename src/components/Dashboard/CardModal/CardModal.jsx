@@ -63,7 +63,6 @@ class CardModal extends PureComponent {
           >
             <div id="modal-header">
               <ModalHeader
-                showOptions={this.state.showOptions}
                 card={this.props.card}
                 icon={this.props.icon}
                 id={this.props.id}
