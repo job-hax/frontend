@@ -1,7 +1,7 @@
 import React from "react";
-import DatePicker from "react-datepicker";
-import { Upload, message, Button, Icon } from "antd";
+import { Upload, message, Button, Icon, DatePicker } from "antd";
 import ReactTelInput from "react-telephone-input";
+import moment from "moment";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
@@ -528,6 +528,8 @@ class ProfilePage extends React.Component {
         this.handleProfilePhotoUpdate(file);
       }
     };
+    const dateFormat = "MM.DD.YYYY";
+    const { selectedDateShowing } = this.state;
 
     return (
       <div className="profile-page-left">
@@ -637,8 +639,10 @@ class ProfilePage extends React.Component {
                     </div>
                     <div style={{ zIndex: 99 }}>
                       <DatePicker
-                        selected={this.state.selectedDateShowing}
                         onChange={this.handleDatePickerChange}
+                        defaultValue={moment(selectedDateShowing, dateFormat)}
+                        format={dateFormat}
+                        style={{ width: "168px", margin: "-6px 0 6px 0" }}
                       />
                     </div>
                   </div>
