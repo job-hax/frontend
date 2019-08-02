@@ -54,7 +54,6 @@ class ModalHeader extends React.Component {
             </div>
           </div>
           <MoveOptions
-            showOptions={this.props.showOptions}
             card={this.props.card}
             icon={this.props.icon}
             id={this.props.id}
