@@ -264,6 +264,7 @@ class JobDetails extends React.Component {
   }
 
   generateApplyDateInfo() {
+    console.log("date", this.props.card.applyDate);
     const dateFormat = "MM.DD.YYYY";
     const { applyDate, isApplyDateEditing } = this.state;
     const infoClass =
@@ -277,7 +278,10 @@ class JobDetails extends React.Component {
         {isApplyDateEditing == true ? (
           <DatePicker
             onChange={this.handleApplyDate}
-            defaultValue={moment(applyDate, dateFormat)}
+            defaultValue={moment(
+              new Date(this.props.card.applyDate.split("T")[0] + "T06:00:00"),
+              dateFormat
+            )}
             format={dateFormat}
             style={{ width: "200px", marginTop: "4px" }}
           />
