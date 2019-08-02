@@ -28,10 +28,11 @@
         .mentor-category-name {
             font-size: 200%;
             font-weight: 500;
+            color: #261268;
         }
 
         .mentor-category-scroll-hide-container {
-            height: 188px;
+            height: 356px;
             overflow: hidden;
 
             .mentors-category-container {
@@ -40,7 +41,7 @@
 
                 .mentors-category {
                     min-width: 1240px;
-                    min-height: 184px;
+                    min-height: 352px;
                     padding: 8px 110px 20px 0px;
 
                     .mentors-group {
@@ -49,22 +50,222 @@
 
                         .mentors-container {
                             cursor: pointer;
-                            height: 180px;
-                            max-width: 292px;
+                            height: 348px;
                             overflow: hidden;
-                            border: 1px solid #261268;
+                            border: 1px solid rgb(132, 100, 239);
                             margin: 0px 5px 0px 5px;
 
 
-                            .mentor {
-                                margin: -40px 0px 0px 0px;
-                                height: 220px;
-                                max-width: 292px;
+                            .mentor-card-container {
+                                margin: 0px 0px 0px 0px;
+                                min-width: 200px;
+                                padding: 12px;
+                                height: 348px;
                                 background-color: white;
+                                display: flex;
+                                justify-content: center;
+                                box-shadow: 0 200px 0 -110px rgb(132, 100, 239) inset;
+
+
+                                .mentor-card {
+                                    padding: 12;
+
+                                    .mentor-top {
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                        width: 200px;
+                                        height: 150px;
+
+
+                                        .avatar {
+                                            min-width: 130px;
+                                            min-height: 130px;
+                                            max-width: 130px;
+                                            max-height: 130px;
+                                            border-radius: 65px;
+                                            overflow: hidden;
+                                            position: relative;
+                                            margin: 0px 0px 0 0;
+                                            border: 2px solid white;
+                                            box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.1);
+
+
+                                            img {
+                                                position: absolute;
+                                                margin: auto;
+                                                min-width: 130px;
+                                                min-height: 130px;
+                                                height: auto;
+                                                width: auto;
+                                                max-width: 140px;
+                                                max-height: 140px;
+                                                left: -100%;
+                                                right: -100%;
+                                                top: -100%;
+                                                bottom: -100%;
+                                                border-radius: 25px;
+                                            }
+                                        }
+
+                                    }
+
+                                    .mentor-bottom {
+                                        padding: 8px 0 0 0;
+
+                                        .mentor-name {
+                                            font-size: 150%;
+                                            font-weight: 500;
+                                            text-align: center;
+                                            color: #261268;
+                                            white-space: nowrap;
+                                        }
+
+                                        .mentor-employment {
+                                            font-size: 90%;
+                                            font-weight: 500;
+                                            height: 28px;
+                                            max-lines: 2;
+                                            text-align: center;
+                                        }
+
+                                        .mentor-company {
+                                            margin: 30px 0 0 0px;
+                                            display: flex;
+                                            justify-content: flex-start;
+
+                                            img {
+                                                width: 32px;
+                                                height: 32px;
+                                                margin: -8px 0 0 20px
+                                            }
+
+                                            .company-name {
+                                                margin: 0 0 0 8px;
+                                                font-weight: 500;
+                                            }
+                                        }
+
+                                    }
+
+                                    .button-container {
+                                        width: 200px;
+                                        margin: 12px 0 0 0;
+                                        display: flex;
+                                        justify-content: center;
+                                    }
+                                }
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+.mentor-on-display-big-container {
+    height: 380px;
+    max-height: 380px;
+    width: 100%;
+    z-index: 2300;
+    padding: 60px 0 0 0;
+
+    .mentor-on-display-container {
+        background-image: url('../../../src/assets/images/homebanner.jpg');
+        background-size: 100%;
+        margin: 0 0 0px 0;
+        height: 320px;
+        max-height: 320px;
+        width: 100%;
+        position: fixed;
+        z-index: 2300;
+        display: flex;
+        justify-content: flex-start;
+        box-shadow: 0px 30px 20px -20px rgba(0, 0, 0, 0.4);
+
+        .mentor-on-display-left {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 320px;
+            height: 320px;
+
+
+            .avatar {
+                min-width: 240px;
+                min-height: 240px;
+                max-width: 240px;
+                max-height: 240px;
+                border-radius: 120px;
+                overflow: hidden;
+                position: relative;
+                margin: 0px 0px 0 0;
+                border: 2px solid white;
+                box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.1);
+
+
+                img {
+                    position: absolute;
+                    margin: auto;
+                    min-width: 240px;
+                    min-height: 240px;
+                    height: auto;
+                    width: auto;
+                    max-width: 260px;
+                    max-height: 260px;
+                    left: -100%;
+                    right: -100%;
+                    top: -100%;
+                    bottom: -100%;
+                    border-radius: 25px;
+                }
+            }
+
+        }
+
+        .mentor-on-display-middle {
+            padding: 24px;
+
+            .mentor-info {
+                color: white;
+                height: 160px;
+
+                .mentor-name {
+                    font-size: 260%;
+                    font-weight: 500;
+                }
+
+                .mentor-employment {
+                    font-size: 110%;
+                    font-weight: 500;
+                    height: 28px;
+                    max-lines: 2;
+                }
+
+                .mentor-company {
+                    margin: 80px 0 0 0px;
+                    display: flex;
+                    justify-content: flex-start;
+
+                    img {
+                        width: 32px;
+                        height: 32px;
+                        margin: -8px 0 0 20px
+                    }
+
+                    .company-name {
+                        margin: 0 0 0 8px;
+                        font-weight: 500;
+                    }
+                }
+            }
+
+            .button-container {
+                width: 200px;
+                margin: 60px 0 0 0;
+                display: flex;
+                justify-content: center;
             }
         }
     }
