@@ -1,11 +1,21 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { Form, Input, Icon, Select, Checkbox, Button, Switch } from "antd";
+import {
+  Form,
+  Input,
+  Icon,
+  Select,
+  Checkbox,
+  Button,
+  Switch,
+  AutoComplete
+} from "antd";
 
 import { linkedInOAuth } from "../../../utils/helpers/oAuthHelperFunctions.js";
 import { googleClientId } from "../../../config/config.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
+  getPositionsRequest,
   registerUserRequest,
   authenticateRequest,
   updateProfilePhotoRequest
@@ -20,6 +30,8 @@ class SignUpPage extends Component {
     super(props);
 
     this.state = {
+      autoCompleteCompanyData: [],
+      autoCompletePositionsData: [],
       token: "",
       isUserLoggedIn: false,
       isUserAuthenticated: false,
@@ -50,6 +62,8 @@ class SignUpPage extends Component {
       marginBottom: 16
     };
 
+    this.handlePositionsSearch = this.handlePositionsSearch.bind(this);
+    this.handleCompanySearch = this.handleCompanySearch.bind(this);
     this.handleSignUpFormNext = this.handleSignUpFormNext.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.generateSignUpForm = this.generateSignUpForm.bind(this);
@@ -680,36 +694,72 @@ class SignUpPage extends Component {
     this.setState({ alumniEmployment: checked });
   }
 
+  handleCompanySearch(value) {
+    this.setState({ alumniEmploymentCompany: value });
+    let url =
+      "https://autocomplete.clearbit.com/v1/companies/suggest?query=" + value;
+    let config = {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    axiosCaptcha(url, config).then(response => {
+      if (response.statusText === "OK") {
+        console.log(response);
+        let bufferList = [];
+        response.data.forEach(company => bufferList.push(company.name));
+        this.setState({
+          autoCompleteCompanyData: bufferList
+        });
+      }
+    });
+  }
+
+  handlePositionsSearch(value) {
+    this.setState({ alumniEmploymentPosition: value });
+    const { url, config } = getPositionsRequest;
+    let newUrl = url + "?q=" + value + "&count=5";
+    axiosCaptcha(newUrl, config).then(response => {
+      if (response.statusText === "OK") {
+        console.log(response.data);
+        let bufferPositionsList = [];
+        response.data.data.forEach(position =>
+          bufferPositionsList.push(position.job_title)
+        );
+        this.setState({
+          autoCompletePositionsData: bufferPositionsList
+        });
+      }
+    });
+  }
+
   generateAlumniEmploymentForm() {
     return (
       <div>
-        <div className="level-body">What is your company?</div>
         <div>
-          <Input
-            placeholder="ex. Google"
-            defaultValue={
+          <AutoComplete
+            dataSource={this.state.autoCompleteCompanyData}
+            style={this.narrowInputStyle}
+            onSearch={this.handleCompanySearch}
+            placeholder="Company Name"
+            value={
               this.state.alumniEmploymentCompany &&
               this.state.alumniEmploymentCompany
             }
-            style={this.narrowInputStyle}
-            onChange={event =>
-              this.setState({ alumniEmploymentCompany: event.target.value })
-            }
           />
         </div>
-        <div className="level-body">What is your position?</div>
         <div>
-          <Input
-            placeholder="ex. Software Engineer"
-            defaultValue={
+          <AutoComplete
+            style={this.narrowInputStyle}
+            dataSource={this.state.autoCompletePositionsData}
+            onSearch={this.handlePositionsSearch}
+            placeholder="Job Title"
+            value={
               this.state.alumniEmploymentPosition &&
               this.state.alumniEmploymentPosition
-            }
-            style={this.narrowInputStyle}
-            onChange={event =>
-              this.setState({
-                alumniEmploymentPosition: event.target.value
-              })
             }
           />
         </div>
