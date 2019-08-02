@@ -392,7 +392,7 @@ class SignInPage extends Component {
               style={{ width: "240px" }}
             >
               {" "}
-              Sign Up with Google
+              Sign In with Google
             </Button>
           </div>
         </div>
