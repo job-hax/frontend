@@ -10,7 +10,7 @@ class MentorGroup extends React.Component {
   generateGroup() {
     return this.props.mentors.map(mentor => (
       <div key={this.props.mentors.indexOf(mentor)}>
-        <MentorSingle mentor={mentor} />
+        <MentorSingle selectMentor={this.props.selectMentor} mentor={mentor} />
       </div>
     ));
   }

@@ -58,6 +58,7 @@ class MentorCategory extends React.Component {
       <div>
         <div>
           <MentorGroup
+            selectMentor={this.props.selectMentor}
             cookie={this.props.cookie}
             mentors={this.props.mentors}
           />
