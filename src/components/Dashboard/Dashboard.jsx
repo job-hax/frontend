@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
-import { Input, DatePicker } from "antd";
+import { Input, DatePicker, Checkbox } from "antd";
 
 import Column from "./Column/Column.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
@@ -40,7 +40,10 @@ class Dashboard extends Component {
       phoneScreenRejected: [],
       onsiteInterviewRejected: [],
       offerRejected: [],
-      isInitialRequest: "beforeRequest"
+      isInitialRequest: "beforeRequest",
+      selectedJobApplications: [],
+      displayingList: [],
+      isAllSelected: false
     };
 
     this.toApply = [];
@@ -52,12 +55,17 @@ class Dashboard extends Component {
     this.phoneScreenRejected = [];
     this.onsiteInterviewRejected = [];
     this.offerRejected = [];
+    this.selectedJobApplications = [];
 
     this.updateApplications = this.updateApplications.bind(this);
     this.addNewApplication = this.addNewApplication.bind(this);
     this.deleteJobFromList = this.deleteJobFromList.bind(this);
     this.moveToRejected = this.moveToRejected.bind(this);
     this.onDateQuery = this.onDateQuery.bind(this);
+    this.addToSelectedJobApplicationsList = this.addToSelectedJobApplicationsList.bind(
+      this
+    );
+    this.onSelectAll = this.onSelectAll.bind(this);
   }
 
   async componentDidMount() {
@@ -109,11 +117,14 @@ class Dashboard extends Component {
         const { url, config } = getJobAppsRequest;
         axiosCaptcha(url, config).then(response => {
           if (response.statusText === "OK") {
-            this.sortJobApplications(response.data.data);
+            let updatedData = response.data.data;
+            updatedData.forEach(jobApp => (jobApp.isSelected = false));
             this.setState({
               isInitialRequest: false,
-              allApplications: response.data.data
+              allApplications: updatedData,
+              displayingList: updatedData
             });
+            this.sortJobApplications(updatedData);
             IS_CONSOLE_LOG_OPEN &&
               console.log("dashboard response.data data", response.data.data);
           }
@@ -183,6 +194,21 @@ class Dashboard extends Component {
       onsiteInterviewRejected: this.onsiteInterviewRejected,
       phoneScreenRejected: this.phoneScreenRejected
     });
+  }
+
+  addToSelectedJobApplicationsList(command, jobAppId) {
+    if (command === "add") {
+      this.selectedJobApplications.push({ jobApp_id: jobAppId });
+    }
+    if (command === "delete") {
+      this.selectedJobApplications = this.selectedJobApplications.filter(
+        job => {
+          return job.jobApp_id !== jobAppId;
+        }
+      );
+    }
+    this.setState({ selectedJobApplications: this.selectedJobApplications });
+    console.log(this.selectedJobApplications);
   }
 
   async updateApplications(card, dragColumnName, dropColumnName) {
@@ -283,6 +309,7 @@ class Dashboard extends Component {
     });
     console.log(queriedList);
     this.sortJobApplications(queriedList);
+    this.setState({ displayingList: queriedList });
   }
 
   onDateQuery(date, dateString) {
@@ -299,6 +326,46 @@ class Dashboard extends Component {
     });
     console.log(filteredList);
     this.sortJobApplications(filteredList);
+    this.setState({ displayingList: filteredList });
+  }
+
+  async onSelectAll(event) {
+    let isSelected = event.target.checked;
+    console.log(`checkedAll = `, isSelected);
+    this.setState({ isALlSelected: isSelected });
+    if (isSelected === true) {
+      let selectedDisplayingList = this.state.displayingList;
+      selectedDisplayingList.forEach(jobApp => (jobApp.isSelected = true));
+      await this.setState({ displayingList: selectedDisplayingList });
+      console.log(this.state.displayingList);
+      this.selectedJobApplications = [];
+      this.state.displayingList.forEach(jobApp =>
+        this.selectedJobApplications.push({ jobApp_id: jobApp.id })
+      );
+      await this.setState({
+        selectedJobApplications: this.selectedJobApplications
+      });
+      console.log(
+        "selecteds List after select all",
+        this.state.selectedJobApplications
+      );
+      this.sortJobApplications(this.state.displayingList);
+    }
+    if (isSelected === false) {
+      let selectedDisplayingList = this.state.displayingList;
+      selectedDisplayingList.forEach(jobApp => (jobApp.isSelected = false));
+      await this.setState({ displayingList: selectedDisplayingList });
+      console.log(this.state.displayingList);
+      this.selectedJobApplications = [];
+      await this.setState({
+        selectedJobApplications: this.selectedJobApplications
+      });
+      console.log(
+        "selecteds List after deselect all",
+        this.state.selectedJobApplications
+      );
+      this.sortJobApplications(this.state.displayingList);
+    }
   }
 
   render() {
@@ -315,7 +382,7 @@ class Dashboard extends Component {
             margin: "-45px 0 0 80px",
             display: "flex",
             justifyContent: "space-between",
-            width: 440
+            width: this.state.selectedJobApplications.length > 0 ? 556 : 440
           }}
         >
           <Search
@@ -324,6 +391,22 @@ class Dashboard extends Component {
             style={{ width: 200 }}
           />
           <RangePicker onChange={this.onDateQuery} style={{ width: 220 }} />
+          {this.state.selectedJobApplications.length > 0 && (
+            <Checkbox
+              style={{
+                padding: "6px 0px 0px 6px",
+                color: "rgba(0, 0, 0, 0.4)",
+                boxShadow: "inset 0px 0px 1px rgba(0,0,0,0.5)",
+                backgroundColor: "white",
+                borderRadius: 3,
+                width: "102px",
+                height: "32px"
+              }}
+              onChange={this.onSelectAll}
+            >
+              Select All
+            </Checkbox>
+          )}
         </div>
         <div className="dashboard-container">
           <Column
@@ -338,6 +421,9 @@ class Dashboard extends Component {
             cards={this.state.toApply}
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
+            addToSelectedJobApplicationsList={
+              this.addToSelectedJobApplicationsList
+            }
           />
           <div className="column-divider" />
           <Column
@@ -357,6 +443,9 @@ class Dashboard extends Component {
             message="rejected without any interview"
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
+            addToSelectedJobApplicationsList={
+              this.addToSelectedJobApplicationsList
+            }
           />
           <div className="column-divider" />
           <Column
@@ -377,6 +466,9 @@ class Dashboard extends Component {
             message="rejected after phone screens"
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
+            addToSelectedJobApplicationsList={
+              this.addToSelectedJobApplicationsList
+            }
           />
           <div className="column-divider" />
           <Column
@@ -397,6 +489,9 @@ class Dashboard extends Component {
             message="rejected after interviews"
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
+            addToSelectedJobApplicationsList={
+              this.addToSelectedJobApplicationsList
+            }
           />
           <div className="column-divider" />
           <Column
@@ -417,6 +512,9 @@ class Dashboard extends Component {
             handleTokenExpiration={this.props.handleTokenExpiration}
             isLastColumn={true}
             alert={this.props.alert}
+            addToSelectedJobApplicationsList={
+              this.addToSelectedJobApplicationsList
+            }
           />
         </div>
       </div>
