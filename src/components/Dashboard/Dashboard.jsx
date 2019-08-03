@@ -465,7 +465,7 @@ class Dashboard extends Component {
       this.moveMultipleOperation(3, "PHONE SCREEN");
     } else if (event.key === "onsiteInterview") {
       this.moveMultipleOperation(4, "ONSITE INTERVIEW");
-    } else if (event.key === "offer") {
+    } else if (event.key === "offers") {
       this.moveMultipleOperation(5, "OFFER");
     } else if (event.key === "appliedR") {
       this.moveMultipleToSpecificRejectedOperation(1, "Applied");
@@ -473,7 +473,7 @@ class Dashboard extends Component {
       this.moveMultipleToSpecificRejectedOperation(3, "PHONE SCREEN");
     } else if (event.key === "onsiteInterviewR") {
       this.moveMultipleToSpecificRejectedOperation(4, "ONSITE INTERVIEW");
-    } else if (event.key === "offerR") {
+    } else if (event.key === "offersR") {
       this.moveMultipleToSpecificRejectedOperation(5, "OFFER");
     }
     this.onSelectAll({ target: { checked: false } });
@@ -483,18 +483,84 @@ class Dashboard extends Component {
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <SubMenu title="Rejected">
-          <Menu.Item key="currentR">Current Stages</Menu.Item>
-          <Menu.Item key="appliedR">Applied</Menu.Item>
-          <Menu.Item key="phoneScreenR">Phone Screen</Menu.Item>
-          <Menu.Item key="onsiteInterviewR">Onsite Interview</Menu.Item>
-          <Menu.Item key="offerR">Offer</Menu.Item>
+          <Menu.Item key="currentR">
+            <img
+              className="icon"
+              src="../../src/assets/icons/RejectedIconInBtn@1x.png"
+            />
+            Current Stages
+          </Menu.Item>
+          <Menu.Item key="appliedR">
+            <img
+              className="icon"
+              src="../../src/assets/icons/AppliedIcon@3x.png"
+            />
+            Applied
+          </Menu.Item>
+          <Menu.Item key="phoneScreenR">
+            <img
+              className="icon"
+              src="../../src/assets/icons/PhoneScreenIcon@3x.png"
+            />
+            Phone Screen
+          </Menu.Item>
+          <Menu.Item key="onsiteInterviewR">
+            <img
+              className="icon"
+              src="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
+            />
+            Onsite Interview
+          </Menu.Item>
+          <Menu.Item key="offersR">
+            <img
+              className="icon"
+              src="../../src/assets/icons/OffersIcon@3x.png"
+            />
+            Offer
+          </Menu.Item>
         </SubMenu>
-        <Menu.Item key="toApply">To Apply</Menu.Item>
-        <Menu.Item key="applied">Applied</Menu.Item>
-        <Menu.Item key="phoneScreen">Phone Screen</Menu.Item>
-        <Menu.Item key="onsiteInterview">Onsite Interview</Menu.Item>
-        <Menu.Item key="offer">Offer</Menu.Item>
-        <Menu.Item key="deleteAll">Delete All</Menu.Item>
+        <Menu.Item key="toApply">
+          <img
+            className="icon"
+            src="../../src/assets/icons/ToApplyIcon@3x.png"
+          />
+          To Apply
+        </Menu.Item>
+        <Menu.Item key="applied">
+          <img
+            className="icon"
+            src="../../src/assets/icons/AppliedIcon@3x.png"
+          />
+          Applied
+        </Menu.Item>
+        <Menu.Item key="phoneScreen">
+          <img
+            className="icon"
+            src="../../src/assets/icons/PhoneScreenIcon@3x.png"
+          />
+          Phone Screen
+        </Menu.Item>
+        <Menu.Item key="onsiteInterview">
+          <img
+            className="icon"
+            src="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
+          />
+          Onsite Interview
+        </Menu.Item>
+        <Menu.Item key="offers">
+          <img
+            className="icon"
+            src="../../src/assets/icons/OffersIcon@3x.png"
+          />
+          Offer
+        </Menu.Item>
+        <Menu.Item key="deleteAll">
+          <img
+            className="icon"
+            src="../../src/assets/icons/DeleteIconInBtn@1x.png"
+          />
+          Delete All
+        </Menu.Item>
       </Menu>
     );
 
