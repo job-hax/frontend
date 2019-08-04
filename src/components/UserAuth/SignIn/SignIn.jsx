@@ -281,6 +281,12 @@ class SignInPage extends Component {
                   );
                   this.props.cookie(
                     "set",
+                    "google_login_first_instance",
+                    true,
+                    "/"
+                  );
+                  this.props.cookie(
+                    "set",
                     "jobhax_access_token",
                     this.token,
                     "/",

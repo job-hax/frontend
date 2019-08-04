@@ -42,7 +42,11 @@ class Header extends Component {
     this.props.alert(3000, "info", "Syncing with your email...");
     const { url, config } = syncUserEmailsRequest;
     await this.props.handleTokenExpiration("header handleSyncUserEmail");
-    axiosCaptcha(url, config);
+    axiosCaptcha(url, config).then(response => {
+      if (response.statusText === "OK") {
+        this.props.passStatesFromHeader(new Date().getTime());
+      }
+    });
   }
 
   render() {

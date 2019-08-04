@@ -19,7 +19,8 @@ import {
   addJobAppsRequest,
   getJobAppsRequest,
   updateJobStatusRequest,
-  postUsersRequest
+  postUsersRequest,
+  getNewJobappsRequest
 } from "../../utils/api/requests.js";
 import { IS_MOCKING } from "../../config/config.js";
 import { mockJobApps } from "../../utils/api/mockResponses.js";
@@ -52,7 +53,8 @@ class Dashboard extends Component {
       offerRejected: [],
       isInitialRequest: "beforeRequest",
       selectedJobApplications: [],
-      displayingList: []
+      displayingList: [],
+      isSycnhingJobApps: false
     };
 
     this.toApply = [];
@@ -80,10 +82,23 @@ class Dashboard extends Component {
     this.moveMultipleToSpecificRejectedOperation = this.moveMultipleToSpecificRejectedOperation.bind(
       this
     );
+    this.waitAndTriggerComponentDidUpdate = this.waitAndTriggerComponentDidUpdate.bind(
+      this
+    );
   }
 
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
+      if (
+        this.props.cookie("get", "google_login_first_instance") !=
+        ("" || null)
+      ) {
+        console.log(
+          "dashboard google token var"
+        );
+        this.props.cookie("remove", "google_login_first_instance")
+        this.setState({ isSycnhingJobApps: true });
+      }
       await this.getData();
       axiosCaptcha(
         postUsersRequest.url("verify_recaptcha"),
@@ -105,8 +120,49 @@ class Dashboard extends Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.getData();
+    if (
+      prevProps.syncResponseTimestamp != this.props.syncResponseTimestamp ||
+      this.state.isSycnhingJobApps == true
+    ) {
+      this.setState({ isSycnhingJobApps: false });
+      axiosCaptcha(
+        getNewJobappsRequest.url(`${new Date().getTime() - 5000}`),
+        getNewJobappsRequest.config
+      ).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success == true) {
+            IS_CONSOLE_LOG_OPEN && console.log("sync loop", response);
+            if (response.data.data.synching == true) {
+              let updatedList = this.state.allApplications;
+              response.data.data.data.forEach(newJobApp => {
+                const found = updatedList.some(
+                  jobApp => jobApp.id === newJobApp.id
+                );
+                if (!found) {
+                  updatedList.push(newJobApp);
+                }
+              });
+              this.setState({ allApplications: updatedList });
+              this.sortJobApplications(updatedList);
+              this.waitAndTriggerComponentDidUpdate(3);
+            } else {
+              this.setState({ isSycnhingJobApps: false });
+            }
+          }
+        }
+      });
+    }
+  }
+
+  waitAndTriggerComponentDidUpdate(seconds) {
+    setTimeout(() => {
+      this.setState(
+        { isSycnhingJobApps: true },
+        console.log("after wait", this.state.isSycnhingJobApps)
+      );
+    }, seconds * 1000);
   }
 
   async getData() {

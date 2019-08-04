@@ -39,7 +39,8 @@ import {
   GET_SOURCES,
   EDIT_JOBAPP,
   GET_CONTACTS,
-  POST_CONTACTS
+  POST_CONTACTS,
+  GET_NEW_JOBAPPS
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -136,6 +137,20 @@ export const updateJobStatusRequest = {
     }
   }
 };
+
+export const getNewJobappsRequest = {
+  url: GET_NEW_JOBAPPS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
+
+//USER AUTH REQUESTS//
 
 export const loginUserRequest = {
   url: LOGIN_USER,
