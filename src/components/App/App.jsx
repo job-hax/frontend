@@ -67,7 +67,12 @@ class App extends Component {
       alertMessage: "",
       profilePhotoUrl: "",
       pollData: [],
-      notificationsList: []
+      notificationsList: [],
+      syncResponseTimestamp: null,
+      isFirstLoginWithGoogle:
+        this.cookie("get", "google_access_token_expiration") == ("" || null)
+          ? false
+          : true
     };
     this.notificationsList = [];
     this.onAuthUpdate = this.onAuthUpdate.bind(this);
@@ -88,6 +93,8 @@ class App extends Component {
     this.showAlert = this.showAlert.bind(this);
     this.cookie = this.cookie.bind(this);
     this.handleTokenExpiration = this.handleTokenExpiration.bind(this);
+    this.passStatesFromHeader = this.passStatesFromHeader.bind(this);
+    this.passStatesFromDashboard = this.passStatesFromDashboard.bind(this);
   }
 
   componentDidMount() {
@@ -287,6 +294,15 @@ class App extends Component {
     });
   }
 
+  passStatesFromDashboard(newState) {
+    this.setState({ isFirstLoginWithGoogle: newState });
+    console.log("loginGoogle app", this.state.isFirstLoginWithGoogle);
+  }
+
+  passStatesFromHeader(timestamp) {
+    this.setState({ syncResponseTimestamp: timestamp });
+  }
+
   passStatesFromSignin(token, active, isFirstLogin) {
     this.setState({
       token: token,
@@ -324,6 +340,9 @@ class App extends Component {
       cookies.remove("google_access_token_expiration", { path: "/" });
       cookies.remove("jobhax_access_token_expiration", { path: "/" });
       cookies.remove("remember_me", { path: "/" });
+    } else if (method === "remove") {
+      IS_CONSOLE_LOG_OPEN && console.log("cookies removing");
+      cookies.remove(name, { path: "/" });
     }
   }
 
@@ -465,6 +484,7 @@ class App extends Component {
                 profilePhotoUrl={this.state.profilePhotoUrl}
                 cookie={this.cookie}
                 handleTokenExpiration={this.handleTokenExpiration}
+                passStatesFromHeader={this.passStatesFromHeader}
               />
             )}
             <FeedBack
@@ -521,6 +541,9 @@ class App extends Component {
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
+                  syncResponseTimestamp={this.state.syncResponseTimestamp}
+                  isFirstLoginWithGoogle={this.state.isFirstLoginWithGoogle}
+                  passStatesFromDashboard={this.passStatesFromDashboard}
                 />
               )}
             />

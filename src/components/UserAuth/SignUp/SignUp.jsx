@@ -127,6 +127,12 @@ class SignUpPage extends Component {
                 level: "intro",
                 photoUrl: photoUrl
               }));
+              this.props.cookie(
+                "set",
+                "google_login_first_instance",
+                true,
+                "/"
+              );
             }
           });
         });
