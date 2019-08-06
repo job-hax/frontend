@@ -5,6 +5,7 @@ import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { linkedInAccessTokenRequester } from "../../../utils/helpers/oAuthHelperFunctions.js";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import ChangePassword from "../ChangePassword/ChangePassword.jsx";
+import { linkSocialAccountRequest } from "../../../utils/api/requests";
 
 class LinkedInOAuthAction extends React.Component {
   constructor(props) {
@@ -15,7 +16,8 @@ class LinkedInOAuthAction extends React.Component {
       code: ""
     };
   }
-  componentDidMount() {
+
+  async componentDidMount() {
     let params = window.location.search.split("&");
     console.log("params", params);
     if (params.length < 2) {
@@ -23,6 +25,16 @@ class LinkedInOAuthAction extends React.Component {
       if (param.substring(0, 6) === "?code=") {
         let authCode = param.split("code=")[1];
         console.log("authCode", authCode);
+        linkSocialAccountRequest.config.body.provider = "linkedin-oauth2";
+        linkSocialAccountRequest.config.body.token = authCode;
+        await axiosCaptcha(
+          linkSocialAccountRequest.url("link_social_account"),
+          linkSocialAccountRequest.config
+        ).then(response => {
+          if (response.statusText === "OK") {
+            console.log(response);
+          }
+        });
         this.setState({ code: authCode, redirect: "signup" });
         window.close();
         {

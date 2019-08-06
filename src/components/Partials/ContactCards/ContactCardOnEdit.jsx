@@ -5,7 +5,7 @@ import ReactTelInput from "react-telephone-input";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   postContactsRequest,
-  getPositionsRequest
+  getAutoCompleteRequest
 } from "../../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import "./style.scss";
@@ -146,8 +146,8 @@ class ContactCardOnEdit extends React.Component {
   handlePositionsSearch(value) {
     this.setState({ position: value });
     this.setIsClickOutsideActive(false);
-    const { url, config } = getPositionsRequest;
-    let newUrl = url + "?q=" + value + "&count=5";
+    const { url, config } = getAutoCompleteRequest;
+    let newUrl = url("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         console.log(response.data);

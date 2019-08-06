@@ -1,4 +1,4 @@
-export const apiRoot = "https://backend.jobhax.com";
+export const apiRoot = "http://0.0.0.0:8000";
 
 export const SYNC_USER_EMAILS = `${apiRoot}/api/users/sync_user_emails`;
 
@@ -54,6 +54,8 @@ export const GET_EMPLOYMENT_STATUSES = `${apiRoot}/api/users/get_employment_stat
 
 export const UPDATE_PROFILE = `${apiRoot}/api/users/update_profile`;
 
+export const UPDATE_PROFILE_SIGN_UP = `${apiRoot}/api/users/update_user_profile_and_type`;
+
 export const FEEDBACK = `${apiRoot}/api/users/feedback`;
 
 export const REVIEW_SUBMIT = `${apiRoot}/api/reviews/add_or_update`;
@@ -76,8 +78,6 @@ export const GET_COMPANIES = `${apiRoot}/api/companies/`;
 
 export const USERS = type => `${apiRoot}/api/users/${type}`;
 
-export const POSITIONS = `${apiRoot}/api/positions/`;
-
 export const METRICS = type => `${apiRoot}/api/metrics/${type}`;
 
 export const GET_SOURCES = `${apiRoot}/api/jobapps/get_sources`;
@@ -87,3 +87,8 @@ export const EDIT_JOBAPP = `${apiRoot}/api/jobapps/edit_jobapp`;
 export const GET_CONTACTS = `${apiRoot}/api/jobapps/get_contacts`;
 
 export const POST_CONTACTS = type => `${apiRoot}/api/jobapps/${type}`;
+
+export const GET_NEW_JOBAPPS = timestamp =>
+  `${apiRoot}/api/jobapps/get_new_jobapps?timestamp=${timestamp}`;
+
+export const AUTOCOMPLETE = type => `${apiRoot}/api/${type}`;

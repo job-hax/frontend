@@ -330,9 +330,7 @@ class SignInPage extends Component {
                 }
               });
               this.setState({ isAuthenticationChecking: false });
-              this.props.setIsAuthenticationChecking(
-                this.state.isAuthenticationChecking
-              );
+              this.props.setIsAuthenticationChecking(false);
             }
           });
         });
