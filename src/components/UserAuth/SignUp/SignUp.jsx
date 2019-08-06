@@ -14,7 +14,11 @@ import {
 } from "antd";
 
 import { linkedInOAuth } from "../../../utils/helpers/oAuthHelperFunctions.js";
-import { googleClientId } from "../../../config/config.js";
+import {
+  googleClientId,
+  jobHaxClientId,
+  jobHaxClientSecret
+} from "../../../config/config.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   registerUserRequest,
@@ -25,8 +29,7 @@ import {
 } from "../../../utils/api/requests.js";
 import {
   IS_CONSOLE_LOG_OPEN,
-  USER_TYPES,
-  US_STATES_LIST
+  USER_TYPES
 } from "../../../utils/constants/constants.js";
 import Footer from "../../Partials/Footer/Footer.jsx";
 
@@ -48,13 +51,14 @@ class SignUpPage extends Component {
       token: "",
       mustInputEmphasis: false,
       isUserLoggedIn: false,
-      isUserAuthenticated: false,
       isAuthenticationChecking: false,
       confirmDirty: false,
       isEmailSignUpRequested: false,
       level:
         window.location.search.split("=")[1] == "synced"
           ? "submit"
+          : window.location.search.split("=")[1] == "intro"
+          ? "intro"
           : "undefined",
       user_type: null,
       first_name: "",
@@ -155,8 +159,6 @@ class SignUpPage extends Component {
         })
         .then(() => {
           this.googleAuth = window.gapi.auth2.getAuthInstance();
-          let authenticated = this.googleAuth.isSignedIn.get();
-          this.setState(() => ({ isUserAuthenticated: authenticated }));
           this.googleAuth.signIn().then(response => {
             IS_CONSOLE_LOG_OPEN && console.log("signUp response", response);
             if (response.Zi.token_type === "Bearer") {
@@ -286,7 +288,13 @@ class SignUpPage extends Component {
     ).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
-          this.generateLevelFinal(response.data.data.first_login);
+          this.props.cookie(
+            "set",
+            "user_type",
+            response.data.data.user_type,
+            "/"
+          );
+          this.generateLevelFinal();
           this.props.alert(
             5000,
             "success",
@@ -321,6 +329,8 @@ class SignUpPage extends Component {
         registerUserRequest.config.body.email = event.target[2].value;
         registerUserRequest.config.body.password = event.target[3].value;
         registerUserRequest.config.body.password2 = event.target[4].value;
+        registerUserRequest.config.body.client_id = jobHaxClientId;
+        registerUserRequest.config.body.client_secret = jobHaxClientSecret;
         axiosCaptcha(
           registerUserRequest.url,
           registerUserRequest.config,
@@ -329,17 +339,38 @@ class SignUpPage extends Component {
           if (response.statusText === "OK") {
             console.log(response.data);
             if (response.data.success === true) {
+              this.token = `${
+                response.data.data.token_type
+              } ${response.data.data.access_token.trim()}`;
+              if (response.data.data.user_type === 0) {
+                this.setState({ level: "intro" });
+              } else {
+                this.props.setIsUserLoggedIn(true);
+              }
+              IS_CONSOLE_LOG_OPEN && console.log(this.token);
+              this.refresh_token = response.data.data.refresh_token;
+              let date = new Date();
+              date.setSeconds(
+                date.getSeconds() + response.data.data.expires_in
+              );
               this.props.cookie(
                 "set",
-                "google_access_token_expiration",
-                googleAccessTokenExpiresOn.getTime(),
+                "jobhax_access_token",
+                this.token,
                 "/",
-                googleAccessTokenExpiresOn
+                date
               );
-              this.props.alert(
-                5000,
-                "success",
-                "Registration mail has sent to your email successfully! \nPlease click the link on your email to activate your account!"
+              this.props.cookie(
+                "set",
+                "jobhax_access_token_expiration",
+                date.getTime(),
+                "/"
+              );
+              this.props.cookie(
+                "set",
+                "jobhax_refresh_token",
+                this.refresh_token,
+                "/"
               );
             } else {
               console.log(response, response.data.error_message);
@@ -1327,19 +1358,9 @@ class SignUpPage extends Component {
     );
   }
 
-  async generateLevelFinal(firstLogin) {
+  async generateLevelFinal() {
     await this.props.setIsUserLoggedIn(true);
-    if (firstLogin == true) {
-      console.log("to profile");
-      let root = window.location.hostname;
-      console.log(root);
-      return (window.location.href = root + "/profile");
-    } else {
-      console.log("to dashboard");
-      let root = window.location.hostname;
-      console.log(root);
-      return (window.location.href = root + "/dashboard");
-    }
+    return (window.location.href = "/dashboard");
   }
 
   generateAdditionalInfoForms() {
@@ -1362,12 +1383,11 @@ class SignUpPage extends Component {
         return this.generateLevelLinkedIn();
       case "submit":
         return this.generateLevelSubmit();
-      case "final":
-        return this.generateLevelFinal();
     }
   }
 
   render() {
+    console.log("level", this.state.level);
     return (
       <div>
         <div className="sign_up-background">{this.generateTopButtons()}</div>

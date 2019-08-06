@@ -59,7 +59,6 @@ class SignInPage extends Component {
       username: "",
       password: "",
       isUserLoggedIn: false,
-      isUserAuthenticated: false,
       isAuthenticationChecking: false,
       isVerificationReSendDisplaying: false,
       showModal: false
@@ -174,6 +173,12 @@ class SignInPage extends Component {
             this.props.cookie("set", "remember_me", rememberMe, "/");
             this.props.cookie(
               "set",
+              "user_type",
+              response.data.data.user_type,
+              "/"
+            );
+            this.props.cookie(
+              "set",
               "jobhax_access_token",
               this.token,
               "/",
@@ -191,26 +196,30 @@ class SignInPage extends Component {
               this.refresh_token,
               "/"
             );
-            this.setState({
-              token: this.token
-            });
-            this.props.passStatesFromSignin(
-              this.token,
-              true,
-              response.data.data.first_login
-            );
-            this.setState({
-              isUserLoggedIn: true,
-              isAuthenticationChecking: false
-            });
+            if (response.data.data.user_type === 0) {
+              window.location = "/signup?=intro";
+            } else {
+              this.setState({
+                token: this.token
+              });
+              this.props.passStatesFromSignin(
+                this.token,
+                true,
+                response.data.data.first_login
+              );
+              this.setState({
+                isUserLoggedIn: true,
+                isAuthenticationChecking: false
+              });
+              this.props.setIsUserLoggedIn(true);
+              this.props.setIsAuthenticationChecking(false);
+            }
             //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn:true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
             if (
               window.location.search.split("=")[1] === "reCapthcaCouldNotPassed"
             ) {
               window.location = "/signin";
             }
-            this.props.setIsUserLoggedIn(true);
-            this.props.setIsAuthenticationChecking(false);
           } else {
             if (response.data.error_code === 13) {
               this.setState({
@@ -244,11 +253,6 @@ class SignInPage extends Component {
         })
         .then(() => {
           this.googleAuth = window.gapi.auth2.getAuthInstance();
-          let authenticated = this.googleAuth.isSignedIn.get();
-          this.setState(() => ({ isUserAuthenticated: authenticated }));
-          this.googleAuth.isSignedIn.listen(
-            this.props.setIsUserAuthenticated(this.googleAuth.isSignedIn.get())
-          );
           this.googleAuth.signIn().then(response => {
             IS_CONSOLE_LOG_OPEN && console.log("signIn response", response);
             if (response.Zi.token_type === "Bearer") {
@@ -271,6 +275,12 @@ class SignInPage extends Component {
                   let date = new Date();
                   date.setSeconds(
                     date.getSeconds() + response.data.data.expires_in
+                  );
+                  this.props.cookie(
+                    "set",
+                    "user_type",
+                    response.data.data.user_type,
+                    "/"
                   );
                   this.props.cookie(
                     "set",
@@ -317,6 +327,9 @@ class SignInPage extends Component {
                     true,
                     response.data.data.first_login
                   );
+                  if (response.data.data.user_type === 0) {
+                    window.location = "/signup?=intro";
+                  }
                   this.setState({ token: this.token });
                   //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn:true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
                   if (

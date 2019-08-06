@@ -47,11 +47,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isUserAuthenticated: false,
       token: this.cookie("get", "jobhax_access_token"),
       active: false,
       isUserLoggedIn:
         this.cookie("get", "jobhax_access_token") == ("" || null)
+          ? false
+          : this.cookie("get", "user_type") == ("0" || null)
           ? false
           : true,
       isAuthenticationChecking: true,
@@ -75,7 +76,6 @@ class App extends Component {
           : true
     };
     this.notificationsList = [];
-    this.onAuthUpdate = this.onAuthUpdate.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
     this.toggleIsPollShowing = this.toggleIsPollShowing.bind(this);
     this.checkNotifications = this.checkNotifications.bind(this);
@@ -85,7 +85,6 @@ class App extends Component {
     this.setIsFirstLogin = this.setIsFirstLogin.bind(this);
     this.passStatesFromSignin = this.passStatesFromSignin.bind(this);
     this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this);
-    this.setIsUserAuthenticated = this.setIsUserAuthenticated.bind(this);
     this.setIsAuthenticationChecking = this.setIsAuthenticationChecking.bind(
       this
     );
@@ -112,6 +111,7 @@ class App extends Component {
           isAuthenticationChecking: false
         });
         this.state.token != (null || "" || undefined) &&
+          this.cookie("get", "user_type") != ("0" || null) &&
           this.setState({ isUserLoggedIn: true });
       });
     });
@@ -315,10 +315,6 @@ class App extends Component {
     this.setState({ isUserLoggedIn: isUserLoggedIn });
   }
 
-  setIsUserAuthenticated(isUserAuthenticated) {
-    this.setState({ isUserAuthenticated: isUserAuthenticated });
-  }
-
   setIsAuthenticationChecking(isAuthenticationChecking) {
     this.setState({ isAuthenticationChecking: isAuthenticationChecking });
   }
@@ -340,6 +336,7 @@ class App extends Component {
       cookies.remove("google_access_token_expiration", { path: "/" });
       cookies.remove("jobhax_access_token_expiration", { path: "/" });
       cookies.remove("remember_me", { path: "/" });
+      cookies.remove("user_type", { path: "/" });
     } else if (method === "remove") {
       IS_CONSOLE_LOG_OPEN && console.log("cookies removing");
       cookies.remove(name, { path: "/" });
@@ -361,18 +358,11 @@ class App extends Component {
     );
   }
 
-  onAuthUpdate() {
-    this.setState(() => ({
-      isUserAuthenticated: this.googleAuth.isSignedIn.get()
-    }));
-  }
-
   handleSignOut() {
     IS_CONSOLE_LOG_OPEN && console.log("handle signout first");
     this.cookie("remove_all");
     this.setState({
-      isUserLoggedIn: false,
-      isUserAuthenticated: false
+      isUserLoggedIn: false
     });
     event && event.preventDefault();
     IS_CONSOLE_LOG_OPEN &&
@@ -451,13 +441,11 @@ class App extends Component {
   }
 
   render() {
-    const { isUserLoggedIn, isUserAuthenticated } = this.state;
+    const { isUserLoggedIn } = this.state;
     IS_CONSOLE_LOG_OPEN &&
       console.log(
         "app isUserLoggedIn",
         isUserLoggedIn,
-        "app isUserAuthenticated",
-        isUserAuthenticated,
         "\n--token",
         this.state.token,
         "\n--active?",
@@ -467,10 +455,10 @@ class App extends Component {
       );
     if (this.state.isAuthenticationChecking)
       return <Spinner message="Connecting..." />;
-    else if ((isUserLoggedIn || isUserAuthenticated) && !this.state.active)
+    else if (isUserLoggedIn && !this.state.active)
       return <Spinner message="Reaching your account..." />;
     else
-      return (isUserLoggedIn || isUserAuthenticated) && this.state.active ? (
+      return isUserLoggedIn && this.state.active ? (
         <Router>
           <div className="main-container">
             {window.location.pathname != "/home" && (
@@ -710,7 +698,6 @@ class App extends Component {
                   googleAuth={this.googleAuth}
                   passStatesFromSignin={this.passStatesFromSignin}
                   setIsUserLoggedIn={this.setIsUserLoggedIn}
-                  setIsUserAuthenticated={this.setIsUserAuthenticated}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
                   alert={this.showAlert}
                   cookie={this.cookie}
@@ -724,7 +711,6 @@ class App extends Component {
                 <SignUp
                   googleAuth={this.googleAuth}
                   alert={this.showAlert}
-                  setIsUserAuthenticated={this.setIsUserAuthenticated}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
                   passStatesFromSignin={this.passStatesFromSignin}
                   setIsUserLoggedIn={this.setIsUserLoggedIn}
