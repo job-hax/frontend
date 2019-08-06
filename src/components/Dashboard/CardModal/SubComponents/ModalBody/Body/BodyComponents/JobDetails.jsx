@@ -5,7 +5,7 @@ import moment from "moment";
 import { makeTimeBeautiful } from "../../../../../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api.js";
 import {
-  getPositionsRequest,
+  getAutoCompleteRequest,
   getSourcesRequest,
   editJobAppRequest
 } from "../../../../../../../utils/api/requests.js";
@@ -198,8 +198,8 @@ class JobDetails extends React.Component {
 
   handlePositionsSearch(value) {
     this.setState({ jobTitle: value });
-    const { url, config } = getPositionsRequest;
-    let newUrl = url + "?q=" + value + "&count=5";
+    const { url, config } = getAutoCompleteRequest;
+    let newUrl = url("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         console.log(response.data);

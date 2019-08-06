@@ -5,6 +5,7 @@ import {
   IS_RECAPTCHA_ENABLED
 } from "../../config/config.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import { apiRoot } from "../constants/endpoints.js";
 
 const script = document.createElement("script");
 script.src = `https://www.google.com/recaptcha/api.js?render=${reCaptchaV3SiteKey}`;
@@ -67,7 +68,9 @@ function removeAllCookies() {
 
 export async function axiosCaptcha(url, config, action) {
   let response = null;
-  config.headers.Authorization = getCookie("jobhax_access_token");
+  if (url.substring(0, apiRoot.length) === apiRoot) {
+    config.headers.Authorization = getCookie("jobhax_access_token");
+  }
   if (config.method === "GET") {
     response = await axios.get(url, config).catch(error => {
       console.log(error);
