@@ -204,18 +204,6 @@ export const registerUserRequest = {
   }
 };
 
-export const profileUpdateAtSignUpRequest = {
-  url: UPDATE_PROFILE_SIGN_UP,
-  config: {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  }
-};
-
 export const logOutUserRequest = {
   url: LOGOUT_USER,
   config: {
