@@ -67,22 +67,40 @@
                             display: none;
                         }
 
-                        .employment-status-container {
+                        .employment-status-big-container {
                             margin-top: 40px;
                             width: 280px;
-                            height: 40px;
-                            display: flex;
-                            justify-content: space-between;
 
-                            .employment-status-label {
-                                font-weight: 450;
+                            .employment-header {
+                                border-bottom: 1px solid #261268;
+                                width: 280px;
+                                display: flex;
+                                justify-content: flex-start;
+                                margin: 0 0 12px 0;
+
+                                .employment-title {
+                                    padding-left: 4px;
+                                    font-weight: 550;
+                                }
                             }
 
-                            .employment-status-content {
-                                font-weight: 300;
-                            }
+                            .employment-status-container {
+                                width: 280px;
+                                margin: 0 0 8px 0;
+                                display: flex;
+                                justify-content: space-between;
 
+                                .employment-status-label {
+                                    font-weight: 450;
+                                }
+
+                                .employment-status-content {
+                                    font-weight: 300;
+                                }
+
+                            }
                         }
+
                     }
 
                 }
@@ -98,7 +116,6 @@
 
                         .name {
                             margin-top: 90px; //30px;
-                            margin-bottom: 28px;
                             display: flex;
                             justify-content: flex-start;
                             font-size: 200%;
@@ -115,7 +132,11 @@
                             }
                         }
 
-                        .job-position {}
+                        .location {
+                            display: flex;
+                            justify-content: flex-start;
+                            margin: 0 0 28px 0
+                        }
 
                         .city-state {
                             display: none;
@@ -131,19 +152,8 @@
                             display: flex;
                             justify-content: flex-start;
 
-                            .info-type-icon {
-                                min-width: 18px;
-                                min-height: 18px;
-                                height: auto;
-                                width: auto;
-                                max-width: 24px;
-                                max-height: 24px;
-                                margin-bottom: 4px;
-                                background-color: black;
-                            }
-
                             .info-type-name {
-                                padding-left: 8px;
+                                padding-left: 4px;
                                 font-weight: 550;
                             }
                         }
@@ -157,14 +167,13 @@
                             }
 
                             .info-content-body {
-                                height: 240px;
 
                                 .info-content-body-item {
                                     display: flex;
                                     justify-content: flex-start;
 
                                     .info-content-body-item-label {
-                                        width: 120px;
+                                        width: 140px;
                                         font-weight: 450;
                                         margin-bottom: 8px;
                                     }
@@ -174,7 +183,7 @@
                                         margin-bottom: 8px;
 
                                         .input {
-                                            width: 168px;
+                                            width: 148px;
                                             line-height: 25px;
                                             height: 28px;
                                             border-radius: 4px;
