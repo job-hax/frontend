@@ -251,7 +251,6 @@ class ProfilePage extends React.Component {
             "success",
             "Your profile have been updated successfully!"
           );
-          this.props.setIsFirstLogin(true);
         } else {
           this.setState({ isUpdating: false });
           this.props.alert(
@@ -375,7 +374,6 @@ class ProfilePage extends React.Component {
                 "success",
                 "Your profile have been updated successfully!"
               );
-              this.props.setIsFirstLogin(true);
             } else {
               this.setState({ isUpdating: false });
               this.props.alert(
