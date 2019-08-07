@@ -1,4 +1,4 @@
-export const apiRoot = "http://0.0.0.0:8000";
+export const apiRoot = "http://10.0.0.75:8000";
 
 export const SYNC_USER_EMAILS = `${apiRoot}/api/users/sync_user_emails`;
 
@@ -53,8 +53,6 @@ export const GET_PROFILE = `${apiRoot}/api/users/get_profile`;
 export const GET_EMPLOYMENT_STATUSES = `${apiRoot}/api/users/get_employment_statuses`;
 
 export const UPDATE_PROFILE = `${apiRoot}/api/users/update_profile`;
-
-export const UPDATE_PROFILE_SIGN_UP = `${apiRoot}/api/users/update_user_profile_and_type`;
 
 export const FEEDBACK = `${apiRoot}/api/users/feedback`;
 
