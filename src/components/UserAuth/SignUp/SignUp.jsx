@@ -863,7 +863,10 @@ class SignUpPage extends Component {
             this.state.grad_year === null && (
               <div style={{ color: "red" }}>*</div>
             )}
-          <Dropdown overlay={() => this.generateGradYearDropdown(50, 1)}>
+          <Dropdown
+            overlay={() => this.generateGradYearDropdown(50, 1)}
+            placement="bottomCenter"
+          >
             <a
               className="ant-dropdown-link"
               style={{ color: "rgba(100, 100, 100, 0.9)" }}
@@ -921,8 +924,7 @@ class SignUpPage extends Component {
           width: "240px",
           maxHeight: "260px",
           textAlign: "center",
-          overflowX: "hidden",
-          margin: "0 0 0 -46px"
+          overflowX: "hidden"
         }}
       >
         {data_list.map(data => (
@@ -962,6 +964,7 @@ class SignUpPage extends Component {
             )}
           <Dropdown
             overlay={menu("country", "country_id", this.state.countryList)}
+            placement="bottomCenter"
           >
             <a
               className="ant-dropdown-link"
@@ -990,6 +993,7 @@ class SignUpPage extends Component {
                 "state_id",
                 this.state.stateOrProvinceList
               )}
+              placement="bottomCenter"
             >
               <a
                 className="ant-dropdown-link"
@@ -1197,11 +1201,10 @@ class SignUpPage extends Component {
       <Menu
         onClick={this.handleGradYearSelection}
         style={{
-          width: "240px",
+          width: "68px",
           maxHeight: "260px",
           textAlign: "center",
-          overflowX: "hidden",
-          margin: "0 0 0 -170px"
+          overflowX: "hidden"
         }}
       >
         {this.generateGradYears(amount, direction)}
@@ -1249,7 +1252,10 @@ class SignUpPage extends Component {
             this.state.grad_year === null && (
               <div style={{ color: "red" }}>*</div>
             )}
-          <Dropdown overlay={() => this.generateGradYearDropdown(50, -1)}>
+          <Dropdown
+            overlay={() => this.generateGradYearDropdown(50, -1)}
+            placement="bottomCenter"
+          >
             <a
               className="ant-dropdown-link"
               style={{ color: "rgba(100, 100, 100, 0.9)" }}

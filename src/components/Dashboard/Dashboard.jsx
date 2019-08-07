@@ -20,7 +20,8 @@ import {
   getJobAppsRequest,
   updateJobStatusRequest,
   postUsersRequest,
-  getNewJobappsRequest
+  getNewJobappsRequest,
+  deleteJobRequest
 } from "../../utils/api/requests.js";
 import { IS_MOCKING } from "../../config/config.js";
 import { mockJobApps } from "../../utils/api/mockResponses.js";
@@ -90,13 +91,10 @@ class Dashboard extends Component {
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       if (
-        this.props.cookie("get", "google_login_first_instance") !=
-        ("" || null)
+        this.props.cookie("get", "google_login_first_instance") != ("" || null)
       ) {
-        console.log(
-          "dashboard google token var"
-        );
-        this.props.cookie("remove", "google_login_first_instance")
+        console.log("dashboard google token var");
+        this.props.cookie("remove", "google_login_first_instance");
         this.setState({ isSycnhingJobApps: true });
       }
       await this.getData();
@@ -288,27 +286,24 @@ class Dashboard extends Component {
     if (dragColumnName === dropColumnName) {
       return;
     }
-    const removedItemColumn = this.state[dragColumnName].filter(job => {
-      return job.id !== card.id;
-    });
-
-    card.applicationStatus = UPDATE_APPLICATION_STATUS[dropColumnName];
-    let insertedItemColumn = this.state[dropColumnName].slice();
-    insertedItemColumn.unshift(card);
+    let newDisplayingJobappsList = this.state.displayingList.filter(
+      jobapp => jobapp.id != card.id
+    );
+    let updatedCard = card;
+    updatedCard.applicationStatus = UPDATE_APPLICATION_STATUS[dropColumnName];
+    newDisplayingJobappsList.unshift(updatedCard);
+    this.sortJobApplications(newDisplayingJobappsList);
     await this.props.handleTokenExpiration("dashboard updateApplications");
     console.log("ok? after");
     let { url, config } = updateJobStatusRequest;
     config.body = {
       jobapp_id: card.id,
       status_id: card.applicationStatus.id,
-      rejected: false
+      rejected: card.isRejected
     };
     axiosCaptcha(url, config).then(response => {
-      if (response.statusText === "OK") {
-        this.setState(() => ({
-          [dragColumnName]: removedItemColumn,
-          [dropColumnName]: insertedItemColumn
-        }));
+      if (response.data.success != true) {
+        window.location.reload(true);
       }
     });
   }
@@ -443,7 +438,7 @@ class Dashboard extends Component {
     }
   }
 
-  moveMultipleOperation(status_id, status_name) {
+  moveMultipleOperation(status_id, status_name, requestList) {
     let newList = this.state.displayingList;
     this.state.selectedJobApplications.forEach(selectedJobApp =>
       newList.forEach(displayingJobApp => {
@@ -453,11 +448,25 @@ class Dashboard extends Component {
         }
       })
     );
+    const body = {
+      jobapp_ids: requestList,
+      status_id: status_id
+    };
+    let { url, config } = updateJobStatusRequest;
+    config.body = body;
+    axiosCaptcha(url, config).then(response => {
+      if (response.data.success == true) {
+        message.info("Its done!");
+      } else {
+        message.info(response.data.error_message);
+        window.location.reload(true);
+      }
+    });
     this.setState({ displayingList: newList, allApplications: newList });
     this.sortJobApplications(newList);
   }
 
-  moveMultipleToSpecificRejectedOperation(status_id, status_name) {
+  moveMultipleToSpecificRejectedOperation(status_id, status_name, requestList) {
     let newList = this.state.displayingList;
     this.state.selectedJobApplications.forEach(selectedJobApp =>
       newList.forEach(displayingJobApp => {
@@ -468,13 +477,32 @@ class Dashboard extends Component {
         }
       })
     );
+    const body = {
+      jobapp_ids: requestList,
+      status_id: status_id,
+      rejected: true
+    };
+    let { url, config } = updateJobStatusRequest;
+    config.body = body;
+    axiosCaptcha(url, config).then(response => {
+      if (response.data.success == true) {
+        message.info("Its done!");
+      } else {
+        message.info(response.data.error_message);
+        window.location.reload(true);
+      }
+    });
     this.setState({ displayingList: newList, allApplications: newList });
     this.sortJobApplications(newList);
   }
 
-  handleMenuClick(event) {
-    message.info("Its done!");
+  async handleMenuClick(event) {
+    await this.props.handleTokenExpiration("moveMultipleOptions");
     console.log("click", event);
+    let requestList = [];
+    this.state.selectedJobApplications.forEach(selectedJobApp =>
+      requestList.push(selectedJobApp.jobApp_id)
+    );
     if (event.key === "deleteAll") {
       let newList = this.state.displayingList;
       this.state.selectedJobApplications.forEach(selectedJobApp =>
@@ -486,6 +514,19 @@ class Dashboard extends Component {
       );
       this.setState({ displayingList: newList, allApplications: newList });
       this.sortJobApplications(newList);
+      const body = {
+        jobapp_ids: requestList
+      };
+      let { url, config } = deleteJobRequest;
+      config.body = body;
+      axiosCaptcha(url, config).then(response => {
+        if (response.data.success == true) {
+          message.info("Its done!");
+        } else {
+          message.info(response.data.error_message);
+          window.location.reload(true);
+        }
+      });
     } else if (event.key === "currentR") {
       let newList = this.state.displayingList;
       this.state.selectedJobApplications.forEach(selectedJobApp =>
@@ -498,10 +539,25 @@ class Dashboard extends Component {
           }
         })
       );
+      const body = {
+        jobapp_ids: requestList,
+        rejected: true
+      };
+      let { url, config } = updateJobStatusRequest;
+      config.body = body;
+      axiosCaptcha(url, config).then(response => {
+        if (response.data.success == true) {
+          message.info("Its done!");
+        } else {
+          message.info(response.data.error_message);
+          window.location.reload(true);
+        }
+      });
       this.setState({ displayingList: newList, allApplications: newList });
       this.sortJobApplications(newList);
     } else if (event.key === "toApply") {
       let newList = this.state.displayingList;
+      let toApplyList = [];
       this.state.selectedJobApplications.forEach(selectedJobApp =>
         newList.forEach(displayingJobApp => {
           if (
@@ -510,27 +566,50 @@ class Dashboard extends Component {
           ) {
             displayingJobApp.applicationStatus.id = 2;
             displayingJobApp.applicationStatus.value = "TO APPLY";
+            toApplyList.push(selectedJobApp.jobApp_id);
           }
         })
       );
+      const body = {
+        jobapp_ids: toApplyList,
+        status_id: 2
+      };
+      let { url, config } = updateJobStatusRequest;
+      config.body = body;
+      axiosCaptcha(url, config).then(response => {
+        if (response.data.success == true) {
+          message.info("Its done!");
+        } else {
+          message.info(response.data.error_message);
+          window.location.reload(true);
+        }
+      });
       this.setState({ displayingList: newList, allApplications: newList });
       this.sortJobApplications(newList);
     } else if (event.key === "applied") {
-      this.moveMultipleOperation(1, "Applied");
+      this.moveMultipleOperation(1, "Applied", requestList);
     } else if (event.key === "phoneScreen") {
-      this.moveMultipleOperation(3, "PHONE SCREEN");
+      this.moveMultipleOperation(3, "PHONE SCREEN", requestList);
     } else if (event.key === "onsiteInterview") {
-      this.moveMultipleOperation(4, "ONSITE INTERVIEW");
+      this.moveMultipleOperation(4, "ONSITE INTERVIEW", requestList);
     } else if (event.key === "offers") {
-      this.moveMultipleOperation(5, "OFFER");
+      this.moveMultipleOperation(5, "OFFER", requestList);
     } else if (event.key === "appliedR") {
-      this.moveMultipleToSpecificRejectedOperation(1, "Applied");
+      this.moveMultipleToSpecificRejectedOperation(1, "Applied", requestList);
     } else if (event.key === "phoneScreenR") {
-      this.moveMultipleToSpecificRejectedOperation(3, "PHONE SCREEN");
+      this.moveMultipleToSpecificRejectedOperation(
+        3,
+        "PHONE SCREEN",
+        requestList
+      );
     } else if (event.key === "onsiteInterviewR") {
-      this.moveMultipleToSpecificRejectedOperation(4, "ONSITE INTERVIEW");
+      this.moveMultipleToSpecificRejectedOperation(
+        4,
+        "ONSITE INTERVIEW",
+        requestList
+      );
     } else if (event.key === "offersR") {
-      this.moveMultipleToSpecificRejectedOperation(5, "OFFER");
+      this.moveMultipleToSpecificRejectedOperation(5, "OFFER", requestList);
     }
     this.onSelectAll({ target: { checked: false } });
   }
