@@ -17,11 +17,13 @@ import {
   getEmploymentStatusesRequest,
   updateProfileRequest,
   getProfileRequest,
-  updateProfilePhotoRequest
+  updateProfilePhotoRequest,
+  authenticateRequest
 } from "../../utils/api/requests.js";
 
 import "./react-datepicker.scss";
 import "./style.scss";
+import { googleClientId } from "../../config/config.js";
 
 class ProfilePage extends React.Component {
   constructor(props) {
@@ -55,6 +57,8 @@ class ProfilePage extends React.Component {
     this.handleStudentMailChange = this.handleStudentMailChange.bind(this);
     this.handlePhoneNumberChange = this.handlePhoneNumberChange.bind(this);
     this.handleProfilePhotoUpdate = this.handleProfilePhotoUpdate.bind(this);
+    this.handleGoogleOAuth = this.handleGoogleOAuth.bind(this);
+    this.handleLinkedInOAuth = this.handleLinkedInOAuth.bind(this);
   }
 
   async componentDidMount() {
@@ -90,6 +94,95 @@ class ProfilePage extends React.Component {
         }
       );
     }
+  }
+
+  handleLinkedInOAuth() {
+    linkedInOAuth();
+    let data = this.state.data;
+    data.is_linkedin_linked = true;
+    this.setState({ data: data });
+  }
+
+  handleGoogleOAuth() {
+    window.gapi.load("client:auth2", () => {
+      window.gapi.client
+        .init({
+          apiKey: "AIzaSyBnF8loY6Vqhs4QWTM_fWCP93Xidbh1kYo",
+          clientId: googleClientId,
+          scope: "email https://www.googleapis.com/auth/gmail.readonly",
+          prompt: "select_account"
+        })
+        .then(() => {
+          this.googleAuth = window.gapi.auth2.getAuthInstance();
+          this.googleAuth.signIn().then(response => {
+            if (response.Zi.token_type === "Bearer") {
+              let photoUrl = response.w3.Paa;
+              let googleAccessTokenExpiresOn = new Date();
+              googleAccessTokenExpiresOn.setSeconds(
+                googleAccessTokenExpiresOn.getSeconds() + response.Zi.expires_in
+              );
+              const googleAccessToken = this.googleAuth.currentUser
+                .get()
+                .getAuthResponse().access_token;
+              const { url, config } = authenticateRequest;
+              config.body.token = googleAccessToken;
+              axiosCaptcha(url, config)
+                .then(response => {
+                  if (response.statusText === "OK") {
+                    this.token = `${
+                      response.data.data.token_type
+                    } ${response.data.data.access_token.trim()}`;
+                    IS_CONSOLE_LOG_OPEN && console.log(this.token);
+                    this.refresh_token = response.data.data.refresh_token;
+                    let date = new Date();
+                    date.setSeconds(
+                      date.getSeconds() + response.data.data.expires_in
+                    );
+                    this.props.cookie(
+                      "set",
+                      "google_access_token_expiration",
+                      googleAccessTokenExpiresOn.getTime(),
+                      "/",
+                      googleAccessTokenExpiresOn
+                    );
+                    this.props.cookie(
+                      "set",
+                      "google_login_first_instance",
+                      true,
+                      "/"
+                    );
+                  }
+                })
+                .then(() => this.postGoogleProfilePhoto(photoUrl));
+              this.props.cookie(
+                "set",
+                "google_login_first_instance",
+                true,
+                "/"
+              );
+            }
+          });
+        });
+    });
+  }
+
+  postGoogleProfilePhoto(photoURL) {
+    let bodyFormData = new FormData();
+    bodyFormData.set("photo_url", photoURL);
+    updateProfilePhotoRequest.config.body = bodyFormData;
+    axiosCaptcha(
+      updateProfilePhotoRequest.url,
+      updateProfilePhotoRequest.config
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success == true) {
+          console.log(response);
+          this.data = response.data.data;
+          this.setState({ data: this.data });
+          this.props.setProfilePhotoUrlInHeader();
+        }
+      }
+    });
   }
 
   checkNotifications() {
@@ -402,8 +495,29 @@ class ProfilePage extends React.Component {
                 )}
               </div>
             </div>
-            <div className="job-position" onClick={() => linkedInOAuth()}>
-              <Button type="primary">Sync With LinkedIn</Button>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "spaceBetween"
+              }}
+            >
+              {this.state.data.is_google_linked != true && (
+                <div
+                  className="job-position"
+                  onClick={() => this.handleGoogleOAuth()}
+                >
+                  <Button type="primary">Sync With Google</Button>
+                </div>
+              )}
+              {this.state.data.is_linkedin_linked != true && (
+                <div
+                  className="job-position"
+                  style={{ margin: "0 0 0 20px" }}
+                  onClick={() => this.handleLinkedInOAuth()}
+                >
+                  <Button type="primary">Sync With LinkedIn</Button>
+                </div>
+              )}
             </div>
             <div className="city-state" />
           </div>

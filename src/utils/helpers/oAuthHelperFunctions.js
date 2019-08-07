@@ -9,7 +9,7 @@ export function linkedInOAuth() {
     linkedInClientId +
     "&redirect_uri=http://localhost:8080/action-linkedin-oauth2" +
     "&scope=" +
-    "w_member_social%20" +
+    "r_basicprofile%20" +
     "r_emailaddress%20" +
     "r_liteprofile%20";
   window.open(url);
