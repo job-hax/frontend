@@ -202,11 +202,7 @@ class SignInPage extends Component {
               this.setState({
                 token: this.token
               });
-              this.props.passStatesFromSignin(
-                this.token,
-                true,
-                response.data.data.first_login
-              );
+              this.props.passStatesFromSignin(this.token, true);
               this.setState({
                 isUserLoggedIn: true,
                 isAuthenticationChecking: false
@@ -317,16 +313,8 @@ class SignInPage extends Component {
                   this.props.cookie("set", "remember_me", true, "/");
                   this.postGoogleProfilePhoto(photoUrl);
                   IS_CONSOLE_LOG_OPEN &&
-                    console.log(
-                      this.token,
-                      "profile updated?",
-                      response.data.data.first_login
-                    );
-                  this.props.passStatesFromSignin(
-                    this.token,
-                    true,
-                    response.data.data.first_login
-                  );
+                    console.log(this.token, "profile updated?");
+                  this.props.passStatesFromSignin(this.token, true);
                   if (response.data.data.user_type === 0) {
                     window.location = "/signup?=intro";
                   }

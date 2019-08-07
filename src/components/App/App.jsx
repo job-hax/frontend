@@ -58,7 +58,6 @@ class App extends Component {
       isAuthenticationChecking: true,
       isInitialRequest: "beforeRequest",
       isGapiReady: false,
-      isFirstLogin: false,
       isPollChecking: true,
       isPollShowing: false,
       isAlertShowing: false,
@@ -82,7 +81,6 @@ class App extends Component {
     this.toggleNotificationsDisplay = this.toggleNotificationsDisplay.bind(
       this
     );
-    this.setIsFirstLogin = this.setIsFirstLogin.bind(this);
     this.passStatesFromSignin = this.passStatesFromSignin.bind(this);
     this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this);
     this.setIsAuthenticationChecking = this.setIsAuthenticationChecking.bind(
@@ -303,11 +301,10 @@ class App extends Component {
     this.setState({ syncResponseTimestamp: timestamp });
   }
 
-  passStatesFromSignin(token, active, isFirstLogin) {
+  passStatesFromSignin(token, active) {
     this.setState({
       token: token,
-      active: active,
-      isFirstLogin: isFirstLogin
+      active: active
     });
   }
 
@@ -317,10 +314,6 @@ class App extends Component {
 
   setIsAuthenticationChecking(isAuthenticationChecking) {
     this.setState({ isAuthenticationChecking: isAuthenticationChecking });
-  }
-
-  setIsFirstLogin(isFirstLogin) {
-    this.setState({ isFirstLogin: isFirstLogin });
   }
 
   cookie(method, name, data, path, expires) {
@@ -379,7 +372,6 @@ class App extends Component {
             window.gapi.auth2.getAuthInstance().signOut();
             this.setState({
               token: "",
-              isFirstLogin: false,
               active: false,
               pollData: [],
               notificationsList: [],
@@ -495,7 +487,6 @@ class App extends Component {
               render={() => (
                 <ProfilePage
                   active={this.state.active}
-                  setIsFirstLogin={this.setIsFirstLogin}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
@@ -590,23 +581,15 @@ class App extends Component {
                 window.location.search.split("=")[1] ===
                 "reCapthcaCouldNotPassed" ? (
                   <Spinner message="checking reCaptcha..." />
-                ) : this.state.isFirstLogin === false ? (
-                  <Redirect to="/dashboard" />
                 ) : (
-                  <Redirect to="/profile" />
+                  <Redirect to="/dashboard" />
                 )
               }
             />
             <Route
               exact
               path="/signup"
-              render={() =>
-                this.state.isFirstLogin === false ? (
-                  <Redirect to="/dashboard" />
-                ) : (
-                  <Redirect to="/profile" />
-                )
-              }
+              render={() => <Redirect to="/dashboard" />}
             />
             <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
             <Route

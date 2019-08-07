@@ -24,7 +24,7 @@ import {
   registerUserRequest,
   authenticateRequest,
   updateProfilePhotoRequest,
-  profileUpdateAtSignUpRequest,
+  updateProfileRequest,
   getAutoCompleteRequest
 } from "../../../utils/api/requests.js";
 import {
@@ -74,7 +74,6 @@ class SignUpPage extends Component {
       country_id: null,
       stateOrProvince: "",
       state_id: null,
-      first_login: false,
       googleAccessToken: "",
       photoUrl: ""
     };
@@ -251,66 +250,65 @@ class SignUpPage extends Component {
   }
 
   handleFinish() {
-    profileUpdateAtSignUpRequest.config.body = {};
+    updateProfileRequest.config.body = {};
     if (this.state.first_name != "") {
-      profileUpdateAtSignUpRequest.config.body.first_name = this.state.first_name.trim();
+      updateProfileRequest.config.body.first_name = this.state.first_name.trim();
     }
     if (this.state.last_name != "") {
-      profileUpdateAtSignUpRequest.config.body.last_name = this.state.last_name.trim();
+      updateProfileRequest.config.body.last_name = this.state.last_name.trim();
     }
     if (this.state.country_id != null) {
-      profileUpdateAtSignUpRequest.config.body.country_id = this.state.country_id;
+      updateProfileRequest.config.body.country_id = this.state.country_id;
     }
     if (this.state.state_id != null) {
-      profileUpdateAtSignUpRequest.config.body.state_id = this.state.state_id;
+      updateProfileRequest.config.body.state_id = this.state.state_id;
     }
     if (this.state.user_type != null) {
-      profileUpdateAtSignUpRequest.config.body.user_type = this.state.user_type;
+      updateProfileRequest.config.body.user_type = this.state.user_type;
     }
     if (this.state.college_id != null) {
-      profileUpdateAtSignUpRequest.config.body.college_id = this.state.college_id;
+      updateProfileRequest.config.body.college_id = this.state.college_id;
     }
     if (this.state.major != "") {
-      profileUpdateAtSignUpRequest.config.body.major = this.state.major.trim();
+      updateProfileRequest.config.body.major = this.state.major.trim();
     }
     if (this.state.grad_year != null) {
-      profileUpdateAtSignUpRequest.config.body.grad_year = this.state.grad_year;
+      updateProfileRequest.config.body.grad_year = this.state.grad_year;
     }
     if (this.state.company != "") {
-      profileUpdateAtSignUpRequest.config.body.company = this.state.company.trim();
+      updateProfileRequest.config.body.company = this.state.company.trim();
     }
     if (this.state.job_title != "") {
-      profileUpdateAtSignUpRequest.config.body.job_title = this.state.job_title.trim();
+      updateProfileRequest.config.body.job_title = this.state.job_title.trim();
     }
-    axiosCaptcha(
-      profileUpdateAtSignUpRequest.url,
-      profileUpdateAtSignUpRequest.config
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success === true) {
-          this.props.cookie(
-            "set",
-            "user_type",
-            response.data.data.user_type,
-            "/"
-          );
-          this.generateLevelFinal();
-          this.props.alert(
-            5000,
-            "success",
-            "Your account has been created successfully!"
-          );
+    axiosCaptcha(updateProfileRequest.url, updateProfileRequest.config).then(
+      response => {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            this.props.cookie(
+              "set",
+              "user_type",
+              response.data.data.user_type,
+              "/"
+            );
+            this.generateLevelFinal();
+            this.props.alert(
+              5000,
+              "success",
+              "Your account has been created successfully!"
+            );
+          } else {
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
         } else {
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
+          this.props.alert(5000, "error", "Something went wrong!");
         }
-      } else {
-        this.props.alert(5000, "error", "Something went wrong!");
       }
-    });
+    );
   }
 
   handleSignUpFormNext(event) {
@@ -842,9 +840,7 @@ class SignUpPage extends Component {
           <AutoComplete
             style={this.currentStyle(this.state.major, "")}
             dataSource={this.state.majorAutoCompleteData}
-            onSearch={value =>
-              this.handleAutoCompleteSearch(value, "colleges/majors")
-            }
+            onSearch={value => this.handleAutoCompleteSearch(value, "majors")}
             placeholder="ex. Computer Science"
             value={this.state.major && this.state.major}
           />
@@ -912,9 +908,22 @@ class SignUpPage extends Component {
       [state_type]: event.item.props.children,
       [id_type]: parseInt(event.key)
     });
+    if (state_type == "country") {
+      this.handleAutoCompleteSearch(parseInt(event.key), "stateOrProvince");
+    }
   }
 
   generateLevelAlumniIdentification() {
+    console.log("stateList", this.state.stateOrProvinceList);
+    const mustInputsList =
+      this.state.stateOrProvinceList.length > 0
+        ? [
+            this.state.first_name,
+            this.state.last_name,
+            this.state.country,
+            this.state.stateOrProvince
+          ]
+        : [this.state.first_name, this.state.last_name, this.state.country];
     const menu = (state_type, id_type, data_list) => (
       <Menu
         onClick={event =>
@@ -957,79 +966,71 @@ class SignUpPage extends Component {
           />
         </div>
         <div className="level-body">
-          <div style={{ padding: "0 0 8px 0" }}>Where do you live?</div>
-          {this.state.mustInputEmphasis === true &&
-            this.state.country === null && (
-              <div style={{ color: "red" }}>*</div>
-            )}
-          <Dropdown
-            overlay={menu("country", "country_id", this.state.countryList)}
-            placement="bottomCenter"
-          >
-            <a
-              className="ant-dropdown-link"
-              style={{ color: "rgba(100, 100, 100, 0.9)" }}
-              onMouseEnter={() =>
-                this.state.countryList.length == 0 &&
-                this.handleAutoCompleteSearch(null, "countries")
-              }
-            >
-              {this.state.country != "" || null
-                ? this.state.country
-                : "Please Select a Country"}{" "}
-              <Icon type="down" />
-            </a>
-          </Dropdown>
-        </div>
-        {this.state.country_id != null && (
-          <div>
+          <div style={{ padding: "0 4px 8px 0" }}>Where do you live?</div>
+
+          <div style={{ display: "flex", justifyContent: "center" }}>
             {this.state.mustInputEmphasis === true &&
-              this.state.country === null && (
-                <div style={{ color: "red" }}>*</div>
-              )}
+              this.state.country == "" && <div style={{ color: "red" }}>*</div>}
             <Dropdown
-              overlay={menu(
-                "stateOrProvince",
-                "state_id",
-                this.state.stateOrProvinceList
-              )}
+              overlay={menu("country", "country_id", this.state.countryList)}
               placement="bottomCenter"
             >
               <a
                 className="ant-dropdown-link"
-                style={{
-                  color: "rgba(100, 100, 100, 0.9)",
-                  padding: "0 0 8px 0"
-                }}
+                style={{ color: "rgba(100, 100, 100, 0.9)" }}
                 onMouseEnter={() =>
-                  this.state.stateOrProvinceList.length == 0 &&
-                  this.handleAutoCompleteSearch(
-                    this.state.country_id,
-                    "stateOrProvince"
-                  )
+                  this.state.countryList.length == 0 &&
+                  this.handleAutoCompleteSearch(null, "countries")
                 }
               >
-                {this.state.stateOrProvince != "" || null
-                  ? this.state.stateOrProvince
-                  : "Select a State/Province"}{" "}
+                {this.state.country != "" || null
+                  ? this.state.country
+                  : "Please Select a Country"}{" "}
                 <Icon type="down" />
               </a>
             </Dropdown>
           </div>
-        )}
+          {this.state.country_id != null &&
+            this.state.stateOrProvinceList.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  margin: "8px 0 8px 0"
+                }}
+              >
+                {this.state.mustInputEmphasis === true &&
+                  this.state.stateOrProvince === "" && (
+                    <div style={{ color: "red" }}>*</div>
+                  )}
+                <Dropdown
+                  overlay={menu(
+                    "stateOrProvince",
+                    "state_id",
+                    this.state.stateOrProvinceList
+                  )}
+                  placement="bottomCenter"
+                >
+                  <a
+                    className="ant-dropdown-link"
+                    style={{
+                      color: "rgba(100, 100, 100, 0.9)",
+                      margin: "0 0 16px 0"
+                    }}
+                  >
+                    {this.state.stateOrProvince != "" || null
+                      ? this.state.stateOrProvince
+                      : "Select a State/Province"}{" "}
+                    <Icon type="down" />
+                  </a>
+                </Dropdown>
+              </div>
+            )}
+        </div>
         <div style={{ marginTop: 8 }}>
           <Button
             type="primary"
-            onClick={() =>
-              this.checkMustInputs(
-                [
-                  this.state.first_name,
-                  this.state.last_name,
-                  this.state.country
-                ],
-                "alumni"
-              )
-            }
+            onClick={() => this.checkMustInputs(mustInputsList, "alumni")}
             style={this.nextButtonStyle}
           >
             Next
@@ -1041,6 +1042,7 @@ class SignUpPage extends Component {
   }
 
   checkMustInputs(mustInputs, level) {
+    console.log(mustInputs);
     let x = mustInputs.length;
     let y = 0;
     for (let i = 0; i < x; i++) {
@@ -1092,7 +1094,7 @@ class SignUpPage extends Component {
 
   generateUrlForGetData(value, type) {
     const { url } = getAutoCompleteRequest;
-    if (type === "colleges/majors") {
+    if (type === "majors") {
       this.setState({ major: value });
       let newUrl = url(type) + "?q=" + value;
       return newUrl;
@@ -1120,7 +1122,7 @@ class SignUpPage extends Component {
       if (response.statusText === "OK") {
         IS_CONSOLE_LOG_OPEN && console.log(response.data);
         let bufferList = [];
-        if (type === "colleges/majors") {
+        if (type === "majors") {
           response.data.data.forEach(element => bufferList.push(element.name));
           this.setState({ majorAutoCompleteData: bufferList });
         } else if (type === "positions") {
@@ -1231,9 +1233,7 @@ class SignUpPage extends Component {
           <AutoComplete
             style={this.currentStyle(this.state.major, "")}
             dataSource={this.state.majorAutoCompleteData}
-            onSearch={value =>
-              this.handleAutoCompleteSearch(value, "colleges/majors")
-            }
+            onSearch={value => this.handleAutoCompleteSearch(value, "majors")}
             placeholder="ex. Computer Science"
             value={this.state.major && this.state.major}
           />
