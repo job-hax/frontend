@@ -39,14 +39,24 @@ class Header extends Component {
   }
 
   async handleSyncUserEmail() {
-    this.props.alert(3000, "info", "Syncing with your email...");
-    const { url, config } = syncUserEmailsRequest;
-    await this.props.handleTokenExpiration("header handleSyncUserEmail");
-    axiosCaptcha(url, config).then(response => {
-      if (response.statusText === "OK") {
-        this.props.passStatesFromHeader(new Date().getTime());
-      }
-    });
+    if (
+      this.props.cookie("get", "google_access_token_expiration") == ("" || null)
+    ) {
+      this.props.alert(
+        5000,
+        "info",
+        "Automatic sync is available for users who logged in with Gmail account.\n If you have never logged in with your Gmail, you can link your account with Google account on profile page."
+      );
+    } else {
+      this.props.alert(3000, "info", "Syncing with your email...");
+      const { url, config } = syncUserEmailsRequest;
+      await this.props.handleTokenExpiration("header handleSyncUserEmail");
+      axiosCaptcha(url, config).then(response => {
+        if (response.statusText === "OK") {
+          this.props.passStatesFromHeader(new Date().getTime());
+        }
+      });
+    }
   }
 
   render() {
@@ -99,12 +109,18 @@ class Header extends Component {
             </Link>
           </div>
           <div className="header-icon general tooltips">
+            <Link to="/alumni">
+              <img src="../../../src/assets/icons/AlumniIcon.png" />
+              <span>Alumni</span>
+            </Link>
+          </div>
+          {/*<div className="header-icon general tooltips">
             <Link to="/mentors">
               <img src="../../../src/assets/icons/MentorIcon.png" />
               <span>Mentorship</span>
             </Link>
           </div>
-          {/*<div className="header-icon general tooltips">
+          <div className="header-icon general tooltips">
             <Link to="/metricsGlobal">
               <img src="../../../src/assets/icons/globe.png" />
               <span>Aggregated Metrics</span>
