@@ -623,7 +623,8 @@ class ProfilePage extends React.Component {
               <div className="info-content-body">
                 {this.state.data != null &&
                   this.state.data.college != (null || "") &&
-                  this.state.data.user_type == (2 || 3) && (
+                  (this.state.data.user_type == 2 ||
+                    this.state.data.user_type == 3) && (
                     <div>
                       <div className="info-content-body-item">
                         <div className="info-content-body-item-label">
