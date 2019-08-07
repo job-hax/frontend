@@ -295,7 +295,7 @@ class SignUpPage extends Component {
             this.props.alert(
               5000,
               "success",
-              "Your account has been created successfully!"
+              "Your account information has been saved successfully!"
             );
           } else {
             this.props.alert(
@@ -709,7 +709,7 @@ class SignUpPage extends Component {
         <div>
           <Button
             type="primary"
-            onClick={() => this.setState({ level: "user_type" })}
+            onClick={() => this.setState({ level: "basicInfo" })}
             style={this.nextButtonStyle}
           >
             Next
@@ -763,6 +763,7 @@ class SignUpPage extends Component {
             </Button>
           </div>
         </div>
+        <div>{this.generateBackButton("basicInfo")}</div>
       </div>
     );
   }
@@ -805,7 +806,7 @@ class SignUpPage extends Component {
             "Use your experience to guide students towards their career goals.",
             "alumni",
             "Alumni",
-            "alumniId"
+            "alumni"
           )}
         </div>
         <div>
@@ -913,7 +914,7 @@ class SignUpPage extends Component {
     }
   }
 
-  generateLevelAlumniIdentification() {
+  generateLevelBasicInfo() {
     console.log("stateList", this.state.stateOrProvinceList);
     const mustInputsList =
       this.state.stateOrProvinceList.length > 0
@@ -1015,7 +1016,7 @@ class SignUpPage extends Component {
                     className="ant-dropdown-link"
                     style={{
                       color: "rgba(100, 100, 100, 0.9)",
-                      margin: "0 0 16px 0"
+                      margin: "0 0 8px 0"
                     }}
                   >
                     {this.state.stateOrProvince != "" || null
@@ -1030,13 +1031,13 @@ class SignUpPage extends Component {
         <div style={{ marginTop: 8 }}>
           <Button
             type="primary"
-            onClick={() => this.checkMustInputs(mustInputsList, "alumni")}
+            onClick={() => this.checkMustInputs(mustInputsList, "user_type")}
             style={this.nextButtonStyle}
           >
             Next
           </Button>
         </div>
-        <div>{this.generateBackButton("university")}</div>
+        <div>{this.generateBackButton("intro")}</div>
       </div>
     );
   }
@@ -1295,7 +1296,7 @@ class SignUpPage extends Component {
             Next
           </Button>
         </div>
-        <div>{this.generateBackButton("alumniId")}</div>
+        <div>{this.generateBackButton("university")}</div>
       </div>
     );
   }
@@ -1366,21 +1367,21 @@ class SignUpPage extends Component {
 
   async generateLevelFinal() {
     await this.props.setIsUserLoggedIn(true);
-    return (window.location.href = "/dashboard");
+    return <Redirect to="dashboard" />;
   }
 
   generateAdditionalInfoForms() {
     switch (this.state.level) {
       case "intro":
         return this.generateLevelIntro();
+      case "basicInfo":
+        return this.generateLevelBasicInfo();
       case "user_type":
         return this.generateLevelAccountType();
       case "university":
         return this.generateLevelUniversity();
       case "student":
         return this.generateLevelStudent();
-      case "alumniId":
-        return this.generateLevelAlumniIdentification();
       case "alumni":
         return this.generateLevelAlumni();
       case "careerServices":
