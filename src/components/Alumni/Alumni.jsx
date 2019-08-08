@@ -1,9 +1,12 @@
 import React from "react";
-import { Pagination, Input } from "antd";
+import { Pagination, Input, Menu, Dropdown, Icon, Button } from "antd";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { getAlumniRequest } from "../../utils/api/requests.js";
+import {
+  getAlumniRequest,
+  getAutoCompleteRequest
+} from "../../utils/api/requests.js";
 import AlumniCard from "../Partials/AlumniCards/AlumniCard.jsx";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import Footer from "../Partials/Footer/Footer.jsx";
@@ -24,16 +27,40 @@ class Alumni extends React.Component {
       isDetailsRequested: false,
       alumniList: {},
       pageNo: 1,
-      pageSize: 10,
-      query: ""
+      pageSize: 5,
+      q: "",
+      major: "",
+      major_id: null,
+      year: null,
+      company: "",
+      company_id: null,
+      country: "",
+      country_id: null,
+      stateOrProvince: "",
+      stateOrProvinceList: [],
+      state_id: null,
+      companies: [],
+      countries: [],
+      majors: [],
+      years: []
     };
 
     this.handlePageChange = this.handlePageChange.bind(this);
+    this.generateDropdown = this.generateDropdown.bind(this);
+    this.urlBuilder = this.urlBuilder.bind(this);
   }
 
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       this.setState({ isInitialRequest: true });
+      this.getDropdownData("companies");
+      this.getDropdownData("countries");
+      this.getDropdownData("majors");
+      let yearList = [];
+      for (let i = 0; i <= 50 - 1; i++) {
+        yearList.push(new Date().getFullYear() + i * -1);
+      }
+      this.setState({ years: yearList });
       await this.getData("initialRequest");
     }
   }
@@ -51,11 +78,51 @@ class Alumni extends React.Component {
     }
   }
 
+  getDropdownData(type) {
+    let newType = type == "countries" ? type : "colleges/" + type;
+    const { url, config } = getAutoCompleteRequest;
+    axiosCaptcha(url(newType), config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          console.log(response.data.data);
+          let list = response.data.data;
+          this.setState({ [type]: list });
+        }
+      }
+    });
+  }
+
+  urlBuilder(list) {
+    let parameterList = [];
+    for (let i = 0; i <= list.length - 1; i++) {
+      if (this.state[list[i]] != "" && this.state[list[i]] != null) {
+        parameterList.push({
+          name: list[i],
+          value: this.state[list[i]]
+        });
+      }
+    }
+    return parameterList;
+  }
+
   async getData(requestType) {
     this.setState({ isWaitingResponse: true });
+    const parameters = this.urlBuilder([
+      "q",
+      "year",
+      "major_id",
+      "company_id",
+      "country_id"
+    ]);
     const { url, config } = getAlumniRequest;
+    let newUrl =
+      url + "?page=" + this.state.pageNo + "&page_size=" + this.state.pageSize;
+    parameters.forEach(
+      parameter =>
+        (newUrl = newUrl + "&" + parameter.name + "=" + parameter.value)
+    );
     await this.props.handleTokenExpiration("alumni getData");
-    axiosCaptcha(url, config).then(response => {
+    axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         if (requestType === "initialRequest") {
           this.setState({
@@ -96,7 +163,7 @@ class Alumni extends React.Component {
     );
   }
 
-  generateCompanyCards() {
+  generateAlumniCards() {
     return this.state.alumniList.data.map(alumni => (
       <div key={alumni.id} style={{ width: 412, backgroundColor: "white" }}>
         <AlumniCard
@@ -106,6 +173,123 @@ class Alumni extends React.Component {
         />
       </div>
     ));
+  }
+
+  generateSearchBox() {
+    return (
+      <div className="filter-container">
+        <div style={{ margin: "4px 0 0 0" }}>Name:</div>
+        <Search
+          placeholder="search"
+          onSearch={value =>
+            this.setState({ q: value, isQueryRequested: true })
+          }
+          style={{ width: 200 }}
+        />
+      </div>
+    );
+  }
+
+  handleDropdownClick(event, listType) {
+    if (
+      listType == "country" &&
+      this.state.country != "" &&
+      this.state.country != event.item.props.children
+    ) {
+      let emptyList = [];
+      this.setState({
+        stateOrProvince: "",
+        state_id: null,
+        stateOrProvinceList: emptyList
+      });
+    }
+    if (listType == "countries") {
+      this.setState({
+        country: event.item.props.children,
+        country_id: event.key,
+        isQueryRequested: true
+      });
+    } else if (listType == "companies") {
+      this.setState({
+        company: event.item.props.children,
+        company_id: event.key,
+        isQueryRequested: true
+      });
+    } else if (listType == "majors") {
+      this.setState({
+        major: event.item.props.children,
+        major_id: event.key,
+        isQueryRequested: true
+      });
+    } else if (listType == "years") {
+      this.setState({ year: event.key, isQueryRequested: true });
+    }
+  }
+
+  generateDropdown(listType, type) {
+    const menu = listType => (
+      <Menu
+        onClick={event => this.handleDropdownClick(event, listType)}
+        style={{
+          width: "200px",
+          maxHeight: "260px",
+          textAlign: "center",
+          overflowX: "hidden"
+        }}
+      >
+        {listType == "companies"
+          ? this.state[listType].map(data => (
+              <Menu.Item key={data.id}>{data.company}</Menu.Item>
+            ))
+          : listType == "years"
+          ? this.state[listType].map(year => (
+              <Menu.Item key={year}>{year}</Menu.Item>
+            ))
+          : this.state[listType].map(data => (
+              <Menu.Item key={data.id}>{data.name}</Menu.Item>
+            ))}
+      </Menu>
+    );
+
+    return (
+      <Dropdown overlay={() => menu(listType)} placement="bottomRight">
+        <Button
+          className="ant-dropdown-link"
+          style={{ color: "rgba(100, 100, 100, 0.9)", width: 200 }}
+        >
+          {this.state[type] == "" || this.state[type] == null
+            ? "Please Select"
+            : this.state[type]}
+          <Icon type="down" />
+        </Button>
+      </Dropdown>
+    );
+  }
+
+  generateDropdownFilters(name, listType, type) {
+    return (
+      <div className="filter-container">
+        <div style={{ marginTop: 4 }}>{name}</div>
+        <div>{this.generateDropdown(listType, type)}</div>
+      </div>
+    );
+  }
+
+  generateFilterArea() {
+    return (
+      <div className="filter-area-container">
+        <div className="title">Filter</div>
+        <div>{this.generateSearchBox()}</div>
+        <div>{this.generateDropdownFilters("Year:", "years", "year")}</div>
+        <div>{this.generateDropdownFilters("Major:", "majors", "major")}</div>
+        <div>
+          {this.generateDropdownFilters("Company:", "companies", "company")}
+        </div>
+        <div>
+          {this.generateDropdownFilters("Country:", "countries", "country")}
+        </div>
+      </div>
+    );
   }
 
   render() {
@@ -118,37 +302,25 @@ class Alumni extends React.Component {
     if (this.state.isInitialRequest === false) {
       return (
         <div>
-          <div className="reviews-container">
+          <div className="alumni-big-container">
             {this.generateFeatureArea()}
-            <div className="company-cards-container">
-              <div>
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "end"
-                  }}
-                >
-                  <Search
-                    placeholder="search"
-                    onSearch={value =>
-                      this.setState({ query: value, isQueryRequested: true })
-                    }
-                    style={{ width: 300, margin: "0 0 24px 0" }}
-                  />
-                </div>
 
+            <div className="alumni-container">
+              <div className="alumni-cards-container">
+                <div>{this.generateFilterArea()}</div>
                 <div>
-                  {this.generateCompanyCards()}
-                  <div className="pagination-container">
-                    <Pagination
-                      onChange={this.handlePageChange}
-                      defaultCurrent={
-                        this.state.alumniList.pagination.current_page
-                      }
-                      current={this.state.alumniList.pagination.current_page}
-                      total={this.state.alumniList.pagination.total_count}
-                    />
+                  <div>
+                    {this.generateAlumniCards()}
+                    <div className="pagination-container">
+                      <Pagination
+                        onChange={this.handlePageChange}
+                        defaultCurrent={
+                          this.state.alumniList.pagination.current_page
+                        }
+                        current={this.state.alumniList.pagination.current_page}
+                        total={this.state.alumniList.pagination.total_count}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
