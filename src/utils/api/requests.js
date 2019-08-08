@@ -42,7 +42,8 @@ import {
   POST_CONTACTS,
   GET_NEW_JOBAPPS,
   UPDATE_PROFILE_SIGN_UP,
-  AUTOCOMPLETE
+  AUTOCOMPLETE,
+  ALUMNI
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
@@ -646,10 +647,24 @@ export const getContactsRequest = {
     }
   }
 };
+
 export const postContactsRequest = {
   url: POST_CONTACTS,
   config: {
     method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
+
+//ALUMNI REQUESTS//
+export const getAlumniRequest = {
+  url: ALUMNI,
+  config: {
+    method: "GET",
     mode: "cors",
     cache: "no-cache",
     headers: {

@@ -12,6 +12,7 @@ class Contacts extends React.Component {
 
     this.state = {
       contacts: [],
+      alumni: [],
       isAddContactShowing: false
     };
 
@@ -32,9 +33,11 @@ class Contacts extends React.Component {
     url = url + "?jobapp_id=" + card.id;
     axiosCaptcha(url, config).then(response => {
       if (response.statusText === "OK") {
-        this.contacts = response.data.data;
+        this.contacts = response.data.data.contacts;
+        this.alumni = response.data.data.alumni;
         this.setState({
-          contacts: this.contacts
+          contacts: this.contacts,
+          alumni: this.alumni
         });
       }
     });
@@ -81,6 +84,7 @@ class Contacts extends React.Component {
           handleTokenExpiration={this.props.handleTokenExpiration}
           editContactsList={this.editContactsList}
           deleteFromContactsList={this.deleteFromContactsList}
+          isEditable={true}
         />
       </div>
     ));

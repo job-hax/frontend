@@ -1,10 +1,10 @@
 import React from "react";
 import { Modal } from "antd";
 
-import ContactCardDetailed from "./ContactCardDetailed.jsx";
+import AlumniCardDetailed from "./AlumniCardDetailed.jsx";
 import "./style.scss";
 
-class ContactCard extends React.Component {
+class AlumniCard extends React.Component {
   constructor(props) {
     super(props);
 
@@ -20,24 +20,39 @@ class ContactCard extends React.Component {
   }
 
   generateCard() {
-    const { contact } = this.props;
+    const { alumni } = this.props;
     return (
       <div className="header">
         <div className="header-left">
           <div className="avatar">
-            <img src="../../../src/assets/icons/SeyfoIcon@2x.png" />
+            {alumni.profile_photo_social != ("" && null) ? (
+              <img src={alumni.profile_photo_social} />
+            ) : (
+              <img src="../../../src/assets/icons/SeyfoIcon@2x.png" />
+            )}
           </div>
           <div>
             <div className="name">
-              {contact.first_name + " " + contact.last_name}
+              {alumni.first_name + " " + alumni.last_name}
             </div>
-            <div className="job-info">
-              {contact.position && (
-                <div className="position">{contact.position}</div>
-              )}
-              {contact.company && (
-                <div className="company">{" at " + contact.company}</div>
-              )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "300px"
+              }}
+            >
+              <div className="job-info">
+                <div className="position">{alumni.major.name}</div>
+              </div>
+              <div className="job-info">
+                {alumni.grad_year && (
+                  <div className="position">{"Class of "}</div>
+                )}
+                {alumni.grad_year && (
+                  <div className="company">{alumni.grad_year}</div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -49,7 +64,7 @@ class ContactCard extends React.Component {
     return (
       <div>
         <div
-          className="contact-card"
+          className="alumni-card"
           onClick={() =>
             this.setState({
               isDetailedModalShowing: !this.state.isDetailedModalShowing
@@ -65,14 +80,11 @@ class ContactCard extends React.Component {
             closable={false}
             bodyStyle={{ padding: 0, margin: 0 }}
           >
-            <ContactCardDetailed
-              contact={this.props.contact}
+            <AlumniCardDetailed
+              alumni={this.props.alumni}
               setDetailedDisplay={this.setDetailedDisplay}
               handleTokenExpiration={this.props.handleTokenExpiration}
-              editContactsList={this.props.editContactsList}
-              deleteFromContactsList={this.props.deleteFromContactsList}
               card={this.props.card}
-              isEditable={this.props.isEditable}
             />
           </Modal>
         </div>
@@ -81,4 +93,4 @@ class ContactCard extends React.Component {
   }
 }
 
-export default ContactCard;
+export default AlumniCard;
