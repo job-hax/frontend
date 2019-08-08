@@ -114,7 +114,8 @@ class Header extends Component {
               <span>Alumni</span>
             </Link>
           </div>
-          {/*<div className="header-icon general tooltips">
+          {/*
+          <div className="header-icon general tooltips">
             <Link to="/mentors">
               <img src="../../../src/assets/icons/MentorIcon.png" />
               <span>Mentorship</span>

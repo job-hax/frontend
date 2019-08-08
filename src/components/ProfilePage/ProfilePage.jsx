@@ -18,7 +18,8 @@ import {
   updateProfileRequest,
   getProfileRequest,
   updateProfilePhotoRequest,
-  authenticateRequest
+  authenticateRequest,
+  linkSocialAccountRequest
 } from "../../utils/api/requests.js";
 
 import "./react-datepicker.scss";
@@ -124,42 +125,31 @@ class ProfilePage extends React.Component {
               const googleAccessToken = this.googleAuth.currentUser
                 .get()
                 .getAuthResponse().access_token;
-              const { url, config } = authenticateRequest;
+              linkSocialAccountRequest.config.body.provider = "google-oauth2";
+              const { url, config } = linkSocialAccountRequest;
               config.body.token = googleAccessToken;
-              axiosCaptcha(url, config)
+              axiosCaptcha(url("link_social_account"), config)
                 .then(response => {
                   if (response.statusText === "OK") {
-                    this.token = `${
-                      response.data.data.token_type
-                    } ${response.data.data.access_token.trim()}`;
-                    IS_CONSOLE_LOG_OPEN && console.log(this.token);
-                    this.refresh_token = response.data.data.refresh_token;
-                    let date = new Date();
-                    date.setSeconds(
-                      date.getSeconds() + response.data.data.expires_in
-                    );
-                    this.props.cookie(
-                      "set",
-                      "google_access_token_expiration",
-                      googleAccessTokenExpiresOn.getTime(),
-                      "/",
-                      googleAccessTokenExpiresOn
-                    );
-                    this.props.cookie(
-                      "set",
-                      "google_login_first_instance",
-                      true,
-                      "/"
-                    );
+                    if (response.data.success == true) {
+                      this.setState({ data: response.data.data });
+                      this.props.cookie(
+                        "set",
+                        "google_access_token_expiration",
+                        googleAccessTokenExpiresOn.getTime(),
+                        "/",
+                        googleAccessTokenExpiresOn
+                      );
+                      this.props.cookie(
+                        "set",
+                        "google_login_first_instance",
+                        true,
+                        "/"
+                      );
+                    }
                   }
                 })
                 .then(() => this.postGoogleProfilePhoto(photoUrl));
-              this.props.cookie(
-                "set",
-                "google_login_first_instance",
-                true,
-                "/"
-              );
             }
           });
         });
@@ -225,11 +215,11 @@ class ProfilePage extends React.Component {
     this.setState({
       isUpdating: true
     });
-    if (target[6].value.trim() != (null || "")) {
-      this.body["first_name"] = target[6].value.trim();
+    if (target[2].value.trim() != (null || "")) {
+      this.body["first_name"] = target[2].value.trim();
     }
-    if (target[7].value.trim() != (null || "")) {
-      this.state.body[" last_name"] = target[7].value.trim();
+    if (target[3].value.trim() != (null || "")) {
+      this.body["last_name"] = target[3].value.trim();
     }
     updateProfileRequest.config.body = this.body;
     axiosCaptcha(

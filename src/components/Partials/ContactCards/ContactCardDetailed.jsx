@@ -49,7 +49,9 @@ class ContactCardDetailed extends React.Component {
             <img src="../../../src/assets/icons/SeyfoIcon@2x.png" />
           </div>
           <div>
-            <div className="name">{contact.name}</div>
+            <div className="name">
+              {contact.first_name + " " + contact.last_name}
+            </div>
             <div className="job-info">
               {contact.position && (
                 <div className="position">{contact.position + " at "}</div>
@@ -131,7 +133,7 @@ class ContactCardDetailed extends React.Component {
                 theme="filled"
                 style={{ color: "rgba(0,0,0,.25)", margin: "4px 12px 0 0" }}
               />
-              <div>{contact.name}</div>
+              <div>{contact.first_name + " " + contact.last_name}</div>
             </div>
           )}
         </div>

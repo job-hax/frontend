@@ -1,4 +1,4 @@
-export const apiRoot = "http://10.0.0.75:8000";
+export const apiRoot = "http://0.0.0.0:8000";
 
 export const SYNC_USER_EMAILS = `${apiRoot}/api/users/sync_user_emails`;
 
@@ -90,3 +90,5 @@ export const GET_NEW_JOBAPPS = timestamp =>
   `${apiRoot}/api/jobapps/get_new_jobapps?timestamp=${timestamp}`;
 
 export const AUTOCOMPLETE = type => `${apiRoot}/api/${type}`;
+
+export const ALUMNI = `${apiRoot}/api/alumni`;

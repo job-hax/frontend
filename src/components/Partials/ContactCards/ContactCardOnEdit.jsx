@@ -17,8 +17,8 @@ class ContactCardOnEdit extends React.Component {
     super(props);
 
     this.state = {
-      firstName: this.props.contact ? this.props.contact.name : "",
-      lastName: "",
+      firstName: this.props.contact ? this.props.contact.first_name : "",
+      lastName: this.props.contact ? this.props.contact.last_name : "",
       position: this.props.contact ? this.props.contact.position : "",
       company: this.props.contact ? this.props.contact.company : "",
       email: this.props.contact ? this.props.contact.email : "",
@@ -58,8 +58,8 @@ class ContactCardOnEdit extends React.Component {
   async handleSubmit() {
     let body = {
       jobapp_id: this.props.card.id,
-      name: this.state.firstName,
-      lastName: this.state.lastName,
+      first_name: this.state.firstName,
+      last_name: this.state.lastName,
       job_title: this.state.position,
       company: this.state.company,
       email: this.state.email,
