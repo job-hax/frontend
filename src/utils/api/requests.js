@@ -32,7 +32,6 @@ import {
   GET_COMPANIES,
   GET_AGREEMENTS,
   USERS,
-  POSITIONS,
   REFRESH_JOBHAX_TOKEN,
   UPDATE_GOOGLE_TOKEN,
   METRICS,
@@ -586,19 +585,6 @@ export const postUsersRequest = {
 
 export const getUsersRequest = {
   url: USERS,
-  config: {
-    method: "GET",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  }
-};
-
-//POSITIONS REQUESTS//
-export const getPositionsRequest = {
-  url: POSITIONS,
   config: {
     method: "GET",
     mode: "cors",

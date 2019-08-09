@@ -34,15 +34,18 @@ class Alumni extends React.Component {
       year: null,
       company: "",
       company_id: null,
+      position: "",
+      position_id: null,
       country: "",
       country_id: null,
-      stateOrProvince: "",
-      stateOrProvinceList: [],
+      state: "",
+      states: [],
       state_id: null,
       companies: [],
       countries: [],
       majors: [],
-      years: []
+      years: [],
+      positions: []
     };
 
     this.handlePageChange = this.handlePageChange.bind(this);
@@ -56,6 +59,7 @@ class Alumni extends React.Component {
       this.getDropdownData("companies");
       this.getDropdownData("countries");
       this.getDropdownData("majors");
+      this.getDropdownData("positions");
       let yearList = [];
       for (let i = 0; i <= 50 - 1; i++) {
         yearList.push(new Date().getFullYear() + i * -1);
@@ -78,8 +82,13 @@ class Alumni extends React.Component {
     }
   }
 
-  getDropdownData(type) {
-    let newType = type == "countries" ? type : "colleges/" + type;
+  getDropdownData(type, id = null) {
+    let newType =
+      type == "countries"
+        ? type
+        : type == "states"
+        ? "countries/" + id + "/states"
+        : "colleges/" + type;
     const { url, config } = getAutoCompleteRequest;
     axiosCaptcha(url(newType), config).then(response => {
       if (response.statusText === "OK") {
@@ -112,7 +121,9 @@ class Alumni extends React.Component {
       "year",
       "major_id",
       "company_id",
-      "country_id"
+      "country_id",
+      "state_id",
+      "position_id"
     ]);
     const { url, config } = getAlumniRequest;
     let newUrl =
@@ -191,38 +202,92 @@ class Alumni extends React.Component {
   }
 
   handleDropdownClick(event, listType) {
-    if (
-      listType == "country" &&
-      this.state.country != "" &&
-      this.state.country != event.item.props.children
-    ) {
+    if (event.key == "-1") {
       let emptyList = [];
-      this.setState({
-        stateOrProvince: "",
-        state_id: null,
-        stateOrProvinceList: emptyList
-      });
-    }
-    if (listType == "countries") {
-      this.setState({
-        country: event.item.props.children,
-        country_id: event.key,
-        isQueryRequested: true
-      });
-    } else if (listType == "companies") {
-      this.setState({
-        company: event.item.props.children,
-        company_id: event.key,
-        isQueryRequested: true
-      });
-    } else if (listType == "majors") {
-      this.setState({
-        major: event.item.props.children,
-        major_id: event.key,
-        isQueryRequested: true
-      });
-    } else if (listType == "years") {
-      this.setState({ year: event.key, isQueryRequested: true });
+      if (listType == "countries") {
+        {
+          this.setState({
+            state: "",
+            state_id: null,
+            states: emptyList,
+            country: "",
+            country_id: null,
+            isQueryRequested: true
+          });
+        }
+      } else if (listType == "states") {
+        this.setState({
+          state: "",
+          state_id: null,
+          isQueryRequested: true
+        });
+      } else if (listType == "companies") {
+        this.setState({
+          company: "",
+          company_id: null,
+          isQueryRequested: true
+        });
+      } else if (listType == "positions") {
+        this.setState({
+          position: "",
+          position_id: null,
+          isQueryRequested: true
+        });
+      } else if (listType == "majors") {
+        this.setState({
+          major: "",
+          major_id: null,
+          isQueryRequested: true
+        });
+      } else if (listType == "years") {
+        this.setState({ year: null, isQueryRequested: true });
+      }
+    } else {
+      if (listType == "countries") {
+        if (
+          this.state.country != "" &&
+          this.state.country != event.item.props.children
+        ) {
+          let emptyList = [];
+          this.setState({
+            state: "",
+            state_id: null,
+            states: emptyList
+          });
+        }
+        this.setState({
+          country: event.item.props.children,
+          country_id: event.key,
+          isQueryRequested: true
+        });
+        this.getDropdownData("states", event.key);
+      } else if (listType == "states") {
+        this.setState({
+          state: event.item.props.children,
+          state_id: event.key,
+          isQueryRequested: true
+        });
+      } else if (listType == "companies") {
+        this.setState({
+          company: event.item.props.children,
+          company_id: event.key,
+          isQueryRequested: true
+        });
+      } else if (listType == "positions") {
+        this.setState({
+          position: event.item.props.children,
+          position_id: event.key,
+          isQueryRequested: true
+        });
+      } else if (listType == "majors") {
+        this.setState({
+          major: event.item.props.children,
+          major_id: event.key,
+          isQueryRequested: true
+        });
+      } else if (listType == "years") {
+        this.setState({ year: event.key, isQueryRequested: true });
+      }
     }
   }
 
@@ -245,9 +310,15 @@ class Alumni extends React.Component {
           ? this.state[listType].map(year => (
               <Menu.Item key={year}>{year}</Menu.Item>
             ))
+          : listType == "positions"
+          ? this.state[listType].map(position => (
+              <Menu.Item key={position.id}>{position.job_title}</Menu.Item>
+            ))
           : this.state[listType].map(data => (
               <Menu.Item key={data.id}>{data.name}</Menu.Item>
             ))}
+        <Menu.Divider />
+        <Menu.Item key="-1">Reset</Menu.Item>
       </Menu>
     );
 
@@ -255,7 +326,11 @@ class Alumni extends React.Component {
       <Dropdown overlay={() => menu(listType)} placement="bottomRight">
         <Button
           className="ant-dropdown-link"
-          style={{ color: "rgba(100, 100, 100, 0.9)", width: 200 }}
+          style={{
+            color: "rgba(100, 100, 100, 0.9)",
+            width: 200,
+            overflow: "hidden"
+          }}
         >
           {this.state[type] == "" || this.state[type] == null
             ? "Please Select"
@@ -276,8 +351,10 @@ class Alumni extends React.Component {
   }
 
   generateFilterArea() {
+    const style =
+      this.state.states.length > 0 ? { height: 380 } : { height: 330 };
     return (
-      <div className="filter-area-container">
+      <div className="filter-area-container" style={style}>
         <div className="title">Filter</div>
         <div>{this.generateSearchBox()}</div>
         <div>{this.generateDropdownFilters("Year:", "years", "year")}</div>
@@ -286,13 +363,22 @@ class Alumni extends React.Component {
           {this.generateDropdownFilters("Company:", "companies", "company")}
         </div>
         <div>
+          {this.generateDropdownFilters("Position:", "positions", "position")}
+        </div>
+        <div>
           {this.generateDropdownFilters("Country:", "countries", "country")}
         </div>
+        {this.state.states.length > 0 && (
+          <div>
+            {this.generateDropdownFilters("States:", "states", "state")}
+          </div>
+        )}
       </div>
     );
   }
 
   render() {
+    console.log("alumnilist", this.state.alumniList);
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
@@ -317,6 +403,7 @@ class Alumni extends React.Component {
                         defaultCurrent={
                           this.state.alumniList.pagination.current_page
                         }
+                        pageSize={this.state.pageSize}
                         current={this.state.alumniList.pagination.current_page}
                         total={this.state.alumniList.pagination.total_count}
                       />
@@ -326,13 +413,7 @@ class Alumni extends React.Component {
               </div>
             </div>
           </div>
-          <div
-            className={
-              this.state.alumniList.pagination.total_count < 2
-                ? "bottom-fixed-footer"
-                : ""
-            }
-          >
+          <div className="bottom-fixed-footer">
             <Footer />
           </div>
         </div>
