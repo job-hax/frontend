@@ -834,6 +834,7 @@ class SignUpPage extends Component {
             onSearch={value => this.handleAutoCompleteSearch(value, "colleges")}
             placeholder="ex. Stanford University"
             value={this.state.college && this.state.college}
+            onSelect={value => this.setState({ college: value })}
           />
         </div>
         <div className="level-body">Please enter your Major:</div>
@@ -844,6 +845,7 @@ class SignUpPage extends Component {
             onSearch={value => this.handleAutoCompleteSearch(value, "majors")}
             placeholder="ex. Computer Science"
             value={this.state.major && this.state.major}
+            onSelect={value => this.setState({ major: value })}
           />
         </div>
         <div
@@ -1169,6 +1171,7 @@ class SignUpPage extends Component {
             onSearch={this.handleCompanySearch}
             placeholder="Company Name"
             value={this.state.company && this.state.company}
+            onSelect={value => this.setState({ company: value })}
           />
         </div>
         <div>
@@ -1180,6 +1183,7 @@ class SignUpPage extends Component {
             }
             placeholder="Job Title"
             value={this.state.job_title && this.state.job_title}
+            onSelect={value => this.setState({ job_title: value })}
           />
         </div>
       </div>
@@ -1227,6 +1231,7 @@ class SignUpPage extends Component {
             onSearch={value => this.handleAutoCompleteSearch(value, "colleges")}
             placeholder="ex. Stanford University"
             value={this.state.college && this.state.college}
+            onSelect={value => this.setState({ college: value })}
           />
         </div>
         <div className="level-body">Please enter your Major:</div>
@@ -1237,6 +1242,7 @@ class SignUpPage extends Component {
             onSearch={value => this.handleAutoCompleteSearch(value, "majors")}
             placeholder="ex. Computer Science"
             value={this.state.major && this.state.major}
+            onSelect={value => this.setState({ major: value })}
           />
         </div>
         <div
