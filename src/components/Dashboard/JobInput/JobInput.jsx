@@ -6,6 +6,7 @@ import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { getAutoCompleteRequest } from "../../../utils/api/requests.js";
 
 import "./style.scss";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 
 class JobInput extends PureComponent {
   constructor(props) {
@@ -36,7 +37,7 @@ class JobInput extends PureComponent {
     };
     axiosCaptcha(url, config).then(response => {
       if (response.statusText === "OK") {
-        console.log(response);
+        IS_CONSOLE_LOG_OPEN && console.log(response);
         let bufferList = [];
         response.data.forEach(company => bufferList.push(company.name));
         {
@@ -83,7 +84,7 @@ class JobInput extends PureComponent {
     let newUrl = url("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
-        console.log(response.data);
+        IS_CONSOLE_LOG_OPEN && console.log(response.data);
         let bufferPositionsList = [];
         response.data.data.forEach(position =>
           bufferPositionsList.push(position.job_title)

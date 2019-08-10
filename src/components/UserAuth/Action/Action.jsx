@@ -5,6 +5,7 @@ import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { getUsersRequest } from "../../../utils/api/requests.js";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import ChangePassword from "../ChangePassword/ChangePassword.jsx";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 
 class Action extends React.Component {
   constructor(props) {
@@ -20,11 +21,12 @@ class Action extends React.Component {
     if (params.length < 2) {
       this.setState({ redirect: "home" });
     } else {
-      console.log();
+      IS_CONSOLE_LOG_OPEN && console.log();
       const action = params[0].split("=")[1];
       const code = params[1].split("=")[1];
       this.setState({ code: code });
-      console.log("action : ", action, "\ncode : ", code);
+      IS_CONSOLE_LOG_OPEN &&
+        console.log("action : ", action, "\ncode : ", code);
       axiosCaptcha(
         getUsersRequest.url(action + "?code=" + code),
         getUsersRequest.config

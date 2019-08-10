@@ -3,6 +3,7 @@ import React from "react";
 import PollCard from "./PollCard.jsx";
 
 import "./style.scss";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 class PollBox extends React.Component {
   constructor(props) {
@@ -31,7 +32,7 @@ class PollBox extends React.Component {
   }
 
   generatePoll() {
-    console.log("pollbox", this.props.data);
+    IS_CONSOLE_LOG_OPEN && console.log("pollbox", this.props.data);
     return (
       <div>
         {this.props.data.map(
