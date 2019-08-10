@@ -10,6 +10,7 @@ import {
 } from "../../../../../../../../utils/api/requests.js";
 
 import "./style.scss";
+import { IS_CONSOLE_LOG_OPEN } from "../../../../../../../../utils/constants/constants.js";
 
 const desc = ["terrible", "bad", "normal", "good", "perfect"];
 const descDifficulty = ["too easy", "easy", "normal", "hard", "too hard"];
@@ -86,7 +87,8 @@ class ReviewInput extends React.Component {
       response => {
         if (response.statusText === "OK") {
           if (response.data.success === true) {
-            console.log("getSourceTypesRequest response", response.data.data);
+            IS_CONSOLE_LOG_OPEN &&
+              console.log("getSourceTypesRequest response", response.data.data);
             this.setState({ sourceTypes: response.data.data });
           }
         }
@@ -98,10 +100,11 @@ class ReviewInput extends React.Component {
     ).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
-          console.log(
-            "getEmploymentStatusesRequest response",
-            response.data.data
-          );
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "getEmploymentStatusesRequest response",
+              response.data.data
+            );
           this.setState({ employmentStatuses: response.data.data });
         }
       }
@@ -112,12 +115,16 @@ class ReviewInput extends React.Component {
     ).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
-          console.log("getEmploymentAuthsRequest response", response.data.data);
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "getEmploymentAuthsRequest response",
+              response.data.data
+            );
           this.setState({ employmentAuths: response.data.data });
         }
       }
     });
-    console.log("oldReview is", this.props.oldReview);
+    IS_CONSOLE_LOG_OPEN && console.log("oldReview is", this.props.oldReview);
     if (this.props.oldReview.id != -1) {
       this.body["review_id"] = this.props.oldReview.id;
       if (this.props.oldReview.emp_auths != null) {
@@ -176,10 +183,11 @@ class ReviewInput extends React.Component {
     await this.props.handleTokenExpiration("reviewInput handleSubmit");
     this.props.toggleReview();
     reviewSubmitRequest.config.body = this.body;
-    console.log(
-      "reviewSubmitRequest.config.body",
-      reviewSubmitRequest.config.body
-    );
+    IS_CONSOLE_LOG_OPEN &&
+      console.log(
+        "reviewSubmitRequest.config.body",
+        reviewSubmitRequest.config.body
+      );
     axiosCaptcha(
       reviewSubmitRequest.url,
       reviewSubmitRequest.config,
@@ -187,7 +195,8 @@ class ReviewInput extends React.Component {
     ).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
-          console.log("reviewSubmitRequest response", response.data.data);
+          IS_CONSOLE_LOG_OPEN &&
+            console.log("reviewSubmitRequest response", response.data.data);
           this.props.setCompany(response.data.data.company);
           this.props.setReview(response.data.data.review);
           this.props.renewReviews();
@@ -237,11 +246,12 @@ class ReviewInput extends React.Component {
     temporaryAuths.filter(
       oldAuth => oldAuth.employment_auth.id == id
     )[0].value = value;
-    console.log(
-      "filter:  ",
-      temporaryAuths.filter(oldAuth => oldAuth.employment_auth.id == id)[0]
-        .value
-    );
+    IS_CONSOLE_LOG_OPEN &&
+      console.log(
+        "filter:  ",
+        temporaryAuths.filter(oldAuth => oldAuth.employment_auth.id == id)[0]
+          .value
+      );
     this.setState({ emp_auths: temporaryAuths });
   }
 
@@ -249,7 +259,7 @@ class ReviewInput extends React.Component {
     const newValue = event.target.value;
     const name = event.target.name;
     if (event.target.type === "checkbox") {
-      console.log(event.target.checked);
+      IS_CONSOLE_LOG_OPEN && console.log(event.target.checked);
       this.setState({ anonymous: event.target.checked });
       this.body["anonymous"] = event.target.checked;
     } else if (event.target.type === "dropdown") {
@@ -276,7 +286,7 @@ class ReviewInput extends React.Component {
   }
 
   generateCompanyReviewsPart() {
-    console.log("All states:\n", this.state);
+    IS_CONSOLE_LOG_OPEN && console.log("All states:\n", this.state);
     const companyRatingStyle = { width: "200px" };
     return (
       <div>

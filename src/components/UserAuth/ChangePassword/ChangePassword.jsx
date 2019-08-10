@@ -6,6 +6,7 @@ import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { postUsersRequest } from "../../../utils/api/requests.js";
 
 import "./style.scss";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 
 class ChangePassword extends React.Component {
   constructor(props) {
@@ -25,12 +26,12 @@ class ChangePassword extends React.Component {
     event.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log("Received values of form: ", values);
+        IS_CONSOLE_LOG_OPEN && console.log("Received values of form: ", values);
         postUsersRequest.config.body = {
           code: this.props.code,
           password: values.password
         };
-        console.log(postUsersRequest);
+        IS_CONSOLE_LOG_OPEN && console.log(postUsersRequest);
         axiosCaptcha(
           postUsersRequest.url("reset_password"),
           postUsersRequest.config

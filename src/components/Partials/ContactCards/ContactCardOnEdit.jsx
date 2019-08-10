@@ -81,7 +81,7 @@ class ContactCardOnEdit extends React.Component {
             this.props.type === "add" && this.props.addToContactsList(contact);
             this.props.type === "update" &&
               this.props.editContactsList(contact);
-            console.log("contact added", contact);
+            IS_CONSOLE_LOG_OPEN && console.log("contact added", contact);
             this.props.setContactEditDisplay(false);
           }
         }
@@ -100,7 +100,7 @@ class ContactCardOnEdit extends React.Component {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
           this.props.deleteFromContactsList(this.state.contactId);
-          console.log("contact deleted", contactId);
+          IS_CONSOLE_LOG_OPEN && console.log("contact deleted", contactId);
           this.props.setContactEditDisplay(false);
         }
       }
@@ -133,7 +133,7 @@ class ContactCardOnEdit extends React.Component {
     };
     axiosCaptcha(url, config).then(response => {
       if (response.statusText === "OK") {
-        console.log(response);
+        IS_CONSOLE_LOG_OPEN && console.log(response);
         let bufferList = [];
         response.data.forEach(company => bufferList.push(company.name));
         this.setState({
@@ -150,7 +150,7 @@ class ContactCardOnEdit extends React.Component {
     let newUrl = url("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
-        console.log(response.data);
+        IS_CONSOLE_LOG_OPEN && console.log(response.data);
         let bufferPositionsList = [];
         response.data.data.forEach(position =>
           bufferPositionsList.push(position.job_title)

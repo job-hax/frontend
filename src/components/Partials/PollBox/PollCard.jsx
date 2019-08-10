@@ -1,6 +1,9 @@
 import React from "react";
 
-import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
+import {
+  makeTimeBeautiful,
+  IS_CONSOLE_LOG_OPEN
+} from "../../../utils/constants/constants.js";
 import { votePollRequest } from "../../../utils/api/requests.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 
@@ -31,11 +34,11 @@ class PollCard extends React.Component {
     votePollRequest.config.body = {
       item_id: this.state.selectedAnswer
     };
-    console.log(votePollRequest);
+    IS_CONSOLE_LOG_OPEN && console.log(votePollRequest);
     axiosCaptcha(votePollRequest.url, votePollRequest.config).then(response => {
       votePollRequest.url = urlFunction;
       if (response.statusText === "OK") {
-        console.log(response);
+        IS_CONSOLE_LOG_OPEN && console.log(response);
         if (response.data.success == false) {
           this.props.alert(
             5000,
@@ -44,7 +47,7 @@ class PollCard extends React.Component {
           );
         } else {
           this.setState({ isPollSubmitted: true });
-          console.log(this.state.isPollSubmitted);
+          IS_CONSOLE_LOG_OPEN && console.log(this.state.isPollSubmitted);
         }
       }
     });
