@@ -257,6 +257,7 @@ class ContactCardOnEdit extends React.Component {
                 onSearch={this.handleCompanySearch}
                 placeholder="Company"
                 value={this.state.company}
+                onSelect={value => this.setState({ company: value })}
               />
             </div>
             <div className="component-info">
@@ -267,6 +268,7 @@ class ContactCardOnEdit extends React.Component {
                 onSearch={this.handlePositionsSearch}
                 placeholder="Job Title"
                 value={this.state.position}
+                onSelect={value => this.setState({ position: value })}
               />
             </div>
           </div>
