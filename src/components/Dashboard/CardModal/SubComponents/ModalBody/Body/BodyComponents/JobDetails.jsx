@@ -174,6 +174,7 @@ class JobDetails extends React.Component {
             onSearch={this.handleCompanySearch}
             placeholder="Company Name"
             value={companyName}
+            onSelect={value => this.setState({ companyName: value })}
           />
         ) : this.props.card.editable == true ? (
           <div className={infoClass} onClick={this.toggleCompanyEdit}>
@@ -235,6 +236,7 @@ class JobDetails extends React.Component {
             onSearch={this.handlePositionsSearch}
             placeholder="Job Title"
             value={jobTitle}
+            onSelect={value => this.setState({ jobTitle: value })}
           />
         ) : this.props.card.editable == true ? (
           <div className={infoClass} onClick={this.togglePositionsEdit}>
