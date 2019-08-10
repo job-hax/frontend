@@ -25,10 +25,7 @@ import {
 } from "../../utils/api/requests.js";
 import { IS_MOCKING } from "../../config/config.js";
 import { mockJobApps } from "../../utils/api/mockResponses.js";
-import {
-  UPDATE_APPLICATION_STATUS,
-  IS_CONSOLE_LOG_OPEN
-} from "../../utils/constants/constants.js";
+import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import { generateCurrentDate } from "../../utils/helpers/helperFunctions.js";
 
 import "./style.scss";
@@ -284,18 +281,42 @@ class Dashboard extends Component {
   }
 
   async updateApplications(card, dragColumnName, dropColumnName) {
+    const statuses = {
+      applied: {
+        id: 1,
+        value: "APPLIED"
+      },
+      toApply: {
+        id: 2,
+        value: "TO APPLY"
+      },
+      phoneScreen: {
+        id: 3,
+        value: "PHONE SCREEN"
+      },
+      onsiteInterview: {
+        id: 4,
+        value: "ONSITE INTERVIEW"
+      },
+      offer: {
+        id: 5,
+        value: "OFFER"
+      }
+    };
     if (dragColumnName === dropColumnName) {
       return;
     }
+    console.log(statuses);
     let newDisplayingJobappsList = this.state.displayingList.filter(
       jobapp => jobapp.id != card.id
     );
     let updatedCard = card;
-    updatedCard.applicationStatus = UPDATE_APPLICATION_STATUS[dropColumnName];
+    let newStatus = statuses[dropColumnName];
+    updatedCard.applicationStatus = newStatus;
     newDisplayingJobappsList.unshift(updatedCard);
     this.sortJobApplications(newDisplayingJobappsList);
     await this.props.handleTokenExpiration("dashboard updateApplications");
-    IS_CONSOLE_LOG_OPEN && console.log("ok? after");
+    IS_CONSOLE_LOG_OPEN && console.log("ok? after", dropColumnName, statuses);
     let { url, config } = updateJobStatusRequest;
     config.body = {
       jobapp_id: card.id,
@@ -310,11 +331,33 @@ class Dashboard extends Component {
   }
 
   async addNewApplication({ name, title, columnName }) {
+    const statuses = {
+      applied: {
+        id: 1,
+        value: "APPLIED"
+      },
+      toApply: {
+        id: 2,
+        value: "TO APPLY"
+      },
+      phoneScreen: {
+        id: 3,
+        value: "PHONE SCREEN"
+      },
+      onsiteInterview: {
+        id: 4,
+        value: "ONSITE INTERVIEW"
+      },
+      offer: {
+        id: 5,
+        value: "OFFER"
+      }
+    };
     await this.props.handleTokenExpiration("dashboard addNewApplication");
     const { url, config } = addJobAppsRequest;
     config.body = {
       job_title: title,
-      status_id: UPDATE_APPLICATION_STATUS[columnName].id,
+      status_id: statuses[columnName].id,
       company: name,
       application_date: generateCurrentDate(),
       source: "N/A"
