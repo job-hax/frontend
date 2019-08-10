@@ -43,7 +43,7 @@ import "../../assets/libraryScss/antd-scss/newantd.scss";
 import "../../assets/libraryScss/area-code.scss";
 import Mentors from "../Mentors/Mentors.jsx";
 import Alumni from "../Alumni/Alumni.jsx";
-import Events from "../Events/events.jsx";
+import Events from "../Events/Events.jsx";
 
 class App extends Component {
   constructor(props) {
