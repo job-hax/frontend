@@ -351,8 +351,9 @@ class Alumni extends React.Component {
   }
 
   generateFilterArea() {
-    const style =
-      this.state.states.length > 0 ? { height: 380 } : { height: 330 };
+    const height = this.state.states.length > 0 ? 380 : 330;
+    const marginTop = this.state.alumniList.pagination.total_count < 5 ? 8 : 40;
+    const style = { height: height, marginTop: marginTop };
     return (
       <div className="filter-area-container" style={style}>
         <div className="title">Filter</div>
@@ -396,6 +397,11 @@ class Alumni extends React.Component {
                 <div>{this.generateFilterArea()}</div>
                 <div>
                   <div>
+                    {this.state.alumniList.pagination.total_count == 0 && (
+                      <div className="no-data">
+                        No Alumni found based on selected criteria!
+                      </div>
+                    )}
                     {this.generateAlumniCards()}
                     <div className="pagination-container">
                       <Pagination
