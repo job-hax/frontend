@@ -2,6 +2,7 @@ import React from "react";
 import { Rate, Statistic, Icon } from "antd";
 
 import "../../../assets/libraryScss/antd-scss/newantd.scss";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 
 class CompanyStats extends React.Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class CompanyStats extends React.Component {
     );
     const averageRating =
       ratingTotal == 0 ? 0 : Math.round(ratingTotal / countTotal);
-    console.log("average rating", averageRating);
+    IS_CONSOLE_LOG_OPEN && console.log("average rating", averageRating);
     return (
       <div>
         <Rate tooltips={details} disabled value={averageRating} />

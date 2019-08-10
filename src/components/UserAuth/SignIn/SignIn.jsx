@@ -83,7 +83,7 @@ class SignInPage extends Component {
       if (err) {
         return;
       }
-      console.log("Received values of form: ", values);
+      IS_CONSOLE_LOG_OPEN && console.log("Received values of form: ", values);
       postUsersRequest.config["body"] = { username: values.username };
       axiosCaptcha(
         postUsersRequest.url("forgot_password"),
@@ -342,13 +342,13 @@ class SignInPage extends Component {
     let bodyFormData = new FormData();
     bodyFormData.set("photo_url", photoURL);
     updateProfilePhotoRequest.config.body = bodyFormData;
-    console.log(updateProfilePhotoRequest);
+    IS_CONSOLE_LOG_OPEN && console.log(updateProfilePhotoRequest);
     axiosCaptcha(
       updateProfilePhotoRequest.url,
       updateProfilePhotoRequest.config
     ).then(response => {
       if (response.statusText === "OK") {
-        console.log(response);
+        IS_CONSOLE_LOG_OPEN && console.log(response);
       }
     });
   }

@@ -18,6 +18,7 @@ import zipRecruiterLogo from "../../../assets/icons/zipRecruiterLogo.png";
 import CardModal from "../CardModal/CardModal.jsx";
 
 import "./style.scss";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 
 const cardSpec = {
   beginDrag(props) {
@@ -79,7 +80,7 @@ class Card extends PureComponent {
 
   onSelectChange(event) {
     let isSelected = event.target.checked;
-    console.log(`checked = `, isSelected);
+    IS_CONSOLE_LOG_OPEN && console.log(`checked = `, isSelected);
     this.setState({ isSelected: isSelected });
     if (isSelected === true) {
       this.props.addToSelectedJobApplicationsList("add", this.props.card);

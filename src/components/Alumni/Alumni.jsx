@@ -93,7 +93,7 @@ class Alumni extends React.Component {
     axiosCaptcha(url(newType), config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
-          console.log(response.data.data);
+          IS_CONSOLE_LOG_OPEN && console.log(response.data.data);
           let list = response.data.data;
           this.setState({ [type]: list });
         }
@@ -378,7 +378,7 @@ class Alumni extends React.Component {
   }
 
   render() {
-    console.log("alumnilist", this.state.alumniList);
+    IS_CONSOLE_LOG_OPEN && console.log("alumnilist", this.state.alumniList);
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
