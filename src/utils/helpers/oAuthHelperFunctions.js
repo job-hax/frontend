@@ -1,5 +1,5 @@
 import axios from "axios";
-import { linkedInClientId, linkedInClientSecret } from "../../config/config";
+import { linkedInClientId, linkedInClientSecret } from "../../config/config.js";
 
 export function linkedInOAuth() {
   let url =
@@ -7,7 +7,7 @@ export function linkedInOAuth() {
     "?response_type=code" +
     "&client_id=" +
     linkedInClientId +
-    "&redirect_uri=http://localhost:8080/action-linkedin-oauth2" +
+    "&redirect_uri=https://jobhax.com/action-linkedin-oauth2" +
     "&scope=" +
     "r_emailaddress%20" +
     "r_liteprofile%20";
@@ -22,7 +22,7 @@ export async function linkedInAccessTokenRequester(authCode) {
     data: {
       grant_type: "authorization_code",
       code: authCode,
-      redirect_uri: "http://localhost:8080/action-linkedin-oauth2",
+      redirect_uri: "https://jobhax.com/action-linkedin-oauth2",
       client_id: linkedInClientId,
       client_secret: linkedInClientSecret
     },
