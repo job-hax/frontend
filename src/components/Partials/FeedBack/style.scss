@@ -1,6 +1,7 @@
 .feedback-container {
     color: #261268;
     position: fixed;
+    z-index: 2100;
 
     .feedback-open-button {
         position: fixed;
@@ -12,7 +13,7 @@
         height: 48px;
         width: 48px;
         border-radius: 24px;
-        z-index: 2000;
+        z-index: 2100;
         display: flex;
         align-items: center;
         justify-content: center;

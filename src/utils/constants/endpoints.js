@@ -76,8 +76,6 @@ export const GET_COMPANIES = `${apiRoot}/api/companies/`;
 
 export const USERS = type => `${apiRoot}/api/users/${type}`;
 
-export const POSITIONS = `${apiRoot}/api/positions/`;
-
 export const METRICS = type => `${apiRoot}/api/metrics/${type}`;
 
 export const GET_SOURCES = `${apiRoot}/api/jobapps/get_sources`;
@@ -87,3 +85,12 @@ export const EDIT_JOBAPP = `${apiRoot}/api/jobapps/edit_jobapp`;
 export const GET_CONTACTS = `${apiRoot}/api/jobapps/get_contacts`;
 
 export const POST_CONTACTS = type => `${apiRoot}/api/jobapps/${type}`;
+
+export const GET_NEW_JOBAPPS = timestamp =>
+  `${apiRoot}/api/jobapps/get_new_jobapps?timestamp=${timestamp}`;
+
+export const AUTOCOMPLETE = type => `${apiRoot}/api/${type}`;
+
+export const ALUMNI = `${apiRoot}/api/alumni`;
+
+export const EVENTS = `${apiRoot}/api/events`;

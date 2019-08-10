@@ -22,6 +22,7 @@ import FAQ from "../StaticPages/FAQ/FAQ.jsx";
 import SignIn from "../UserAuth/SignIn/SignIn.jsx";
 import SignUp from "..//UserAuth/SignUp/SignUp.jsx";
 import Action from "../UserAuth/Action/Action.jsx";
+import LinkedInOAuthAction from "../UserAuth/Action/LinkedInOAuthAction.jsx";
 import ProfilePage from "../ProfilePage/ProfilePage.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 
@@ -40,22 +41,25 @@ import {
 import "./style.scss";
 import "../../assets/libraryScss/antd-scss/newantd.scss";
 import "../../assets/libraryScss/area-code.scss";
+import Mentors from "../Mentors/Mentors.jsx";
+import Alumni from "../Alumni/Alumni.jsx";
+import Events from "../Events/events.jsx";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isUserAuthenticated: false,
       token: this.cookie("get", "jobhax_access_token"),
       active: false,
       isUserLoggedIn:
         this.cookie("get", "jobhax_access_token") == ("" || null)
           ? false
+          : this.cookie("get", "user_type") == ("0" || null)
+          ? false
           : true,
       isAuthenticationChecking: true,
       isInitialRequest: "beforeRequest",
       isGapiReady: false,
-      isFirstLogin: false,
       isPollChecking: true,
       isPollShowing: false,
       isAlertShowing: false,
@@ -65,20 +69,22 @@ class App extends Component {
       alertMessage: "",
       profilePhotoUrl: "",
       pollData: [],
-      notificationsList: []
+      notificationsList: [],
+      syncResponseTimestamp: null,
+      isFirstLoginWithGoogle:
+        this.cookie("get", "google_access_token_expiration") == ("" || null)
+          ? false
+          : true
     };
     this.notificationsList = [];
-    this.onAuthUpdate = this.onAuthUpdate.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
     this.toggleIsPollShowing = this.toggleIsPollShowing.bind(this);
     this.checkNotifications = this.checkNotifications.bind(this);
     this.toggleNotificationsDisplay = this.toggleNotificationsDisplay.bind(
       this
     );
-    this.setIsFirstLogin = this.setIsFirstLogin.bind(this);
     this.passStatesFromSignin = this.passStatesFromSignin.bind(this);
     this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this);
-    this.setIsUserAuthenticated = this.setIsUserAuthenticated.bind(this);
     this.setIsAuthenticationChecking = this.setIsAuthenticationChecking.bind(
       this
     );
@@ -86,6 +92,8 @@ class App extends Component {
     this.showAlert = this.showAlert.bind(this);
     this.cookie = this.cookie.bind(this);
     this.handleTokenExpiration = this.handleTokenExpiration.bind(this);
+    this.passStatesFromHeader = this.passStatesFromHeader.bind(this);
+    this.passStatesFromDashboard = this.passStatesFromDashboard.bind(this);
   }
 
   componentDidMount() {
@@ -103,6 +111,7 @@ class App extends Component {
           isAuthenticationChecking: false
         });
         this.state.token != (null || "" || undefined) &&
+          this.cookie("get", "user_type") != ("0" || null) &&
           this.setState({ isUserLoggedIn: true });
       });
     });
@@ -285,11 +294,19 @@ class App extends Component {
     });
   }
 
-  passStatesFromSignin(token, active, isFirstLogin) {
+  passStatesFromDashboard(newState) {
+    this.setState({ isFirstLoginWithGoogle: newState });
+    console.log("loginGoogle app", this.state.isFirstLoginWithGoogle);
+  }
+
+  passStatesFromHeader(timestamp) {
+    this.setState({ syncResponseTimestamp: timestamp });
+  }
+
+  passStatesFromSignin(token, active) {
     this.setState({
       token: token,
-      active: active,
-      isFirstLogin: isFirstLogin
+      active: active
     });
   }
 
@@ -297,16 +314,8 @@ class App extends Component {
     this.setState({ isUserLoggedIn: isUserLoggedIn });
   }
 
-  setIsUserAuthenticated(isUserAuthenticated) {
-    this.setState({ isUserAuthenticated: isUserAuthenticated });
-  }
-
   setIsAuthenticationChecking(isAuthenticationChecking) {
     this.setState({ isAuthenticationChecking: isAuthenticationChecking });
-  }
-
-  setIsFirstLogin(isFirstLogin) {
-    this.setState({ isFirstLogin: isFirstLogin });
   }
 
   cookie(method, name, data, path, expires) {
@@ -322,6 +331,10 @@ class App extends Component {
       cookies.remove("google_access_token_expiration", { path: "/" });
       cookies.remove("jobhax_access_token_expiration", { path: "/" });
       cookies.remove("remember_me", { path: "/" });
+      cookies.remove("user_type", { path: "/" });
+    } else if (method === "remove") {
+      IS_CONSOLE_LOG_OPEN && console.log("cookies removing");
+      cookies.remove(name, { path: "/" });
     }
   }
 
@@ -340,18 +353,11 @@ class App extends Component {
     );
   }
 
-  onAuthUpdate() {
-    this.setState(() => ({
-      isUserAuthenticated: this.googleAuth.isSignedIn.get()
-    }));
-  }
-
   handleSignOut() {
     IS_CONSOLE_LOG_OPEN && console.log("handle signout first");
     this.cookie("remove_all");
     this.setState({
-      isUserLoggedIn: false,
-      isUserAuthenticated: false
+      isUserLoggedIn: false
     });
     event && event.preventDefault();
     IS_CONSOLE_LOG_OPEN &&
@@ -368,7 +374,6 @@ class App extends Component {
             window.gapi.auth2.getAuthInstance().signOut();
             this.setState({
               token: "",
-              isFirstLogin: false,
               active: false,
               pollData: [],
               notificationsList: [],
@@ -430,13 +435,11 @@ class App extends Component {
   }
 
   render() {
-    const { isUserLoggedIn, isUserAuthenticated } = this.state;
+    const { isUserLoggedIn } = this.state;
     IS_CONSOLE_LOG_OPEN &&
       console.log(
         "app isUserLoggedIn",
         isUserLoggedIn,
-        "app isUserAuthenticated",
-        isUserAuthenticated,
         "\n--token",
         this.state.token,
         "\n--active?",
@@ -446,10 +449,10 @@ class App extends Component {
       );
     if (this.state.isAuthenticationChecking)
       return <Spinner message="Connecting..." />;
-    else if ((isUserLoggedIn || isUserAuthenticated) && !this.state.active)
+    else if (isUserLoggedIn && !this.state.active)
       return <Spinner message="Reaching your account..." />;
     else
-      return (isUserLoggedIn || isUserAuthenticated) && this.state.active ? (
+      return isUserLoggedIn && this.state.active ? (
         <Router>
           <div className="main-container">
             {window.location.pathname != "/home" && (
@@ -463,6 +466,7 @@ class App extends Component {
                 profilePhotoUrl={this.state.profilePhotoUrl}
                 cookie={this.cookie}
                 handleTokenExpiration={this.handleTokenExpiration}
+                passStatesFromHeader={this.passStatesFromHeader}
               />
             )}
             <FeedBack
@@ -485,7 +489,6 @@ class App extends Component {
               render={() => (
                 <ProfilePage
                   active={this.state.active}
-                  setIsFirstLogin={this.setIsFirstLogin}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
@@ -519,6 +522,9 @@ class App extends Component {
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
+                  syncResponseTimestamp={this.state.syncResponseTimestamp}
+                  isFirstLoginWithGoogle={this.state.isFirstLoginWithGoogle}
+                  passStatesFromDashboard={this.passStatesFromDashboard}
                 />
               )}
             />
@@ -527,6 +533,39 @@ class App extends Component {
               path="/metrics"
               render={() => (
                 <Metrics
+                  active={this.state.active}
+                  alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/alumni"
+              render={() => (
+                <Alumni
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/events"
+              render={() => (
+                <Events
+                  alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/mentors"
+              render={() => (
+                <Mentors
                   active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
@@ -565,23 +604,15 @@ class App extends Component {
                 window.location.search.split("=")[1] ===
                 "reCapthcaCouldNotPassed" ? (
                   <Spinner message="checking reCaptcha..." />
-                ) : this.state.isFirstLogin === false ? (
-                  <Redirect to="/dashboard" />
                 ) : (
-                  <Redirect to="/profile" />
+                  <Redirect to="/dashboard" />
                 )
               }
             />
             <Route
               exact
               path="/signup"
-              render={() =>
-                this.state.isFirstLogin === false ? (
-                  <Redirect to="/dashboard" />
-                ) : (
-                  <Redirect to="/profile" />
-                )
-              }
+              render={() => <Redirect to="/dashboard" />}
             />
             <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
             <Route
@@ -616,6 +647,11 @@ class App extends Component {
               path="/action"
               render={() => <Action alert={this.showAlert} />}
             />
+            <Route
+              exact
+              path="/action-linkedin-oauth2"
+              render={() => <LinkedInOAuthAction alert={this.showAlert} />}
+            />
           </div>
         </Router>
       ) : (
@@ -647,6 +683,21 @@ class App extends Component {
             />
             <Route
               exact
+              path="/alumni"
+              render={() => <Redirect to="signin" />}
+            />
+            <Route
+              exact
+              path="/events"
+              render={() => <Redirect to="signin" />}
+            />
+            <Route
+              exact
+              path="/mentors"
+              render={() => <Redirect to="signin" />}
+            />
+            <Route
+              exact
               path="/metrics"
               render={() => <Redirect to="/signin" />}
             />
@@ -668,7 +719,6 @@ class App extends Component {
                   googleAuth={this.googleAuth}
                   passStatesFromSignin={this.passStatesFromSignin}
                   setIsUserLoggedIn={this.setIsUserLoggedIn}
-                  setIsUserAuthenticated={this.setIsUserAuthenticated}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
                   alert={this.showAlert}
                   cookie={this.cookie}
@@ -682,7 +732,6 @@ class App extends Component {
                 <SignUp
                   googleAuth={this.googleAuth}
                   alert={this.showAlert}
-                  setIsUserAuthenticated={this.setIsUserAuthenticated}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
                   passStatesFromSignin={this.passStatesFromSignin}
                   setIsUserLoggedIn={this.setIsUserLoggedIn}
@@ -710,7 +759,16 @@ class App extends Component {
               path="/useragreement"
               render={() => <UserAgreement />}
             />
-            <Route exact path="/action" render={() => <Action />} />
+            <Route
+              exact
+              path="/action"
+              render={() => <Action alert={this.showAlert} />}
+            />
+            <Route
+              exact
+              path="/action-linkedin-oauth2"
+              render={() => <LinkedInOAuthAction alert={this.showAlert} />}
+            />
           </div>
         </Router>
       );

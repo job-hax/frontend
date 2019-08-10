@@ -1,38 +1,128 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { Form, Input, Icon, Select, Checkbox, Button } from "antd";
+import {
+  Form,
+  Input,
+  Icon,
+  Select,
+  Checkbox,
+  Button,
+  Switch,
+  Menu,
+  Dropdown,
+  AutoComplete
+} from "antd";
 
-import { googleClientId } from "../../../config/config.js";
+import { linkedInOAuth } from "../../../utils/helpers/oAuthHelperFunctions.js";
+import {
+  googleClientId,
+  jobHaxClientId,
+  jobHaxClientSecret
+} from "../../../config/config.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   registerUserRequest,
   authenticateRequest,
-  updateProfilePhotoRequest
+  updateProfilePhotoRequest,
+  updateProfileRequest,
+  getAutoCompleteRequest
 } from "../../../utils/api/requests.js";
-import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
+import {
+  IS_CONSOLE_LOG_OPEN,
+  USER_TYPES
+} from "../../../utils/constants/constants.js";
 import Footer from "../../Partials/Footer/Footer.jsx";
 
 import "./style.scss";
+import { apiRoot } from "../../../utils/constants/endpoints.js";
 
 class SignUpPage extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      companyAutoCompleteData: [],
+      positionAutoCompleteData: [],
+      collegeAutoCompleteData: [],
+      collegeList: [],
+      majorAutoCompleteData: [],
+      countryList: [],
+      stateOrProvinceList: [],
       token: "",
+      mustInputEmphasis: false,
       isUserLoggedIn: false,
-      isUserAuthenticated: false,
       isAuthenticationChecking: false,
       confirmDirty: false,
-      isEmailSignUpRequested: false
+      isEmailSignUpRequested: false,
+      level:
+        window.location.search.split("=")[1] == "synced"
+          ? "submit"
+          : window.location.search.split("=")[1] == "intro"
+          ? "intro"
+          : "undefined",
+      user_type: null,
+      first_name: "",
+      last_name: "",
+      college_id: null,
+      college: "",
+      major: "",
+      grad_year: null,
+      alumniEmployment: true,
+      company: "",
+      job_title: "",
+      country: "",
+      country_id: null,
+      stateOrProvince: "",
+      state_id: null,
+      googleAccessToken: "",
+      photoUrl: ""
     };
 
-    this.handleSignUp = this.handleSignUp.bind(this);
+    this.nextButtonStyle = {
+      borderRadius: 0,
+      width: "272px"
+    };
+
+    this.narrowInputStyle = {
+      width: "240px",
+      marginBottom: 16
+    };
+
+    this.warningStyle = {
+      width: "240px",
+      marginBottom: 16,
+      border: "1px solid red",
+      borderRadius: 4
+    };
+
+    this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
+    this.handleCompanySearch = this.handleCompanySearch.bind(this);
+    this.handleSignUpFormNext = this.handleSignUpFormNext.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
     this.generateSignUpForm = this.generateSignUpForm.bind(this);
     this.compareToFirstPassword = this.compareToFirstPassword.bind(this);
     this.validateToNextPassword = this.validateToNextPassword.bind(this);
     this.handleConfirmBlur = this.handleConfirmBlur.bind(this);
-    this.handleGoogleSignIn = this.handleGoogleSignIn.bind(this);
+    this.handleGoogleSignUp = this.handleGoogleSignUp.bind(this);
+    this.linkedInOAuthRequest = this.linkedInOAuthRequest.bind(this);
+    this.onAlumniEmploymentSwitch = this.onAlumniEmploymentSwitch.bind(this);
+    this.handleGradYearSelection = this.handleGradYearSelection.bind(this);
+    this.generateGradYearDropdown = this.generateGradYearDropdown.bind(this);
+    this.checkMustInputs = this.checkMustInputs.bind(this);
+    this.setCountryOrStateList = this.setCountryOrStateList.bind(this);
+    this.generateUrlForGetData = this.generateUrlForGetData.bind(this);
+  }
+
+  currentStyle(state, condition) {
+    if (this.state.mustInputEmphasis === false) {
+      return this.narrowInputStyle;
+    } else {
+      if (state != condition) {
+        return this.narrowInputStyle;
+      } else {
+        return this.warningStyle;
+      }
+    }
   }
 
   compareToFirstPassword(rule, value, callback) {
@@ -57,7 +147,7 @@ class SignUpPage extends Component {
     this.setState({ confirmDirty: this.state.confirmDirty || !!value });
   }
 
-  handleGoogleSignIn() {
+  handleGoogleSignUp() {
     window.gapi.load("client:auth2", () => {
       window.gapi.client
         .init({
@@ -68,82 +158,76 @@ class SignUpPage extends Component {
         })
         .then(() => {
           this.googleAuth = window.gapi.auth2.getAuthInstance();
-          let authenticated = this.googleAuth.isSignedIn.get();
-          this.setState(() => ({ isUserAuthenticated: authenticated }));
-          this.googleAuth.isSignedIn.listen(
-            this.props.setIsUserAuthenticated(this.googleAuth.isSignedIn.get())
-          );
           this.googleAuth.signIn().then(response => {
-            IS_CONSOLE_LOG_OPEN && console.log("signIn response", response);
+            IS_CONSOLE_LOG_OPEN && console.log("signUp response", response);
             if (response.Zi.token_type === "Bearer") {
               let photoUrl = response.w3.Paa;
               let googleAccessTokenExpiresOn = new Date();
               googleAccessTokenExpiresOn.setSeconds(
                 googleAccessTokenExpiresOn.getSeconds() + response.Zi.expires_in
               );
-              const { url, config } = authenticateRequest;
-              config.body.token = this.googleAuth.currentUser
+              const googleAccessToken = this.googleAuth.currentUser
                 .get()
                 .getAuthResponse().access_token;
-              axiosCaptcha(url, config, "signin").then(response => {
-                if (response.statusText === "OK") {
-                  this.token = `${
-                    response.data.data.token_type
-                  } ${response.data.data.access_token.trim()}`;
-                  IS_CONSOLE_LOG_OPEN && console.log(this.token);
-                  this.refresh_token = response.data.data.refresh_token;
-                  let date = new Date();
-                  date.setSeconds(
-                    date.getSeconds() + response.data.data.expires_in
-                  );
-                  this.expires_in = date;
-                  this.props.cookie(
-                    "set",
-                    "google_access_token_expiration",
-                    googleAccessTokenExpiresOn.getTime(),
-                    "/",
-                    googleAccessTokenExpiresOn
-                  );
-                  this.props.cookie(
-                    "set",
-                    "jobhax_access_token",
-                    this.token,
-                    "/",
-                    date
-                  );
-                  this.props.cookie(
-                    "set",
-                    "jobhax_access_token_expiration",
-                    date.getTime(),
-                    "/"
-                  );
-                  this.props.cookie(
-                    "set",
-                    "jobhax_refresh_token",
-                    this.refresh_token,
-                    "/"
-                  );
-                  this.props.cookie("set", "remember_me", true, "/");
-                  this.postGoogleProfilePhoto(photoUrl);
-                  IS_CONSOLE_LOG_OPEN &&
-                    console.log(
-                      this.token,
-                      "profile updated?",
-                      response.data.data.first_login
+              const { url, config } = authenticateRequest;
+              config.body.token = googleAccessToken;
+              axiosCaptcha(url, config, "signin")
+                .then(response => {
+                  if (response.statusText === "OK") {
+                    this.token = `${
+                      response.data.data.token_type
+                    } ${response.data.data.access_token.trim()}`;
+                    if (response.data.data.user_type === 0) {
+                      this.setState({ level: "intro" });
+                    } else {
+                      this.props.setIsUserLoggedIn(true);
+                    }
+                    IS_CONSOLE_LOG_OPEN && console.log(this.token);
+                    this.refresh_token = response.data.data.refresh_token;
+                    let date = new Date();
+                    date.setSeconds(
+                      date.getSeconds() + response.data.data.expires_in
                     );
-                  this.props.passStatesFromSignin(
-                    this.token,
-                    true,
-                    response.data.data.first_login
-                  );
-                  this.setState({ token: this.token });
-                  this.setState({ isUserLoggedIn: true });
-                  this.props.setIsUserLoggedIn(this.state.isUserLoggedIn);
-                }
-              });
-              this.setState({ isAuthenticationChecking: false });
-              this.props.setIsAuthenticationChecking(
-                this.state.isAuthenticationChecking
+                    this.props.cookie(
+                      "set",
+                      "google_access_token_expiration",
+                      googleAccessTokenExpiresOn.getTime(),
+                      "/",
+                      googleAccessTokenExpiresOn
+                    );
+                    this.props.cookie(
+                      "set",
+                      "google_login_first_instance",
+                      true,
+                      "/"
+                    );
+                    this.props.cookie(
+                      "set",
+                      "jobhax_access_token",
+                      this.token,
+                      "/",
+                      date
+                    );
+                    this.props.cookie(
+                      "set",
+                      "jobhax_access_token_expiration",
+                      date.getTime(),
+                      "/"
+                    );
+                    this.props.cookie(
+                      "set",
+                      "jobhax_refresh_token",
+                      this.refresh_token,
+                      "/"
+                    );
+                  }
+                })
+                .then(() => this.postGoogleProfilePhoto(photoUrl));
+              this.props.cookie(
+                "set",
+                "google_login_first_instance",
+                true,
+                "/"
               );
             }
           });
@@ -155,7 +239,6 @@ class SignUpPage extends Component {
     let bodyFormData = new FormData();
     bodyFormData.set("photo_url", photoURL);
     updateProfilePhotoRequest.config.body = bodyFormData;
-    console.log(updateProfilePhotoRequest);
     axiosCaptcha(
       updateProfilePhotoRequest.url,
       updateProfilePhotoRequest.config
@@ -166,23 +249,86 @@ class SignUpPage extends Component {
     });
   }
 
-  handleSignUp(event) {
+  handleFinish() {
+    updateProfileRequest.config.body = {};
+    if (this.state.first_name != "") {
+      updateProfileRequest.config.body.first_name = this.state.first_name.trim();
+    }
+    if (this.state.last_name != "") {
+      updateProfileRequest.config.body.last_name = this.state.last_name.trim();
+    }
+    if (this.state.country_id != null) {
+      updateProfileRequest.config.body.country_id = this.state.country_id;
+    }
+    if (this.state.state_id != null) {
+      updateProfileRequest.config.body.state_id = this.state.state_id;
+    }
+    if (this.state.user_type != null) {
+      updateProfileRequest.config.body.user_type = this.state.user_type;
+    }
+    if (this.state.college_id != null) {
+      updateProfileRequest.config.body.college_id = this.state.college_id;
+    }
+    if (this.state.major != "") {
+      updateProfileRequest.config.body.major = this.state.major.trim();
+    }
+    if (this.state.grad_year != null) {
+      updateProfileRequest.config.body.grad_year = this.state.grad_year;
+    }
+    if (this.state.company != "") {
+      updateProfileRequest.config.body.company = this.state.company.trim();
+    }
+    if (this.state.job_title != "") {
+      updateProfileRequest.config.body.job_title = this.state.job_title.trim();
+    }
+    axiosCaptcha(updateProfileRequest.url, updateProfileRequest.config).then(
+      response => {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            this.props.cookie(
+              "set",
+              "user_type",
+              response.data.data.user_type,
+              "/"
+            );
+            this.generateLevelFinal();
+            this.props.alert(
+              5000,
+              "success",
+              "Your account information has been saved successfully!"
+            );
+          } else {
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
+        } else {
+          this.props.alert(5000, "error", "Something went wrong!");
+        }
+      }
+    );
+  }
+
+  handleSignUpFormNext(event) {
     event.preventDefault();
+    registerUserRequest.config.body = {};
     if (
-      event.target[0].value.trim() === (null || "") ||
       event.target[1].value.trim() === (null || "") ||
       event.target[2].value.trim() === (null || "") ||
-      event.target[3].value.trim() === (null || "")
+      event.target[3].value.trim() === (null || "") ||
+      event.target[4].value.trim() === (null || "")
     ) {
       this.props.alert(3000, "error", "You have to fill out all sign up form!");
     } else {
       if (this.state.isAgreementRead === true) {
-        registerUserRequest.config.body.first_name = "";
-        registerUserRequest.config.body.last_name = "";
-        registerUserRequest.config.body.username = event.target[0].value;
-        registerUserRequest.config.body.email = event.target[1].value;
-        registerUserRequest.config.body.password = event.target[2].value;
-        registerUserRequest.config.body.password2 = event.target[3].value;
+        registerUserRequest.config.body.username = event.target[1].value;
+        registerUserRequest.config.body.email = event.target[2].value;
+        registerUserRequest.config.body.password = event.target[3].value;
+        registerUserRequest.config.body.password2 = event.target[4].value;
+        registerUserRequest.config.body.client_id = jobHaxClientId;
+        registerUserRequest.config.body.client_secret = jobHaxClientSecret;
         axiosCaptcha(
           registerUserRequest.url,
           registerUserRequest.config,
@@ -191,10 +337,38 @@ class SignUpPage extends Component {
           if (response.statusText === "OK") {
             console.log(response.data);
             if (response.data.success === true) {
-              this.props.alert(
-                5000,
-                "success",
-                "Registration mail has sent to your email successfully! \nPlease click the link on your email to activate your account!"
+              this.token = `${
+                response.data.data.token_type
+              } ${response.data.data.access_token.trim()}`;
+              if (response.data.data.user_type === 0) {
+                this.setState({ level: "intro" });
+              } else {
+                this.props.setIsUserLoggedIn(true);
+              }
+              IS_CONSOLE_LOG_OPEN && console.log(this.token);
+              this.refresh_token = response.data.data.refresh_token;
+              let date = new Date();
+              date.setSeconds(
+                date.getSeconds() + response.data.data.expires_in
+              );
+              this.props.cookie(
+                "set",
+                "jobhax_access_token",
+                this.token,
+                "/",
+                date
+              );
+              this.props.cookie(
+                "set",
+                "jobhax_access_token_expiration",
+                date.getTime(),
+                "/"
+              );
+              this.props.cookie(
+                "set",
+                "jobhax_refresh_token",
+                this.refresh_token,
+                "/"
               );
             } else {
               console.log(response, response.data.error_message);
@@ -206,7 +380,7 @@ class SignUpPage extends Component {
             }
           } else {
             if (response.data == "500") {
-              this.props.alert(3000, "error", "You have to fill out all from!");
+              this.props.alert(3000, "error", "You have to fill out all form!");
             } else {
               this.props.alert(5000, "error", "Something went wrong!");
             }
@@ -243,7 +417,35 @@ class SignUpPage extends Component {
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <Form onSubmit={this.handleSignUp}>
+      <Form onSubmit={() => this.handleSignUpFormNext(event)}>
+        <div style={{ margin: "0px 0 16px 0" }}>
+          <div className="social-buttons-container">
+            {/*<div>
+              <div className="social-buttons-google">
+                <img
+                  style={{ marginLeft: 48 }}
+                  onClick={this.handleGoogleSignUp}
+                  src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
+                />
+              </div>
+            </div>*/}
+            <div>
+              <Button
+                type="primary"
+                icon="google"
+                onClick={this.handleGoogleSignUp}
+                style={{ width: "240px" }}
+              >
+                {" "}
+                Sign Up with Google
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div
+          className="separator"
+          style={{ margin: "12px 24px 12px 24px", width: 224 }}
+        />
         <Form.Item style={{ width: "272px" }}>
           {getFieldDecorator("Username", {
             rules: [
@@ -374,13 +576,9 @@ class SignUpPage extends Component {
             <Button
               type="primary"
               htmlType="submit"
-              style={{
-                width: "100%",
-                borderRadius: 0,
-                width: "272px"
-              }}
+              style={this.nextButtonStyle}
             >
-              Sign Up
+              Next
             </Button>
           </div>
         </Form.Item>
@@ -396,22 +594,70 @@ class SignUpPage extends Component {
       <div>
         <div>
           <div className="social-buttons-container">
-            <div>
+            {/*<div>
               <button className="social-buttons-google">
                 <img
-                  onClick={this.handleGoogleSignIn}
+                  onClick={this.handleGoogleSignUp}
                   src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
                 />
               </button>
+            </div>*/}
+            <div>
+              <Button
+                type="primary"
+                icon="google"
+                onClick={this.handleGoogleSignUp}
+                style={{ width: "240px" }}
+              >
+                {" "}
+                Sign Up with Google
+              </Button>
             </div>
           </div>
-          <div className="email-button-container">
+
+          {/*<div className="email-button-container">
             <div
               onClick={() => this.setState({ isEmailSignUpRequested: true })}
               className="email-button"
             >
               <Icon type="mail" />
               Sign Up with E-mail
+            </div>
+          </div>*/}
+          <div
+            className="separator"
+            style={{ width: "224px", margin: "12px 24px 0px 24px" }}
+          />
+          <div
+            className="social-buttons-container"
+            style={{ marginBottom: 20 }}
+          >
+            <div>
+              <Button
+                icon="mail"
+                onClick={() =>
+                  this.setState({
+                    isEmailSignUpRequested: true,
+                    user_type: null,
+                    college_id: null,
+                    college: "",
+                    collegeList: [],
+                    major: "",
+                    grad_year: null,
+                    alumniEmployment: true,
+                    company: "",
+                    job_title: "",
+                    country: "",
+                    stateOrProvince: "",
+                    googleAccessToken: "",
+                    photoUrl: ""
+                  })
+                }
+                style={{ width: "240px" }}
+              >
+                {" "}
+                Sign Up with Email
+              </Button>
             </div>
           </div>
         </div>
@@ -435,12 +681,737 @@ class SignUpPage extends Component {
     );
   }
 
+  generateBackButton(level) {
+    return (
+      <div>
+        <div style={{ margin: "12px 0 0 0" }} />
+        <Button
+          onClick={() =>
+            this.setState({
+              level: level
+            })
+          }
+          style={this.nextButtonStyle}
+        >
+          Back
+        </Button>
+      </div>
+    );
+  }
+
+  generateLevelIntro() {
+    return (
+      <div>
+        <div className="level-title">Welcome to Jobhax!</div>
+        <div className="level-body">
+          Please confirm a few, quick details to activate your account.
+        </div>
+        <div>
+          <Button
+            type="primary"
+            onClick={() => this.setState({ level: "basicInfo" })}
+            style={this.nextButtonStyle}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  generateLevelAccountType() {
+    return (
+      <div>
+        <div className="level-title">
+          Are you affiliated with a College/University?
+        </div>
+        <div>
+          <div className="level-body">
+            Improve your Job search experience in a seamless & intuitive way.
+          </div>
+          <div>
+            <Button
+              type="primary"
+              onClick={() =>
+                this.setState({
+                  level: "linkedin",
+                  user_type: USER_TYPES["public"]
+                })
+              }
+              style={this.nextButtonStyle}
+            >
+              Public Sign Up
+            </Button>
+          </div>
+        </div>
+        <div className="separator" />
+        <div>
+          <div className="level-body">
+            Connect & engage with your University to launch your career!
+          </div>
+          <div>
+            <Button
+              type="primary"
+              onClick={() =>
+                this.setState({
+                  level: "university"
+                })
+              }
+              style={this.nextButtonStyle}
+            >
+              University Portal
+            </Button>
+          </div>
+        </div>
+        <div>{this.generateBackButton("basicInfo")}</div>
+      </div>
+    );
+  }
+
+  universityChoices(snippet, type, title, level) {
+    return (
+      <div>
+        <div className="level-body">{snippet}</div>
+        <div style={{ marginBottom: 16 }}>
+          <Button
+            type="primary"
+            onClick={() =>
+              this.setState({ level: level, user_type: USER_TYPES[type] })
+            }
+            style={this.nextButtonStyle}
+          >
+            {title}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  generateLevelUniversity() {
+    return (
+      <div>
+        <div className="level-title">
+          What kind of account do you want to create?
+        </div>
+        <div>
+          {this.universityChoices(
+            "Organize, track, & get assistance throughout your job search process.",
+            "student",
+            "Student",
+            "student"
+          )}
+        </div>
+        <div>
+          {this.universityChoices(
+            "Use your experience to guide students towards their career goals.",
+            "alumni",
+            "Alumni",
+            "alumni"
+          )}
+        </div>
+        <div>
+          {this.universityChoices(
+            "Connect with your cohort to providetargeted assistance & track progress.",
+            "career_services",
+            "Career Services",
+            "career_services"
+          )}
+        </div>
+        <div>{this.generateBackButton("user_type")}</div>
+      </div>
+    );
+  }
+
+  generateLevelStudent() {
+    return (
+      <div>
+        <div className="level-title">Connect with your College</div>
+        <div className="level-body">Please enter your College:</div>
+        <div>
+          <AutoComplete
+            style={this.currentStyle(this.state.college, "")}
+            dataSource={this.state.collegeAutoCompleteData}
+            onSearch={value => this.handleAutoCompleteSearch(value, "colleges")}
+            placeholder="ex. Stanford University"
+            value={this.state.college && this.state.college}
+          />
+        </div>
+        <div className="level-body">Please enter your Major:</div>
+        <div>
+          <AutoComplete
+            style={this.currentStyle(this.state.major, "")}
+            dataSource={this.state.majorAutoCompleteData}
+            onSearch={value => this.handleAutoCompleteSearch(value, "majors")}
+            placeholder="ex. Computer Science"
+            value={this.state.major && this.state.major}
+          />
+        </div>
+        <div
+          className="level-body"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "240px",
+            margin: "0 0 8px 12px"
+          }}
+        >
+          <div>Expected Graduation Year:</div>
+          {this.state.mustInputEmphasis === true &&
+            this.state.grad_year === null && (
+              <div style={{ color: "red" }}>*</div>
+            )}
+          <Dropdown
+            overlay={() => this.generateGradYearDropdown(50, 1)}
+            placement="bottomCenter"
+          >
+            <a
+              className="ant-dropdown-link"
+              style={{ color: "rgba(100, 100, 100, 0.9)" }}
+            >
+              {this.state.grad_year != null ? this.state.grad_year : "Select"}{" "}
+              <Icon type="down" />
+            </a>
+          </Dropdown>
+        </div>
+        <div style={{ marginTop: 8 }}>
+          <Button
+            type="primary"
+            onClick={() =>
+              this.checkMustInputs(
+                [this.state.college, this.state.major, this.state.grad_year],
+                "linkedin"
+              )
+            }
+            style={this.nextButtonStyle}
+          >
+            Next
+          </Button>
+        </div>
+        <div>{this.generateBackButton("university")}</div>
+      </div>
+    );
+  }
+
+  setCountryOrStateList(event, state_type, id_type) {
+    if (
+      state_type == "country" &&
+      this.state.country != "" &&
+      this.state.country != event.item.props.children
+    ) {
+      let emptyList = [];
+      this.setState({
+        stateOrProvince: "",
+        state_id: null,
+        stateOrProvinceList: emptyList
+      });
+    }
+    this.setState({
+      [state_type]: event.item.props.children,
+      [id_type]: parseInt(event.key)
+    });
+    if (state_type == "country") {
+      this.handleAutoCompleteSearch(parseInt(event.key), "stateOrProvince");
+    }
+  }
+
+  generateLevelBasicInfo() {
+    console.log("stateList", this.state.stateOrProvinceList);
+    const mustInputsList =
+      this.state.stateOrProvinceList.length > 0
+        ? [
+            this.state.first_name,
+            this.state.last_name,
+            this.state.country,
+            this.state.stateOrProvince
+          ]
+        : [this.state.first_name, this.state.last_name, this.state.country];
+    const menu = (state_type, id_type, data_list) => (
+      <Menu
+        onClick={event =>
+          this.setCountryOrStateList(event, state_type, id_type)
+        }
+        style={{
+          width: "240px",
+          maxHeight: "260px",
+          textAlign: "center",
+          overflowX: "hidden"
+        }}
+      >
+        {data_list.map(data => (
+          <Menu.Item key={data.id}>{data.name}</Menu.Item>
+        ))}
+      </Menu>
+    );
+
+    return (
+      <div>
+        <div className="level-title">Connect with your College</div>
+        <div className="level-body">Please enter your First Name:</div>
+        <div>
+          <Input
+            placeholder="John"
+            value={this.state.first_name && this.state.first_name}
+            style={this.currentStyle(this.state.first_name, "")}
+            onChange={event =>
+              this.setState({ first_name: event.target.value })
+            }
+          />
+        </div>
+        <div className="level-body">Please enter your Last Name:</div>
+        <div>
+          <Input
+            placeholder="Doe"
+            value={this.state.last_name && this.state.last_name}
+            style={this.currentStyle(this.state.last_name, "")}
+            onChange={event => this.setState({ last_name: event.target.value })}
+          />
+        </div>
+        <div className="level-body">
+          <div style={{ padding: "0 4px 8px 0" }}>Where do you live?</div>
+
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            {this.state.mustInputEmphasis === true &&
+              this.state.country == "" && <div style={{ color: "red" }}>*</div>}
+            <Dropdown
+              overlay={menu("country", "country_id", this.state.countryList)}
+              placement="bottomCenter"
+            >
+              <a
+                className="ant-dropdown-link"
+                style={{ color: "rgba(100, 100, 100, 0.9)" }}
+                onMouseEnter={() =>
+                  this.state.countryList.length == 0 &&
+                  this.handleAutoCompleteSearch(null, "countries")
+                }
+              >
+                {this.state.country != "" || null
+                  ? this.state.country
+                  : "Please Select a Country"}{" "}
+                <Icon type="down" />
+              </a>
+            </Dropdown>
+          </div>
+          {this.state.country_id != null &&
+            this.state.stateOrProvinceList.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  margin: "8px 0 8px 0"
+                }}
+              >
+                {this.state.mustInputEmphasis === true &&
+                  this.state.stateOrProvince === "" && (
+                    <div style={{ color: "red" }}>*</div>
+                  )}
+                <Dropdown
+                  overlay={menu(
+                    "stateOrProvince",
+                    "state_id",
+                    this.state.stateOrProvinceList
+                  )}
+                  placement="bottomCenter"
+                >
+                  <a
+                    className="ant-dropdown-link"
+                    style={{
+                      color: "rgba(100, 100, 100, 0.9)",
+                      margin: "0 0 8px 0"
+                    }}
+                  >
+                    {this.state.stateOrProvince != "" || null
+                      ? this.state.stateOrProvince
+                      : "Select a State/Province"}{" "}
+                    <Icon type="down" />
+                  </a>
+                </Dropdown>
+              </div>
+            )}
+        </div>
+        <div style={{ marginTop: 8 }}>
+          <Button
+            type="primary"
+            onClick={() => this.checkMustInputs(mustInputsList, "user_type")}
+            style={this.nextButtonStyle}
+          >
+            Next
+          </Button>
+        </div>
+        <div>{this.generateBackButton("intro")}</div>
+      </div>
+    );
+  }
+
+  checkMustInputs(mustInputs, level) {
+    console.log(mustInputs);
+    let x = mustInputs.length;
+    let y = 0;
+    for (let i = 0; i < x; i++) {
+      if (mustInputs[i] != null) {
+        if (mustInputs[i].toString().trim() != "") {
+          y = y + 1;
+        }
+      }
+    }
+    if (x == y) {
+      this.setState({ level: level, mustInputEmphasis: false });
+    } else {
+      this.setState(
+        { mustInputEmphasis: true },
+        console.log(this.state.mustInputEmphasis)
+      );
+      this.props.alert(3000, "error", "You have to fill out all form!");
+    }
+  }
+
+  onAlumniEmploymentSwitch(checked) {
+    console.log(`switch to ${checked}`);
+    this.setState({ alumniEmployment: checked });
+  }
+
+  handleCompanySearch(value) {
+    this.setState({ company: value });
+    let url =
+      "https://autocomplete.clearbit.com/v1/companies/suggest?query=" + value;
+    let config = {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    axiosCaptcha(url, config).then(response => {
+      if (response.statusText === "OK") {
+        console.log(response);
+        let bufferList = [];
+        response.data.forEach(company => bufferList.push(company.name));
+        this.setState({
+          companyAutoCompleteData: bufferList
+        });
+      }
+    });
+  }
+
+  generateUrlForGetData(value, type) {
+    const { url } = getAutoCompleteRequest;
+    if (type === "majors") {
+      this.setState({ major: value });
+      let newUrl = url(type) + "?q=" + value;
+      return newUrl;
+    } else if (type === "positions") {
+      let newUrl = url(type) + "?q=" + value + "&count=5";
+      this.setState({ job_title: value });
+      return newUrl;
+    } else if (type === "colleges") {
+      let newUrl = url(type) + "?q=" + value;
+      this.setState({ college: value });
+      return newUrl;
+    } else if (type === "countries") {
+      let newUrl = url(type);
+      return newUrl;
+    } else if (type === "stateOrProvince") {
+      let newUrl = url("countries/") + value + "/states/";
+      return newUrl;
+    }
+  }
+
+  async handleAutoCompleteSearch(value, type) {
+    const { config } = getAutoCompleteRequest;
+    let newUrl = await this.generateUrlForGetData(value, type);
+    axiosCaptcha(newUrl, config).then(response => {
+      if (response.statusText === "OK") {
+        IS_CONSOLE_LOG_OPEN && console.log(response.data);
+        let bufferList = [];
+        if (type === "majors") {
+          response.data.data.forEach(element => bufferList.push(element.name));
+          this.setState({ majorAutoCompleteData: bufferList });
+        } else if (type === "positions") {
+          response.data.data.forEach(element =>
+            bufferList.push(element.job_title)
+          );
+          this.setState({ positionAutoCompleteData: bufferList });
+        } else if (type === "colleges") {
+          response.data.data.forEach(element =>
+            bufferList.push(`${element.alpha_two_code} - ${element.name}`)
+          );
+          this.setState({
+            collegeAutoCompleteData: bufferList
+          });
+          if (response.data.data.length > 0) {
+            let collegeList = response.data.data;
+            this.setState({
+              collegeList: collegeList,
+              college_id: collegeList[0].id
+            });
+            IS_CONSOLE_LOG_OPEN && console.log("colleges", collegeList);
+          }
+        } else if (type === "countries") {
+          let countriesList = response.data.data;
+          this.setState({ countryList: countriesList });
+          IS_CONSOLE_LOG_OPEN && console.log("countriesList", countriesList);
+        } else if (type === "stateOrProvince") {
+          let statesList = response.data.data;
+          this.setState({ stateOrProvinceList: statesList });
+          IS_CONSOLE_LOG_OPEN && console.log("statesList", statesList);
+        }
+      }
+    });
+  }
+
+  generateAlumniEmploymentForm() {
+    return (
+      <div>
+        <div>
+          <AutoComplete
+            dataSource={this.state.companyAutoCompleteData}
+            style={this.narrowInputStyle}
+            onSearch={this.handleCompanySearch}
+            placeholder="Company Name"
+            value={this.state.company && this.state.company}
+          />
+        </div>
+        <div>
+          <AutoComplete
+            style={this.narrowInputStyle}
+            dataSource={this.state.positionAutoCompleteData}
+            onSearch={value =>
+              this.handleAutoCompleteSearch(value, "positions")
+            }
+            placeholder="Job Title"
+            value={this.state.job_title && this.state.job_title}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  generateGradYears(amount, direction) {
+    let yearList = [];
+    for (let i = 0; i <= amount - 1; i++) {
+      yearList.push(new Date().getFullYear() + i * direction);
+    }
+    return yearList.map(year => <Menu.Item key={year}>{year}</Menu.Item>);
+  }
+
+  handleGradYearSelection(event) {
+    let year = event.item.props.children;
+    this.setState({ grad_year: year });
+  }
+
+  generateGradYearDropdown(amount, direction) {
+    return (
+      <Menu
+        onClick={this.handleGradYearSelection}
+        style={{
+          width: "68px",
+          maxHeight: "260px",
+          textAlign: "center",
+          overflowX: "hidden"
+        }}
+      >
+        {this.generateGradYears(amount, direction)}
+      </Menu>
+    );
+  }
+
+  generateLevelAlumni() {
+    return (
+      <div>
+        <div className="level-title">Connect with your College</div>
+        <div className="level-body">Please enter your College:</div>
+        <div>
+          <AutoComplete
+            style={this.currentStyle(this.state.college, "")}
+            dataSource={this.state.collegeAutoCompleteData}
+            onSearch={value => this.handleAutoCompleteSearch(value, "colleges")}
+            placeholder="ex. Stanford University"
+            value={this.state.college && this.state.college}
+          />
+        </div>
+        <div className="level-body">Please enter your Major:</div>
+        <div>
+          <AutoComplete
+            style={this.currentStyle(this.state.major, "")}
+            dataSource={this.state.majorAutoCompleteData}
+            onSearch={value => this.handleAutoCompleteSearch(value, "majors")}
+            placeholder="ex. Computer Science"
+            value={this.state.major && this.state.major}
+          />
+        </div>
+        <div
+          className="level-body"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "240px",
+            margin: "0 0 8px 12px"
+          }}
+        >
+          <div>Graduation Year:</div>
+          {this.state.mustInputEmphasis === true &&
+            this.state.grad_year === null && (
+              <div style={{ color: "red" }}>*</div>
+            )}
+          <Dropdown
+            overlay={() => this.generateGradYearDropdown(50, -1)}
+            placement="bottomCenter"
+          >
+            <a
+              className="ant-dropdown-link"
+              style={{ color: "rgba(100, 100, 100, 0.9)" }}
+            >
+              {this.state.grad_year != null ? this.state.grad_year : "Select"}{" "}
+              <Icon type="down" />
+            </a>
+          </Dropdown>
+        </div>
+        <div
+          className="level-body"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "240px",
+            margin: "0 0 0 12px"
+          }}
+        >
+          Currently Employed?
+          <Switch
+            defaultChecked={this.state.alumniEmployment}
+            onChange={this.onAlumniEmploymentSwitch}
+          />
+        </div>
+        {this.state.alumniEmployment && this.generateAlumniEmploymentForm()}
+        <div style={{ marginTop: 8 }}>
+          <Button
+            type="primary"
+            onClick={() =>
+              this.checkMustInputs(
+                [this.state.college, this.state.major, this.state.grad_year],
+                "linkedin"
+              )
+            }
+            style={this.nextButtonStyle}
+          >
+            Next
+          </Button>
+        </div>
+        <div>{this.generateBackButton("university")}</div>
+      </div>
+    );
+  }
+
+  linkedInOAuthRequest() {
+    linkedInOAuth();
+    this.setState({ level: "submit" });
+  }
+
+  generateLevelLinkedIn() {
+    const level =
+      this.state.user_type == USER_TYPES["public"]
+        ? "user_type"
+        : Object.assign(
+            {},
+            ...Object.entries(USER_TYPES).map(([a, b]) => ({ [b]: a }))
+          )[this.state.user_type];
+    return (
+      <div>
+        <div className="level-title">Welcome to Jobhax!</div>
+        <div className="level-body">
+          If you have a LinkedIn account, we can keep your information in sync,
+          aggregate your work experience & build custom resumes.
+        </div>
+        <div>
+          <Button
+            type="primary"
+            icon="linkedin"
+            onClick={() => this.linkedInOAuthRequest()}
+            style={this.nextButtonStyle}
+          >
+            {" "}
+            Connect With LinkedIn
+          </Button>
+        </div>
+        <div style={{ marginTop: 20 }}>
+          <Button
+            onClick={() => this.setState({ level: "submit" })}
+            style={this.nextButtonStyle}
+          >
+            Skip
+          </Button>
+        </div>
+        <div>{this.generateBackButton(level)}</div>
+      </div>
+    );
+  }
+
+  generateLevelSubmit() {
+    return (
+      <div>
+        <div className="level-title" style={{ fontWeight: 500 }}>
+          You're all set!
+        </div>
+        <div>
+          <Button
+            type="primary"
+            onClick={() => this.handleFinish()}
+            style={this.nextButtonStyle}
+          >
+            Finish
+          </Button>
+        </div>
+        <div>{this.generateBackButton("linkedin")}</div>
+      </div>
+    );
+  }
+
+  async generateLevelFinal() {
+    await this.props.setIsUserLoggedIn(true);
+    return <Redirect to="dashboard" />;
+  }
+
+  generateAdditionalInfoForms() {
+    switch (this.state.level) {
+      case "intro":
+        return this.generateLevelIntro();
+      case "basicInfo":
+        return this.generateLevelBasicInfo();
+      case "user_type":
+        return this.generateLevelAccountType();
+      case "university":
+        return this.generateLevelUniversity();
+      case "student":
+        return this.generateLevelStudent();
+      case "alumni":
+        return this.generateLevelAlumni();
+      case "careerServices":
+        return <Redirect to="signin" />;
+      case "linkedin":
+        return this.generateLevelLinkedIn();
+      case "submit":
+        return this.generateLevelSubmit();
+    }
+  }
+
   render() {
+    console.log("level", this.state.level);
     return (
       <div>
         <div className="sign_up-background">{this.generateTopButtons()}</div>
         <div className="sign_up-vertical-container">
-          <div className="sign_up-container">{this.generateSignUp()}</div>
+          <div className="sign_up-container">
+            {this.state.level === "undefined" ? (
+              this.generateSignUp()
+            ) : (
+              <div className="sign_up-form-container">
+                <div className="content-container">
+                  <div className="levels">
+                    {this.generateAdditionalInfoForms()}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <div className="bottom-fixed-footer-sign_up">
           <Footer />
