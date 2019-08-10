@@ -114,7 +114,12 @@ class Header extends Component {
               <span>Alumni</span>
             </Link>
           </div>
-          {/*
+          {/*<div className="header-icon general tooltips">
+            <Link to="/events">
+              <img src="../../../src/assets/icons/EventIcon.png" />
+              <span>Events</span>
+            </Link>
+          </div>
           <div className="header-icon general tooltips">
             <Link to="/mentors">
               <img src="../../../src/assets/icons/MentorIcon.png" />
