@@ -1,5 +1,6 @@
 import axios from "axios";
 import { linkedInClientId, linkedInClientSecret } from "../../config/config.js";
+import { IS_CONSOLE_LOG_OPEN } from "../constants/constants.js";
 
 export function linkedInOAuth() {
   let url =
@@ -15,7 +16,8 @@ export function linkedInOAuth() {
 }
 
 export async function linkedInAccessTokenRequester(authCode) {
-  console.log("access code will be requested with", authCode);
+  IS_CONSOLE_LOG_OPEN &&
+    console.log("access code will be requested with", authCode);
   response = await axios({
     method: "POST",
     url: "https://www.linkedin.com/oauth/v2/accessToken",
@@ -30,7 +32,7 @@ export async function linkedInAccessTokenRequester(authCode) {
       "Content-Type": "application/x-www-form-urlencoded"
     }
   }).catch(error => {
-    console.log(error);
+    IS_CONSOLE_LOG_OPEN && console.log(error);
   });
-  console.log("linkedInOAuth response", response);
+  IS_CONSOLE_LOG_OPEN && console.log("linkedInOAuth response", response);
 }

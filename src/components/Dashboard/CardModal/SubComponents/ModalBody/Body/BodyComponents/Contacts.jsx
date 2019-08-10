@@ -5,6 +5,7 @@ import ContactCard from "../../../../../../Partials/ContactCards/ContactCard.jsx
 import ContactCardOnEdit from "../../../../../../Partials/ContactCards/ContactCardOnEdit.jsx";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api";
 import { getContactsRequest } from "../../../../../../../utils/api/requests.js";
+import { IS_CONSOLE_LOG_OPEN } from "../../../../../../../utils/constants/constants.js";
 
 class Contacts extends React.Component {
   constructor(props) {
@@ -48,7 +49,7 @@ class Contacts extends React.Component {
     updatedContacts.unshift(contact);
     this.setState(
       { contacts: updatedContacts },
-      console.log("added", this.state.contacts)
+      IS_CONSOLE_LOG_OPEN && console.log("added", this.state.contacts)
     );
   }
 
@@ -59,7 +60,7 @@ class Contacts extends React.Component {
     updatedContacts.unshift(editedContact);
     this.setState(
       { contacts: updatedContacts },
-      console.log("updated", this.state.contacts)
+      IS_CONSOLE_LOG_OPEN && console.log("updated", this.state.contacts)
     );
   }
 
@@ -67,7 +68,7 @@ class Contacts extends React.Component {
     let updatedContacts = this.state.contacts;
     this.setState(
       { contacts: updatedContacts.filter(contact => contact.id != contactId) },
-      console.log("edited", this.state.contacts)
+      IS_CONSOLE_LOG_OPEN && console.log("edited", this.state.contacts)
     );
   }
 
@@ -91,7 +92,7 @@ class Contacts extends React.Component {
   }
 
   render() {
-    console.log("contacts", this.state.contacts);
+    IS_CONSOLE_LOG_OPEN && console.log("contacts", this.state.contacts);
     return (
       <div className="contacts">
         <div className="add-contact-button-container">

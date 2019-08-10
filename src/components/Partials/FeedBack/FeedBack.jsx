@@ -45,7 +45,7 @@ class FeedBack extends React.Component {
       this.body["text"] = this.state.textValue.trim();
     }
     feedbackRequest.config.body = this.body;
-    console.log(feedbackRequest.config.body);
+    IS_CONSOLE_LOG_OPEN && console.log(feedbackRequest.config.body);
     const response = await axiosCaptcha(
       feedbackRequest.url,
       feedbackRequest.config,
@@ -61,7 +61,8 @@ class FeedBack extends React.Component {
         );
       } else {
         this.setState({ isUpdating: false });
-        console.log(response, response.data.error_message);
+        IS_CONSOLE_LOG_OPEN &&
+          console.log(response, response.data.error_message);
         this.props.alert(
           5000,
           "error",

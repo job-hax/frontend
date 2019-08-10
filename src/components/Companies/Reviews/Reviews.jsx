@@ -178,7 +178,7 @@ class Reviews extends React.Component {
   }
 
   render() {
-    console.log(this.state.reviewsList);
+    IS_CONSOLE_LOG_OPEN && console.log(this.state.reviewsList);
     return (
       <div>
         {this.props.filterDisplay && (

@@ -318,7 +318,8 @@ class Mentors extends PureComponent {
         if (response.statusText === "OK") {
           if (response.data.success != true) {
             this.setState({ isUpdating: false });
-            console.log(response, response.data.error_message);
+            IS_CONSOLE_LOG_OPEN &&
+              console.log(response, response.data.error_message);
             this.props.alert(
               5000,
               "error",
