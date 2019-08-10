@@ -28,7 +28,7 @@ class Footer extends Component {
         </div>
         <div className="footer-content footer-social-links">
           <div>
-            <Link to="/blogs">
+            {/*<Link to="/blogs">
               <img
                 src="../../../src/assets/icons/beta_flag_2.png"
                 style={{
@@ -39,7 +39,7 @@ class Footer extends Component {
                 }}
               />
               <span>Blogs</span>
-            </Link>
+              </Link>*/}
             <a href="https://github.com/job-hax">
               <span>GitHub</span>
             </a>

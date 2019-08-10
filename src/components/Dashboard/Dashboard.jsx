@@ -1,6 +1,16 @@
 import React, { Component } from "react";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
+import {
+  Input,
+  DatePicker,
+  Checkbox,
+  Menu,
+  Dropdown,
+  Icon,
+  Button,
+  message
+} from "antd";
 
 import Column from "./Column/Column.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
@@ -9,7 +19,9 @@ import {
   addJobAppsRequest,
   getJobAppsRequest,
   updateJobStatusRequest,
-  postUsersRequest
+  postUsersRequest,
+  getNewJobappsRequest,
+  deleteJobRequest
 } from "../../utils/api/requests.js";
 import { IS_MOCKING } from "../../config/config.js";
 import { mockJobApps } from "../../utils/api/mockResponses.js";
@@ -21,11 +33,16 @@ import { generateCurrentDate } from "../../utils/helpers/helperFunctions.js";
 
 import "./style.scss";
 
+const { Search } = Input;
+const { RangePicker } = DatePicker;
+const { SubMenu } = Menu;
+
 class Dashboard extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      allApplications: [],
       toApply: [],
       applied: [],
       phoneScreen: [],
@@ -35,7 +52,10 @@ class Dashboard extends Component {
       phoneScreenRejected: [],
       onsiteInterviewRejected: [],
       offerRejected: [],
-      isInitialRequest: "beforeRequest"
+      isInitialRequest: "beforeRequest",
+      selectedJobApplications: [],
+      displayingList: [],
+      isSycnhingJobApps: false
     };
 
     this.toApply = [];
@@ -47,15 +67,36 @@ class Dashboard extends Component {
     this.phoneScreenRejected = [];
     this.onsiteInterviewRejected = [];
     this.offerRejected = [];
+    this.selectedJobApplications = [];
 
     this.updateApplications = this.updateApplications.bind(this);
     this.addNewApplication = this.addNewApplication.bind(this);
     this.deleteJobFromList = this.deleteJobFromList.bind(this);
     this.moveToRejected = this.moveToRejected.bind(this);
+    this.onDateQuery = this.onDateQuery.bind(this);
+    this.addToSelectedJobApplicationsList = this.addToSelectedJobApplicationsList.bind(
+      this
+    );
+    this.onSelectAll = this.onSelectAll.bind(this);
+    this.handleMenuClick = this.handleMenuClick.bind(this);
+    this.moveMultipleOperation = this.moveMultipleOperation.bind(this);
+    this.moveMultipleToSpecificRejectedOperation = this.moveMultipleToSpecificRejectedOperation.bind(
+      this
+    );
+    this.waitAndTriggerComponentDidUpdate = this.waitAndTriggerComponentDidUpdate.bind(
+      this
+    );
   }
 
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
+      if (
+        this.props.cookie("get", "google_login_first_instance") != ("" || null)
+      ) {
+        console.log("dashboard google token var");
+        this.props.cookie("remove", "google_login_first_instance");
+        this.setState({ isSycnhingJobApps: true });
+      }
       await this.getData();
       axiosCaptcha(
         postUsersRequest.url("verify_recaptcha"),
@@ -77,8 +118,49 @@ class Dashboard extends Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.getData();
+    if (
+      prevProps.syncResponseTimestamp != this.props.syncResponseTimestamp ||
+      this.state.isSycnhingJobApps == true
+    ) {
+      this.setState({ isSycnhingJobApps: false });
+      axiosCaptcha(
+        getNewJobappsRequest.url(`${new Date().getTime() - 5000}`),
+        getNewJobappsRequest.config
+      ).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success == true) {
+            IS_CONSOLE_LOG_OPEN && console.log("sync loop", response);
+            if (response.data.data.synching == true) {
+              let updatedList = this.state.allApplications;
+              response.data.data.data.forEach(newJobApp => {
+                const found = updatedList.some(
+                  jobApp => jobApp.id === newJobApp.id
+                );
+                if (!found) {
+                  updatedList.push(newJobApp);
+                }
+              });
+              this.setState({ allApplications: updatedList });
+              this.sortJobApplications(updatedList);
+              this.waitAndTriggerComponentDidUpdate(3);
+            } else {
+              this.setState({ isSycnhingJobApps: false });
+            }
+          }
+        }
+      });
+    }
+  }
+
+  waitAndTriggerComponentDidUpdate(seconds) {
+    setTimeout(() => {
+      this.setState(
+        { isSycnhingJobApps: true },
+        console.log("after wait", this.state.isSycnhingJobApps)
+      );
+    }, seconds * 1000);
   }
 
   async getData() {
@@ -103,8 +185,14 @@ class Dashboard extends Component {
         const { url, config } = getJobAppsRequest;
         axiosCaptcha(url, config).then(response => {
           if (response.statusText === "OK") {
-            this.sortJobApplications(response.data.data);
-            this.setState({ isInitialRequest: false });
+            let updatedData = response.data.data;
+            updatedData.forEach(jobApp => (jobApp.isSelected = false));
+            this.setState({
+              isInitialRequest: false,
+              allApplications: updatedData,
+              displayingList: updatedData
+            });
+            this.sortJobApplications(updatedData);
             IS_CONSOLE_LOG_OPEN &&
               console.log("dashboard response.data data", response.data.data);
           }
@@ -114,6 +202,15 @@ class Dashboard extends Component {
   }
 
   sortJobApplications(applications) {
+    this.toApply = [];
+    this.applied = [];
+    this.phoneScreen = [];
+    this.onsiteInterview = [];
+    this.offer = [];
+    this.appliedRejected = [];
+    this.phoneScreenRejected = [];
+    this.onsiteInterviewRejected = [];
+    this.offerRejected = [];
     for (let application of applications) {
       switch (application.applicationStatus.value.toLowerCase()) {
         case "to apply":
@@ -167,31 +264,46 @@ class Dashboard extends Component {
     });
   }
 
+  addToSelectedJobApplicationsList(command, card) {
+    if (command === "add") {
+      this.selectedJobApplications.push({
+        jobApp_id: card.id,
+        applicationStatus: card.applicationStatus
+      });
+    }
+    if (command === "delete") {
+      this.selectedJobApplications = this.selectedJobApplications.filter(
+        job => {
+          return job.jobApp_id !== card.id;
+        }
+      );
+    }
+    this.setState({ selectedJobApplications: this.selectedJobApplications });
+    console.log(this.selectedJobApplications);
+  }
+
   async updateApplications(card, dragColumnName, dropColumnName) {
     if (dragColumnName === dropColumnName) {
       return;
     }
-    const removedItemColumn = this.state[dragColumnName].filter(job => {
-      return job.id !== card.id;
-    });
-
-    card.applicationStatus = UPDATE_APPLICATION_STATUS[dropColumnName];
-    let insertedItemColumn = this.state[dropColumnName].slice();
-    insertedItemColumn.unshift(card);
+    let newDisplayingJobappsList = this.state.displayingList.filter(
+      jobapp => jobapp.id != card.id
+    );
+    let updatedCard = card;
+    updatedCard.applicationStatus = UPDATE_APPLICATION_STATUS[dropColumnName];
+    newDisplayingJobappsList.unshift(updatedCard);
+    this.sortJobApplications(newDisplayingJobappsList);
     await this.props.handleTokenExpiration("dashboard updateApplications");
     console.log("ok? after");
     let { url, config } = updateJobStatusRequest;
     config.body = {
       jobapp_id: card.id,
       status_id: card.applicationStatus.id,
-      rejected: false
+      rejected: card.isRejected
     };
     axiosCaptcha(url, config).then(response => {
-      if (response.statusText === "OK") {
-        this.setState(() => ({
-          [dragColumnName]: removedItemColumn,
-          [dropColumnName]: insertedItemColumn
-        }));
+      if (response.data.success != true) {
+        window.location.reload(true);
       }
     });
   }
@@ -250,7 +362,343 @@ class Dashboard extends Component {
     }));
   }
 
+  onSearch(event) {
+    let value = event.target.value;
+    let queriedList = this.state.allApplications;
+    queriedList = queriedList.filter(application => {
+      return (
+        application.companyObject.company
+          .toLowerCase()
+          .match(value.trim().toLowerCase()) ||
+        application.position.job_title
+          .toLowerCase()
+          .match(value.trim().toLowerCase())
+      );
+    });
+    console.log(queriedList);
+    this.sortJobApplications(queriedList);
+    this.setState({ displayingList: queriedList });
+  }
+
+  onDateQuery(date, dateString) {
+    console.log(date, dateString);
+    let mainList = this.state.allApplications;
+    let filteredList = [];
+    mainList.forEach(application => {
+      if (
+        date[0] <= new Date(application.applyDate) &&
+        new Date(application.applyDate) <= date[1]
+      ) {
+        filteredList.push(application);
+      }
+    });
+    console.log(filteredList);
+    this.sortJobApplications(filteredList);
+    this.setState({ displayingList: filteredList });
+  }
+
+  async onSelectAll(event) {
+    let isSelected = event.target.checked;
+    console.log(`checkedAll = `, isSelected);
+    if (isSelected === true) {
+      let selectedDisplayingList = this.state.displayingList;
+      selectedDisplayingList.forEach(jobApp => (jobApp.isSelected = true));
+      await this.setState({ displayingList: selectedDisplayingList });
+      console.log(this.state.displayingList);
+      this.selectedJobApplications = [];
+      this.state.displayingList.forEach(jobApp =>
+        this.selectedJobApplications.push({
+          jobApp_id: jobApp.id,
+          applicationStatus: jobApp.applicationStatus
+        })
+      );
+      await this.setState({
+        selectedJobApplications: this.selectedJobApplications
+      });
+      console.log(
+        "selecteds List after select all",
+        this.state.selectedJobApplications
+      );
+      this.sortJobApplications(this.state.displayingList);
+    }
+    if (isSelected === false) {
+      let selectedDisplayingList = this.state.displayingList;
+      selectedDisplayingList.forEach(jobApp => (jobApp.isSelected = false));
+      await this.setState({ displayingList: selectedDisplayingList });
+      console.log(this.state.displayingList);
+      this.selectedJobApplications = [];
+      await this.setState({
+        selectedJobApplications: this.selectedJobApplications
+      });
+      console.log(
+        "selecteds List after deselect all",
+        this.state.selectedJobApplications
+      );
+      this.sortJobApplications(this.state.displayingList);
+    }
+  }
+
+  moveMultipleOperation(status_id, status_name, requestList) {
+    let newList = this.state.displayingList;
+    this.state.selectedJobApplications.forEach(selectedJobApp =>
+      newList.forEach(displayingJobApp => {
+        if (displayingJobApp.id == selectedJobApp.jobApp_id) {
+          displayingJobApp.applicationStatus.id = status_id;
+          displayingJobApp.applicationStatus.value = status_name;
+        }
+      })
+    );
+    const body = {
+      jobapp_ids: requestList,
+      status_id: status_id
+    };
+    let { url, config } = updateJobStatusRequest;
+    config.body = body;
+    axiosCaptcha(url, config).then(response => {
+      if (response.data.success == true) {
+        message.info("Its done!");
+      } else {
+        message.info(response.data.error_message);
+        window.location.reload(true);
+      }
+    });
+    this.setState({ displayingList: newList, allApplications: newList });
+    this.sortJobApplications(newList);
+  }
+
+  moveMultipleToSpecificRejectedOperation(status_id, status_name, requestList) {
+    let newList = this.state.displayingList;
+    this.state.selectedJobApplications.forEach(selectedJobApp =>
+      newList.forEach(displayingJobApp => {
+        if (displayingJobApp.id == selectedJobApp.jobApp_id) {
+          displayingJobApp.applicationStatus.id = status_id;
+          displayingJobApp.applicationStatus.value = status_name;
+          displayingJobApp.isRejected = true;
+        }
+      })
+    );
+    const body = {
+      jobapp_ids: requestList,
+      status_id: status_id,
+      rejected: true
+    };
+    let { url, config } = updateJobStatusRequest;
+    config.body = body;
+    axiosCaptcha(url, config).then(response => {
+      if (response.data.success == true) {
+        message.info("Its done!");
+      } else {
+        message.info(response.data.error_message);
+        window.location.reload(true);
+      }
+    });
+    this.setState({ displayingList: newList, allApplications: newList });
+    this.sortJobApplications(newList);
+  }
+
+  async handleMenuClick(event) {
+    await this.props.handleTokenExpiration("moveMultipleOptions");
+    console.log("click", event);
+    let requestList = [];
+    this.state.selectedJobApplications.forEach(selectedJobApp =>
+      requestList.push(selectedJobApp.jobApp_id)
+    );
+    if (event.key === "deleteAll") {
+      let newList = this.state.displayingList;
+      this.state.selectedJobApplications.forEach(selectedJobApp =>
+        newList.forEach(displayingJobApp => {
+          if (displayingJobApp.id == selectedJobApp.jobApp_id) {
+            newList.splice(newList.indexOf(displayingJobApp), 1);
+          }
+        })
+      );
+      this.setState({ displayingList: newList, allApplications: newList });
+      this.sortJobApplications(newList);
+      const body = {
+        jobapp_ids: requestList
+      };
+      let { url, config } = deleteJobRequest;
+      config.body = body;
+      axiosCaptcha(url, config).then(response => {
+        if (response.data.success == true) {
+          message.info("Its done!");
+        } else {
+          message.info(response.data.error_message);
+          window.location.reload(true);
+        }
+      });
+    } else if (event.key === "currentR") {
+      let newList = this.state.displayingList;
+      this.state.selectedJobApplications.forEach(selectedJobApp =>
+        newList.forEach(displayingJobApp => {
+          if (
+            displayingJobApp.id == selectedJobApp.jobApp_id &&
+            selectedJobApp.applicationStatus.id != 2
+          ) {
+            displayingJobApp.isRejected = true;
+          }
+        })
+      );
+      const body = {
+        jobapp_ids: requestList,
+        rejected: true
+      };
+      let { url, config } = updateJobStatusRequest;
+      config.body = body;
+      axiosCaptcha(url, config).then(response => {
+        if (response.data.success == true) {
+          message.info("Its done!");
+        } else {
+          message.info(response.data.error_message);
+          window.location.reload(true);
+        }
+      });
+      this.setState({ displayingList: newList, allApplications: newList });
+      this.sortJobApplications(newList);
+    } else if (event.key === "toApply") {
+      let newList = this.state.displayingList;
+      let toApplyList = [];
+      this.state.selectedJobApplications.forEach(selectedJobApp =>
+        newList.forEach(displayingJobApp => {
+          if (
+            displayingJobApp.id == selectedJobApp.jobApp_id &&
+            displayingJobApp.isRejected == false
+          ) {
+            displayingJobApp.applicationStatus.id = 2;
+            displayingJobApp.applicationStatus.value = "TO APPLY";
+            toApplyList.push(selectedJobApp.jobApp_id);
+          }
+        })
+      );
+      const body = {
+        jobapp_ids: toApplyList,
+        status_id: 2
+      };
+      let { url, config } = updateJobStatusRequest;
+      config.body = body;
+      axiosCaptcha(url, config).then(response => {
+        if (response.data.success == true) {
+          message.info("Its done!");
+        } else {
+          message.info(response.data.error_message);
+          window.location.reload(true);
+        }
+      });
+      this.setState({ displayingList: newList, allApplications: newList });
+      this.sortJobApplications(newList);
+    } else if (event.key === "applied") {
+      this.moveMultipleOperation(1, "Applied", requestList);
+    } else if (event.key === "phoneScreen") {
+      this.moveMultipleOperation(3, "PHONE SCREEN", requestList);
+    } else if (event.key === "onsiteInterview") {
+      this.moveMultipleOperation(4, "ONSITE INTERVIEW", requestList);
+    } else if (event.key === "offers") {
+      this.moveMultipleOperation(5, "OFFER", requestList);
+    } else if (event.key === "appliedR") {
+      this.moveMultipleToSpecificRejectedOperation(1, "Applied", requestList);
+    } else if (event.key === "phoneScreenR") {
+      this.moveMultipleToSpecificRejectedOperation(
+        3,
+        "PHONE SCREEN",
+        requestList
+      );
+    } else if (event.key === "onsiteInterviewR") {
+      this.moveMultipleToSpecificRejectedOperation(
+        4,
+        "ONSITE INTERVIEW",
+        requestList
+      );
+    } else if (event.key === "offersR") {
+      this.moveMultipleToSpecificRejectedOperation(5, "OFFER", requestList);
+    }
+    this.onSelectAll({ target: { checked: false } });
+  }
+
   render() {
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <SubMenu title="Rejected">
+          <Menu.Item key="currentR">
+            <img
+              className="icon"
+              src="../../src/assets/icons/RejectedIconInBtn@1x.png"
+            />
+            Current Stages
+          </Menu.Item>
+          <Menu.Item key="appliedR">
+            <img
+              className="icon"
+              src="../../src/assets/icons/AppliedIcon@3x.png"
+            />
+            Applied
+          </Menu.Item>
+          <Menu.Item key="phoneScreenR">
+            <img
+              className="icon"
+              src="../../src/assets/icons/PhoneScreenIcon@3x.png"
+            />
+            Phone Screen
+          </Menu.Item>
+          <Menu.Item key="onsiteInterviewR">
+            <img
+              className="icon"
+              src="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
+            />
+            Onsite Interview
+          </Menu.Item>
+          <Menu.Item key="offersR">
+            <img
+              className="icon"
+              src="../../src/assets/icons/OffersIcon@3x.png"
+            />
+            Offer
+          </Menu.Item>
+        </SubMenu>
+        <Menu.Item key="toApply">
+          <img
+            className="icon"
+            src="../../src/assets/icons/ToApplyIcon@3x.png"
+          />
+          To Apply
+        </Menu.Item>
+        <Menu.Item key="applied">
+          <img
+            className="icon"
+            src="../../src/assets/icons/AppliedIcon@3x.png"
+          />
+          Applied
+        </Menu.Item>
+        <Menu.Item key="phoneScreen">
+          <img
+            className="icon"
+            src="../../src/assets/icons/PhoneScreenIcon@3x.png"
+          />
+          Phone Screen
+        </Menu.Item>
+        <Menu.Item key="onsiteInterview">
+          <img
+            className="icon"
+            src="../../src/assets/icons/OnsiteInterviewIcon@3x.png"
+          />
+          Onsite Interview
+        </Menu.Item>
+        <Menu.Item key="offers">
+          <img
+            className="icon"
+            src="../../src/assets/icons/OffersIcon@3x.png"
+          />
+          Offer
+        </Menu.Item>
+        <Menu.Item key="deleteAll">
+          <img
+            className="icon"
+            src="../../src/assets/icons/DeleteIconInBtn@1x.png"
+          />
+          Delete All
+        </Menu.Item>
+      </Menu>
+    );
+
     IS_CONSOLE_LOG_OPEN && console.log("Dashboard opened!");
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
@@ -258,6 +706,53 @@ class Dashboard extends Component {
       return <Spinner message="Preparing your dashboard..." />;
     return (
       <div>
+        <div
+          style={{
+            position: "absolute",
+            margin: "-45px 0 0 80px",
+            display: "flex",
+            justifyContent: "space-between",
+            width: this.state.selectedJobApplications.length > 0 ? 718 : 440
+          }}
+        >
+          <Search
+            placeholder=""
+            onChange={event => this.onSearch(event)}
+            style={{ width: 200 }}
+          />
+          <RangePicker onChange={this.onDateQuery} style={{ width: 220 }} />
+          {this.state.selectedJobApplications.length > 0 && (
+            <div>
+              <Checkbox
+                style={{
+                  padding: "6px 0px 0px 6px",
+                  color: "rgba(0, 0, 0, 0.4)",
+                  boxShadow: "inset 0px 0px 1px rgba(0,0,0,0.5)",
+                  backgroundColor: "white",
+                  borderRadius: 3,
+                  width: "102px",
+                  height: "32px"
+                }}
+                onChange={this.onSelectAll}
+              >
+                Select All
+              </Checkbox>
+              <Dropdown overlay={menu}>
+                <Button
+                  className="ant-dropdown-link"
+                  style={{
+                    margin: "0px 0px 0px 16px",
+                    color: "rgba(0, 0, 0, 0.4)",
+                    width: "140px",
+                    height: "32px"
+                  }}
+                >
+                  Move Selected <Icon type="down" />
+                </Button>
+              </Dropdown>
+            </div>
+          )}
+        </div>
         <div className="dashboard-container">
           <Column
             name="toApply"
@@ -271,6 +766,9 @@ class Dashboard extends Component {
             cards={this.state.toApply}
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
+            addToSelectedJobApplicationsList={
+              this.addToSelectedJobApplicationsList
+            }
           />
           <div className="column-divider" />
           <Column
@@ -290,6 +788,9 @@ class Dashboard extends Component {
             message="rejected without any interview"
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
+            addToSelectedJobApplicationsList={
+              this.addToSelectedJobApplicationsList
+            }
           />
           <div className="column-divider" />
           <Column
@@ -310,6 +811,9 @@ class Dashboard extends Component {
             message="rejected after phone screens"
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
+            addToSelectedJobApplicationsList={
+              this.addToSelectedJobApplicationsList
+            }
           />
           <div className="column-divider" />
           <Column
@@ -330,6 +834,9 @@ class Dashboard extends Component {
             message="rejected after interviews"
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
+            addToSelectedJobApplicationsList={
+              this.addToSelectedJobApplicationsList
+            }
           />
           <div className="column-divider" />
           <Column
@@ -350,6 +857,9 @@ class Dashboard extends Component {
             handleTokenExpiration={this.props.handleTokenExpiration}
             isLastColumn={true}
             alert={this.props.alert}
+            addToSelectedJobApplicationsList={
+              this.addToSelectedJobApplicationsList
+            }
           />
         </div>
       </div>

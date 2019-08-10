@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { AutoComplete, Select, Icon, Menu } from "antd";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { getPositionsRequest } from "../../../utils/api/requests.js";
+import { getAutoCompleteRequest } from "../../../utils/api/requests.js";
 
 import "./style.scss";
 
@@ -79,8 +79,8 @@ class JobInput extends PureComponent {
   async handlePositionsSearch(value) {
     this.setState({ jobTitle: value });
     await this.props.handleTokenExpiration("jobInput handlePositionsSearch");
-    const { url, config } = getPositionsRequest;
-    let newUrl = url + "?q=" + value + "&count=5";
+    const { url, config } = getAutoCompleteRequest;
+    let newUrl = url("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         console.log(response.data);

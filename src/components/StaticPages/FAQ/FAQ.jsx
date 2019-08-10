@@ -66,7 +66,7 @@ class FAQ extends React.Component {
 
   render() {
     if (this.state.faqList.length == 0)
-      return <Spinner message="Reachings the FAQs..." />;
+      return <Spinner message="Reaching the FAQs..." />;
     return (
       <div className="under_constrution-container">
         <div>{this.generateHeaderArea()}</div>

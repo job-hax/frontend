@@ -4,6 +4,7 @@
   height: 60px;
   width: 100%;
   background-image: linear-gradient(to right, #bc2bff, #8a3ffc);
+  z-index: 2000;
 
   .left-container {
     display: flex;
@@ -117,7 +118,7 @@
         position: absolute;
         bottom: 100%;
         left: 50%;
-        margin-left: -8px;
+        margin-left: -14px;
         width: 0;
         height: 0;
         border-bottom: 8px solid #525252;

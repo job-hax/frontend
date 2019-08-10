@@ -1,7 +1,7 @@
 import React from "react";
-import DatePicker from "react-datepicker";
-import { Upload, message, Button, Icon } from "antd";
+import { Upload, message, Button, Icon, DatePicker } from "antd";
 import ReactTelInput from "react-telephone-input";
+import moment from "moment";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
@@ -9,6 +9,7 @@ import {
   makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN
 } from "../../utils/constants/constants.js";
+import { linkedInOAuth } from "../../utils/helpers/oAuthHelperFunctions.js";
 import { apiRoot } from "../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
@@ -16,11 +17,14 @@ import {
   getEmploymentStatusesRequest,
   updateProfileRequest,
   getProfileRequest,
-  updateProfilePhotoRequest
+  updateProfilePhotoRequest,
+  authenticateRequest,
+  linkSocialAccountRequest
 } from "../../utils/api/requests.js";
 
 import "./react-datepicker.scss";
 import "./style.scss";
+import { googleClientId } from "../../config/config.js";
 
 class ProfilePage extends React.Component {
   constructor(props) {
@@ -36,7 +40,7 @@ class ProfilePage extends React.Component {
       notificationsList: [],
       employmentStatusList: [],
       selectedDateShowing: new Date(),
-      data: [],
+      data: null,
       body: {},
       isInitialRequest: "beforeRequest"
     };
@@ -54,6 +58,8 @@ class ProfilePage extends React.Component {
     this.handleStudentMailChange = this.handleStudentMailChange.bind(this);
     this.handlePhoneNumberChange = this.handlePhoneNumberChange.bind(this);
     this.handleProfilePhotoUpdate = this.handleProfilePhotoUpdate.bind(this);
+    this.handleGoogleOAuth = this.handleGoogleOAuth.bind(this);
+    this.handleLinkedInOAuth = this.handleLinkedInOAuth.bind(this);
   }
 
   async componentDidMount() {
@@ -66,7 +72,7 @@ class ProfilePage extends React.Component {
   }
 
   async getProfileData(isTokenExpirationChecking) {
-    if (this.state.data.length == 0) {
+    if (this.state.data == null) {
       isTokenExpirationChecking &&
         (await this.props.handleTokenExpiration("profilePage getProfileData"));
       axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
@@ -89,6 +95,84 @@ class ProfilePage extends React.Component {
         }
       );
     }
+  }
+
+  handleLinkedInOAuth() {
+    linkedInOAuth();
+    let data = this.state.data;
+    data.is_linkedin_linked = true;
+    this.setState({ data: data });
+  }
+
+  handleGoogleOAuth() {
+    window.gapi.load("client:auth2", () => {
+      window.gapi.client
+        .init({
+          apiKey: "AIzaSyBnF8loY6Vqhs4QWTM_fWCP93Xidbh1kYo",
+          clientId: googleClientId,
+          scope: "email https://www.googleapis.com/auth/gmail.readonly",
+          prompt: "select_account"
+        })
+        .then(() => {
+          this.googleAuth = window.gapi.auth2.getAuthInstance();
+          this.googleAuth.signIn().then(response => {
+            if (response.Zi.token_type === "Bearer") {
+              let photoUrl = response.w3.Paa;
+              let googleAccessTokenExpiresOn = new Date();
+              googleAccessTokenExpiresOn.setSeconds(
+                googleAccessTokenExpiresOn.getSeconds() + response.Zi.expires_in
+              );
+              const googleAccessToken = this.googleAuth.currentUser
+                .get()
+                .getAuthResponse().access_token;
+              linkSocialAccountRequest.config.body.provider = "google-oauth2";
+              const { url, config } = linkSocialAccountRequest;
+              config.body.token = googleAccessToken;
+              axiosCaptcha(url("link_social_account"), config)
+                .then(response => {
+                  if (response.statusText === "OK") {
+                    if (response.data.success == true) {
+                      this.setState({ data: response.data.data });
+                      this.props.cookie(
+                        "set",
+                        "google_access_token_expiration",
+                        googleAccessTokenExpiresOn.getTime(),
+                        "/",
+                        googleAccessTokenExpiresOn
+                      );
+                      this.props.cookie(
+                        "set",
+                        "google_login_first_instance",
+                        true,
+                        "/"
+                      );
+                    }
+                  }
+                })
+                .then(() => this.postGoogleProfilePhoto(photoUrl));
+            }
+          });
+        });
+    });
+  }
+
+  postGoogleProfilePhoto(photoURL) {
+    let bodyFormData = new FormData();
+    bodyFormData.set("photo_url", photoURL);
+    updateProfilePhotoRequest.config.body = bodyFormData;
+    axiosCaptcha(
+      updateProfilePhotoRequest.url,
+      updateProfilePhotoRequest.config
+    ).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success == true) {
+          console.log(response);
+          this.data = response.data.data;
+          this.setState({ data: this.data });
+          this.props.setProfilePhotoUrlInHeader();
+        }
+      }
+    });
   }
 
   checkNotifications() {
@@ -131,11 +215,11 @@ class ProfilePage extends React.Component {
     this.setState({
       isUpdating: true
     });
-    if (target[6].value.trim() != (null || "")) {
-      this.body["first_name"] = target[6].value.trim();
+    if (target[2].value.trim() != (null || "")) {
+      this.body["first_name"] = target[2].value.trim();
     }
-    if (target[7].value.trim() != (null || "")) {
-      this.state.body[" last_name"] = target[7].value.trim();
+    if (target[3].value.trim() != (null || "")) {
+      this.body["last_name"] = target[3].value.trim();
     }
     updateProfileRequest.config.body = this.body;
     axiosCaptcha(
@@ -157,7 +241,6 @@ class ProfilePage extends React.Component {
             "success",
             "Your profile have been updated successfully!"
           );
-          this.props.setIsFirstLogin(true);
         } else {
           this.setState({ isUpdating: false });
           this.props.alert(
@@ -281,7 +364,6 @@ class ProfilePage extends React.Component {
                 "success",
                 "Your profile have been updated successfully!"
               );
-              this.props.setIsFirstLogin(true);
             } else {
               this.setState({ isUpdating: false });
               this.props.alert(
@@ -311,6 +393,7 @@ class ProfilePage extends React.Component {
   }
 
   generateNonEditableProfileMainArea() {
+    console.log("data", this.state.data);
     const props = {
       name: "file",
       showUploadList: false,
@@ -324,7 +407,7 @@ class ProfilePage extends React.Component {
         <div className="profile-page-left-first">
           <div className="profile-page-left-first-inside">
             <div className="profile-image">
-              {this.state.data.length != 0 && (
+              {this.state.data != null && (
                 <img
                   src={
                     this.state.data.profile_photo_custom == null
@@ -346,16 +429,12 @@ class ProfilePage extends React.Component {
               </div>
             </div>
             <div className="register-date">
-              {this.state.data.length != 0 &&
-                this.state.data.user.date_joined && (
-                  <span>
-                    Registered on{" "}
-                    {makeTimeBeautiful(
-                      this.state.data.user.date_joined,
-                      "date"
-                    )}
-                  </span>
-                )}
+              {this.state.data != null && this.state.data.user.date_joined && (
+                <span>
+                  Registered on{" "}
+                  {makeTimeBeautiful(this.state.data.user.date_joined, "date")}
+                </span>
+              )}
             </div>
             <div className="professional-info-container">
               <div className="professional-info-header">
@@ -369,14 +448,40 @@ class ProfilePage extends React.Component {
                 <div className="core-skills-content">professional bio</div>
               </div>
             </div>
-            <div className="employment-status-container">
-              <div className="employment-status-label">Employment Status: </div>
-              <div className="employment-status-content">
-                {this.state.data.length != 0 && this.state.data.emp_status ? (
-                  this.state.data.emp_status.value
-                ) : (
-                  <span className="not-specified-notice">Not specified!</span>
+            <div className="employment-status-big-container">
+              <div className="employment-header">
+                <Icon type="coffee" style={{ fontSize: "120%" }} />
+                <div className="employment-title">Employment Information</div>
+              </div>
+              {this.state.data != null &&
+                this.state.data.company != ("" || null) && (
+                  <div className="employment-status-container">
+                    <div className="employment-status-label">Company: </div>
+                    <div className="employment-status-content">
+                      {this.state.data.company.company}
+                    </div>
+                  </div>
                 )}
+              {this.state.data != null &&
+                this.state.data.job_position != ("" || null) && (
+                  <div className="employment-status-container">
+                    <div className="employment-status-label">Position: </div>
+                    <div className="employment-status-content">
+                      {this.state.data.job_position.job_title}
+                    </div>
+                  </div>
+                )}
+              <div className="employment-status-container">
+                <div className="employment-status-label">
+                  Employment Status:{" "}
+                </div>
+                <div className="employment-status-content">
+                  {this.state.data != null && this.state.data.emp_status ? (
+                    this.state.data.emp_status.value
+                  ) : (
+                    <span className="not-specified-notice">Not specified!</span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -385,29 +490,63 @@ class ProfilePage extends React.Component {
           <div className="profile-header">
             <div className="name">
               <div className="first-name">
-                {this.state.data.length != 0 &&
-                this.state.data.user.first_name ? (
+                {this.state.data != null && this.state.data.user.first_name ? (
                   this.state.data.user.first_name
                 ) : (
                   <span>First Name</span>
                 )}
               </div>
               <div className="last-name">
-                {this.state.data.length != 0 &&
-                this.state.data.user.last_name ? (
+                {this.state.data != null && this.state.data.user.last_name ? (
                   this.state.data.user.last_name
                 ) : (
                   <span>Last Name</span>
                 )}
               </div>
             </div>
-            <div className="job-position" />
+            {this.state.data != null &&
+              this.state.data.country != ("" || null) && (
+                <div className="location">
+                  <Icon type="environment" />
+                  <div style={{ margin: "-2px 0 0 4px" }}>
+                    {this.state.data.state.name +
+                      ", " +
+                      this.state.data.country.name}
+                  </div>
+                </div>
+              )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "spaceBetween"
+              }}
+            >
+              {this.state.data != null &&
+                this.state.data.is_google_linked != true && (
+                  <div
+                    className="job-position"
+                    onClick={() => this.handleGoogleOAuth()}
+                  >
+                    <Button type="primary">Link With Google</Button>
+                  </div>
+                )}
+              {this.state.data != null &&
+                this.state.data.is_linkedin_linked != true && (
+                  <div
+                    className="job-position"
+                    style={{ margin: "0 0 0 20px" }}
+                    onClick={() => this.handleLinkedInOAuth()}
+                  >
+                    <Button type="primary">Link With LinkedIn</Button>
+                  </div>
+                )}
+            </div>
             <div className="city-state" />
           </div>
           <div className="profile-info">
             <div className="info-header">
               <div className="info-type-icon">
-                <img id="infoTypeIcon" />
+                <Icon type="profile" style={{ fontSize: "120%" }} />
               </div>
               <div className="info-type-name">About</div>
             </div>
@@ -417,7 +556,7 @@ class ProfilePage extends React.Component {
                 <div className="info-content-body-item">
                   <div className="info-content-body-item-label">Birthday:</div>
                   <div className="info-content-body-item-text">
-                    {this.state.data.length != 0 && this.state.data.dob ? (
+                    {this.state.data != null && this.state.data.dob ? (
                       makeTimeBeautiful(this.state.data.dob + "T", "date")
                     ) : (
                       <span className="not-specified-notice">
@@ -429,7 +568,8 @@ class ProfilePage extends React.Component {
                 <div className="info-content-body-item">
                   <div className="info-content-body-item-label">Gender:</div>
                   <div className="info-content-body-item-text">
-                    {this.state.data.length != 0 && this.state.data.gender ? (
+                    {this.state.data != null &&
+                    this.state.data.gender != "N" ? (
                       this.state.data.gender == "F" ? (
                         "Female"
                       ) : (
@@ -445,24 +585,8 @@ class ProfilePage extends React.Component {
                 <div className="info-content-body-item">
                   <div className="info-content-body-item-label">Email:</div>
                   <div className="info-content-body-item-text">
-                    {this.state.data.length != 0 &&
-                    this.state.data.user.email ? (
+                    {this.state.data != null && this.state.data.user.email ? (
                       this.state.data.user.email
-                    ) : (
-                      <span className="not-specified-notice">
-                        Not specified!
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="info-content-body-item">
-                  <div className="info-content-body-item-label">
-                    Student email:
-                  </div>
-                  <div className="info-content-body-item-text">
-                    {this.state.data.length != 0 &&
-                    this.state.data.student_email ? (
-                      this.state.data.student_email
                     ) : (
                       <span className="not-specified-notice">
                         Not specified!
@@ -473,8 +597,7 @@ class ProfilePage extends React.Component {
                 <div className="info-content-body-item">
                   <div className="info-content-body-item-label">Phone:</div>
                   <div className="info-content-body-item-text">
-                    {this.state.data.length != 0 &&
-                    this.state.data.phone_number ? (
+                    {this.state.data != null && this.state.data.phone_number ? (
                       this.state.data.phone_number
                     ) : (
                       <span className="not-specified-notice">
@@ -485,6 +608,60 @@ class ProfilePage extends React.Component {
                 </div>
               </div>
             </div>
+            <div className="info-content-container">
+              <div className="info-content-title">Academic Information</div>
+              <div className="info-content-body">
+                {this.state.data != null &&
+                  this.state.data.college != (null || "") &&
+                  (this.state.data.user_type == 2 ||
+                    this.state.data.user_type == 3) && (
+                    <div>
+                      <div className="info-content-body-item">
+                        <div className="info-content-body-item-label">
+                          University:
+                        </div>
+                        <div className="info-content-body-item-text">
+                          {this.state.data.college.name}
+                        </div>
+                      </div>
+                      <div className="info-content-body-item">
+                        <div className="info-content-body-item-label">
+                          Major:
+                        </div>
+                        <div className="info-content-body-item-text">
+                          {this.state.data.major.name}
+                        </div>
+                      </div>{" "}
+                      <div className="info-content-body-item">
+                        <div className="info-content-body-item-label">
+                          {this.state.data.user_type == 2
+                            ? "Expected Graduation:"
+                            : "Graduation Year:"}
+                        </div>
+                        <div className="info-content-body-item-text">
+                          {this.state.data.grad_year}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                <div className="info-content-body-item">
+                  <div className="info-content-body-item-label">
+                    Student email:
+                  </div>
+                  <div className="info-content-body-item-text">
+                    {this.state.data != null &&
+                    this.state.data.student_email ? (
+                      this.state.data.student_email
+                    ) : (
+                      <span className="not-specified-notice">
+                        Not specified!
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="city-state" />
           </div>
           <div className="badges-container">
@@ -525,6 +702,8 @@ class ProfilePage extends React.Component {
         this.handleProfilePhotoUpdate(file);
       }
     };
+    const dateFormat = "MM.DD.YYYY";
+    const { selectedDateShowing } = this.state;
 
     return (
       <div className="profile-page-left">
@@ -532,7 +711,7 @@ class ProfilePage extends React.Component {
           <div className="profile-page-left-first">
             <div className="profile-page-left-first-inside">
               <div className="profile-image">
-                {this.state.data.length != 0 && (
+                {this.state.data != null && (
                   <img
                     src={
                       this.state.data.profile_photo_custom == null
@@ -555,7 +734,7 @@ class ProfilePage extends React.Component {
               </div>
               <div className="register-date">
                 <span>Registered on </span>
-                {this.state.data.length != 0 &&
+                {this.state.data != null &&
                   this.state.data.user.date_joined &&
                   makeTimeBeautiful(this.state.data.user.date_joined, "date")}
               </div>
@@ -573,7 +752,10 @@ class ProfilePage extends React.Component {
                   <div className="core-skills-content">professional bio</div>
                 </div>
               </div>
-              <div className="employment-status-container">
+              <div
+                className="employment-status-container"
+                style={{ marginTop: 40 }}
+              >
                 <div className="employment-status-label">
                   Employment Status:{" "}
                 </div>
@@ -592,7 +774,7 @@ class ProfilePage extends React.Component {
                     <input
                       className="first-name"
                       placeholder={
-                        this.state.data.length != 0 &&
+                        this.state.data != null &&
                         this.state.data.user.first_name
                           ? this.state.data.user.first_name
                           : "First Name"
@@ -606,7 +788,7 @@ class ProfilePage extends React.Component {
                     <input
                       className="last-name"
                       placeholder={
-                        this.state.data.length != 0 &&
+                        this.state.data != null &&
                         this.state.data.user.last_name
                           ? this.state.data.user.last_name
                           : "Last Name"
@@ -634,8 +816,10 @@ class ProfilePage extends React.Component {
                     </div>
                     <div style={{ zIndex: 99 }}>
                       <DatePicker
-                        selected={this.state.selectedDateShowing}
                         onChange={this.handleDatePickerChange}
+                        defaultValue={moment(selectedDateShowing, dateFormat)}
+                        format={dateFormat}
+                        style={{ width: "168px", margin: "-6px 0 6px 0" }}
                       />
                     </div>
                   </div>
@@ -665,8 +849,7 @@ class ProfilePage extends React.Component {
                   <div className="info-content-body-item">
                     <div className="info-content-body-item-label">Email:</div>
                     <div className="info-content-body-item-text">
-                      {this.state.data.length != 0 &&
-                      this.state.data.user.email ? (
+                      {this.state.data != null && this.state.data.user.email ? (
                         this.state.data.user.email
                       ) : (
                         <span className="not-specified-notice">
@@ -685,7 +868,7 @@ class ProfilePage extends React.Component {
                           className="input"
                           onChange={this.handleStudentMailChange}
                           placeholder={
-                            this.state.data.length != 0 &&
+                            this.state.data != null &&
                             this.state.data.student_email
                               ? this.state.data.student_email.split("@")[0]
                               : "your student email"
@@ -755,7 +938,7 @@ class ProfilePage extends React.Component {
       console.log("profile pagerender run! \n data:", this.state.data);
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
-    if (this.state.data.length == 0) {
+    if (this.state.data == null) {
       return <Spinner message="Reaching profile data..." />;
     }
     if (this.state.isUpdating) {
@@ -788,17 +971,17 @@ class ProfilePage extends React.Component {
               {this.state.isProfileSettingsOpen && (
                 <div className="settings-container">
                   <div className="settings-header">
-                    <div className="settings-icon">
-                      <img />
+                    <div>
+                      <Icon type="setting" />
                     </div>
-                    <div className="settings-title">Profile Settings </div>
+                    <div className="settings-title">Profile Settings</div>
                   </div>
                   <form onSubmit={this.handleSettingsSubmit}>
                     <div className="settings">
                       <div className="setting">
                         <label>
                           User Name:
-                          {this.state.data.length != 0 &&
+                          {this.state.data != null &&
                           this.state.data.user.username
                             ? " " + this.state.data.user.username
                             : " Get one!"}

@@ -50,6 +50,15 @@
             }
         }
 
+        .separator {
+            height: 4px;
+            width: 272px;
+            display: flex;
+            justify-content: center;
+            margin: 20px 0px 0px 0px;
+            border-top: 1px solid rgba(150, 150, 150, 0.8);
+        }
+
         .email-button-container {
             padding: 8px 0 32px 0;
             display: flex;
@@ -73,6 +82,21 @@
                 cursor: pointer;
             }
         }
+
+        .levels {
+            text-align: center;
+
+            .level-title {
+                font-size: 120%;
+                padding: 16px;
+            }
+
+            .level-body {
+                font-size: 90%;
+                padding: 8px;
+            }
+        }
+
     }
 
 }

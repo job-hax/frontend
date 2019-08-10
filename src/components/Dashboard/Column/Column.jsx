@@ -77,6 +77,10 @@ class Column extends Component {
                 icon={icon}
                 id={id}
                 alert={alert}
+                addToSelectedJobApplicationsList={
+                  this.props.addToSelectedJobApplicationsList
+                }
+                isSelected={card.isSelected}
               />
             ))}
         </div>
@@ -97,6 +101,10 @@ class Column extends Component {
           icon={icon}
           id={id}
           alert={alert}
+          addToSelectedJobApplicationsList={
+            this.props.addToSelectedJobApplicationsList
+          }
+          isSelected={card.isSelected}
         />
       ))
     );

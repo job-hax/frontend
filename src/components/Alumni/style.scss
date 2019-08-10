@@ -1,0 +1,61 @@
+.alumni-big-container {
+    color: #261268;
+    height: 100%;
+    padding-top: 40px;
+
+    .title {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #261268;
+
+        h2 {
+            color: #261268;
+            font-size: 24pt;
+            margin-bottom: 0;
+        }
+    }
+
+    .alumni-container {
+        display: flex;
+        justify-content: center;
+
+        .alumni-cards-container {
+            width: 800px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .filter-area-container {
+            height: 330px;
+            width: 320px;
+            margin: 40px 0 100px 0;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.1);
+
+            .title {
+                padding: 24px 0 0 0;
+                margin: 0;
+                font-size: 120%;
+                font-weight: 500;
+            }
+
+            .filter-container {
+                width: 300px;
+                display: flex;
+                justify-content: space-between;
+                padding: 12px 0 0 24px
+            }
+        }
+    }
+
+
+}
+
+
+
+.bottom-fixed-footer {
+    position: fixed;
+    bottom: 0%;
+    width: 100%;
+}
