@@ -79,6 +79,9 @@ class MoveOptions extends React.Component {
     var statuses = APPLICATION_STATUSES_IN_ORDER.filter(
       item => item.id !== columnName
     );
+    if (this.props.card.isRejected === true) {
+      statuses = statuses.filter(status => status.id !== "toApply");
+    }
     return statuses.map(item => (
       <div
         key={item.id}
@@ -94,9 +97,11 @@ class MoveOptions extends React.Component {
 
   moveToOptionsGenerator() {
     const { card, icon } = this.props;
+    let optionsContainerHeight =
+      this.props.card.isRejected == true ? { height: 198 } : { height: 228 };
     if (this.state.showOptions) {
       return (
-        <div className="options-container">
+        <div className="options-container" style={optionsContainerHeight}>
           <div className="explanation">MOVE TO:</div>
           {card.applicationStatus.id != 2 ? (
             <div className="options" onClick={() => this.updateAsRejected()}>

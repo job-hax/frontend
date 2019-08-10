@@ -32,62 +32,23 @@ import {
   GET_COMPANIES,
   GET_AGREEMENTS,
   USERS,
-  POSITIONS,
   REFRESH_JOBHAX_TOKEN,
   UPDATE_GOOGLE_TOKEN,
   METRICS,
   GET_SOURCES,
   EDIT_JOBAPP,
   GET_CONTACTS,
-  POST_CONTACTS
+  POST_CONTACTS,
+  GET_NEW_JOBAPPS,
+  UPDATE_PROFILE_SIGN_UP,
+  AUTOCOMPLETE,
+  ALUMNI,
+  EVENTS
 } from "../constants/endpoints.js";
 
 import { jobHaxClientId, jobHaxClientSecret } from "../../config/config.js";
 
-export const authenticateRequest = {
-  url: AUTHENTICATE,
-  config: {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    },
-    body: {
-      client_id: jobHaxClientId,
-      client_secret: jobHaxClientSecret,
-      provider: "google-oauth2"
-    }
-  }
-};
-
-export const refreshTokenRequest = {
-  url: REFRESH_JOBHAX_TOKEN,
-  config: {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    },
-    body: {
-      client_id: jobHaxClientId,
-      client_secret: jobHaxClientSecret
-    }
-  }
-};
-
-export const updateGoogleTokenRequest = {
-  url: UPDATE_GOOGLE_TOKEN,
-  config: {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  }
-};
+//JOBAPPS REQUESTS//
 
 export const getJobAppsRequest = {
   url: GET_JOB_APPS,
@@ -127,6 +88,81 @@ export const syncUserEmailsRequest = {
 
 export const updateJobStatusRequest = {
   url: UPDATE_JOB_STATUS,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
+
+export const getNewJobappsRequest = {
+  url: GET_NEW_JOBAPPS,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
+
+//USER AUTH REQUESTS//
+
+export const authenticateRequest = {
+  url: AUTHENTICATE,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    body: {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret,
+      provider: "google-oauth2"
+    }
+  }
+};
+
+export const linkSocialAccountRequest = {
+  url: USERS,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    body: {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret
+    }
+  }
+};
+
+export const refreshTokenRequest = {
+  url: REFRESH_JOBHAX_TOKEN,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    body: {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret
+    }
+  }
+};
+
+export const updateGoogleTokenRequest = {
+  url: UPDATE_GOOGLE_TOKEN,
   config: {
     method: "POST",
     mode: "cors",
@@ -181,6 +217,18 @@ export const logOutUserRequest = {
     body: {
       client_id: jobHaxClientId,
       client_secret: jobHaxClientSecret
+    }
+  }
+};
+
+export const getAutoCompleteRequest = {
+  url: AUTOCOMPLETE,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
     }
   }
 };
@@ -548,19 +596,6 @@ export const getUsersRequest = {
   }
 };
 
-//POSITIONS REQUESTS//
-export const getPositionsRequest = {
-  url: POSITIONS,
-  config: {
-    method: "GET",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  }
-};
-
 //SOURCES REQUESTS//
 export const getSourcesRequest = {
   url: GET_SOURCES,
@@ -599,10 +634,37 @@ export const getContactsRequest = {
     }
   }
 };
+
 export const postContactsRequest = {
   url: POST_CONTACTS,
   config: {
     method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
+
+//ALUMNI REQUESTS//
+export const getAlumniRequest = {
+  url: ALUMNI,
+  config: {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
+
+//EVENTS REQUESTS//
+export const getEventsRequest = {
+  url: EVENTS,
+  config: {
+    method: "GET",
     mode: "cors",
     cache: "no-cache",
     headers: {

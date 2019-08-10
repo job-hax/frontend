@@ -39,7 +39,6 @@ class Blog extends React.Component {
       ).then(response => {
         if (response.statusText === "OK") {
           if (response.data.success != true) {
-            this.setState({ isUpdating: false });
             IS_CONSOLE_LOG_OPEN &&
               console.log(response, response.data.error_message);
             this.props.alert(

@@ -5,7 +5,7 @@ import moment from "moment";
 import { makeTimeBeautiful } from "../../../../../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api.js";
 import {
-  getPositionsRequest,
+  getAutoCompleteRequest,
   getSourcesRequest,
   editJobAppRequest
 } from "../../../../../../../utils/api/requests.js";
@@ -198,8 +198,8 @@ class JobDetails extends React.Component {
 
   handlePositionsSearch(value) {
     this.setState({ jobTitle: value });
-    const { url, config } = getPositionsRequest;
-    let newUrl = url + "?q=" + value + "&count=5";
+    const { url, config } = getAutoCompleteRequest;
+    let newUrl = url("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         console.log(response.data);
@@ -264,6 +264,7 @@ class JobDetails extends React.Component {
   }
 
   generateApplyDateInfo() {
+    console.log("date", this.props.card.applyDate);
     const dateFormat = "MM.DD.YYYY";
     const { applyDate, isApplyDateEditing } = this.state;
     const infoClass =
@@ -277,7 +278,10 @@ class JobDetails extends React.Component {
         {isApplyDateEditing == true ? (
           <DatePicker
             onChange={this.handleApplyDate}
-            defaultValue={moment(applyDate, dateFormat)}
+            defaultValue={moment(
+              new Date(this.props.card.applyDate.split("T")[0] + "T06:00:00"),
+              dateFormat
+            )}
             format={dateFormat}
             style={{ width: "200px", marginTop: "4px" }}
           />

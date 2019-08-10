@@ -2,6 +2,8 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { DragSource } from "react-dnd";
 import classNames from "classnames";
+import { Checkbox } from "antd";
+
 import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
 import linkedInLogo from "../../../assets/icons/linkedInLogo.png";
 import hiredComLogo from "../../../assets/icons/hiredComLogo.png";
@@ -42,21 +44,49 @@ function collect(connect, monitor) {
 }
 
 class Card extends PureComponent {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       showModal: false,
-      imageLoadError: true
+      imageLoadError: true,
+      showSelect: false,
+      isSelected: this.props.isSelected
     };
     this.toggleModal = this.toggleModal.bind(this);
     this.updateCompany = this.updateCompany.bind(this);
     this.updateCard = this.updateCard.bind(this);
+    this.toggleSelect = this.toggleSelect.bind(this);
+    this.onSelectChange = this.onSelectChange.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.isSelected !== this.props.isSelected) {
+      this.setState({ isSelected: this.props.isSelected });
+    }
   }
 
   toggleModal() {
     this.setState(({ showModal }) => ({
       showModal: !showModal
     }));
+  }
+
+  toggleSelect() {
+    this.setState(({ showSelect }) => ({
+      showSelect: !showSelect
+    }));
+  }
+
+  onSelectChange(event) {
+    let isSelected = event.target.checked;
+    console.log(`checked = `, isSelected);
+    this.setState({ isSelected: isSelected });
+    if (isSelected === true) {
+      this.props.addToSelectedJobApplicationsList("add", this.props.card);
+    }
+    if (isSelected === false) {
+      this.props.addToSelectedJobApplicationsList("delete", this.props.card);
+    }
   }
 
   updateCompany(newCompanyObject) {
@@ -123,7 +153,7 @@ class Card extends PureComponent {
     });
 
     return (
-      <div>
+      <div onMouseEnter={this.toggleSelect} onMouseLeave={this.toggleSelect}>
         {showModal && (
           <CardModal
             handleTokenExpiration={handleTokenExpiration}
@@ -140,15 +170,15 @@ class Card extends PureComponent {
             {...this.props}
           />
         )}
-        <div className={cardClass} onClick={this.toggleModal}>
-          <div className="card-company-icon">
+        <div className={cardClass}>
+          <div className="card-company-icon" onClick={this.toggleModal}>
             {companyObject.cb_company_logo === null ? (
               <img src={companyObject.company_logo || defaultLogo} />
             ) : (
               <img src={companyObject.cb_company_logo} />
             )}
           </div>
-          <div className="card-company-info">
+          <div className="card-company-info" onClick={this.toggleModal}>
             <div id="company" className="card-company-name">
               {companyObject.company}
             </div>
@@ -157,7 +187,14 @@ class Card extends PureComponent {
             </div>
           </div>
           <div className="card-job-details">
-            {/*this.sourceLogoSelector(app_source)*/}
+            {(this.state.showSelect || this.state.isSelected) && (
+              <Checkbox
+                checked={this.state.isSelected}
+                onChange={this.onSelectChange}
+              />
+            )
+            /*this.sourceLogoSelector(app_source)*/
+            }
           </div>
         </div>
       </div>

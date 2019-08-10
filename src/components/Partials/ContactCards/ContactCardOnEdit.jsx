@@ -5,7 +5,7 @@ import ReactTelInput from "react-telephone-input";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   postContactsRequest,
-  getPositionsRequest
+  getAutoCompleteRequest
 } from "../../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import "./style.scss";
@@ -17,8 +17,8 @@ class ContactCardOnEdit extends React.Component {
     super(props);
 
     this.state = {
-      firstName: this.props.contact ? this.props.contact.name : "",
-      lastName: "",
+      firstName: this.props.contact ? this.props.contact.first_name : "",
+      lastName: this.props.contact ? this.props.contact.last_name : "",
       position: this.props.contact ? this.props.contact.position : "",
       company: this.props.contact ? this.props.contact.company : "",
       email: this.props.contact ? this.props.contact.email : "",
@@ -58,8 +58,8 @@ class ContactCardOnEdit extends React.Component {
   async handleSubmit() {
     let body = {
       jobapp_id: this.props.card.id,
-      name: this.state.firstName,
-      lastName: this.state.lastName,
+      first_name: this.state.firstName,
+      last_name: this.state.lastName,
       job_title: this.state.position,
       company: this.state.company,
       email: this.state.email,
@@ -146,8 +146,8 @@ class ContactCardOnEdit extends React.Component {
   handlePositionsSearch(value) {
     this.setState({ position: value });
     this.setIsClickOutsideActive(false);
-    const { url, config } = getPositionsRequest;
-    let newUrl = url + "?q=" + value + "&count=5";
+    const { url, config } = getAutoCompleteRequest;
+    let newUrl = url("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         console.log(response.data);
