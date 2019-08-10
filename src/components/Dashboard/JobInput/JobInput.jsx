@@ -143,6 +143,7 @@ class JobInput extends PureComponent {
             onSearch={this.handleSearch}
             placeholder="Company Name"
             value={companyName}
+            onSelect={value => this.setState({ companyName: value })}
           />
           <AutoComplete
             dataSource={this.state.autoCompletePositionsData}
@@ -150,6 +151,7 @@ class JobInput extends PureComponent {
             onSearch={this.handlePositionsSearch}
             placeholder="Job Title"
             value={jobTitle}
+            onSelect={value => this.setState({ jobTitle: value })}
           />
           <div className="column-addJob-form-buttons-container">
             <button
