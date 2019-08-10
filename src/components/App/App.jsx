@@ -43,6 +43,7 @@ import "../../assets/libraryScss/antd-scss/newantd.scss";
 import "../../assets/libraryScss/area-code.scss";
 import Mentors from "../Mentors/Mentors.jsx";
 import Alumni from "../Alumni/Alumni.jsx";
+import Events from "../Events/events.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -551,6 +552,17 @@ class App extends Component {
             />
             <Route
               exact
+              path="/events"
+              render={() => (
+                <Events
+                  alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
+                />
+              )}
+            />
+            <Route
+              exact
               path="/mentors"
               render={() => (
                 <Mentors
@@ -667,6 +679,21 @@ class App extends Component {
             <Route
               exact
               path="/dashboard"
+              render={() => <Redirect to="signin" />}
+            />
+            <Route
+              exact
+              path="/alumni"
+              render={() => <Redirect to="signin" />}
+            />
+            <Route
+              exact
+              path="/events"
+              render={() => <Redirect to="signin" />}
+            />
+            <Route
+              exact
+              path="/mentors"
               render={() => <Redirect to="signin" />}
             />
             <Route

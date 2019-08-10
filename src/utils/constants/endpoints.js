@@ -1,4 +1,4 @@
-export const apiRoot = "http://0.0.0.0:8000";
+export const apiRoot = "https://backend.jobhax.com";
 
 export const SYNC_USER_EMAILS = `${apiRoot}/api/users/sync_user_emails`;
 
@@ -92,3 +92,5 @@ export const GET_NEW_JOBAPPS = timestamp =>
 export const AUTOCOMPLETE = type => `${apiRoot}/api/${type}`;
 
 export const ALUMNI = `${apiRoot}/api/alumni`;
+
+export const EVENTS = `${apiRoot}/api/events`;
