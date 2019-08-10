@@ -51,7 +51,7 @@
         .social-buttons-container {
             margin: 0px 0 12px 0;
             display: flex;
-            justify-content: end;
+            justify-content: center;
 
             .social-buttons-google {
                 display: flex;
@@ -82,13 +82,11 @@
 
             .line {
                 height: 1px;
-                width: 120px;
+                width: 92px;
                 margin: 8px 12px 24px 12px;
                 background-color: rgba(150, 150, 150, 0.4)
             }
         }
-
-
     }
 }
 
