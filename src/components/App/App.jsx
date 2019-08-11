@@ -139,7 +139,7 @@ class App extends Component {
       });
       axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
         response => {
-          console.log("photo first");
+          IS_CONSOLE_LOG_OPEN && console.log("photo first");
           if (response.statusText === "OK") {
             let profilePhotoUrl = "";
             if (response.data.data.profile_photo_custom == null) {
@@ -296,7 +296,8 @@ class App extends Component {
 
   passStatesFromDashboard(newState) {
     this.setState({ isFirstLoginWithGoogle: newState });
-    console.log("loginGoogle app", this.state.isFirstLoginWithGoogle);
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("loginGoogle app", this.state.isFirstLoginWithGoogle);
   }
 
   passStatesFromHeader(timestamp) {
@@ -369,7 +370,7 @@ class App extends Component {
     axiosCaptcha(logOutUserRequest.url, logOutUserRequest.config, false).then(
       response => {
         if (response.statusText === "OK") {
-          console.log(response.data);
+          IS_CONSOLE_LOG_OPEN && console.log(response.data);
           if (response.data.success === true) {
             window.gapi.auth2.getAuthInstance().signOut();
             this.setState({
@@ -385,7 +386,8 @@ class App extends Component {
                 this.state.isUserLoggedIn
               );
           } else {
-            console.log(response, response.data.error_message);
+            IS_CONSOLE_LOG_OPEN &&
+              console.log(response, response.data.error_message);
             this.showAlert(
               5000,
               "error",

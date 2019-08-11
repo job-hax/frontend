@@ -244,7 +244,7 @@ class SignUpPage extends Component {
       updateProfilePhotoRequest.config
     ).then(response => {
       if (response.statusText === "OK") {
-        console.log(response);
+        IS_CONSOLE_LOG_OPEN && console.log(response);
       }
     });
   }
@@ -335,7 +335,7 @@ class SignUpPage extends Component {
           "signup"
         ).then(response => {
           if (response.statusText === "OK") {
-            console.log(response.data);
+            IS_CONSOLE_LOG_OPEN && console.log(response.data);
             if (response.data.success === true) {
               this.token = `${
                 response.data.data.token_type
@@ -371,7 +371,7 @@ class SignUpPage extends Component {
                 "/"
               );
             } else {
-              console.log(response, response.data.error_message);
+              IS_CONSOLE_LOG_OPEN && console.log(response, response.data.error_message);
               this.props.alert(
                 5000,
                 "error",
@@ -917,7 +917,7 @@ class SignUpPage extends Component {
   }
 
   generateLevelBasicInfo() {
-    console.log("stateList", this.state.stateOrProvinceList);
+    IS_CONSOLE_LOG_OPEN && console.log("stateList", this.state.stateOrProvinceList);
     const mustInputsList =
       this.state.stateOrProvinceList.length > 0
         ? [
@@ -1045,7 +1045,7 @@ class SignUpPage extends Component {
   }
 
   checkMustInputs(mustInputs, level) {
-    console.log(mustInputs);
+    IS_CONSOLE_LOG_OPEN && console.log(mustInputs);
     let x = mustInputs.length;
     let y = 0;
     for (let i = 0; i < x; i++) {
@@ -1060,14 +1060,14 @@ class SignUpPage extends Component {
     } else {
       this.setState(
         { mustInputEmphasis: true },
-        console.log(this.state.mustInputEmphasis)
+        IS_CONSOLE_LOG_OPEN && console.log(this.state.mustInputEmphasis)
       );
       this.props.alert(3000, "error", "You have to fill out all form!");
     }
   }
 
   onAlumniEmploymentSwitch(checked) {
-    console.log(`switch to ${checked}`);
+    IS_CONSOLE_LOG_OPEN && console.log(`switch to ${checked}`);
     this.setState({ alumniEmployment: checked });
   }
 
@@ -1085,7 +1085,7 @@ class SignUpPage extends Component {
     };
     axiosCaptcha(url, config).then(response => {
       if (response.statusText === "OK") {
-        console.log(response);
+        IS_CONSOLE_LOG_OPEN && console.log(response);
         let bufferList = [];
         response.data.forEach(company => bufferList.push(company.name));
         this.setState({
@@ -1400,7 +1400,7 @@ class SignUpPage extends Component {
   }
 
   render() {
-    console.log("level", this.state.level);
+    IS_CONSOLE_LOG_OPEN && console.log("level", this.state.level);
     return (
       <div>
         <div className="sign_up-background">{this.generateTopButtons()}</div>

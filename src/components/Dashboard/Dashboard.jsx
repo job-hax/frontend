@@ -25,10 +25,7 @@ import {
 } from "../../utils/api/requests.js";
 import { IS_MOCKING } from "../../config/config.js";
 import { mockJobApps } from "../../utils/api/mockResponses.js";
-import {
-  UPDATE_APPLICATION_STATUS,
-  IS_CONSOLE_LOG_OPEN
-} from "../../utils/constants/constants.js";
+import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import { generateCurrentDate } from "../../utils/helpers/helperFunctions.js";
 
 import "./style.scss";
@@ -93,7 +90,7 @@ class Dashboard extends Component {
       if (
         this.props.cookie("get", "google_login_first_instance") != ("" || null)
       ) {
-        console.log("dashboard google token var");
+        IS_CONSOLE_LOG_OPEN && console.log("dashboard google token var");
         this.props.cookie("remove", "google_login_first_instance");
         this.setState({ isSycnhingJobApps: true });
       }
@@ -158,7 +155,8 @@ class Dashboard extends Component {
     setTimeout(() => {
       this.setState(
         { isSycnhingJobApps: true },
-        console.log("after wait", this.state.isSycnhingJobApps)
+        IS_CONSOLE_LOG_OPEN &&
+          console.log("after wait", this.state.isSycnhingJobApps)
       );
     }, seconds * 1000);
   }
@@ -279,22 +277,46 @@ class Dashboard extends Component {
       );
     }
     this.setState({ selectedJobApplications: this.selectedJobApplications });
-    console.log(this.selectedJobApplications);
+    IS_CONSOLE_LOG_OPEN && console.log(this.selectedJobApplications);
   }
 
   async updateApplications(card, dragColumnName, dropColumnName) {
+    const statuses = {
+      applied: {
+        id: 1,
+        value: "APPLIED"
+      },
+      toApply: {
+        id: 2,
+        value: "TO APPLY"
+      },
+      phoneScreen: {
+        id: 3,
+        value: "PHONE SCREEN"
+      },
+      onsiteInterview: {
+        id: 4,
+        value: "ONSITE INTERVIEW"
+      },
+      offer: {
+        id: 5,
+        value: "OFFER"
+      }
+    };
     if (dragColumnName === dropColumnName) {
       return;
     }
+    console.log(statuses);
     let newDisplayingJobappsList = this.state.displayingList.filter(
       jobapp => jobapp.id != card.id
     );
     let updatedCard = card;
-    updatedCard.applicationStatus = UPDATE_APPLICATION_STATUS[dropColumnName];
+    let newStatus = statuses[dropColumnName];
+    updatedCard.applicationStatus = newStatus;
     newDisplayingJobappsList.unshift(updatedCard);
     this.sortJobApplications(newDisplayingJobappsList);
     await this.props.handleTokenExpiration("dashboard updateApplications");
-    console.log("ok? after");
+    IS_CONSOLE_LOG_OPEN && console.log("ok? after", dropColumnName, statuses);
     let { url, config } = updateJobStatusRequest;
     config.body = {
       jobapp_id: card.id,
@@ -309,11 +331,33 @@ class Dashboard extends Component {
   }
 
   async addNewApplication({ name, title, columnName }) {
+    const statuses = {
+      applied: {
+        id: 1,
+        value: "APPLIED"
+      },
+      toApply: {
+        id: 2,
+        value: "TO APPLY"
+      },
+      phoneScreen: {
+        id: 3,
+        value: "PHONE SCREEN"
+      },
+      onsiteInterview: {
+        id: 4,
+        value: "ONSITE INTERVIEW"
+      },
+      offer: {
+        id: 5,
+        value: "OFFER"
+      }
+    };
     await this.props.handleTokenExpiration("dashboard addNewApplication");
     const { url, config } = addJobAppsRequest;
     config.body = {
       job_title: title,
-      status_id: UPDATE_APPLICATION_STATUS[columnName].id,
+      status_id: statuses[columnName].id,
       company: name,
       application_date: generateCurrentDate(),
       source: "N/A"
@@ -375,13 +419,13 @@ class Dashboard extends Component {
           .match(value.trim().toLowerCase())
       );
     });
-    console.log(queriedList);
+    IS_CONSOLE_LOG_OPEN && console.log(queriedList);
     this.sortJobApplications(queriedList);
     this.setState({ displayingList: queriedList });
   }
 
   onDateQuery(date, dateString) {
-    console.log(date, dateString);
+    IS_CONSOLE_LOG_OPEN && console.log(date, dateString);
     let mainList = this.state.allApplications;
     let filteredList = [];
     mainList.forEach(application => {
@@ -392,19 +436,19 @@ class Dashboard extends Component {
         filteredList.push(application);
       }
     });
-    console.log(filteredList);
+    IS_CONSOLE_LOG_OPEN && console.log(filteredList);
     this.sortJobApplications(filteredList);
     this.setState({ displayingList: filteredList });
   }
 
   async onSelectAll(event) {
     let isSelected = event.target.checked;
-    console.log(`checkedAll = `, isSelected);
+    IS_CONSOLE_LOG_OPEN && console.log(`checkedAll = `, isSelected);
     if (isSelected === true) {
       let selectedDisplayingList = this.state.displayingList;
       selectedDisplayingList.forEach(jobApp => (jobApp.isSelected = true));
       await this.setState({ displayingList: selectedDisplayingList });
-      console.log(this.state.displayingList);
+      IS_CONSOLE_LOG_OPEN && console.log(this.state.displayingList);
       this.selectedJobApplications = [];
       this.state.displayingList.forEach(jobApp =>
         this.selectedJobApplications.push({
@@ -415,25 +459,27 @@ class Dashboard extends Component {
       await this.setState({
         selectedJobApplications: this.selectedJobApplications
       });
-      console.log(
-        "selecteds List after select all",
-        this.state.selectedJobApplications
-      );
+      IS_CONSOLE_LOG_OPEN &&
+        console.log(
+          "selecteds List after select all",
+          this.state.selectedJobApplications
+        );
       this.sortJobApplications(this.state.displayingList);
     }
     if (isSelected === false) {
       let selectedDisplayingList = this.state.displayingList;
       selectedDisplayingList.forEach(jobApp => (jobApp.isSelected = false));
       await this.setState({ displayingList: selectedDisplayingList });
-      console.log(this.state.displayingList);
+      IS_CONSOLE_LOG_OPEN && console.log(this.state.displayingList);
       this.selectedJobApplications = [];
       await this.setState({
         selectedJobApplications: this.selectedJobApplications
       });
-      console.log(
-        "selecteds List after deselect all",
-        this.state.selectedJobApplications
-      );
+      IS_CONSOLE_LOG_OPEN &&
+        console.log(
+          "selecteds List after deselect all",
+          this.state.selectedJobApplications
+        );
       this.sortJobApplications(this.state.displayingList);
     }
   }
@@ -498,7 +544,7 @@ class Dashboard extends Component {
 
   async handleMenuClick(event) {
     await this.props.handleTokenExpiration("moveMultipleOptions");
-    console.log("click", event);
+    IS_CONSOLE_LOG_OPEN && console.log("click", event);
     let requestList = [];
     this.state.selectedJobApplications.forEach(selectedJobApp =>
       requestList.push(selectedJobApp.jobApp_id)
