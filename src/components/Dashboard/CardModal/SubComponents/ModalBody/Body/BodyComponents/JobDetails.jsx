@@ -2,7 +2,7 @@ import React from "react";
 import { AutoComplete, DatePicker, Select } from "antd";
 import moment from "moment";
 
-import { makeTimeBeautiful } from "../../../../../../../utils/constants/constants.js";
+import { makeTimeBeautiful, IS_CONSOLE_LOG_OPEN } from "../../../../../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api.js";
 import {
   getAutoCompleteRequest,
@@ -70,7 +70,7 @@ class JobDetails extends React.Component {
         );
         this.props.updateHeader();
       } else {
-        console.log(response, response.data.error_message);
+        IS_CONSOLE_LOG_OPEN && console.log(response, response.data.error_message);
         this.props.alert(
           5000,
           "error",
@@ -143,7 +143,7 @@ class JobDetails extends React.Component {
     };
     axiosCaptcha(url, config).then(response => {
       if (response.statusText === "OK") {
-        console.log(response);
+        IS_CONSOLE_LOG_OPEN && console.log(response);
         let bufferList = [];
         response.data.forEach(company => bufferList.push(company.name));
         this.setState({
@@ -203,7 +203,7 @@ class JobDetails extends React.Component {
     let newUrl = url("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
-        console.log(response.data);
+        IS_CONSOLE_LOG_OPEN && console.log(response.data);
         let bufferPositionsList = [];
         response.data.data.forEach(position =>
           bufferPositionsList.push(position.job_title)
@@ -266,7 +266,7 @@ class JobDetails extends React.Component {
   }
 
   generateApplyDateInfo() {
-    console.log("date", this.props.card.applyDate);
+    IS_CONSOLE_LOG_OPEN && console.log("date", this.props.card.applyDate);
     const dateFormat = "MM.DD.YYYY";
     const { applyDate, isApplyDateEditing } = this.state;
     const infoClass =
@@ -312,7 +312,7 @@ class JobDetails extends React.Component {
     const { url, config } = getSourcesRequest;
     axiosCaptcha(url, config).then(response => {
       if (response.statusText === "OK") {
-        console.log(response.data);
+        IS_CONSOLE_LOG_OPEN && console.log(response.data);
         this.setState({
           sourcesList: response.data.data
         });

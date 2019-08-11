@@ -166,7 +166,7 @@ class ProfilePage extends React.Component {
     ).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success == true) {
-          console.log(response);
+          IS_CONSOLE_LOG_OPEN && console.log(response);
           this.data = response.data.data;
           this.setState({ data: this.data });
           this.props.setProfilePhotoUrlInHeader();
@@ -210,7 +210,7 @@ class ProfilePage extends React.Component {
   }
 
   async submitProfileUpdate(target) {
-    console.log(target);
+    IS_CONSOLE_LOG_OPEN && console.log(target);
     await this.props.handleTokenExpiration("profilePage submitProfileUpdate");
     this.setState({
       isUpdating: true
@@ -393,7 +393,7 @@ class ProfilePage extends React.Component {
   }
 
   generateNonEditableProfileMainArea() {
-    console.log("data", this.state.data);
+    IS_CONSOLE_LOG_OPEN && console.log("data", this.state.data);
     const props = {
       name: "file",
       showUploadList: false,
