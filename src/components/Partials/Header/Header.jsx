@@ -9,6 +9,12 @@ import "./style.scss";
 class Header extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      user_type:
+        this.props.cookie("get", "user_type") != ("" || null)
+          ? this.props.cookie("get", "user_type")
+          : 0
+    };
 
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -108,12 +114,14 @@ class Header extends Component {
               <span>Metrics</span>
             </Link>
           </div>
-          <div className="header-icon general tooltips">
-            <Link to="/alumni">
-              <img src="../../../src/assets/icons/AlumniIcon.png" />
-              <span>Alumni</span>
-            </Link>
-          </div>
+          {(this.state.user_type == 2 || this.state.user_type == 3) && (
+            <div className="header-icon general tooltips">
+              <Link to="/alumni">
+                <img src="../../../src/assets/icons/AlumniIcon.png" />
+                <span>Alumni</span>
+              </Link>
+            </div>
+          )}
           {/*<div className="header-icon general tooltips">
             <Link to="/events">
               <img src="../../../src/assets/icons/EventIcon.png" />
