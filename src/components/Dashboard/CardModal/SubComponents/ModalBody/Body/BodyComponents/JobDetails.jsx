@@ -2,7 +2,10 @@ import React from "react";
 import { AutoComplete, DatePicker, Select } from "antd";
 import moment from "moment";
 
-import { makeTimeBeautiful, IS_CONSOLE_LOG_OPEN } from "../../../../../../../utils/constants/constants.js";
+import {
+  makeTimeBeautiful,
+  IS_CONSOLE_LOG_OPEN
+} from "../../../../../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api.js";
 import {
   getAutoCompleteRequest,
@@ -20,8 +23,9 @@ class JobDetails extends React.Component {
       isPositionsEditing: false,
       isApplyDateEditing: false,
       isApplicationSourcesEditing: false,
-      companyName: this.props.card.companyObject.company,
-      jobTitle: this.props.card.position.job_title,
+      companyName:
+        this.props.card.companyObject && this.props.card.companyObject.company,
+      jobTitle: this.props.card.position && this.props.card.position.job_title,
       applyDate: makeTimeBeautiful(this.props.card.applyDate, "date"),
       source:
         this.props.card.app_source === null
@@ -54,8 +58,26 @@ class JobDetails extends React.Component {
   }
 
   async submitChanges() {
-    this.body["job_title"] = this.state.jobTitle;
-    this.body["company"] = this.state.companyName;
+    if (this.state.jobTitle.trim() == (null || "")) {
+      this.props.alert(3000, "error", "Position cannot be empty!");
+      if (this.props.card.position) {
+        this.setState({
+          jobTitle: this.props.card.position.job_title
+        });
+      }
+    } else {
+      this.body["job_title"] = this.state.jobTitle.trim();
+    }
+    if (this.state.companyName.trim() == (null || "")) {
+      this.props.alert(3000, "error", "Company name cannot be empty!");
+      if (this.props.card.companyObject) {
+        this.setState({
+          companyName: this.props.card.companyObject.company
+        });
+      }
+    } else {
+      this.body["company"] = this.state.companyName.trim();
+    }
     this.body["source"] = this.state.source;
     const { url, config } = editJobAppRequest;
     config.body = this.body;
@@ -70,7 +92,8 @@ class JobDetails extends React.Component {
         );
         this.props.updateHeader();
       } else {
-        IS_CONSOLE_LOG_OPEN && console.log(response, response.data.error_message);
+        IS_CONSOLE_LOG_OPEN &&
+          console.log(response, response.data.error_message);
         this.props.alert(
           5000,
           "error",
@@ -173,15 +196,15 @@ class JobDetails extends React.Component {
             style={{ width: "200px", marginTop: "4px" }}
             onSearch={this.handleCompanySearch}
             placeholder="Company Name"
-            value={companyName}
+            value={companyName && companyName}
             onSelect={value => this.setState({ companyName: value })}
           />
         ) : this.props.card.editable == true ? (
           <div className={infoClass} onClick={this.toggleCompanyEdit}>
-            {companyName}
+            {companyName && companyName}
           </div>
         ) : (
-          <div className={infoClass}>{companyName}</div>
+          <div className={infoClass}>{companyName && companyName}</div>
         )}
       </div>
     );
@@ -235,15 +258,15 @@ class JobDetails extends React.Component {
             style={{ width: "200px", marginTop: "4px" }}
             onSearch={this.handlePositionsSearch}
             placeholder="Job Title"
-            value={jobTitle}
+            value={jobTitle && jobTitle}
             onSelect={value => this.setState({ jobTitle: value })}
           />
         ) : this.props.card.editable == true ? (
           <div className={infoClass} onClick={this.togglePositionsEdit}>
-            {jobTitle}
+            {jobTitle && jobTitle}
           </div>
         ) : (
-          <div className={infoClass}>{jobTitle}</div>
+          <div className={infoClass}>{jobTitle && jobTitle}</div>
         )}
       </div>
     );
