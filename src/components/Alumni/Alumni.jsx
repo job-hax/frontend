@@ -181,6 +181,7 @@ class Alumni extends React.Component {
           alumni={alumni}
           handleTokenExpiration={this.props.handleTokenExpiration}
           isEditable={false}
+          displayingAt={"alumni"}
         />
       </div>
     ));
