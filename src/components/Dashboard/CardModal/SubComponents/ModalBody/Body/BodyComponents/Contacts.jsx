@@ -6,6 +6,7 @@ import ContactCardOnEdit from "../../../../../../Partials/ContactCards/ContactCa
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api";
 import { getContactsRequest } from "../../../../../../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../../../../../utils/constants/constants.js";
+import AlumniCard from "../../../../../../Partials/AlumniCards/AlumniCard.jsx";
 
 class Contacts extends React.Component {
   constructor(props) {
@@ -91,6 +92,19 @@ class Contacts extends React.Component {
     ));
   }
 
+  generateAlumniCards() {
+    return this.state.alumni.map(alumni => (
+      <div key={alumni.id} style={{ cursor: "pointer", margin: 12 }}>
+        <AlumniCard
+          alumni={alumni}
+          handleTokenExpiration={this.props.handleTokenExpiration}
+          isEditable={false}
+          displayingAt={"contacts"}
+        />
+      </div>
+    ));
+  }
+
   render() {
     IS_CONSOLE_LOG_OPEN && console.log("contacts", this.state.contacts);
     return (
@@ -120,12 +134,15 @@ class Contacts extends React.Component {
           </div>
         </div>
 
-        {this.state.contacts.length == 0 ? (
+        {this.state.contacts.length + this.state.alumni.length == 0 ? (
           <div className="no-data" style={{ margin: 160 }}>
             You do not have any contacts yet!
           </div>
         ) : (
-          <div>{this.generateContactCards()}</div>
+          <div>
+            {this.state.contacts.length > 0 && this.generateContactCards()}
+            {this.state.alumni.length > 0 && this.generateAlumniCards()}
+          </div>
         )}
       </div>
     );
