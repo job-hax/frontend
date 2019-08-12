@@ -20,7 +20,9 @@ class AlumniCard extends React.Component {
   }
 
   generateCard() {
-    const { alumni } = this.props;
+    const { alumni, displayingAt } = this.props;
+    const width = displayingAt == "contacts" ? "420px" : "300px";
+    const margin = displayingAt == "contacts" ? "-24px 0 0 0" : "0 0 0 0";
     return (
       <div className="header">
         <div className="header-left">
@@ -39,19 +41,33 @@ class AlumniCard extends React.Component {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                width: "300px"
+                width: width
               }}
             >
               <div className="job-info">
                 <div className="position">{alumni.major.name}</div>
               </div>
-              <div className="job-info">
-                {alumni.grad_year && (
-                  <div className="position">{"Class of "}</div>
+              <div style={{ margin: margin }}>
+                {displayingAt == "contacts" && (
+                  <div>
+                    <img
+                      style={{
+                        margin: "0px 0 0 20px",
+                        height: 24,
+                        width: "auto"
+                      }}
+                      src={"../../../src/assets/icons/AlumniIconDarkBlue.png"}
+                    />
+                  </div>
                 )}
-                {alumni.grad_year && (
-                  <div className="company">{alumni.grad_year}</div>
-                )}
+                <div className="job-info">
+                  {alumni.grad_year && (
+                    <div className="position">{"Class of "}</div>
+                  )}
+                  {alumni.grad_year && (
+                    <div className="company">{alumni.grad_year}</div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

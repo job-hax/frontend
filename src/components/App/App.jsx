@@ -54,7 +54,11 @@ class App extends Component {
       isUserLoggedIn:
         this.cookie("get", "jobhax_access_token") == ("" || null)
           ? false
-          : this.cookie("get", "user_type") == ("0" || null)
+          : this.cookie("get", "user_type") == "0"
+          ? "signup?=intro"
+          : this.cookie("get", "user_type") == null
+          ? "signup?=intro"
+          : this.cookie("get", "user_type") == "signup?=intro"
           ? false
           : true,
       isAuthenticationChecking: true,
@@ -110,9 +114,13 @@ class App extends Component {
           isInitialRequest: true,
           isAuthenticationChecking: false
         });
-        this.state.token != (null || "" || undefined) &&
-          this.cookie("get", "user_type") != ("0" || null) &&
-          this.setState({ isUserLoggedIn: true });
+        if (
+          this.state.isUserLoggedIn == "signup?=intro" &&
+          this.cookie("get", "user_type") != "signup?=intro"
+        ) {
+          this.props.cookies.set("user_type", "signup?=intro", { path: "/" });
+          window.location = "/signup?=intro";
+        }
       });
     });
   }

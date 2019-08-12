@@ -68,7 +68,8 @@ class Card extends PureComponent {
 
   toggleModal() {
     this.setState(({ showModal }) => ({
-      showModal: !showModal
+      showModal: !showModal,
+      showSelect: false
     }));
   }
 
@@ -183,9 +184,11 @@ class Card extends PureComponent {
             <div id="company" className="card-company-name">
               {companyObject.company}
             </div>
-            <div id="jobTitle" className="card-job-position">
-              {position.job_title}
-            </div>
+            {position && (
+              <div id="jobTitle" className="card-job-position">
+                {position.job_title}
+              </div>
+            )}
           </div>
           <div className="card-job-details">
             {(this.state.showSelect || this.state.isSelected) && (
