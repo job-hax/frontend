@@ -68,7 +68,8 @@ class Card extends PureComponent {
 
   toggleModal() {
     this.setState(({ showModal }) => ({
-      showModal: !showModal
+      showModal: !showModal,
+      showSelect: false
     }));
   }
 
