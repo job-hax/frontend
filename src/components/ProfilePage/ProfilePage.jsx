@@ -215,11 +215,22 @@ class ProfilePage extends React.Component {
     this.setState({
       isUpdating: true
     });
-    if (target[2].value.trim() != (null || "")) {
-      this.body["first_name"] = target[2].value.trim();
+    let lastName = null;
+    let firstName = null;
+    for (let i = 0; i < target.length - 1; i++) {
+      if (target[i].name == "last-name") {
+        lastName = i;
+        console.log("lastName", target[i].value);
+      } else if (target[i].name == "first-name") {
+        firstName = i;
+        console.log("firstName", target[i].value);
+      }
     }
-    if (target[3].value.trim() != (null || "")) {
-      this.body["last_name"] = target[3].value.trim();
+    if (target[firstName].value.trim() != (null || "")) {
+      this.body["first_name"] = target[firstName].value.trim();
+    }
+    if (target[lastName].value.trim() != (null || "")) {
+      this.body["last_name"] = target[lastName].value.trim();
     }
     updateProfileRequest.config.body = this.body;
     axiosCaptcha(
@@ -772,6 +783,7 @@ class ProfilePage extends React.Component {
                   <label>
                     First Name:
                     <input
+                      name="first-name"
                       className="first-name"
                       placeholder={
                         this.state.data != null &&
@@ -786,6 +798,7 @@ class ProfilePage extends React.Component {
                   <label>
                     Last Name:
                     <input
+                      name="last-name"
                       className="last-name"
                       placeholder={
                         this.state.data != null &&
