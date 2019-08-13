@@ -1,5 +1,5 @@
 import React from "react";
-import { Rate, Radio, Select } from "antd";
+import { Rate, Radio, Select, Menu, Dropdown, Button, Icon } from "antd";
 
 import CompanyRating from "./CompanyRating/CompanyRating.jsx";
 import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
@@ -19,7 +19,8 @@ class Reviews extends React.Component {
     super(props);
 
     this.state = {
-      reviewsList: []
+      reviewsList: [],
+      displaying: "All Positions"
     };
 
     this.handlePositionFilterChange = this.handlePositionFilterChange.bind(
@@ -31,27 +32,38 @@ class Reviews extends React.Component {
     this.setState({ reviewsList: this.props.reviewsList });
   }
 
-  async handlePositionFilterChange(value) {
-    await this.props.handleTokenExpiration(
-      "reviews handlePositionFilterChange"
-    );
-    let newReviewsUrl =
-      getReviewsRequest.url +
-      "?company_id=" +
-      this.props.company_id +
-      "&position_id=" +
-      value +
-      "&all_reviews=true";
-    axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
-      if (response.statusText === "OK") {
-        this.setState({ reviewsList: response.data.data });
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "company reviews filter reviews by position  response.data data",
-            response.data.data
-          );
-      }
-    });
+  async handlePositionFilterChange(event) {
+    console.log(event);
+    let value = event.item.props.children;
+    let id = event.key;
+    if (value == "Reset") {
+      this.setState({
+        reviewsList: this.props.reviewsList,
+        displaying: "All Positions"
+      });
+    } else {
+      this.setState({ displaying: value });
+      await this.props.handleTokenExpiration(
+        "reviews handlePositionFilterChange"
+      );
+      let newReviewsUrl =
+        getReviewsRequest.url +
+        "?company_id=" +
+        this.props.company_id +
+        "&position_id=" +
+        id +
+        "&all_reviews=true";
+      axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
+        if (response.statusText === "OK") {
+          this.setState({ reviewsList: response.data.data });
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "company reviews filter reviews by position  response.data data",
+              response.data.data
+            );
+        }
+      });
+    }
   }
 
   mapReviews() {
@@ -89,22 +101,26 @@ class Reviews extends React.Component {
                       )}
                     </div>
                     <div className="company-review-text-container">
-                      {review.pros != "" && (
-                        <div>
-                          <label>Pros:</label>
-                          <div className="company-review-text">
-                            {review.pros}
-                          </div>
-                        </div>
-                      )}
-                      {review.cons != "" && (
-                        <div>
-                          <label>Cons:</label>
-                          <div className="company-review-text">
-                            {review.cons}
-                          </div>
-                        </div>
-                      )}
+                      {review.pros != null &&
+                        review.pros != "" &&
+                        (
+                            <div>
+                              <label>Pros:</label>
+                              <div className="company-review-text">
+                                {review.pros}
+                              </div>
+                            </div>
+                          )}
+                      {review.cons != null &&
+                        review.cons != "" &&
+                        (
+                            <div>
+                              <label>Cons:</label>
+                              <div className="company-review-text">
+                                {review.cons}
+                              </div>
+                            </div>
+                          )}
                     </div>
                   </div>
                   <div className="body-company-ratings">
@@ -160,16 +176,18 @@ class Reviews extends React.Component {
                     />
                   </div>
                 </div>
-                {review.interview_notes != "" && (
-                  <div className="interview-experience">
-                    <label style={{ margin: "10px 4px 6px 0px" }}>
-                      Interview Experience:
-                    </label>
-                    <div className="interview-notes">
-                      {review.interview_notes}
-                    </div>
-                  </div>
-                )}
+                {review.interview_notes != null &&
+                  review.interview_notes !="" && 
+                  (
+                      <div className="interview-experience">
+                        <label style={{ margin: "10px 4px 6px 0px" }}>
+                          Interview Experience:
+                        </label>
+                        <div className="interview-notes">
+                          {review.interview_notes}
+                        </div>
+                      </div>
+                    )}
               </div>
             </div>
           </div>
@@ -179,26 +197,48 @@ class Reviews extends React.Component {
 
   render() {
     IS_CONSOLE_LOG_OPEN && console.log(this.state.reviewsList);
+    const menu = (
+      <Menu
+        style={{
+          width: "300px",
+          maxHeight: "260px",
+          textAlign: "left",
+          overflowX: "hidden"
+        }}
+        onClick={event => this.handlePositionFilterChange(event)}
+      >
+        {this.props.positionsList.map(position => (
+          <Menu.Item
+            id="company-positions"
+            key={position.id}
+            value={position.id}
+          >
+            {position.job_title}
+          </Menu.Item>
+        ))}
+        <Menu.Divider />
+        <Menu.Item value="Reset">Reset</Menu.Item>
+      </Menu>
+    );
+
     return (
       <div>
         {this.props.filterDisplay && (
           <div className="filter">
             <label>Filter:</label>
-            <Select
-              defaultValue="All Positions"
-              style={{ width: 200, position: "relative" }}
-              onChange={this.handlePositionFilterChange}
-            >
-              {this.props.positionsList.map(position => (
-                <Select.Option
-                  id="company-positions"
-                  key={position.id}
-                  value={position.id}
-                >
-                  {position.job_title}
-                </Select.Option>
-              ))}
-            </Select>
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <Button
+                className="ant-dropdown-link"
+                style={{
+                  color: "rgba(100, 100, 100, 0.9)",
+                  width: 200,
+                  overflow: "hidden"
+                }}
+              >
+                {this.state.displaying}
+                <Icon type="down" />
+              </Button>
+            </Dropdown>
           </div>
         )}
         <div style={this.props.style} className="reviews-container">
