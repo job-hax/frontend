@@ -408,37 +408,47 @@ class Dashboard extends Component {
 
   onSearch(event) {
     let value = event.target.value;
-    let queriedList = this.state.allApplications;
-    queriedList = queriedList.filter(application => {
-      return (
-        application.companyObject.company
-          .toLowerCase()
-          .match(value.trim().toLowerCase()) ||
-        application.position.job_title
-          .toLowerCase()
-          .match(value.trim().toLowerCase())
-      );
-    });
-    IS_CONSOLE_LOG_OPEN && console.log(queriedList);
-    this.sortJobApplications(queriedList);
-    this.setState({ displayingList: queriedList });
+    if (value == "") {
+      console.log("query removed");
+      this.sortJobApplications(this.state.allApplications);
+    } else {
+      let queriedList = this.state.allApplications;
+      queriedList = queriedList.filter(application => {
+        return (
+          application.companyObject.company
+            .toLowerCase()
+            .match(value.trim().toLowerCase()) ||
+          application.position.job_title
+            .toLowerCase()
+            .match(value.trim().toLowerCase())
+        );
+      });
+      IS_CONSOLE_LOG_OPEN && console.log(queriedList);
+      this.sortJobApplications(queriedList);
+      this.setState({ displayingList: queriedList });
+    }
   }
 
   onDateQuery(date, dateString) {
     IS_CONSOLE_LOG_OPEN && console.log(date, dateString);
-    let mainList = this.state.allApplications;
-    let filteredList = [];
-    mainList.forEach(application => {
-      if (
-        date[0] <= new Date(application.applyDate) &&
-        new Date(application.applyDate) <= date[1]
-      ) {
-        filteredList.push(application);
-      }
-    });
-    IS_CONSOLE_LOG_OPEN && console.log(filteredList);
-    this.sortJobApplications(filteredList);
-    this.setState({ displayingList: filteredList });
+    if (date.length == 0) {
+      console.log("date filter removed");
+      this.sortJobApplications(this.state.allApplications);
+    } else {
+      let mainList = this.state.allApplications;
+      let filteredList = [];
+      mainList.forEach(application => {
+        if (
+          date[0] <= new Date(application.applyDate) &&
+          new Date(application.applyDate) <= date[1]
+        ) {
+          filteredList.push(application);
+        }
+      });
+      IS_CONSOLE_LOG_OPEN && console.log(filteredList);
+      this.sortJobApplications(filteredList);
+      this.setState({ displayingList: filteredList });
+    }
   }
 
   async onSelectAll(event) {
@@ -494,6 +504,15 @@ class Dashboard extends Component {
         }
       })
     );
+    let newAllList = this.state.allApplications;
+    this.state.selectedJobApplications.forEach(selectedJobApp =>
+      newAllList.forEach(jobApp => {
+        if (jobApp.id == selectedJobApp.jobApp_id) {
+          jobApp.applicationStatus.id = status_id;
+          jobApp.applicationStatus.value = status_name;
+        }
+      })
+    );
     const body = {
       jobapp_ids: requestList,
       status_id: status_id
@@ -508,7 +527,7 @@ class Dashboard extends Component {
         window.location.reload(true);
       }
     });
-    this.setState({ displayingList: newList, allApplications: newList });
+    this.setState({ displayingList: newList, allApplications: newAllList });
     this.sortJobApplications(newList);
   }
 
@@ -520,6 +539,16 @@ class Dashboard extends Component {
           displayingJobApp.applicationStatus.id = status_id;
           displayingJobApp.applicationStatus.value = status_name;
           displayingJobApp.isRejected = true;
+        }
+      })
+    );
+    let newAllList = this.state.allApplications;
+    this.state.selectedJobApplications.forEach(selectedJobApp =>
+      newAllList.forEach(jobApp => {
+        if (jobApp.id == selectedJobApp.jobApp_id) {
+          jobApp.applicationStatus.id = status_id;
+          jobApp.applicationStatus.value = status_name;
+          jobApp.isRejected = true;
         }
       })
     );
@@ -538,7 +567,7 @@ class Dashboard extends Component {
         window.location.reload(true);
       }
     });
-    this.setState({ displayingList: newList, allApplications: newList });
+    this.setState({ displayingList: newList, allApplications: newAllList });
     this.sortJobApplications(newList);
   }
 
@@ -558,7 +587,15 @@ class Dashboard extends Component {
           }
         })
       );
-      this.setState({ displayingList: newList, allApplications: newList });
+      let newAllList = this.state.allApplications;
+      this.state.selectedJobApplications.forEach(selectedJobApp =>
+        newAllList.forEach(jobApp => {
+          if (jobApp.id == selectedJobApp.jobApp_id) {
+            newAllList.splice(newAllList.indexOf(jobApp), 1);
+          }
+        })
+      );
+      this.setState({ displayingList: newList, allApplications: newAllList });
       this.sortJobApplications(newList);
       const body = {
         jobapp_ids: requestList
@@ -585,6 +622,17 @@ class Dashboard extends Component {
           }
         })
       );
+      let newAllList = this.state.allApplications;
+      this.state.selectedJobApplications.forEach(selectedJobApp =>
+        newAllList.forEach(jobApp => {
+          if (
+            jobApp.id == selectedJobApp.jobApp_id &&
+            selectedJobApp.applicationStatus.id != 2
+          ) {
+            jobApp.isRejected = true;
+          }
+        })
+      );
       const body = {
         jobapp_ids: requestList,
         rejected: true
@@ -599,7 +647,7 @@ class Dashboard extends Component {
           window.location.reload(true);
         }
       });
-      this.setState({ displayingList: newList, allApplications: newList });
+      this.setState({ displayingList: newList, allApplications: newAllList });
       this.sortJobApplications(newList);
     } else if (event.key === "toApply") {
       let newList = this.state.displayingList;
@@ -613,6 +661,18 @@ class Dashboard extends Component {
             displayingJobApp.applicationStatus.id = 2;
             displayingJobApp.applicationStatus.value = "TO APPLY";
             toApplyList.push(selectedJobApp.jobApp_id);
+          }
+        })
+      );
+      let newAllList = this.state.allApplications;
+      this.state.selectedJobApplications.forEach(selectedJobApp =>
+        newAllList.forEach(jobApp => {
+          if (
+            jobApp.id == selectedJobApp.jobApp_id &&
+            jobApp.isRejected == false
+          ) {
+            jobApp.applicationStatus.id = 2;
+            jobApp.applicationStatus.value = "TO APPLY";
           }
         })
       );
@@ -630,7 +690,7 @@ class Dashboard extends Component {
           window.location.reload(true);
         }
       });
-      this.setState({ displayingList: newList, allApplications: newList });
+      this.setState({ displayingList: newList, allApplications: newAllList });
       this.sortJobApplications(newList);
     } else if (event.key === "applied") {
       this.moveMultipleOperation(1, "Applied", requestList);
