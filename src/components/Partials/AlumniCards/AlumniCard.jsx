@@ -45,7 +45,11 @@ class AlumniCard extends React.Component {
               }}
             >
               <div className="job-info">
-                <div className="position">{alumni.major.name}</div>
+                <div className="position">
+                  {displayingAt == "contacts"
+                    ? alumni.job_position.job_title
+                    : alumni.major.name}
+                </div>
               </div>
               <div style={{ margin: margin }}>
                 {displayingAt == "contacts" && (
