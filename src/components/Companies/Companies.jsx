@@ -1,5 +1,5 @@
 import React from "react";
-import { Pagination, Input } from "antd";
+import { Pagination, Input, Switch } from "antd";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import CompanyCards from "./CompanyCards/CompanyCards.jsx";
@@ -28,10 +28,13 @@ class Companies extends React.Component {
       companies: {},
       pageNo: 1,
       pageSize: 10,
-      query: ""
+      q: "",
+      hasReview: false,
+      mine: true
     };
 
     this.handlePageChange = this.handlePageChange.bind(this);
+    this.urlBuilder = this.urlBuilder.bind(this);
   }
 
   async componentDidMount() {
@@ -72,17 +75,33 @@ class Companies extends React.Component {
     }
   }
 
+  urlBuilder(list) {
+    let parameterList = [];
+    for (let i = 0; i <= list.length - 1; i++) {
+      if (
+        this.state[list[i]] != "" &&
+        this.state[list[i]] != null &&
+        this.state[list[i]] != false
+      ) {
+        parameterList.push({
+          name: list[i],
+          value: this.state[list[i]]
+        });
+      }
+    }
+    return parameterList;
+  }
+
   async getData(requestType) {
     this.setState({ isWaitingResponse: true });
+    const parameters = this.urlBuilder(["q", "hasReview", "mine"]);
     const { url, config } = getCompaniesRequest;
     let newUrl =
-      url +
-      "?page=" +
-      this.state.pageNo +
-      "&page_size=" +
-      this.state.pageSize +
-      "&q=" +
-      this.state.query;
+      url + "?page=" + this.state.pageNo + "&page_size=" + this.state.pageSize;
+    parameters.forEach(
+      parameter =>
+        (newUrl = newUrl + "&" + parameter.name + "=" + parameter.value)
+    );
     await this.props.handleTokenExpiration("companies getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
@@ -155,13 +174,35 @@ class Companies extends React.Component {
                   style={{
                     width: "100%",
                     display: "flex",
-                    justifyContent: "end"
+                    justifyContent: "space-between",
+                    fontWeight: 500
                   }}
                 >
+                  <div>
+                    My applications only{" "}
+                    <Switch
+                      defaultChecked={this.state.mine}
+                      onChange={checked =>
+                        this.setState({ mine: checked, isQueryRequested: true })
+                      }
+                    />
+                  </div>
+                  <div>
+                    With reviews only{" "}
+                    <Switch
+                      defaultChecked={this.state.hasReview}
+                      onChange={checked =>
+                        this.setState({
+                          hasReview: checked,
+                          isQueryRequested: true
+                        })
+                      }
+                    />
+                  </div>
                   <Search
                     placeholder="search"
                     onSearch={value =>
-                      this.setState({ query: value, isQueryRequested: true })
+                      this.setState({ q: value, isQueryRequested: true })
                     }
                     style={{ width: 300, margin: "0 0 24px 0" }}
                   />
