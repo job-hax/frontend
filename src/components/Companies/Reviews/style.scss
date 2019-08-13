@@ -152,8 +152,12 @@
 .filter {
     margin-left: 6.8%;
     margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    width: 260px;
 
     label {
-        margin-right: 4px;
+        margin: 4px 0 0 0;
+        font-weight: 500;
     }
 }
