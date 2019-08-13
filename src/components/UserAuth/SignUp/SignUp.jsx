@@ -371,7 +371,8 @@ class SignUpPage extends Component {
                 "/"
               );
             } else {
-              IS_CONSOLE_LOG_OPEN && console.log(response, response.data.error_message);
+              IS_CONSOLE_LOG_OPEN &&
+                console.log(response, response.data.error_message);
               this.props.alert(
                 5000,
                 "error",
@@ -917,7 +918,8 @@ class SignUpPage extends Component {
   }
 
   generateLevelBasicInfo() {
-    IS_CONSOLE_LOG_OPEN && console.log("stateList", this.state.stateOrProvinceList);
+    IS_CONSOLE_LOG_OPEN &&
+      console.log("stateList", this.state.stateOrProvinceList);
     const mustInputsList =
       this.state.stateOrProvinceList.length > 0
         ? [
@@ -947,7 +949,7 @@ class SignUpPage extends Component {
 
     return (
       <div>
-        <div className="level-title">Connect with your College</div>
+        <div className="level-title">Tell Us More About Yourself</div>
         <div className="level-body">Please enter your First Name:</div>
         <div>
           <Input
