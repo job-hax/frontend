@@ -410,6 +410,7 @@ class Dashboard extends Component {
     let value = event.target.value;
     if (value == "") {
       console.log("query removed");
+      this.setState({ displayingList: this.state.allApplications });
       this.sortJobApplications(this.state.allApplications);
     } else {
       let queriedList = this.state.allApplications;
@@ -433,6 +434,7 @@ class Dashboard extends Component {
     IS_CONSOLE_LOG_OPEN && console.log(date, dateString);
     if (date.length == 0) {
       console.log("date filter removed");
+      this.setState({ displayingList: this.state.allApplications });
       this.sortJobApplications(this.state.allApplications);
     } else {
       let mainList = this.state.allApplications;
