@@ -36,7 +36,9 @@ class CompanyCards extends React.Component {
   async handleSeeReviews() {
     await this.props.handleTokenExpiration("companyCards handleSeeReviews");
     let newPositionUrl =
-      getCompaniesRequest.url + this.props.company.id + "/positions"; //?hasReview=true
+      getCompaniesRequest.url +
+      this.props.company.id +
+      "/positions?hasReview=true";
     axiosCaptcha(newPositionUrl, getCompaniesRequest.config).then(response => {
       if (response.statusText === "OK") {
         this.setState({
