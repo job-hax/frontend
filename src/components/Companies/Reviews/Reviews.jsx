@@ -102,8 +102,8 @@ class Reviews extends React.Component {
                     </div>
                     <div className="company-review-text-container">
                       {review.pros != null &&
-                        review.pros !=
-                          ""(
+                        review.pros != "" &&
+                        (
                             <div>
                               <label>Pros:</label>
                               <div className="company-review-text">
@@ -112,8 +112,8 @@ class Reviews extends React.Component {
                             </div>
                           )}
                       {review.cons != null &&
-                        review.cons !=
-                          ""(
+                        review.cons != "" &&
+                        (
                             <div>
                               <label>Cons:</label>
                               <div className="company-review-text">
@@ -177,8 +177,8 @@ class Reviews extends React.Component {
                   </div>
                 </div>
                 {review.interview_notes != null &&
-                  review.interview_notes !=
-                    ""(
+                  review.interview_notes !="" && 
+                  (
                       <div className="interview-experience">
                         <label style={{ margin: "10px 4px 6px 0px" }}>
                           Interview Experience:
