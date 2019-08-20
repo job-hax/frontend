@@ -84,20 +84,16 @@ class Events extends React.Component {
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success == true) {
-          let multiple = [];
-          for (let i = 0; i < 9; i++) {
-            multiple.push(response.data.data[0]);
-          }
           if (requestType === "initialRequest") {
             this.setState({
-              eventsList: multiple,
+              eventsList: response.data.data,
               pagination: response.data.pagination,
               isWaitingResponse: false,
               isInitialRequest: false
             });
           } else if (requestType === "newPageRequest") {
             this.setState({
-              eventsList: multiple,
+              eventsList: response.data.data,
               pagination: response.data.pagination,
               isWaitingResponse: false,
               isNewPageRequested: false
