@@ -77,18 +77,6 @@ class Header extends Component {
               <div className="jobhax-logo" />
             </Link>
           </div>
-          {/*<div className="search-box">
-            <img className="header-icon search-icon" src="../../../src/assets/icons/SearchIcon@3x.png"></img>
-            <div>
-              <input
-                className="search-input"
-                id="query"
-                onChange={e => {
-                  e.preventDefault()
-                }}>
-              </input>
-            </div>
-              </div>*/}
         </div>
         <div className="right-container">
           <div className="header-icon general tooltips">
@@ -122,13 +110,23 @@ class Header extends Component {
               </Link>
             </div>
           )}
-          {/*<div className="header-icon general tooltips">
-            <Link to="/events">
+          {window.location.pathname.substring(0, 6) == "/event" ? (
+            <div
+              className="header-icon general tooltips"
+              onClick={() => window.location.assign("/events")}
+            >
               <img src="../../../src/assets/icons/EventIcon.png" />
               <span>Events</span>
-            </Link>
-          </div>
-          <div className="header-icon general tooltips">
+            </div>
+          ) : (
+            <div className="header-icon general tooltips">
+              <Link to="/events">
+                <img src="../../../src/assets/icons/EventIcon.png" />
+                <span>Events</span>
+              </Link>
+            </div>
+          )}
+          {/*<div className="header-icon general tooltips">
             <Link to="/mentors">
               <img src="../../../src/assets/icons/MentorIcon.png" />
               <span>Mentorship</span>

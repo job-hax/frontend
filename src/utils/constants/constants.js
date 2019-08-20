@@ -173,11 +173,42 @@ export function makeTimeBeautiful(time, type = "date") {
     "Nov",
     "Dec"
   ];
+  var fullMonthsList = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+  var fullDaysList = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ];
   var beautifulDatePart =
     datePart[2] +
     "-" +
     monthsList[parseInt(datePart[1]) - 1] +
     "-" +
+    datePart[0];
+  var beautifulLongDatePart =
+    fullDaysList[new Date(time).getDay()] +
+    ", " +
+    fullMonthsList[parseInt(datePart[1]) - 1] +
+    " " +
+    datePart[2] +
+    ", " +
     datePart[0];
   if (type == "date" || dateFull[1] == undefined) {
     beautiful_time = beautifulDatePart;
@@ -186,6 +217,9 @@ export function makeTimeBeautiful(time, type = "date") {
     var time_part = dateFull[1].split(":");
     beautiful_time =
       beautifulDatePart + " at " + time_part[0] + ":" + time_part[1];
+  }
+  if (type == "longDate") {
+    beautiful_time = beautifulLongDatePart;
   } else {
     beautiful_time = beautiful_time;
   }
