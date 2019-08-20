@@ -1,4 +1,4 @@
-export const apiRoot = "https://backend.jobhax.com";
+export const apiRoot = "https://backend.jobhax.com"; //"http://0.0.0.0:8000";
 
 export const SYNC_USER_EMAILS = `${apiRoot}/api/users/sync_user_emails`;
 
