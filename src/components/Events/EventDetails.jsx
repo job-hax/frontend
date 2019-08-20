@@ -42,6 +42,10 @@ class EventDetails extends React.Component {
 
   generateEventHeader() {
     const { event } = this.props;
+    let photoUrl =
+      event.host_user.profile_photo.substring(0, 4) == "http"
+        ? event.host_user.profile_photo
+        : apiRoot + event.host_user.profile_photo;
     let time = makeTimeBeautiful(event.event_date_start, "dateandtime");
     let longDate = makeTimeBeautiful(event.event_date_start, "longDate");
     return (
@@ -55,7 +59,7 @@ class EventDetails extends React.Component {
           <div className="title">{event.title}</div>
           <div className="host-info">
             <div className="host-photo">
-              <img src={apiRoot + event.host_user.profile_photo} />
+              <img src={photoUrl} />
             </div>
             <div className="name">
               <div>Hosted by</div>
@@ -115,12 +119,16 @@ class EventDetails extends React.Component {
   }
 
   generateAttendeeCard(attendee) {
+    let photoUrl =
+      attendee.user.profile_photo.substring(0, 4) == "http"
+        ? attendee.user.profile_photo
+        : apiRoot + attendee.user.profile_photo;
     return (
       <div className="attendee-card-container" key={attendee.id}>
         <div>
           <div className="image-container">
             <div className="image">
-              <img src={apiRoot + attendee.user.profile_photo} />
+              <img src={photoUrl} />
             </div>
           </div>
           <div className="name">
