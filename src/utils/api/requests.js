@@ -672,3 +672,15 @@ export const getEventsRequest = {
     }
   }
 };
+
+export const postEventsRequest = {
+  url: EVENTS,
+  config: {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }
+};
