@@ -1403,6 +1403,10 @@ class SignUpPage extends Component {
 
   render() {
     IS_CONSOLE_LOG_OPEN && console.log("level", this.state.level);
+    history.pushState(null, null, location.href);
+    window.onpopstate = function() {
+      history.go(1);
+    };
     return (
       <div>
         <div className="sign_up-background">{this.generateTopButtons()}</div>
