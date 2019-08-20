@@ -217,6 +217,10 @@ class EventDetails extends React.Component {
   }
 
   render() {
+    history.pushState(null, null, location.href);
+    window.onpopstate = function() {
+      window.location.assign("events");
+    };
     return (
       <div className="event-details">
         {this.generateEventHeader()}
