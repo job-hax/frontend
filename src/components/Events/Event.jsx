@@ -38,9 +38,7 @@ class Event extends React.Component {
               {time}
             </div>
           </div>
-          <div className="footer">
-            {event.attendee_list.length + " attendees"}
-          </div>
+          <div className="footer">{event.attendee_count + " attendees"}</div>
         </div>
       </div>
     );
