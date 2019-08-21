@@ -40,14 +40,14 @@
     }
 
     &.user-icon {
-      margin-top: 15px;
+      margin-top: 12px;
       margin-bottom: 10px;
       margin-right: 40px;
-      min-width: 30px;
-      min-height: 30px;
-      max-width: 30px;
-      max-height: 30px;
-      border-radius: 15px;
+      min-width: 36px;
+      min-height: 36px;
+      max-width: 36px;
+      max-height: 36px;
+      border-radius: 18px;
       overflow: hidden;
       position: relative;
 
@@ -55,15 +55,15 @@
       img {
         position: absolute;
         margin: auto;
-        min-width: 30px;
-        min-height: 30px;
+        min-width: 36px;
+        min-height: 36px;
         max-width: auto;
         max-height: auto;
         left: -100%;
         right: -100%;
         top: -100%;
         bottom: -100%;
-        border-radius: 15px;
+        border-radius: 18px;
       }
     }
 
