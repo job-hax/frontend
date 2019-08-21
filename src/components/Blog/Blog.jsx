@@ -11,6 +11,7 @@ import BlogCard from "./BlogCard.jsx";
 
 import "./style.scss";
 import { apiRoot } from "../../utils/constants/endpoints.js";
+import BlogDetails from "./BlogDetails.jsx";
 
 class Blog extends React.Component {
   constructor(props) {
@@ -22,17 +23,24 @@ class Blog extends React.Component {
       blogList: [],
       pagination: {},
       pageNo: 1,
-      pageSize: 10
+      pageSize: 10,
+      detailed_blog_id: window.location.search.split("=")[1] || null,
+      detail_blog: {}
     };
 
     this.getData = this.getData.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
+    this.setBlogDetail = this.setBlogDetail.bind(this);
   }
 
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       this.setState({ isInitialRequest: true });
-      await this.getData("initialRequest");
+      if (this.state.detail_blog_id == null) {
+        await this.getData("initialRequest");
+      } else {
+        await this.getData("detailedRequest");
+      }
       axiosCaptcha(
         postUsersRequest.url("verify_recaptcha"),
         postUsersRequest.config,
@@ -66,7 +74,13 @@ class Blog extends React.Component {
     this.setState({ isWaitingResponse: true });
     const { url, config } = getBlogsRequest;
     let newUrl =
-      url + "?page=" + this.state.pageNo + "&page_size=" + this.state.pageSize;
+      this.state.detail_event_id == null
+        ? url +
+          "?page=" +
+          this.state.pageNo +
+          "&page_size=" +
+          this.state.pageSize
+        : url + "/" + this.state.detail_blog_id;
     await this.props.handleTokenExpiration("blog getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
@@ -84,6 +98,12 @@ class Blog extends React.Component {
             isWaitingResponse: false,
             isNewPageRequested: false
           });
+        } else if (requestType === "detailedRequest") {
+          this.setState({
+            detail_blog: response.data.data,
+            isWaitingResponse: false,
+            isInitialRequest: false
+          });
         }
         IS_CONSOLE_LOG_OPEN &&
           console.log(
@@ -95,6 +115,11 @@ class Blog extends React.Component {
     });
   }
 
+  setBlogDetail(id) {
+    let blog = this.state.blogList.filter(blog => id == blog.id)[0];
+    this.setState({ detailed_blog_id: id, detail_blog: blog });
+  }
+
   handlePageChange(page) {
     this.setState({ pageNo: page, isNewPageRequested: true });
   }
@@ -104,12 +129,7 @@ class Blog extends React.Component {
       <div key={blog.id}>
         <BlogCard
           blog={blog}
-          time={makeTimeBeautiful(blog.created_at, "dateandtime")}
-          image={apiRoot + blog.header_image}
-          id={blog.id}
-          viewCount={blog.view_count}
-          upVote={blog.upvote}
-          downVote={blog.downvote}
+          setBlogDetail={this.setBlogDetail}
           alert={this.props.alert}
           handleTokenExpiration={this.props.handleTokenExpiration}
         />
@@ -171,10 +191,17 @@ class Blog extends React.Component {
       return <Spinner message="Reachings blogs..." />;
     return (
       <div className="blog-page-container">
-        <div className="blog-page-main-container">
-          <div>{this.generateFeaturedBlog()}</div>
-          <div>{this.generateBlogsList()}</div>
-        </div>
+        {this.state.detailed_blog_id == null ? (
+          <div className="blog-page-main-container">
+            <div>{this.generateFeaturedBlog()}</div>
+            <div>{this.generateBlogsList()}</div>
+          </div>
+        ) : (
+          <BlogDetails
+            blog={this.state.detail_blog}
+            handleTokenExpiration={this.props.handleTokenExpiration}
+          />
+        )}
         <div className={footerClass}>
           <Footer />
         </div>
