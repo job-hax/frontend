@@ -41,7 +41,7 @@ class MoveOptions extends React.Component {
         console.log("delete job request response\n", response, card);
       if (response.statusText === "OK") {
         IS_CONSOLE_LOG_OPEN && console.log("function ", columnName, card.id);
-        deleteJobFromList(columnName, card.id, card.isRejected);
+        deleteJobFromList(columnName, card.id, card.is_rejected);
       }
     });
   }
@@ -49,11 +49,11 @@ class MoveOptions extends React.Component {
   async updateAsRejected() {
     await this.props.handleTokenExpiration("moveOptions updateAsRejected");
     const { card, moveToRejected, columnName } = this.props;
-    var isRejected = !card.isRejected;
+    var is_rejected = !card.is_rejected;
     const body = {
       jobapp_id: card.id,
-      status_id: card.applicationStatus.id,
-      rejected: isRejected
+      status_id: card.application_status.id,
+      rejected: is_rejected
     };
     let { url, config } = updateJobStatusRequest;
     IS_CONSOLE_LOG_OPEN &&
@@ -64,7 +64,7 @@ class MoveOptions extends React.Component {
         console.log("update to rejected request response\n", response, card);
       if (response.statusText === "OK") {
         IS_CONSOLE_LOG_OPEN && console.log("function ", columnName, card.id);
-        moveToRejected(columnName, card, isRejected);
+        moveToRejected(columnName, card, is_rejected);
       }
     });
   }
@@ -79,7 +79,7 @@ class MoveOptions extends React.Component {
     var statuses = APPLICATION_STATUSES_IN_ORDER.filter(
       item => item.id !== columnName
     );
-    if (this.props.card.isRejected === true) {
+    if (this.props.card.is_rejected === true) {
       statuses = statuses.filter(status => status.id !== "toApply");
     }
     return statuses.map(item => (
@@ -98,14 +98,14 @@ class MoveOptions extends React.Component {
   moveToOptionsGenerator() {
     const { card, icon } = this.props;
     let optionsContainerHeight =
-      this.props.card.isRejected == true ? { height: 198 } : { height: 228 };
+      this.props.card.is_rejected == true ? { height: 198 } : { height: 228 };
     if (this.state.showOptions) {
       return (
         <div className="options-container" style={optionsContainerHeight}>
           <div className="explanation">MOVE TO:</div>
-          {card.applicationStatus.id != 2 ? (
+          {card.application_status.id != 2 ? (
             <div className="options" onClick={() => this.updateAsRejected()}>
-              {card.isRejected ? (
+              {card.is_rejected ? (
                 <div className="ongoing-option">
                   <img src={icon.toString().split("@")[0] + "InBtn@1x.png"} />
                   <p>Ongoing</p>
