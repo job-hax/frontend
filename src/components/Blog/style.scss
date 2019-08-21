@@ -1,190 +1,248 @@
-.under_constrution-container {
-    margin-top: -80px;
-    height: 96vh;
+.blog-page-container {
     font-family: Exo;
-    color: #261268;
+    color: black;
+    background-color: white;
+    min-height: 92vh;
 
-    .header_area {
-        background-image: url('../../assets/images/homebanner.jpg');
-        background-size: 100%;
-        color: white;
-        height: 46vh;
-        text-align: center;
-        padding-top: 20px;
-        padding-bottom: 80px;
+    .blog-page-main-container {
+        display: flex;
+        justify-content: center;
+        padding: 40px 40px 0 40px;
 
-        h2 {
-            font-weight: bolder;
-            margin-top: 0px;
-        }
+        .featured-blog {
+            width: 480px;
+            height: 480px;
+            margin: 20px 80px 0 0;
 
-        .top-buttons {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 36px;
-
-            button {
-                color: white;
-                font-family: Exo;
-                font-size: 12pt;
-                background: rgba(255, 255, 255, 0.05);
-                border: none;
-                border-radius: 50px;
-                padding: 15px 35px;
-                margin-top: 7.8%;
-                cursor: pointer;
-            }
-        }
-    }
-
-    .logo {
-        width: 90px;
-    }
-}
-
-.info-area {
-    text-align: center;
-
-    h2 {
-        font-weight: bolder;
-        margin-top: 120px;
-        color: #261268;
-    }
-}
-
-.see-more {
-    cursor: pointer;
-    font-family: "exo";
-    color: "#261268";
-}
-
-.blog-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 36px;
-    height: fit-content;
-    height: -moz-fit-content;
-
-    .blog-card-container {
-        min-height: 200px;
-        background-color: white;
-        border-bottom: 1px solid rgb(167, 167, 167);
-        box-shadow: 1px 1px rgba(167, 167, 167, 0.322);
-        border-radius: 4px;
-        width: 800px;
-        margin-top: 20px;
-        padding: 20px;
-
-        .blog-card-initial {
-            margin: 12px;
-            display: flex;
-            justify-content: left;
-            width: auto;
-
-            .blog-card-left {
-                height: 180px;
-                width: 500px;
-                margin-right: 12px;
-
-                .blog-card-header {
-                    display: flex;
-                    justify-content: left;
-
-                    .blog-name {
-                        font-size: 130%;
-                        margin-top: 20px;
-                        margin-left: 36px;
-                    }
-
-                    .date {
-                        font-style: italic;
-                        color: rgba(87, 87, 87, 0.555);
-                        margin-left: 200px;
-                    }
-
-                    .blog-author-avatar {
-                        width: 80px;
-                        height: auto;
-                        margin-right: 12px;
-                        display: flex;
-                        align-items: center;
-
-                        img {
-                            width: 80px;
-                            height: auto;
-                        }
-                    }
-                }
-
-                .blog-card-info {
-                    font-size: 100%;
-                    margin-top: 12px;
-                }
-
-                .blog-stats-container {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 32px;
-
-
-                    .details-button {
-                        cursor: pointer
-                    }
-
-                    .blog-stats {
-                        display: flex;
-                        justify-content: center;
-                        cursor: pointer;
-
-                        .stat {
-                            margin-right: 4px
-                        }
-                    }
-
-                }
-
-
-            }
-
-            .blog-card-right {
-                width: 250px;
-                height: 200px;
+            .header-photo {
+                width: 480px;
+                height: 300px;
                 overflow: hidden;
-                margin: 10px;
                 position: relative;
 
                 img {
                     position: absolute;
                     margin: auto;
+                    max-width: 600px;
+                    min-width: 480px;
+                    min-height: 300px;
                     max-height: auto;
-                    min-width: 250px;
-                    max-width: 250px;
                     left: -100%;
                     right: -100%;
                     top: -100%;
                     bottom: -100%;
                 }
+            }
 
+            .blog-card-left {
+                height: 240px;
+                width: 480px;
+                overflow: hidden;
+
+                .blog-name {
+                    margin: 12px 0 0 0;
+                    font-size: 130%;
+                    font-weight: bold;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                .blog-author {
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    margin: 12px 0 0 0;
+
+                    .blog-author-avatar {
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 20px;
+                        margin: 0 8px 0 0;
+                        overflow: hidden;
+                        position: relative;
+
+                        img {
+                            position: absolute;
+                            margin: auto;
+                            max-width: 48px;
+                            min-width: 40px;
+                            min-height: 40px;
+                            max-height: auto;
+                            left: -100%;
+                            right: -100%;
+                            top: -100%;
+                            bottom: -100%;
+                        }
+                    }
+
+                    .name {
+                        font-weight: 500;
+                    }
+
+                    .date {
+                        color: rgba(0, 0, 0, 0.4);
+                        font-size: 90%;
+                    }
+                }
+
+                .blog-card-info {
+                    font-size: 95%;
+                    margin-top: 8px;
+                    color: rgba(0, 0, 0, 0.6);
+                    display: -webkit-box;
+                    -webkit-line-clamp: 6;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
             }
         }
 
-        .blog-card-reviews-container {
-            max-height: 60vh;
-            padding-bottom: 20px;
+        .blog-container {
             display: flex;
-            overflow-x: hidden;
+            justify-content: center;
+            height: fit-content;
+            height: -moz-fit-content;
 
-            &.hidden {
-                display: none;
+            .blog-card-container {
+                min-height: 184px;
+                max-height: 184px;
+                background-color: white;
+                width: 680px;
+                padding: 12px;
+                margin: 8px;
+
+                .blog-card-initial {
+                    display: flex;
+                    justify-content: left;
+
+                    .blog-card-left {
+                        height: 160px;
+                        width: 480px;
+                        margin-right: 48px;
+                        overflow: hidden;
+
+                        .blog-name {
+                            font-size: 130%;
+                            font-weight: bold;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                        }
+
+                        .blog-author {
+                            display: flex;
+                            justify-content: flex-start;
+                            align-items: center;
+                            margin: 12px 0 0 0;
+
+                            .blog-author-avatar {
+                                width: 40px;
+                                height: 40px;
+                                border-radius: 20px;
+                                margin: 0 8px 0 0;
+                                overflow: hidden;
+                                position: relative;
+
+                                img {
+                                    position: absolute;
+                                    margin: auto;
+                                    max-width: 48px;
+                                    min-width: 40px;
+                                    min-height: 40px;
+                                    max-height: auto;
+                                    left: -100%;
+                                    right: -100%;
+                                    top: -100%;
+                                    bottom: -100%;
+                                }
+                            }
+
+                            .name {
+                                font-weight: 500;
+                            }
+
+                            .date {
+                                color: rgba(0, 0, 0, 0.4);
+                                font-size: 90%;
+                            }
+                        }
+
+                        .blog-card-info {
+                            font-size: 95%;
+                            margin-top: 8px;
+                            color: rgba(0, 0, 0, 0.6);
+                            display: -webkit-box;
+                            -webkit-line-clamp: 3;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                        }
+
+                        .blog-stats-container {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 32px;
+
+
+                            .details-button {
+                                cursor: pointer
+                            }
+
+                            .blog-stats {
+                                display: flex;
+                                justify-content: center;
+                                cursor: pointer;
+
+                                .stat {
+                                    margin-right: 4px
+                                }
+                            }
+
+                        }
+
+
+                    }
+
+                    .blog-card-right {
+                        width: 160px;
+                        height: 160px;
+                        overflow: hidden;
+                        position: relative;
+
+                        img {
+                            position: absolute;
+                            margin: auto;
+                            max-height: auto;
+                            min-width: 160px;
+                            max-width: 200px;
+                            min-height: 160px;
+                            left: -100%;
+                            right: -100%;
+                            top: -100%;
+                            bottom: -100%;
+                        }
+
+                    }
+                }
+
+                .blog-card-reviews-container {
+                    max-height: 60vh;
+                    padding-bottom: 20px;
+                    display: flex;
+                    overflow-x: hidden;
+
+                    &.hidden {
+                        display: none;
+                    }
+                }
+            }
+
+            .blog-card-container:hover {
+                cursor: pointer;
+                box-shadow: 1px 1px 10px 4px rgba(0, 0, 0, 0.2);
             }
         }
     }
-}
-
-.pagination-container {
-    margin-top: 20px;
-}
-
-.footer-blog {
-    bottom: 0;
 }

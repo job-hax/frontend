@@ -126,6 +126,7 @@ class Header extends Component {
             <div className="header-icon general tooltips">
               <img
                 onClick={this.handleSyncUserEmail}
+                style={{ height: 16 }}
                 src="../../../src/assets/icons/SyncIcon@3x.png"
               />
               <span>Refresh</span>
@@ -158,7 +159,7 @@ class Header extends Component {
               {(this.state.user_type == 2 || this.state.user_type == 3) && (
                 <Menu.Item key="/alumni">Alumni</Menu.Item>
               )}
-              <Menu.Item key="/underconstruction">Blog</Menu.Item>
+              <Menu.Item key="/blogs">Blog</Menu.Item>
               <Menu.Item key="/events">Events</Menu.Item>
             </SubMenu>
           </Menu>
