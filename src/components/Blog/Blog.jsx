@@ -1,5 +1,5 @@
 import React from "react";
-import { Pagination, Icon } from "antd";
+import { Pagination, Icon, Affix } from "antd";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
@@ -10,6 +10,7 @@ import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import BlogCard from "./BlogCard.jsx";
 
 import "./style.scss";
+import { apiRoot } from "../../utils/constants/endpoints.js";
 
 class Blog extends React.Component {
   constructor(props) {
@@ -98,24 +99,13 @@ class Blog extends React.Component {
     this.setState({ pageNo: page, isNewPageRequested: true });
   }
 
-  generateHeaderArea() {
-    return (
-      <section style={{ height: "32vh" }} className="header_area">
-        <div style={{ marginTop: "100px" }}>
-          <h2 style={{ fontSize: "300%" }}>JOBHAX BLOG</h2>
-        </div>
-      </section>
-    );
-  }
-
   mapBlogs() {
     return this.state.blogList.map(blog => (
       <div key={blog.id}>
         <BlogCard
-          title={blog.title}
-          snippet={blog.snippet}
+          blog={blog}
           time={makeTimeBeautiful(blog.created_at, "dateandtime")}
-          image={blog.image}
+          image={apiRoot + blog.header_image}
           id={blog.id}
           viewCount={blog.view_count}
           upVote={blog.upvote}
@@ -127,29 +117,66 @@ class Blog extends React.Component {
     ));
   }
 
+  generateBlogsList() {
+    return (
+      <div>
+        <div className="blog-container">
+          <div>{this.mapBlogs()}</div>
+        </div>
+        <div className="pagination-container">
+          <Pagination
+            onChange={this.handlePageChange}
+            defaultCurrent={this.state.pagination.current_page}
+            current={this.state.pagination.current_page}
+            total={this.state.pagination.total_count}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  generateFeaturedBlog() {
+    const blog = this.state.blogList[0];
+    let longDate = makeTimeBeautiful(blog.created_at, "longDate");
+    return (
+      <div>
+        <Affix offset={80}>
+          <div className="featured-blog">
+            <div className="header-photo">
+              <img src={apiRoot + blog.header_image} />
+            </div>
+            <div className="blog-card-left">
+              <div className="blog-name">{blog.title}</div>
+              <div className="blog-card-info">{blog.snippet}</div>
+              <div className="blog-author">
+                <div className="blog-author-avatar">
+                  <img src="https://backend.jobhax.com/media/35753f11-c262-4a53-97b1-4d0f9b6bc088_K3cVSao.png" />
+                </div>
+                <div>
+                  <div className="name">Author Name</div>
+                  <div className="date">{longDate.split(",")[1]}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Affix>
+      </div>
+    );
+  }
+
   render() {
+    const footerClass =
+      this.state.blogList.length > 3 ? "" : "bottom-fixed-footer";
     if (this.state.blogList.length == 0)
       return <Spinner message="Reachings blogs..." />;
     return (
-      <div>
-        <div className="under_constrution-container">
-          <div>{this.generateHeaderArea()}</div>
-          <div>
-            <div className="blog-container">
-              <div>{this.mapBlogs()}</div>
-            </div>
-            <div className="pagination-container">
-              <Pagination
-                onChange={this.handlePageChange}
-                defaultCurrent={this.state.pagination.current_page}
-                current={this.state.pagination.current_page}
-                total={this.state.pagination.total_count}
-              />
-            </div>
-          </div>
-          <div className="footer-blog">
-            <Footer />
-          </div>
+      <div className="blog-page-container">
+        <div className="blog-page-main-container">
+          <div>{this.generateFeaturedBlog()}</div>
+          <div>{this.generateBlogsList()}</div>
+        </div>
+        <div className={footerClass}>
+          <Footer />
         </div>
       </div>
     );

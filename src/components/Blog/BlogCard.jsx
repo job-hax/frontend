@@ -4,10 +4,13 @@ import parse from "html-react-parser";
 
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { getBlogRequest, postBlogRequest } from "../../utils/api/requests.js";
-import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import {
+  IS_CONSOLE_LOG_OPEN,
+  makeTimeBeautiful
+} from "../../utils/constants/constants.js";
 
 import "./style.scss";
-import "../../assets/libraryScss/antd-scss/newantd.scss";
+import { apiRoot } from "../../utils/constants/endpoints";
 
 class BlogCard extends React.Component {
   constructor(props) {
@@ -110,21 +113,24 @@ class BlogCard extends React.Component {
   }
 
   generateBlogCard() {
+    const { blog } = this.props;
+    let longDate = makeTimeBeautiful(blog.created_at, "longDate");
     IS_CONSOLE_LOG_OPEN && console.log(this.state.isDetailsShowing);
     return (
       <div className="blog-card-container">
         <div className="blog-card-initial">
           <div className="blog-card-left">
-            <div className="blog-card-header">
+            <div className="blog-name">{blog.title}</div>
+            <div className="blog-card-info">{blog.snippet}</div>
+            <div className="blog-author">
               <div className="blog-author-avatar">
-                <img src="../../../src/assets/icons/SeyfoIcon@3x.png" />
+                <img src="https://backend.jobhax.com/media/35753f11-c262-4a53-97b1-4d0f9b6bc088_K3cVSao.png" />
               </div>
               <div>
-                <div className="blog-name">{this.props.title}</div>
-                <span className="date">{this.props.time}</span>
+                <div className="name">Author Name</div>
+                <div className="date">{longDate.split(",")[1]}</div>
               </div>
             </div>
-            <div className="blog-card-info">{this.props.snippet}</div>
             <div className="blog-stats-container">
               {this.state.isDetailsShowing ? (
                 <div
