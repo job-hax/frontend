@@ -24,9 +24,9 @@ class JobDetails extends React.Component {
       isApplyDateEditing: false,
       isApplicationSourcesEditing: false,
       companyName:
-        this.props.card.companyObject && this.props.card.companyObject.company,
+        this.props.card.company_object && this.props.card.company_object.company,
       jobTitle: this.props.card.position && this.props.card.position.job_title,
-      applyDate: makeTimeBeautiful(this.props.card.applyDate, "date"),
+      apply_date: makeTimeBeautiful(this.props.card.apply_date, "date"),
       source:
         this.props.card.app_source === null
           ? "N/A"
@@ -70,9 +70,9 @@ class JobDetails extends React.Component {
     }
     if (this.state.companyName.trim() == (null || "")) {
       this.props.alert(3000, "error", "Company name cannot be empty!");
-      if (this.props.card.companyObject) {
+      if (this.props.card.company_object) {
         this.setState({
-          companyName: this.props.card.companyObject.company
+          companyName: this.props.card.company_object.company
         });
       }
     } else {
@@ -85,9 +85,9 @@ class JobDetails extends React.Component {
     if (response.statusText === "OK") {
       if (response.data.success === true) {
         this.props.updateCard(
-          response.data.data.companyObject,
+          response.data.data.company_object,
           response.data.data.position,
-          response.data.data.applyDate,
+          response.data.data.apply_date,
           response.data.data.app_source
         );
         this.props.updateHeader();
@@ -285,13 +285,13 @@ class JobDetails extends React.Component {
   handleApplyDate(date, dateString) {
     this.body["application_date"] = date.toISOString().split("T")[0];
     this.submitChanges();
-    this.setState({ applyDate: dateString, isApplyDateEditing: false });
+    this.setState({ apply_date: dateString, isApplyDateEditing: false });
   }
 
   generateApplyDateInfo() {
-    IS_CONSOLE_LOG_OPEN && console.log("date", this.props.card.applyDate);
+    IS_CONSOLE_LOG_OPEN && console.log("date", this.props.card.apply_date);
     const dateFormat = "MM.DD.YYYY";
-    const { applyDate, isApplyDateEditing } = this.state;
+    const { apply_date, isApplyDateEditing } = this.state;
     const infoClass =
       this.props.card.editable == true ? "text-editable" : "text";
     return (
@@ -304,7 +304,7 @@ class JobDetails extends React.Component {
           <DatePicker
             onChange={this.handleApplyDate}
             defaultValue={moment(
-              new Date(this.props.card.applyDate.split("T")[0] + "T06:00:00"),
+              new Date(this.props.card.apply_date.split("T")[0] + "T06:00:00"),
               dateFormat
             )}
             format={dateFormat}
@@ -312,10 +312,10 @@ class JobDetails extends React.Component {
           />
         ) : this.props.card.editable == true ? (
           <div className={infoClass} onClick={this.toggleApplyDateEdit}>
-            {applyDate}
+            {apply_date}
           </div>
         ) : (
-          <div className={infoClass}>{applyDate}</div>
+          <div className={infoClass}>{apply_date}</div>
         )}
       </div>
     );

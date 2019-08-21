@@ -28,17 +28,17 @@ class ModalHeader extends React.Component {
         <div className="modal-header">
           <div className="job-card-info-container">
             <div className="modal-company-icon">
-              {card.companyObject.cb_company_logo == null ? (
-                <img src={card.companyObject.company_logo || defaultLogo} />
+              {card.company_object.cb_company_logo == null ? (
+                <img src={card.company_object.company_logo || defaultLogo} />
               ) : (
-                <img src={card.companyObject.cb_company_logo} />
+                <img src={card.company_object.cb_company_logo} />
               )}
             </div>
             <div className="header-text">
-              {card.companyObject && (
+              {card.company_object && (
                 <div className="header-text company-name">
                   {
-                    card.companyObject.company
+                    card.company_object.company
                       .split(",")[0]
                       .split("-")[0]
                       .split("(")[0]
