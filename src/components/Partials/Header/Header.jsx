@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
+import { Menu, Icon } from "antd";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { syncUserEmailsRequest } from "../../../utils/api/requests.js";
 import NotificationsBox from "../NotificationsBox/NotificationsBox.jsx";
 import "./style.scss";
+
+const { SubMenu } = Menu;
 
 class Header extends Component {
   constructor(props) {
@@ -13,12 +16,15 @@ class Header extends Component {
       user_type:
         this.props.cookie("get", "user_type") != ("" || null)
           ? this.props.cookie("get", "user_type")
-          : 0
+          : 0,
+      current: window.location.pathname,
+      request: false
     };
 
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleSyncUserEmail = this.handleSyncUserEmail.bind(this);
+    this.handleMenuClick = this.handleMenuClick.bind(this);
   }
 
   componentWillMount() {
@@ -65,7 +71,43 @@ class Header extends Component {
     }
   }
 
+  async handleMenuClick(event) {
+    console.log("click ", event);
+    this.setState({ request: true });
+    let page = event.key;
+    if (page == "/logout") {
+      await this.setState({ current: "home" });
+      this.props.handleSignOut();
+    } else if (page == "/events") {
+      if (window.location.pathname.substring(0, 6) == "/event") {
+        window.location.assign("/events");
+      } else {
+        this.setState({ current: page });
+      }
+    } else {
+      this.setState({ current: page });
+    }
+  }
+
   render() {
+    console.log("page", this.state.current, window.location.pathname, this);
+    if (
+      this.state.current &&
+      this.state.current != "logout" &&
+      this.state.current != "/" &&
+      this.state.request == true
+    ) {
+      if (this.state.current != window.location.pathname) {
+        this.setState({ request: false });
+        return <Redirect to={this.state.current} />;
+      }
+    }
+
+    const isDashboardOpenedByDefault =
+      window.location.pathname == "/" ? "/dashboard" : "";
+    const profilePhotoUrl = this.props.profilePhotoUrl
+      ? this.props.profilePhotoUrl
+      : "../../../src/assets/icons/SeyfoIcon@3x.png";
     const fixed = { position: "fixed" };
     const normal = { margin: 0 };
     const style = window.location.pathname === "/mentors" ? fixed : normal;
@@ -73,77 +115,54 @@ class Header extends Component {
       <div className="header-container" style={style}>
         <div className="left-container">
           <div className="jobhax-logo-container">
-            <Link to="/dashboard">
-              <div className="jobhax-logo" />
-            </Link>
+            <div
+              className="jobhax-logo"
+              onClick={() => this.setState({ current: "/dashboard" })}
+            />
           </div>
         </div>
         <div className="right-container">
-          <div className="header-icon general tooltips">
-            {window.location.pathname == "/dashboard" ? (
+          {window.location.pathname == "/dashboard" && (
+            <div className="header-icon general tooltips">
               <img
                 onClick={this.handleSyncUserEmail}
+                style={{ height: 16 }}
                 src="../../../src/assets/icons/SyncIcon@3x.png"
               />
-            ) : (
-              <Link to="/dashboard">
-                <img src="../../../src/assets/icons/BoardIcon@3x.png" />
-              </Link>
-            )}
-            <span>
-              {window.location.pathname == "/dashboard"
-                ? "Refresh"
-                : " Dashboard"}
-            </span>
-          </div>
-          <div className="header-icon general tooltips">
-            <Link to="/metrics">
-              <img src="../../../src/assets/icons/StatsIcon@3x.png" />
-              <span>Metrics</span>
-            </Link>
-          </div>
-          {(this.state.user_type == 2 || this.state.user_type == 3) && (
-            <div className="header-icon general tooltips">
-              <Link to="/alumni">
-                <img src="../../../src/assets/icons/AlumniIcon.png" />
-                <span>Alumni</span>
-              </Link>
+              <span>Refresh</span>
             </div>
           )}
-          {window.location.pathname.substring(0, 6) == "/event" ? (
-            <div
-              className="header-icon general tooltips"
-              onClick={() => window.location.assign("/events")}
+          <Menu
+            onClick={event => this.handleMenuClick(event)}
+            selectedKeys={[this.state.current, isDashboardOpenedByDefault]}
+            mode="horizontal"
+            style={{ backgroundColor: "transparent", border: "none" }}
+          >
+            <SubMenu
+              title={
+                <div className="header-icon menu-icon">
+                  <img src="../../../src/assets/icons/BusinessIcon.png" />
+                </div>
+              }
             >
-              <img src="../../../src/assets/icons/EventIcon.png" />
-              <span>Events</span>
-            </div>
-          ) : (
-            <div className="header-icon general tooltips">
-              <Link to="/events">
-                <img src="../../../src/assets/icons/EventIcon.png" />
-                <span>Events</span>
-              </Link>
-            </div>
-          )}
-          {/*<div className="header-icon general tooltips">
-            <Link to="/mentors">
-              <img src="../../../src/assets/icons/MentorIcon.png" />
-              <span>Mentorship</span>
-            </Link>
-          </div>
-          <div className="header-icon general tooltips">
-            <Link to="/metricsGlobal">
-              <img src="../../../src/assets/icons/globe.png" />
-              <span>Aggregated Metrics</span>
-            </Link>
-          </div>*/}
-          <div className="header-icon general tooltips">
-            <Link to="/companies">
-              <img src="../../../src/assets/icons/company_icon.png" />
-              <span>Companies</span>
-            </Link>
-          </div>
+              <Menu.Item key="/dashboard">Dashboard</Menu.Item>
+              <Menu.Item key="/metrics">Metrics</Menu.Item>
+              <Menu.Item key="/companies">Companies</Menu.Item>
+            </SubMenu>
+            <SubMenu
+              title={
+                <div className="header-icon menu-icon">
+                  <img src="../../../src/assets/icons/SchoolIcon.png" />
+                </div>
+              }
+            >
+              {(this.state.user_type == 2 || this.state.user_type == 3) && (
+                <Menu.Item key="/alumni">Alumni</Menu.Item>
+              )}
+              <Menu.Item key="/blogs">Blog</Menu.Item>
+              <Menu.Item key="/events">Events</Menu.Item>
+            </SubMenu>
+          </Menu>
           {!this.props.isNotificationsShowing ? (
             <div
               className="header-icon general tooltips"
@@ -174,19 +193,79 @@ class Header extends Component {
               />
             </div>
           )}
-          {this.props.profilePhotoUrl != "" ? (
-            <div className="header-icon user-icon">
-              <Link to="/profile">
-                <img src={this.props.profilePhotoUrl} />
-              </Link>
-            </div>
-          ) : (
-            <div className="header-icon user-icon">
-              <Link to="/profile">
-                <img src="../../../src/assets/icons/SeyfoIcon@3x.png" />
+          <Menu
+            onClick={event => this.handleMenuClick(event)}
+            selectedKeys={[this.state.current]}
+            mode="horizontal"
+            style={{ backgroundColor: "transparent", border: "none" }}
+          >
+            <SubMenu
+              title={
+                <div className="header-icon user-icon">
+                  <img src={profilePhotoUrl} />
+                </div>
+              }
+            >
+              <Menu.Item key="/profile">Profile</Menu.Item>
+              <Menu.Item key="/logout">
+                <Icon type="logout" />
+                Logout
+              </Menu.Item>
+            </SubMenu>
+          </Menu>
+          {/*<div className="header-icon general tooltips">
+            <Link to="/metrics">
+              <img src="../../../src/assets/icons/StatsIcon@3x.png" />
+              <span>Metrics</span>
+            </Link>
+          </div>
+          {(this.state.user_type == 2 || this.state.user_type == 3) && (
+            <div className="header-icon general tooltips">
+              <Link to="/alumni">
+                <img src="../../../src/assets/icons/AlumniIcon.png" />
+                <span>Alumni</span>
               </Link>
             </div>
           )}
+          {window.location.pathname.substring(0, 6) == "/event" ? (
+            <div
+              className="header-icon general tooltips"
+              onClick={() => window.location.assign("/events")}
+            >
+              <img src="../../../src/assets/icons/EventIcon.png" />
+              <span>Events</span>
+            </div>
+          ) : (
+            <div className="header-icon general tooltips">
+              <Link to="/events">
+                <img src="../../../src/assets/icons/EventIcon.png" />
+                <span>Events</span>
+              </Link>
+            </div>
+          )}
+          <div className="header-icon general tooltips">
+            <Link to="/mentors">
+              <img src="../../../src/assets/icons/MentorIcon.png" />
+              <span>Mentorship</span>
+            </Link>
+          </div>
+          <div className="header-icon general tooltips">
+            <Link to="/metricsGlobal">
+              <img src="../../../src/assets/icons/globe.png" />
+              <span>Aggregated Metrics</span>
+            </Link>
+          </div>
+          <div className="header-icon general tooltips">
+            <Link to="/companies">
+              <img src="../../../src/assets/icons/company_icon.png" />
+              <span>Companies</span>
+            </Link>
+          </div>
+          <div className="header-icon user-icon">
+            <Link to="/profile">
+              <img src={profilePhotoUrl} />
+            </Link>
+          </div>
           <div className="header-icon sign_out">
             <Link to="/home">
               <img
@@ -194,7 +273,7 @@ class Header extends Component {
                 src="../../../src/assets/icons/log-out@3x.png"
               />
             </Link>
-          </div>
+          </div>*/}
         </div>
       </div>
     );

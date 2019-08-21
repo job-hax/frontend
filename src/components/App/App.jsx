@@ -723,6 +723,16 @@ class App extends Component {
             />
             <Route
               exact
+              path="/profile"
+              render={() => <Redirect to="/signin" />}
+            />
+            <Route
+              exact
+              path="/events"
+              render={() => <Redirect to="/signin" />}
+            />
+            <Route
+              exact
               path="/signin"
               render={() => (
                 <SignIn
