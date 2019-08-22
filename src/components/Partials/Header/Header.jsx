@@ -84,6 +84,12 @@ class Header extends Component {
       } else {
         this.setState({ current: page });
       }
+    } else if (page == "/blogs") {
+      if (window.location.pathname.substring(0, 5) == "/blog") {
+        window.location.assign("/blogs");
+      } else {
+        this.setState({ current: page });
+      }
     } else {
       this.setState({ current: page });
     }

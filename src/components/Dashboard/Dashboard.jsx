@@ -210,33 +210,33 @@ class Dashboard extends Component {
     this.onsiteInterviewRejected = [];
     this.offerRejected = [];
     for (let application of applications) {
-      switch (application.applicationStatus.value.toLowerCase()) {
+      switch (application.application_status.value.toLowerCase()) {
         case "to apply":
           this.toApply.push(application);
           break;
         case "applied":
-          if (application.isRejected) {
+          if (application.is_rejected) {
             this.appliedRejected.push(application);
           } else {
             this.applied.push(application);
           }
           break;
         case "phone screen":
-          if (application.isRejected) {
+          if (application.is_rejected) {
             this.phoneScreenRejected.push(application);
           } else {
             this.phoneScreen.push(application);
           }
           break;
         case "onsite interview":
-          if (application.isRejected) {
+          if (application.is_rejected) {
             this.onsiteInterviewRejected.push(application);
           } else {
             this.onsiteInterview.push(application);
           }
           break;
         case "offer":
-          if (application.isRejected) {
+          if (application.is_rejected) {
             this.offerRejected.push(application);
           } else {
             this.offer.push(application);
@@ -266,7 +266,7 @@ class Dashboard extends Component {
     if (command === "add") {
       this.selectedJobApplications.push({
         jobApp_id: card.id,
-        applicationStatus: card.applicationStatus
+        application_status: card.application_status
       });
     }
     if (command === "delete") {
@@ -312,7 +312,7 @@ class Dashboard extends Component {
     );
     let updatedCard = card;
     let newStatus = statuses[dropColumnName];
-    updatedCard.applicationStatus = newStatus;
+    updatedCard.application_status = newStatus;
     newDisplayingJobappsList.unshift(updatedCard);
     this.sortJobApplications(newDisplayingJobappsList);
     await this.props.handleTokenExpiration("dashboard updateApplications");
@@ -320,8 +320,8 @@ class Dashboard extends Component {
     let { url, config } = updateJobStatusRequest;
     config.body = {
       jobapp_id: card.id,
-      status_id: card.applicationStatus.id,
-      rejected: card.isRejected
+      status_id: card.application_status.id,
+      rejected: card.is_rejected
     };
     axiosCaptcha(url, config).then(response => {
       if (response.data.success != true) {
@@ -374,15 +374,15 @@ class Dashboard extends Component {
     });
   }
 
-  moveToRejected(columnName, card, isRejected) {
-    if (isRejected) {
+  moveToRejected(columnName, card, is_rejected) {
+    if (is_rejected) {
       var listToAdd = columnName + "Rejected";
       var listToRemove = columnName;
     } else {
       var listToAdd = columnName;
       var listToRemove = columnName + "Rejected";
     }
-    card.isRejected = !card.isRejected;
+    card.is_rejected = !card.is_rejected;
     const removedItemColumn = this.state[listToRemove].filter(job => {
       return job.id !== card.id;
     });
@@ -394,8 +394,8 @@ class Dashboard extends Component {
     }));
   }
 
-  deleteJobFromList(columnName, cardId, isRejected) {
-    if (isRejected) {
+  deleteJobFromList(columnName, cardId, is_rejected) {
+    if (is_rejected) {
       columnName = columnName + "Rejected";
     }
     const removedItemColumn = this.state[columnName].filter(job => {
@@ -416,7 +416,7 @@ class Dashboard extends Component {
       let queriedList = this.state.allApplications;
       queriedList = queriedList.filter(application => {
         return (
-          application.companyObject.company
+          application.company_object.company
             .toLowerCase()
             .match(value.trim().toLowerCase()) ||
           application.position.job_title
@@ -441,8 +441,8 @@ class Dashboard extends Component {
       let filteredList = [];
       mainList.forEach(application => {
         if (
-          date[0] <= new Date(application.applyDate) &&
-          new Date(application.applyDate) <= date[1]
+          date[0] <= new Date(application.apply_date) &&
+          new Date(application.apply_date) <= date[1]
         ) {
           filteredList.push(application);
         }
@@ -465,7 +465,7 @@ class Dashboard extends Component {
       this.state.displayingList.forEach(jobApp =>
         this.selectedJobApplications.push({
           jobApp_id: jobApp.id,
-          applicationStatus: jobApp.applicationStatus
+          application_status: jobApp.application_status
         })
       );
       await this.setState({
@@ -501,8 +501,8 @@ class Dashboard extends Component {
     this.state.selectedJobApplications.forEach(selectedJobApp =>
       newList.forEach(displayingJobApp => {
         if (displayingJobApp.id == selectedJobApp.jobApp_id) {
-          displayingJobApp.applicationStatus.id = status_id;
-          displayingJobApp.applicationStatus.value = status_name;
+          displayingJobApp.application_status.id = status_id;
+          displayingJobApp.application_status.value = status_name;
         }
       })
     );
@@ -510,8 +510,8 @@ class Dashboard extends Component {
     this.state.selectedJobApplications.forEach(selectedJobApp =>
       newAllList.forEach(jobApp => {
         if (jobApp.id == selectedJobApp.jobApp_id) {
-          jobApp.applicationStatus.id = status_id;
-          jobApp.applicationStatus.value = status_name;
+          jobApp.application_status.id = status_id;
+          jobApp.application_status.value = status_name;
         }
       })
     );
@@ -538,9 +538,9 @@ class Dashboard extends Component {
     this.state.selectedJobApplications.forEach(selectedJobApp =>
       newList.forEach(displayingJobApp => {
         if (displayingJobApp.id == selectedJobApp.jobApp_id) {
-          displayingJobApp.applicationStatus.id = status_id;
-          displayingJobApp.applicationStatus.value = status_name;
-          displayingJobApp.isRejected = true;
+          displayingJobApp.application_status.id = status_id;
+          displayingJobApp.application_status.value = status_name;
+          displayingJobApp.is_rejected = true;
         }
       })
     );
@@ -548,9 +548,9 @@ class Dashboard extends Component {
     this.state.selectedJobApplications.forEach(selectedJobApp =>
       newAllList.forEach(jobApp => {
         if (jobApp.id == selectedJobApp.jobApp_id) {
-          jobApp.applicationStatus.id = status_id;
-          jobApp.applicationStatus.value = status_name;
-          jobApp.isRejected = true;
+          jobApp.application_status.id = status_id;
+          jobApp.application_status.value = status_name;
+          jobApp.is_rejected = true;
         }
       })
     );
@@ -618,9 +618,9 @@ class Dashboard extends Component {
         newList.forEach(displayingJobApp => {
           if (
             displayingJobApp.id == selectedJobApp.jobApp_id &&
-            selectedJobApp.applicationStatus.id != 2
+            selectedJobApp.application_status.id != 2
           ) {
-            displayingJobApp.isRejected = true;
+            displayingJobApp.is_rejected = true;
           }
         })
       );
@@ -629,9 +629,9 @@ class Dashboard extends Component {
         newAllList.forEach(jobApp => {
           if (
             jobApp.id == selectedJobApp.jobApp_id &&
-            selectedJobApp.applicationStatus.id != 2
+            selectedJobApp.application_status.id != 2
           ) {
-            jobApp.isRejected = true;
+            jobApp.is_rejected = true;
           }
         })
       );
@@ -658,10 +658,10 @@ class Dashboard extends Component {
         newList.forEach(displayingJobApp => {
           if (
             displayingJobApp.id == selectedJobApp.jobApp_id &&
-            displayingJobApp.isRejected == false
+            displayingJobApp.is_rejected == false
           ) {
-            displayingJobApp.applicationStatus.id = 2;
-            displayingJobApp.applicationStatus.value = "TO APPLY";
+            displayingJobApp.application_status.id = 2;
+            displayingJobApp.application_status.value = "TO APPLY";
             toApplyList.push(selectedJobApp.jobApp_id);
           }
         })
@@ -671,10 +671,10 @@ class Dashboard extends Component {
         newAllList.forEach(jobApp => {
           if (
             jobApp.id == selectedJobApp.jobApp_id &&
-            jobApp.isRejected == false
+            jobApp.is_rejected == false
           ) {
-            jobApp.applicationStatus.id = 2;
-            jobApp.applicationStatus.value = "TO APPLY";
+            jobApp.application_status.id = 2;
+            jobApp.application_status.value = "TO APPLY";
           }
         })
       );
