@@ -223,19 +223,21 @@ class Blog extends React.Component {
     else if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing blogs..." />;
     return (
-      <div className="blog-page-container">
-        {this.state.detail_blog_id == null ? (
-          <div className="blog-page-main-container">
-            <div>{this.generateFeaturedBlog()}</div>
-            <div>{this.generateBlogsList()}</div>
-          </div>
-        ) : (
-          <BlogDetails
-            blog={this.state.detail_blog}
-            snippet={this.state.detail_blog_snippet}
-            handleTokenExpiration={this.props.handleTokenExpiration}
-          />
-        )}
+      <div>
+        <div className="blog-page-container">
+          {this.state.detail_blog_id == null ? (
+            <div className="blog-page-main-container">
+              <div>{this.generateFeaturedBlog()}</div>
+              <div>{this.generateBlogsList()}</div>
+            </div>
+          ) : (
+            <BlogDetails
+              blog={this.state.detail_blog}
+              snippet={this.state.detail_blog_snippet}
+              handleTokenExpiration={this.props.handleTokenExpiration}
+            />
+          )}
+        </div>
         <div className={footerClass}>
           <Footer />
         </div>
