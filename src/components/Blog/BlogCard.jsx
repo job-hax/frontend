@@ -17,167 +17,61 @@ class BlogCard extends React.Component {
     super(props);
 
     this.state = {
-      viewCount: null,
-      isDetailRequested: false,
-      isDetailsShowing: false,
-      upVote: null,
-      downVote: null,
-      voted: null,
       blog: {}
     };
 
-    this.getBlogDetail = this.getBlogDetail.bind(this);
-    this.postBlogStats = this.postBlogStats.bind(this);
+    this.handleBlogCardClick = this.handleBlogCardClick.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({
-      viewCount: this.props.viewCount,
-      upVote: this.props.upVote,
-      downVote: this.props.downVote
-    });
-  }
-
-  // Do not need to check if token expired because when you get blog details you also post BlogsStats which does the check//
-  getBlogDetail() {
-    axiosCaptcha(getBlogRequest.url(this.props.id), getBlogRequest.config).then(
-      response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            this.setState({
-              blog: response.data.data
-            });
-            this.setState({ isDetailsShowing: true });
-            IS_CONSOLE_LOG_OPEN && console.log(this.state.blog.content);
-          } else {
-            this.setState({ isUpdating: false });
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(response, response.data.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
-          }
-        } else {
-          this.setState({ isUpdating: false });
-          this.props.alert(5000, "error", "Something went wrong!");
-        }
-      }
-    );
-  }
-
-  async postBlogStats(type) {
-    let newUrl = postBlogRequest.url(this.props.id) + "/" + type + "/";
-    await this.props.handleTokenExpiration("blogCard postBlogStats");
-    axiosCaptcha(newUrl, postBlogRequest.config, "blog_stats").then(
-      response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            IS_CONSOLE_LOG_OPEN && console.log(response.data);
-            if (type === "upvote") {
-              this.setState({
-                upVote: response.data.data.upvote,
-                downVote: response.data.data.downvote
-              });
-            }
-            if (type === "downvote") {
-              this.setState({
-                upVote: response.data.data.upvote,
-                downVote: response.data.data.downvote
-              });
-            }
-            if (type === "view") {
-              this.setState({ viewCount: this.state.viewCount + 1 });
-            }
-          } else {
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(response, response.data.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
-          }
-        } else {
-          this.props.alert(5000, "error", "Something went wrong!");
-        }
-      }
-    );
-  }
-
-  handleSeeMore() {
-    this.setState({ isDetailRequested: !this.state.isDetailRequested });
-    this.getBlogDetail();
+  handleBlogCardClick(blog) {
+    this.props.setBlogDetail(blog.id);
     this.postBlogStats("view");
   }
 
   generateBlogCard() {
     const { blog } = this.props;
     let longDate = makeTimeBeautiful(blog.created_at, "longDate");
-    IS_CONSOLE_LOG_OPEN && console.log(this.state.isDetailsShowing);
+    let photoUrl =
+      blog.publisher_profile.profile_photo.substring(0, 4) == "http"
+        ? blog.publisher_profile.profile_photo
+        : apiRoot + blog.publisher_profile.profile_photo;
     return (
-      <div className="blog-card-container">
+      <div
+        className="blog-card-container"
+        onClick={() => this.handleBlogCardClick(blog)}
+      >
         <div className="blog-card-initial">
           <div className="blog-card-left">
             <div className="blog-name">{blog.title}</div>
             <div className="blog-card-info">{blog.snippet}</div>
             <div className="blog-author">
               <div className="blog-author-avatar">
-                <img src="https://backend.jobhax.com/media/35753f11-c262-4a53-97b1-4d0f9b6bc088_K3cVSao.png" />
+                <img src={photoUrl} />
               </div>
               <div>
-                <div className="name">Author Name</div>
-                <div className="date">{longDate.split(",")[1]}</div>
-              </div>
-            </div>
-            <div className="blog-stats-container">
-              {this.state.isDetailsShowing ? (
-                <div
-                  onClick={() => this.setState({ isDetailsShowing: false })}
-                  className="details-button"
-                >
-                  Less detail...
+                <div className="name">
+                  {blog.publisher_profile.first_name +
+                    " " +
+                    blog.publisher_profile.last_name}
                 </div>
-              ) : (
-                <div
-                  onClick={() => this.handleSeeMore()}
-                  className="details-button"
-                >
-                  See details...
-                </div>
-              )}
-              <div className="blog-stats">
-                <div className="stat">
-                  {" "}
-                  <Icon type="read" /> {this.state.viewCount}
-                </div>
-                <div
-                  className="stat"
-                  onClick={() => this.postBlogStats("upvote")}
-                >
-                  {" "}
-                  <Icon type="like" /> {this.state.upVote}
-                </div>
-                <div
-                  className="stat"
-                  onClick={() => this.postBlogStats("downvote")}
-                >
-                  {" "}
-                  <Icon type="dislike" /> {this.state.downVote}
+                <div className="info-container">
+                  <div className="info">{longDate.split(",")[1]}</div>
+                  <div className="info">
+                    <Icon type="dashboard" />
+                    {" " + Math.round(blog.word_count / 200, 0) + " min"}
+                  </div>
+                  <div className="info">
+                    <Icon type="read" />
+                    {" " + blog.view_count}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div className="blog-card-right">
-            <img src={this.props.image} />
+            <img src={apiRoot + blog.header_image} />
           </div>
         </div>
-        {this.state.isDetailsShowing == true && (
-          <div className="blog-card-info">
-            {parse(`${this.state.blog.content}`)}
-          </div>
-        )}
       </div>
     );
   }
