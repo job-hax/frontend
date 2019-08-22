@@ -17,94 +17,10 @@ class BlogCard extends React.Component {
     super(props);
 
     this.state = {
-      viewCount: null,
-      isDetailRequested: false,
-      isDetailsShowing: false,
-      upVote: null,
-      downVote: null,
-      voted: null,
       blog: {}
     };
 
-    this.getBlogDetail = this.getBlogDetail.bind(this);
-    this.postBlogStats = this.postBlogStats.bind(this);
     this.handleBlogCardClick = this.handleBlogCardClick.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState({
-      viewCount: this.props.blog.viewCount,
-      upVote: this.props.blog.upVote,
-      downVote: this.props.blog.downVote
-    });
-  }
-
-  // Do not need to check if token expired because when you get blog details you also post BlogsStats which does the check//
-  getBlogDetail() {
-    axiosCaptcha(getBlogRequest.url(this.props.id), getBlogRequest.config).then(
-      response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            this.setState({
-              blog: response.data.data
-            });
-            this.setState({ isDetailsShowing: true });
-            IS_CONSOLE_LOG_OPEN && console.log(this.state.blog.content);
-          } else {
-            this.setState({ isUpdating: false });
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(response, response.data.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
-          }
-        } else {
-          this.setState({ isUpdating: false });
-          this.props.alert(5000, "error", "Something went wrong!");
-        }
-      }
-    );
-  }
-
-  async postBlogStats(type) {
-    let newUrl = postBlogRequest.url(this.props.blog.id) + "/" + type + "/";
-    await this.props.handleTokenExpiration("blogCard postBlogStats");
-    axiosCaptcha(newUrl, postBlogRequest.config, "blog_stats").then(
-      response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            IS_CONSOLE_LOG_OPEN && console.log(response.data);
-            if (type === "upvote") {
-              this.setState({
-                upVote: response.data.data.upvote,
-                downVote: response.data.data.downvote
-              });
-            }
-            if (type === "downvote") {
-              this.setState({
-                upVote: response.data.data.upvote,
-                downVote: response.data.data.downvote
-              });
-            }
-            if (type === "view") {
-              this.setState({ viewCount: this.state.viewCount + 1 });
-            }
-          } else {
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(response, response.data.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
-          }
-        } else {
-          this.props.alert(5000, "error", "Something went wrong!");
-        }
-      }
-    );
   }
 
   handleBlogCardClick(blog) {
@@ -115,6 +31,10 @@ class BlogCard extends React.Component {
   generateBlogCard() {
     const { blog } = this.props;
     let longDate = makeTimeBeautiful(blog.created_at, "longDate");
+    let photoUrl =
+      blog.publisher_profile.profile_photo.substring(0, 4) == "http"
+        ? blog.publisher_profile.profile_photo
+        : apiRoot + blog.publisher_profile.profile_photo;
     return (
       <div
         className="blog-card-container"
@@ -126,11 +46,25 @@ class BlogCard extends React.Component {
             <div className="blog-card-info">{blog.snippet}</div>
             <div className="blog-author">
               <div className="blog-author-avatar">
-                <img src="https://backend.jobhax.com/media/35753f11-c262-4a53-97b1-4d0f9b6bc088_K3cVSao.png" />
+                <img src={photoUrl} />
               </div>
               <div>
-                <div className="name">Author Name</div>
-                <div className="date">{longDate.split(",")[1]}</div>
+                <div className="name">
+                  {blog.publisher_profile.first_name +
+                    " " +
+                    blog.publisher_profile.last_name}
+                </div>
+                <div className="info-container">
+                  <div className="info">{longDate.split(",")[1]}</div>
+                  <div className="info">
+                    <Icon type="dashboard" />
+                    {" " + Math.round(blog.word_count / 200, 0) + " min"}
+                  </div>
+                  <div className="info">
+                    <Icon type="read" />
+                    {" " + blog.view_count}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -138,11 +72,6 @@ class BlogCard extends React.Component {
             <img src={apiRoot + blog.header_image} />
           </div>
         </div>
-        {this.state.isDetailsShowing == true && (
-          <div className="blog-card-info">
-            {parse(`${this.state.blog.content}`)}
-          </div>
-        )}
       </div>
     );
   }

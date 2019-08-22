@@ -1,5 +1,5 @@
 import React from "react";
-import { Pagination, Icon, Affix } from "antd";
+import { Pagination, Icon, Affix, Button } from "antd";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
@@ -24,7 +24,7 @@ class Blog extends React.Component {
       pagination: {},
       pageNo: 1,
       pageSize: 10,
-      detailed_blog_id: window.location.search.split("=")[1] || null,
+      detail_blog_id: window.location.search.split("=")[1] || null,
       detail_blog: {}
     };
 
@@ -74,7 +74,7 @@ class Blog extends React.Component {
     this.setState({ isWaitingResponse: true });
     const { url, config } = getBlogsRequest;
     let newUrl =
-      this.state.detail_event_id == null
+      this.state.detail_blog_id == null
         ? url +
           "?page=" +
           this.state.pageNo +
@@ -115,9 +115,10 @@ class Blog extends React.Component {
     });
   }
 
-  setBlogDetail(id) {
+  async setBlogDetail(id) {
     let blog = this.state.blogList.filter(blog => id == blog.id)[0];
-    this.setState({ detailed_blog_id: id, detail_blog: blog });
+    await this.setState({ detail_blog_id: id, detail_blog: blog });
+    this.getData("detailedRequest");
   }
 
   handlePageChange(page) {
@@ -125,7 +126,7 @@ class Blog extends React.Component {
   }
 
   mapBlogs() {
-    return this.state.blogList.map(blog => (
+    return this.state.blogList.slice(1).map(blog => (
       <div key={blog.id}>
         <BlogCard
           blog={blog}
@@ -158,6 +159,10 @@ class Blog extends React.Component {
   generateFeaturedBlog() {
     const blog = this.state.blogList[0];
     let longDate = makeTimeBeautiful(blog.created_at, "longDate");
+    let photoUrl =
+      blog.publisher_profile.profile_photo.substring(0, 4) == "http"
+        ? blog.publisher_profile.profile_photo
+        : apiRoot + blog.publisher_profile.profile_photo;
     return (
       <div>
         <Affix offset={80}>
@@ -168,13 +173,34 @@ class Blog extends React.Component {
             <div className="blog-card-left">
               <div className="blog-name">{blog.title}</div>
               <div className="blog-card-info">{blog.snippet}</div>
-              <div className="blog-author">
-                <div className="blog-author-avatar">
-                  <img src="https://backend.jobhax.com/media/35753f11-c262-4a53-97b1-4d0f9b6bc088_K3cVSao.png" />
+              <div className="blog-card-footer">
+                <div className="blog-author">
+                  <div className="blog-author-avatar">
+                    <img src={photoUrl} />
+                  </div>
+                  <div>
+                    <div className="name">
+                      {blog.publisher_profile.first_name +
+                        " " +
+                        blog.publisher_profile.last_name}
+                    </div>
+                    <div className="info-container">
+                      <div className="info">{longDate.split(",")[1]}</div>
+                      <div className="info">
+                        <Icon type="dashboard" />
+                        {" " + Math.round(blog.word_count / 200, 0) + " min"}
+                      </div>
+                      <div className="info">
+                        <Icon type="read" />
+                        {" " + blog.view_count}
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div>
-                  <div className="name">Author Name</div>
-                  <div className="date">{longDate.split(",")[1]}</div>
+                  <Button onClick={() => this.setBlogDetail(blog.id)}>
+                    Read More
+                  </Button>
                 </div>
               </div>
             </div>
@@ -187,11 +213,13 @@ class Blog extends React.Component {
   render() {
     const footerClass =
       this.state.blogList.length > 3 ? "" : "bottom-fixed-footer";
-    if (this.state.blogList.length == 0)
-      return <Spinner message="Reachings blogs..." />;
+    if (this.state.isInitialRequest === "beforeRequest")
+      return <Spinner message="Reaching your account..." />;
+    else if (this.state.isInitialRequest === true)
+      return <Spinner message="Preparing blogs..." />;
     return (
       <div className="blog-page-container">
-        {this.state.detailed_blog_id == null ? (
+        {this.state.detail_blog_id == null ? (
           <div className="blog-page-main-container">
             <div>{this.generateFeaturedBlog()}</div>
             <div>{this.generateBlogsList()}</div>
