@@ -79,7 +79,7 @@ class Events extends React.Component {
           this.state.pageNo +
           "&page_size=" +
           this.state.pageSize
-        : url + "/" + this.state.detail_event_id;
+        : url + this.state.detail_event_id + "/";
     await this.props.handleTokenExpiration("events getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
