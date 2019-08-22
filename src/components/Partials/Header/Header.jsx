@@ -76,7 +76,7 @@ class Header extends Component {
     this.setState({ request: true });
     let page = event.key;
     if (page == "/logout") {
-      await this.setState({ current: "home" });
+      await this.setState({ current: "/home" });
       this.props.handleSignOut();
     } else if (page == "/events") {
       if (window.location.pathname.substring(0, 6) == "/event") {
@@ -123,7 +123,7 @@ class Header extends Component {
           <div className="jobhax-logo-container">
             <div
               className="jobhax-logo"
-              onClick={() => this.setState({ current: "/dashboard" })}
+              onClick={() => this.setState({ current: "/dashboard", request: true })}
             />
           </div>
         </div>
