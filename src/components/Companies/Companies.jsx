@@ -174,6 +174,7 @@ class Companies extends React.Component {
                   style={{
                     width: "100%",
                     display: "flex",
+                    minWidth: 800,
                     justifyContent: "space-between",
                     fontWeight: 500
                   }}
@@ -183,7 +184,11 @@ class Companies extends React.Component {
                     <Switch
                       defaultChecked={this.state.mine}
                       onChange={checked =>
-                        this.setState({ mine: checked, isQueryRequested: true })
+                        this.setState({
+                          mine: checked,
+                          isQueryRequested: true,
+                          pageNo: 1
+                        })
                       }
                     />
                   </div>
@@ -194,7 +199,8 @@ class Companies extends React.Component {
                       onChange={checked =>
                         this.setState({
                           hasReview: checked,
-                          isQueryRequested: true
+                          isQueryRequested: true,
+                          pageNo: 1
                         })
                       }
                     />
@@ -202,14 +208,27 @@ class Companies extends React.Component {
                   <Search
                     placeholder="search"
                     onSearch={value =>
-                      this.setState({ q: value, isQueryRequested: true })
+                      this.setState({
+                        q: value,
+                        isQueryRequested: true,
+                        pageNo: 1
+                      })
                     }
                     style={{ width: 300, margin: "0 0 24px 0" }}
                   />
                 </div>
 
                 <div>
-                  {this.generateCompanyCards()}
+                  {this.state.companies.pagination.total_count == 0 ? (
+                    <div
+                      className="no-data"
+                      style={{ textAlign: "center", margin: "24px 0 24px 0" }}
+                    >
+                      No companies found based on your criteria!
+                    </div>
+                  ) : (
+                    this.generateCompanyCards()
+                  )}
                   <div className="pagination-container">
                     <Pagination
                       onChange={this.handlePageChange}
