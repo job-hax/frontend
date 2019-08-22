@@ -81,7 +81,7 @@ class Blog extends React.Component {
           this.state.pageNo +
           "&page_size=" +
           this.state.pageSize
-        : url + "/" + this.state.detail_blog_id;
+        : url + this.state.detail_blog_id + "/";
     await this.props.handleTokenExpiration("blog getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
@@ -223,19 +223,21 @@ class Blog extends React.Component {
     else if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing blogs..." />;
     return (
-      <div className="blog-page-container">
-        {this.state.detail_blog_id == null ? (
-          <div className="blog-page-main-container">
-            <div>{this.generateFeaturedBlog()}</div>
-            <div>{this.generateBlogsList()}</div>
-          </div>
-        ) : (
-          <BlogDetails
-            blog={this.state.detail_blog}
-            snippet={this.state.detail_blog_snippet}
-            handleTokenExpiration={this.props.handleTokenExpiration}
-          />
-        )}
+      <div>
+        <div className="blog-page-container">
+          {this.state.detail_blog_id == null ? (
+            <div className="blog-page-main-container">
+              <div>{this.generateFeaturedBlog()}</div>
+              <div>{this.generateBlogsList()}</div>
+            </div>
+          ) : (
+            <BlogDetails
+              blog={this.state.detail_blog}
+              snippet={this.state.detail_blog_snippet}
+              handleTokenExpiration={this.props.handleTokenExpiration}
+            />
+          )}
+        </div>
         <div className={footerClass}>
           <Footer />
         </div>

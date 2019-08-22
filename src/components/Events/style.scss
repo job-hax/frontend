@@ -1,8 +1,10 @@
 .events-page-big-container {
     background-color: white;
     min-height: 92vh;
+    overflow-y: hidden;
 
     .events-page-medium-container {
+        min-height: 89.6vh;
         padding: 100px;
 
         .page-title {
@@ -126,6 +128,7 @@
     }
 
     .event-details {
+        min-width: 1200px;
 
         .event-header {
             height: 212px;
@@ -166,6 +169,10 @@
                 .event-date {
                     color: gray;
                     font-size: 120%;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 1;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
                 }
 
                 .title {

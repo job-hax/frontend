@@ -38,7 +38,7 @@ class CompanyCards extends React.Component {
     let newPositionUrl =
       getCompaniesRequest.url +
       this.props.company.id +
-      "/positions?hasReview=true";
+      "/positions/?hasReview=true";
     axiosCaptcha(newPositionUrl, getCompaniesRequest.config).then(response => {
       if (response.statusText === "OK") {
         this.setState({

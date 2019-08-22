@@ -23,6 +23,10 @@
             width: 800px;
             display: flex;
             justify-content: space-between;
+
+            .pagination-container {
+                margin: 16px 0 0 0;
+            }
         }
 
         .filter-area-container {
