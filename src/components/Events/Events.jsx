@@ -158,16 +158,18 @@ class Events extends React.Component {
     else if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing events..." />;
     return (
-      <div className="events-page-big-container">
-        <div>
-          {this.state.detail_event_id == null ? (
-            this.generateEventsGrid()
-          ) : (
-            <EventDetails
-              event={this.state.detail_event}
-              handleTokenExpiration={this.props.handleTokenExpiration}
-            />
-          )}
+      <div>
+        <div className="events-page-big-container">
+          <div>
+            {this.state.detail_event_id == null ? (
+              this.generateEventsGrid()
+            ) : (
+              <EventDetails
+                event={this.state.detail_event}
+                handleTokenExpiration={this.props.handleTokenExpiration}
+              />
+            )}
+          </div>
         </div>
         <div className={footerClass}>
           <Footer />
