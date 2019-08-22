@@ -194,7 +194,7 @@ class Alumni extends React.Component {
         <Search
           placeholder="search"
           onSearch={value =>
-            this.setState({ q: value, isQueryRequested: true })
+            this.setState({ q: value, isQueryRequested: true, pageNo: 1 })
           }
           style={{ width: 200 }}
         />
@@ -203,6 +203,7 @@ class Alumni extends React.Component {
   }
 
   handleDropdownClick(event, listType) {
+    this.setState({ pageNo: 1 });
     if (event.key == "-1") {
       let emptyList = [];
       if (listType == "countries") {
