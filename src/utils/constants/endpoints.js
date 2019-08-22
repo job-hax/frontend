@@ -66,7 +66,7 @@ export const GET_REVIEWS = `${apiRoot}/api/reviews/get_reviews`;
 
 export const GET_FAQS = `${apiRoot}/api/faqs`;
 
-export const GET_BLOGS = `${apiRoot}/api/blogs`;
+export const GET_BLOGS = `${apiRoot}/api/blogs/`;
 
 export const GET_OR_POST_BLOG = blogId => `${apiRoot}/api/blogs/${blogId}`;
 
@@ -89,8 +89,8 @@ export const POST_CONTACTS = type => `${apiRoot}/api/jobapps/${type}`;
 export const GET_NEW_JOBAPPS = timestamp =>
   `${apiRoot}/api/jobapps/get_new_jobapps?timestamp=${timestamp}`;
 
-export const AUTOCOMPLETE = type => `${apiRoot}/api/${type}`;
+export const AUTOCOMPLETE = type => `${apiRoot}/api/${type}/`;
 
-export const ALUMNI = `${apiRoot}/api/alumni`;
+export const ALUMNI = `${apiRoot}/api/alumni/`;
 
-export const EVENTS = `${apiRoot}/api/events`;
+export const EVENTS = `${apiRoot}/api/events/`;
