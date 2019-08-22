@@ -3,16 +3,20 @@
     color: black;
     background-color: white;
     min-height: 92vh;
+    overflow-y: hidden;
 
     .blog-page-main-container {
         display: flex;
         justify-content: center;
+        min-width: 1280px;
+        min-height: 89vh;
         padding: 40px 40px 0 40px;
 
         .featured-blog {
             width: 480px;
-            height: 480px;
+            height: 520px;
             margin: 20px 80px 0 0;
+            background-color: white;
 
             .header-photo {
                 width: 480px;
