@@ -25,7 +25,8 @@ class Blog extends React.Component {
       pageNo: 1,
       pageSize: 10,
       detail_blog_id: window.location.search.split("=")[1] || null,
-      detail_blog: {}
+      detail_blog: {},
+      detail_blog_snippet: " "
     };
 
     this.getData = this.getData.bind(this);
@@ -117,7 +118,11 @@ class Blog extends React.Component {
 
   async setBlogDetail(id) {
     let blog = this.state.blogList.filter(blog => id == blog.id)[0];
-    await this.setState({ detail_blog_id: id, detail_blog: blog });
+    await this.setState({
+      detail_blog_id: id,
+      detail_blog: blog,
+      detail_blog_snippet: blog.snippet
+    });
     this.getData("detailedRequest");
   }
 
@@ -227,6 +232,7 @@ class Blog extends React.Component {
         ) : (
           <BlogDetails
             blog={this.state.detail_blog}
+            snippet={this.state.detail_blog_snippet}
             handleTokenExpiration={this.props.handleTokenExpiration}
           />
         )}
