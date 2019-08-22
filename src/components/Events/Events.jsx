@@ -110,9 +110,10 @@ class Events extends React.Component {
     });
   }
 
-  setEventDetail(id) {
+  async setEventDetail(id) {
     let event = this.state.eventsList.filter(event => id == event.id)[0];
-    this.setState({ detail_event_id: id, detail_event: event });
+    await this.setState({ detail_event_id: id, detail_event: event });
+    this.getData("detailedRequest");
   }
 
   generateFeatureArea() {

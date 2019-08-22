@@ -92,13 +92,13 @@ class Card extends PureComponent {
   }
 
   updateCompany(newCompanyObject) {
-    this.props.card.companyObject = newCompanyObject;
+    this.props.card.company_object = newCompanyObject;
   }
 
-  updateCard(companyObject, position, applyDate, app_source) {
-    this.props.card.companyObject = companyObject;
+  updateCard(company_object, position, apply_date, app_source) {
+    this.props.card.company_object = company_object;
     this.props.card.position = position;
-    this.props.card.applyDate = applyDate;
+    this.props.card.apply_date = apply_date;
     this.props.card.app_source = app_source;
   }
 
@@ -130,9 +130,9 @@ class Card extends PureComponent {
   renderCard() {
     const {
       card: {
-        companyObject,
+        company_object,
         position,
-        isRejected,
+        is_rejected,
         app_source,
         handleTokenExpiration,
         columnName,
@@ -150,7 +150,7 @@ class Card extends PureComponent {
 
     const cardClass = classNames({
       "card-container": true,
-      "rejected-cards": isRejected,
+      "rejected-cards": is_rejected,
       "--is_dragging": isDragging
     });
 
@@ -174,15 +174,15 @@ class Card extends PureComponent {
         )}
         <div className={cardClass}>
           <div className="card-company-icon" onClick={this.toggleModal}>
-            {companyObject.cb_company_logo === null ? (
-              <img src={companyObject.company_logo || defaultLogo} />
+            {company_object.cb_company_logo === null ? (
+              <img src={company_object.company_logo || defaultLogo} />
             ) : (
-              <img src={companyObject.cb_company_logo} />
+              <img src={company_object.cb_company_logo} />
             )}
           </div>
           <div className="card-company-info" onClick={this.toggleModal}>
             <div id="company" className="card-company-name">
-              {companyObject.company}
+              {company_object.company}
             </div>
             {position && (
               <div id="jobTitle" className="card-job-position">
@@ -207,11 +207,11 @@ class Card extends PureComponent {
 
   render() {
     const {
-      card: { isRejected },
+      card: { is_rejected },
       connectDragSource
     } = this.props;
 
-    if (isRejected) {
+    if (is_rejected) {
       return this.renderCard();
     }
     return connectDragSource(this.renderCard());

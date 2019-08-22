@@ -75,9 +75,9 @@ class EventDetails extends React.Component {
             <div className="attendee-amount">
               {this.state.attendance == true
                 ? "You are going!"
-                : event.attendee_list.length == 0
+                : event.attendee_count == 0
                 ? "Be the first attendant!"
-                : event.attendee_list.length + " people going"}
+                : event.attendee_count + " people going"}
             </div>
           </div>
           <div className="answer-container">
@@ -183,9 +183,11 @@ class EventDetails extends React.Component {
 
   generateEventBody() {
     const { event } = this.props;
-    const attendees = event.attendee_list.map(attendee => {
-      return this.generateAttendeeCard(attendee);
-    });
+    const attendees =
+      event.attendee_list &&
+      event.attendee_list.map(attendee => {
+        return this.generateAttendeeCard(attendee);
+      });
     return (
       <div className="event-body">
         <div className="event-data">
@@ -197,10 +199,8 @@ class EventDetails extends React.Component {
             <div className="details">{parse(`${event.details}`)}</div>
           </div>
           <div className="attendees">
-            <div className="title">
-              Attendees ({event.attendee_list.length})
-            </div>
-            {event.attendee_list.length == 0 ? (
+            <div className="title">Attendees ({event.attendee_count})</div>
+            {event.attendee_count == 0 ? (
               <div className="no-data">No attendees yet!</div>
             ) : (
               <div className="attendee-list">{attendees}</div>
