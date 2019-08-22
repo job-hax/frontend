@@ -66,7 +66,7 @@ class ReviewInput extends React.Component {
     };
 
     this.body = {
-      company_id: this.props.card.companyObject.id,
+      company_id: this.props.card.company_object.id,
       position_id: this.props.card.position.id,
       anonymous: false
     };
@@ -219,7 +219,7 @@ class ReviewInput extends React.Component {
       }
     });
     this.body = {
-      company_id: this.props.card.companyObject.id,
+      company_id: this.props.card.company_object.id,
       position_id: this.props.card.position.id,
       anonymous: false
     };

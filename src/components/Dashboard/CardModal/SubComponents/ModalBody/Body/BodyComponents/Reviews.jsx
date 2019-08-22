@@ -30,12 +30,12 @@ class PositonReviews extends React.Component {
 
   componentDidMount() {
     this.getPositionsReviews();
-    if (this.props.card.companyObject.review_id) {
+    if (this.props.card.company_object.review_id) {
       //await this.props.handleTokenExpiration("cardModal componentDidMount"); //I am not checking if token expired here because getNotes from Notes.jsx is already checking right before this one is executed!!!
       let newReviewsUrl =
         getReviewsRequest.url +
         "?review_id=" +
-        this.props.card.companyObject.review_id;
+        this.props.card.company_object.review_id;
       axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
         if (response.statusText === "OK") {
           this.setState({ review: response.data.data });
@@ -66,7 +66,7 @@ class PositonReviews extends React.Component {
     let reviewsUrl =
       getReviewsRequest.url +
       "?company_id=" +
-      this.props.card.companyObject.id +
+      this.props.card.company_object.id +
       "&position_id=" +
       this.props.card.position.id +
       "&all_reviews=true";
@@ -106,7 +106,7 @@ class PositonReviews extends React.Component {
                 style={{ margin: "10px 0px 20px 400px", position: "absolute" }}
                 onClick={this.toggleReviewEdit}
               >
-                {this.props.card.companyObject.review_id
+                {this.props.card.company_object.review_id
                   ? "Update Your Review"
                   : "Add a Review"}
               </div>
@@ -114,14 +114,14 @@ class PositonReviews extends React.Component {
                 {this.state.reviewsList.length == 0 && (
                   <div className="no-data" style={{ marginTop: 80 }}>
                     No reviews entered for {card.position.job_title} position at{" "}
-                    {card.companyObject.company}
+                    {card.company_object.company}
                   </div>
                 )}
                 {this.state.isReviewsDisplaying === true && (
                   <Reviews
                     reviewsList={this.state.reviewsList}
                     positionsList={[]}
-                    company_id={this.props.card.companyObject.id}
+                    company_id={this.props.card.company_object.id}
                     filterDisplay={false}
                     style={{
                       height: "auto",
