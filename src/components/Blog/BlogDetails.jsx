@@ -85,7 +85,7 @@ class BlogDetails extends React.Component {
   }
 
   generateBlogHeader() {
-    const { blog } = this.props;
+    const { blog, snippet } = this.props;
     let photoUrl =
       blog.publisher_profile.profile_photo.substring(0, 4) == "http"
         ? blog.publisher_profile.profile_photo
@@ -104,7 +104,7 @@ class BlogDetails extends React.Component {
         </div>
         <div className="blog-info">
           <div className="title">{blog.title}</div>
-          <div className="snippet">{blog.snippet ? blog.snippet : " "}</div>
+          <div className="snippet">{blog.snippet ? blog.snippet : snippet}</div>
           <div className="info-container">
             <div className="info">
               {longDate + " at " + time.split("at")[1]}
@@ -122,21 +122,23 @@ class BlogDetails extends React.Component {
             <div className="author-photo">
               <img src={photoUrl} />
             </div>
-            <div>
-              <div className="name">
-                <div>Author</div>
-                <div className="author-name">
-                  {blog.publisher_profile.first_name +
-                    " " +
-                    blog.publisher_profile.last_name}
+            <div className="author-details">
+              <div>
+                <div className="name">
+                  <div>Author</div>
+                  <div className="author-name">
+                    {blog.publisher_profile.first_name +
+                      " " +
+                      blog.publisher_profile.last_name}
+                  </div>
                 </div>
-              </div>
-              <div className="info-container">
-                <div className="info">
-                  {"joined" +
-                    joinDate.split(",")[1] +
-                    "," +
-                    joinDate.split(",")[2]}
+                <div className="details-container">
+                  <div>
+                    {"joined" +
+                      joinDate.split(",")[1] +
+                      "," +
+                      joinDate.split(",")[2]}
+                  </div>
                 </div>
               </div>
             </div>
