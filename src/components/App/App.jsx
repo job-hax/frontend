@@ -75,10 +75,7 @@ class App extends Component {
       pollData: [],
       notificationsList: [],
       syncResponseTimestamp: null,
-      isFirstLoginWithGoogle:
-        this.cookie("get", "google_access_token_expiration") == ("" || null)
-          ? false
-          : true
+      user: {}
     };
     this.notificationsList = [];
     this.handleSignOut = this.handleSignOut.bind(this);
@@ -87,7 +84,6 @@ class App extends Component {
     this.toggleNotificationsDisplay = this.toggleNotificationsDisplay.bind(
       this
     );
-    this.passStatesFromSignin = this.passStatesFromSignin.bind(this);
     this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this);
     this.setIsAuthenticationChecking = this.setIsAuthenticationChecking.bind(
       this
@@ -97,7 +93,6 @@ class App extends Component {
     this.cookie = this.cookie.bind(this);
     this.handleTokenExpiration = this.handleTokenExpiration.bind(this);
     this.passStatesFromHeader = this.passStatesFromHeader.bind(this);
-    this.passStatesFromDashboard = this.passStatesFromDashboard.bind(this);
   }
 
   componentDidMount() {
@@ -149,18 +144,28 @@ class App extends Component {
         response => {
           IS_CONSOLE_LOG_OPEN && console.log("photo first");
           if (response.statusText === "OK") {
-            let profilePhotoUrl = "";
-            if (response.data.data.profile_photo_custom == null) {
-              profilePhotoUrl = response.data.data.profile_photo_social;
-            } else {
-              profilePhotoUrl =
-                apiRoot + response.data.data.profile_photo_custom;
+            if (response.data.success == true) {
+              this.props.cookies.set(
+                "user_type",
+                response.data.data.user_type,
+                { path: "/" }
+              );
+              let profilePhotoUrl = "";
+              if (response.data.data.profile_photo_custom == null) {
+                profilePhotoUrl = response.data.data.profile_photo_social;
+              } else {
+                profilePhotoUrl =
+                  apiRoot + response.data.data.profile_photo_custom;
+              }
+              this.setState(
+                {
+                  profilePhotoUrl: profilePhotoUrl,
+                  user: response.data.data.user
+                },
+                IS_CONSOLE_LOG_OPEN &&
+                  console.log("profilePhotoUrl", profilePhotoUrl)
+              );
             }
-            this.setState(
-              { profilePhotoUrl: profilePhotoUrl },
-              IS_CONSOLE_LOG_OPEN &&
-                console.log("profilePhotoUrl", profilePhotoUrl)
-            );
           }
         }
       );
@@ -223,27 +228,29 @@ class App extends Component {
     config.body["refresh_token"] = this.jobhax_refresh_token;
     const response = await axiosCaptcha(url, config, false);
     if (response.statusText === "OK") {
-      this.token = `${
-        response.data.data.token_type
-      } ${response.data.data.access_token.trim()}`;
-      this.refresh_token = response.data.data.refresh_token;
-      this.setState({ token: this.token });
-      let date = new Date();
-      date.setSeconds(date.getSeconds() + response.data.data.expires_in);
-      this.props.cookies.set(
-        "jobhax_access_token",
-        this.token,
-        { path: "/" },
-        date
-      );
-      this.props.cookies.set(
-        "jobhax_access_token_expiration",
-        parseFloat(date.getTime()),
-        { path: "/" }
-      );
-      this.props.cookies.set("jobhax_refresh_token", this.refresh_token, {
-        path: "/"
-      });
+      if (response.data.success == true) {
+        this.token = `${
+          response.data.data.token_type
+        } ${response.data.data.access_token.trim()}`;
+        this.refresh_token = response.data.data.refresh_token;
+        this.setState({ token: this.token });
+        let date = new Date();
+        date.setSeconds(date.getSeconds() + response.data.data.expires_in);
+        this.props.cookies.set(
+          "jobhax_access_token",
+          this.token,
+          { path: "/" },
+          date
+        );
+        this.props.cookies.set(
+          "jobhax_access_token_expiration",
+          parseFloat(date.getTime()),
+          { path: "/" }
+        );
+        this.props.cookies.set("jobhax_refresh_token", this.refresh_token, {
+          path: "/"
+        });
+      }
     }
   }
 
@@ -302,25 +309,16 @@ class App extends Component {
     });
   }
 
-  passStatesFromDashboard(newState) {
-    this.setState({ isFirstLoginWithGoogle: newState });
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("loginGoogle app", this.state.isFirstLoginWithGoogle);
-  }
-
   passStatesFromHeader(timestamp) {
     this.setState({ syncResponseTimestamp: timestamp });
   }
 
-  passStatesFromSignin(token, active) {
-    this.setState({
-      token: token,
-      active: active
-    });
-  }
-
   setIsUserLoggedIn(isUserLoggedIn) {
-    this.setState({ isUserLoggedIn: isUserLoggedIn });
+    this.reRunComponentDidUpdate();
+    this.setState({
+      isUserLoggedIn: isUserLoggedIn,
+      token: this.cookie("get", "jobhax_access_token")
+    });
   }
 
   setIsAuthenticationChecking(isAuthenticationChecking) {
@@ -338,6 +336,7 @@ class App extends Component {
       cookies.remove("jobhax_access_token", { path: "/" });
       cookies.remove("jobhax_refresh_token", { path: "/" });
       cookies.remove("google_access_token_expiration", { path: "/" });
+      cookies.remove("google_login_first_instance", { path: "/" });
       cookies.remove("jobhax_access_token_expiration", { path: "/" });
       cookies.remove("remember_me", { path: "/" });
       cookies.remove("user_type", { path: "/" });
@@ -498,7 +497,6 @@ class App extends Component {
               path="/profile"
               render={() => (
                 <ProfilePage
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
@@ -511,10 +509,10 @@ class App extends Component {
               path="/blogs"
               render={() => (
                 <Blog
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
+                  user={this.state.user}
                 />
               )}
             />
@@ -528,13 +526,10 @@ class App extends Component {
               path="/dashboard"
               render={() => (
                 <Dashboard
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
                   syncResponseTimestamp={this.state.syncResponseTimestamp}
-                  isFirstLoginWithGoogle={this.state.isFirstLoginWithGoogle}
-                  passStatesFromDashboard={this.passStatesFromDashboard}
                 />
               )}
             />
@@ -543,7 +538,6 @@ class App extends Component {
               path="/metrics"
               render={() => (
                 <Metrics
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
@@ -555,6 +549,7 @@ class App extends Component {
               path="/alumni"
               render={() => (
                 <Alumni
+                  alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
                 />
@@ -568,6 +563,7 @@ class App extends Component {
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
+                  user={this.state.user}
                 />
               )}
             />
@@ -576,19 +572,6 @@ class App extends Component {
               path="/mentors"
               render={() => (
                 <Mentors
-                  active={this.state.active}
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/metricsGlobal"
-              render={() => (
-                <MetricsGlobal
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
@@ -600,7 +583,6 @@ class App extends Component {
               path="/companies"
               render={() => (
                 <Companies
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
@@ -647,11 +629,7 @@ class App extends Component {
               path="/underconstruction"
               render={() => <UnderConstruction />}
             />
-            <Route
-              exact
-              path="/faqs"
-              render={() => <FAQ active={this.state.active} />}
-            />
+            <Route exact path="/faqs" render={() => <FAQ />} />
             <Route
               exact
               path="/action"
@@ -737,7 +715,6 @@ class App extends Component {
               render={() => (
                 <SignIn
                   googleAuth={this.googleAuth}
-                  passStatesFromSignin={this.passStatesFromSignin}
                   setIsUserLoggedIn={this.setIsUserLoggedIn}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
                   alert={this.showAlert}
@@ -753,17 +730,12 @@ class App extends Component {
                   googleAuth={this.googleAuth}
                   alert={this.showAlert}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
-                  passStatesFromSignin={this.passStatesFromSignin}
                   setIsUserLoggedIn={this.setIsUserLoggedIn}
                   cookie={this.cookie}
                 />
               )}
             />
-            <Route
-              exact
-              path="/faqs"
-              render={() => <FAQ active={this.state.active} />}
-            />
+            <Route exact path="/faqs" render={() => <FAQ />} />
             <Route
               exact
               path="/blogs"

@@ -90,7 +90,7 @@ class Dashboard extends Component {
       if (
         this.props.cookie("get", "google_login_first_instance") != ("" || null)
       ) {
-        IS_CONSOLE_LOG_OPEN && console.log("dashboard google token var");
+        IS_CONSOLE_LOG_OPEN && console.log("first instance sync gmail requested");
         this.props.cookie("remove", "google_login_first_instance");
         this.setState({ isSycnhingJobApps: true });
       }
@@ -166,23 +166,18 @@ class Dashboard extends Component {
       this.sortJobApplications(mockJobApps.data);
       return;
     }
-    if (
-      this.props.cookie("get", "jobhax_access_token") != ("" || null) &&
-      this.state.isInitialRequest === "beforeRequest"
-    ) {
+    if (this.state.isInitialRequest === "beforeRequest") {
       this.setState({ isInitialRequest: true });
       IS_CONSOLE_LOG_OPEN &&
         console.log(
           "dashboard token",
           this.props.cookie("get", "jobhax_access_token")
-        ),
-        "\ndashboard active?",
-        this.props.active;
-      if (this.props.active) {
-        await this.props.handleTokenExpiration("dashboard getData");
-        const { url, config } = getJobAppsRequest;
-        axiosCaptcha(url, config).then(response => {
-          if (response.statusText === "OK") {
+        );
+      await this.props.handleTokenExpiration("dashboard getData");
+      const { url, config } = getJobAppsRequest;
+      axiosCaptcha(url, config).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success == true) {
             let updatedData = response.data.data;
             updatedData.forEach(jobApp => (jobApp.isSelected = false));
             this.setState({
@@ -194,8 +189,8 @@ class Dashboard extends Component {
             IS_CONSOLE_LOG_OPEN &&
               console.log("dashboard response.data data", response.data.data);
           }
-        });
-      }
+        }
+      });
     }
   }
 

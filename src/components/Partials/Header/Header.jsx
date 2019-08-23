@@ -72,7 +72,6 @@ class Header extends Component {
   }
 
   async handleMenuClick(event) {
-    console.log("click ", event);
     this.setState({ request: true });
     let page = event.key;
     if (page == "/logout") {
@@ -96,7 +95,6 @@ class Header extends Component {
   }
 
   render() {
-    console.log("page", this.state.current, window.location.pathname, this);
     if (
       this.state.current &&
       this.state.current != "logout" &&
