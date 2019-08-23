@@ -20,8 +20,7 @@ class EventDetails extends React.Component {
 
   async postAttendeeRequest(answer) {
     await this.props.handleTokenExpiration("event postData");
-    let newUrl =
-      postEventsRequest.url + "/" + this.props.event.id + "/" + answer;
+    let newUrl = postEventsRequest.url + this.props.event.id + "/" + answer;
     axiosCaptcha(newUrl, postEventsRequest.config, "events").then(response => {
       if (response.statusText === "OK") {
         if (response.data.success == true) {
