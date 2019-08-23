@@ -48,10 +48,7 @@ class SignUpPage extends Component {
       majorAutoCompleteData: [],
       countryList: [],
       stateOrProvinceList: [],
-      token: "",
       mustInputEmphasis: false,
-      isUserLoggedIn: false,
-      isAuthenticationChecking: false,
       confirmDirty: false,
       isEmailSignUpRequested: false,
       level:
@@ -111,6 +108,7 @@ class SignUpPage extends Component {
     this.checkMustInputs = this.checkMustInputs.bind(this);
     this.setCountryOrStateList = this.setCountryOrStateList.bind(this);
     this.generateUrlForGetData = this.generateUrlForGetData.bind(this);
+    this.setCookies = this.setCookies.bind(this);
   }
 
   currentStyle(state, condition) {
@@ -147,6 +145,33 @@ class SignUpPage extends Component {
     this.setState({ confirmDirty: this.state.confirmDirty || !!value });
   }
 
+  setCookies(response, googleAccessTokenExpiresOn) {
+    this.token = `${
+      response.data.data.token_type
+    } ${response.data.data.access_token.trim()}`;
+    IS_CONSOLE_LOG_OPEN && console.log(this.token);
+    this.refresh_token = response.data.data.refresh_token;
+    let date = new Date();
+    date.setSeconds(date.getSeconds() + response.data.data.expires_in);
+    this.props.cookie(
+      "set",
+      "google_access_token_expiration",
+      googleAccessTokenExpiresOn.getTime(),
+      "/",
+      googleAccessTokenExpiresOn
+    );
+    this.props.cookie("set", "google_login_first_instance", true, "/");
+    this.props.cookie("set", "jobhax_access_token", this.token, "/", date);
+    this.props.cookie(
+      "set",
+      "jobhax_access_token_expiration",
+      date.getTime(),
+      "/"
+    );
+    this.props.cookie("set", "jobhax_refresh_token", this.refresh_token, "/");
+    this.props.cookie("set", "user_type", response.data.data.user_type, "/");
+  }
+
   handleGoogleSignUp() {
     window.gapi.load("client:auth2", () => {
       window.gapi.client
@@ -171,64 +196,28 @@ class SignUpPage extends Component {
                 .getAuthResponse().access_token;
               const { url, config } = authenticateRequest;
               config.body.token = googleAccessToken;
-              axiosCaptcha(url, config, "signin")
-                .then(response => {
+              axiosCaptcha(url, config, "signin").then(response => {
+                if (response.statusText === "OK") {
+                  if (response.data.success == true) {
+                    this.setCookies(response, googleAccessTokenExpiresOn)
+                  }
+                }
+                return response
+              }).then( response => {
                   if (response.statusText === "OK") {
-                    this.token = `${
-                      response.data.data.token_type
-                    } ${response.data.data.access_token.trim()}`;
-                    if (response.data.data.user_type === 0) {
+                    if (response.data.success == true) {
+                      if (response.data.data.user_type === 0) {
                       this.setState({ level: "intro" });
                     } else {
+                      this.props.cookie("set", "remember_me", true, "/");
                       this.props.setIsUserLoggedIn(true);
                     }
-                    IS_CONSOLE_LOG_OPEN && console.log(this.token);
-                    this.refresh_token = response.data.data.refresh_token;
-                    let date = new Date();
-                    date.setSeconds(
-                      date.getSeconds() + response.data.data.expires_in
-                    );
-                    this.props.cookie(
-                      "set",
-                      "google_access_token_expiration",
-                      googleAccessTokenExpiresOn.getTime(),
-                      "/",
-                      googleAccessTokenExpiresOn
-                    );
-                    this.props.cookie(
-                      "set",
-                      "google_login_first_instance",
-                      true,
-                      "/"
-                    );
-                    this.props.cookie(
-                      "set",
-                      "jobhax_access_token",
-                      this.token,
-                      "/",
-                      date
-                    );
-                    this.props.cookie(
-                      "set",
-                      "jobhax_access_token_expiration",
-                      date.getTime(),
-                      "/"
-                    );
-                    this.props.cookie(
-                      "set",
-                      "jobhax_refresh_token",
-                      this.refresh_token,
-                      "/"
-                    );
+                    this.postGoogleProfilePhoto(photoUrl);
+                    }
                   }
-                })
-                .then(() => this.postGoogleProfilePhoto(photoUrl));
-              this.props.cookie(
-                "set",
-                "google_login_first_instance",
-                true,
-                "/"
+                }
               );
+              ;
             }
           });
         });

@@ -55,11 +55,8 @@ class SignInPage extends Component {
     super(props);
 
     this.state = {
-      token: "",
       username: "",
       password: "",
-      isUserLoggedIn: false,
-      isAuthenticationChecking: false,
       isVerificationReSendDisplaying: false,
       showModal: false
     };
@@ -196,25 +193,18 @@ class SignInPage extends Component {
               this.refresh_token,
               "/"
             );
-            if (response.data.data.user_type === 0) {
-              window.location = "/signup?=intro";
-            } else {
-              this.setState({
-                token: this.token
-              });
-              this.props.passStatesFromSignin(this.token, true);
-              this.setState({
-                isUserLoggedIn: true,
-                isAuthenticationChecking: false
-              });
-              this.props.setIsUserLoggedIn(true);
-              this.props.setIsAuthenticationChecking(false);
-            }
-            //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn:true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
+            //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn -> true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
             if (
               window.location.search.split("=")[1] === "reCapthcaCouldNotPassed"
             ) {
               window.location = "/signin";
+            } else {
+              if (response.data.data.user_type === 0) {
+                window.location = "/signup?=intro";
+              } else {
+                this.props.setIsUserLoggedIn(true);
+                this.props.setIsAuthenticationChecking(false);
+              }
             }
           } else {
             if (response.data.error_code === 13) {
@@ -236,6 +226,34 @@ class SignInPage extends Component {
         }
       }
     );
+  }
+
+  setCookies(response, googleAccessTokenExpiresOn) {
+    this.token = `${
+      response.data.data.token_type
+    } ${response.data.data.access_token.trim()}`;
+    IS_CONSOLE_LOG_OPEN && console.log(this.token);
+    this.refresh_token = response.data.data.refresh_token;
+    let date = new Date();
+    date.setSeconds(date.getSeconds() + response.data.data.expires_in);
+    this.props.cookie("set", "user_type", response.data.data.user_type, "/");
+    this.props.cookie(
+      "set",
+      "google_access_token_expiration",
+      googleAccessTokenExpiresOn.getTime(),
+      "/",
+      googleAccessTokenExpiresOn
+    );
+    this.props.cookie("set", "google_login_first_instance", true, "/");
+    this.props.cookie("set", "jobhax_access_token", this.token, "/", date);
+    this.props.cookie(
+      "set",
+      "jobhax_access_token_expiration",
+      date.getTime(),
+      "/"
+    );
+    this.props.cookie("set", "jobhax_refresh_token", this.refresh_token, "/");
+    this.props.cookie("set", "remember_me", true, "/");
   }
 
   handleGoogleSignIn() {
@@ -261,77 +279,41 @@ class SignInPage extends Component {
               config.body.token = this.googleAuth.currentUser
                 .get()
                 .getAuthResponse().access_token;
-              axiosCaptcha(url, config, "signin").then(response => {
-                if (response.statusText === "OK") {
-                  this.token = `${
-                    response.data.data.token_type
-                  } ${response.data.data.access_token.trim()}`;
-                  IS_CONSOLE_LOG_OPEN && console.log(this.token);
-                  this.refresh_token = response.data.data.refresh_token;
-                  let date = new Date();
-                  date.setSeconds(
-                    date.getSeconds() + response.data.data.expires_in
-                  );
-                  this.props.cookie(
-                    "set",
-                    "user_type",
-                    response.data.data.user_type,
-                    "/"
-                  );
-                  this.props.cookie(
-                    "set",
-                    "google_access_token_expiration",
-                    googleAccessTokenExpiresOn.getTime(),
-                    "/",
-                    googleAccessTokenExpiresOn
-                  );
-                  this.props.cookie(
-                    "set",
-                    "google_login_first_instance",
-                    true,
-                    "/"
-                  );
-                  this.props.cookie(
-                    "set",
-                    "jobhax_access_token",
-                    this.token,
-                    "/",
-                    date
-                  );
-                  this.props.cookie(
-                    "set",
-                    "jobhax_access_token_expiration",
-                    date.getTime(),
-                    "/"
-                  );
-                  this.props.cookie(
-                    "set",
-                    "jobhax_refresh_token",
-                    this.refresh_token,
-                    "/"
-                  );
-                  this.props.cookie("set", "remember_me", true, "/");
-                  this.postGoogleProfilePhoto(photoUrl);
-                  IS_CONSOLE_LOG_OPEN &&
-                    console.log(this.token, "profile updated?");
-                  this.props.passStatesFromSignin(this.token, true);
-                  if (response.data.data.user_type === 0) {
-                    window.location = "/signup?=intro";
+              axiosCaptcha(url, config, "signin")
+                .then(response => {
+                  if (response.statusText === "OK") {
+                    if (response.data.success == true) {
+                      this.setCookies(response, googleAccessTokenExpiresOn);
+                    }
                   }
-                  this.setState({ token: this.token });
-                  //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn:true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
-                  if (
-                    window.location.search.split("=")[1] ===
-                    "reCapthcaCouldNotPassed"
-                  ) {
-                    window.location = "/signin";
+                  return response;
+                })
+                .then(response => {
+                  if (response.statusText === "OK") {
+                    if (response.data.success == true) {
+                      this.postGoogleProfilePhoto(photoUrl);
+                      IS_CONSOLE_LOG_OPEN &&
+                        console.log(this.token, "profile updated?");
+                      if (response.data.data.user_type === 0) {
+                        window.location = "/signup?=intro";
+                      }
+                      //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn -> true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
+                      if (
+                        window.location.search.split("=")[1] ===
+                        "reCapthcaCouldNotPassed"
+                      ) {
+                        window.location = "/signin";
+                      } else {
+                        if (response.data.data.user_type === 0) {
+                          window.location = "/signup?=intro";
+                        } else {
+                          this.props.setIsUserLoggedIn(true);
+                          this.props.setIsAuthenticationChecking(false);
+                        }
+                      }
+                    }
                   }
-                  this.setState({ isUserLoggedIn: true });
-                  this.props.setIsUserLoggedIn(true);
-                }
-              });
-              this.setState({ isAuthenticationChecking: false });
-              this.props.setIsAuthenticationChecking(false);
+                });
             }
           });
         });
