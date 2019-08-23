@@ -12,6 +12,7 @@ import BlogCard from "./BlogCard.jsx";
 import "./style.scss";
 import { apiRoot } from "../../utils/constants/endpoints.js";
 import BlogDetails from "./BlogDetails.jsx";
+import BlogEditable from "./BlogEditable.jsx";
 
 class Blog extends React.Component {
   constructor(props) {
@@ -24,9 +25,23 @@ class Blog extends React.Component {
       pagination: {},
       pageNo: 1,
       pageSize: 10,
+      edit: false,
       detail_blog_id: window.location.search.split("=")[1] || null,
       detail_blog: {},
-      detail_blog_snippet: " "
+      user_type: this.props.cookie("get", "user_type"),
+      editable_blog: {
+        content: "",
+        created_at: new Date().toISOString(),
+        downvote: 0,
+        header_image: "",
+        id: null,
+        is_published: false,
+        title: "",
+        upvote: 0,
+        view_count: 0,
+        voted: 0,
+        snippet: ""
+      }
     };
 
     this.getData = this.getData.bind(this);
@@ -120,8 +135,7 @@ class Blog extends React.Component {
     let blog = this.state.blogList.filter(blog => id == blog.id)[0];
     await this.setState({
       detail_blog_id: id,
-      detail_blog: blog,
-      detail_blog_snippet: blog.snippet
+      detail_blog: blog
     });
     this.getData("detailedRequest");
   }
@@ -170,7 +184,7 @@ class Blog extends React.Component {
         : apiRoot + blog.publisher_profile.profile_photo;
     return (
       <div>
-        <Affix offset={80}>
+        <Affix offsetTop={80}>
           <div className="featured-blog">
             <div className="header-photo">
               <img src={apiRoot + blog.header_image} />
@@ -225,17 +239,40 @@ class Blog extends React.Component {
     return (
       <div>
         <div className="blog-page-container">
-          {this.state.detail_blog_id == null ? (
-            <div className="blog-page-main-container">
-              <div>{this.generateFeaturedBlog()}</div>
-              <div>{this.generateBlogsList()}</div>
+          {this.state.edit != true ? (
+            <div>
+              {this.state.detail_blog_id == null ? (
+                <div className="blog-page-main-container">
+                  <div>{this.generateFeaturedBlog()}</div>
+                  <div>{this.generateBlogsList()}</div>
+                </div>
+              ) : (
+                <BlogDetails
+                  blog={this.state.detail_blog}
+                  handleTokenExpiration={this.props.handleTokenExpiration}
+                />
+              )}
+              {this.state.user_type == 2 && (
+                <div className="fixed-button">
+                  <Button
+                    type="primary"
+                    shape="circle"
+                    size="large"
+                    onClick={() => this.setState({ edit: true })}
+                  >
+                    <Icon type="plus" />
+                  </Button>
+                </div>
+              )}
             </div>
           ) : (
-            <BlogDetails
-              blog={this.state.detail_blog}
-              snippet={this.state.detail_blog_snippet}
-              handleTokenExpiration={this.props.handleTokenExpiration}
-            />
+            <div>
+              <BlogEditable
+                blog={this.state.editable_blog}
+                publisher={this.props.user}
+                handleTokenExpiration={this.props.handleTokenExpiration}
+              />
+            </div>
           )}
         </div>
         <div className={footerClass}>

@@ -23,7 +23,8 @@ class BlogDetails extends React.Component {
       downVote: null,
       upVote: null,
       downVote: null,
-      voted: null
+      voted: null,
+      snippet: " "
     };
 
     this.postBlogStats = this.postBlogStats.bind(this);
@@ -67,6 +68,11 @@ class BlogDetails extends React.Component {
                   downVote: response.data.data.downvote
                 });
               }
+              if (type === "view") {
+                this.setState({
+                  snippet: response.data.data.snippet
+                });
+              }
             } else {
               IS_CONSOLE_LOG_OPEN &&
                 console.log(response, response.data.error_message);
@@ -85,7 +91,7 @@ class BlogDetails extends React.Component {
   }
 
   generateBlogHeader() {
-    const { blog, snippet } = this.props;
+    const { blog } = this.props;
     let photoUrl =
       blog.publisher_profile.profile_photo.substring(0, 4) == "http"
         ? blog.publisher_profile.profile_photo
@@ -104,7 +110,7 @@ class BlogDetails extends React.Component {
         </div>
         <div className="blog-info">
           <div className="title">{blog.title}</div>
-          <div className="snippet">{blog.snippet ? blog.snippet : snippet}</div>
+          <div className="snippet">{this.state.snippet}</div>
           <div className="info-container">
             <div className="info">
               {longDate + " at " + time.split("at")[1]}

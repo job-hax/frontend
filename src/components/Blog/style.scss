@@ -472,4 +472,15 @@
             }
         }
     }
+
+    .fixed-button {
+        position: fixed;
+        bottom: 76px;
+        left: 16px;
+        z-index: 2001;
+        height: 40px;
+        width: 40px;
+        border-radius: 20px;
+        box-shadow: 1px 1px 5px 4px rgba(0, 0, 0, 0.2);
+    }
 }
