@@ -84,19 +84,19 @@ class Header extends Component {
       this.props.handleSignOut();
     } else if (page == "/events") {
       if (window.location.pathname.substring(0, 6) == "/event") {
-        window.location = "/events";
+        this.setState({ current: "action?type=redirect&/events" });
       } else {
         this.setState({ current: page });
       }
     } else if (page == "/blogs?edit=true") {
       if (window.location.pathname.substring(0, 5) == "/blog") {
-        window.location = "/blogs?edit=true";
+        this.setState({ current: "action?type=redirect&/blogs?edit=true" });
       } else {
         this.setState({ current: page });
       }
     } else if (page == "/blogs") {
       if (window.location.pathname.substring(0, 5) == "/blog") {
-        window.location = "/blogs";
+        this.setState({ current: "action?type=redirect&/blogs" });
       } else {
         this.setState({ current: page });
       }
@@ -265,12 +265,6 @@ class Header extends Component {
             <Link to="/mentors">
               <img src="../../../src/assets/icons/MentorIcon.png" />
               <span>Mentorship</span>
-            </Link>
-          </div>
-          <div className="header-icon general tooltips">
-            <Link to="/metricsGlobal">
-              <img src="../../../src/assets/icons/globe.png" />
-              <span>Aggregated Metrics</span>
             </Link>
           </div>
           <div className="header-icon general tooltips">
