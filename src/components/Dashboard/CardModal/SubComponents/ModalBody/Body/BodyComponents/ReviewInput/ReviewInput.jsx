@@ -176,7 +176,9 @@ class ReviewInput extends React.Component {
     event.preventDefault();
     await this.props.handleTokenExpiration("reviewInput handleSubmit");
     this.props.toggleReview();
-    let config = { method: "POST" };
+    let config = this.props.card.company_object.review_id
+      ? { method: "PUT" }
+      : { method: "POST" };
     config.body = this.body;
     axiosCaptcha(REVIEWS, config, "review").then(response => {
       if (response.statusText === "OK") {

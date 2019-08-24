@@ -225,8 +225,6 @@
                             }
 
                         }
-
-
                     }
 
                     .blog-card-right {
@@ -238,9 +236,9 @@
                         img {
                             position: absolute;
                             margin: auto;
-                            max-height: auto;
+                            max-height: 200px;
                             min-width: 160px;
-                            max-width: 200px;
+                            max-width: auto;
                             min-height: 160px;
                             left: -100%;
                             right: -100%;
