@@ -70,9 +70,11 @@ export async function axiosCaptcha(url, config, action) {
   let response = null;
   config.mode = "cors";
   config.cache = "no-cache";
-  config.headers = {
-    "Content-Type": "application/json; charset=utf-8"
-  };
+  if (!config.headers) {
+    config.headers = {
+      "Content-Type": "application/json; charset=utf-8"
+    };
+  }
   if (url.substring(0, apiRoot.length) === apiRoot) {
     config.headers.Authorization = getCookie("jobhax_access_token");
   }

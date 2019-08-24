@@ -344,6 +344,8 @@ class ProfilePage extends React.Component {
         bodyFormData.append("photo", file);
         let config = { method: "POST" };
         config.body = bodyFormData;
+        config.headers = {};
+        config.headers["Content-Type"] = "multipart/form-data";
         axiosCaptcha(USERS("updateProfilePhoto"), config).then(response => {
           if (response.statusText === "OK") {
             if (response.data.success === true) {
