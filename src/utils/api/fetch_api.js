@@ -76,7 +76,9 @@ export async function axiosCaptcha(url, config, action) {
     };
   }
   if (url.substring(0, apiRoot.length) === apiRoot) {
-    config.headers.Authorization = getCookie("jobhax_access_token");
+    if (url.substring(url.length - 13, url.length) != "refreshToken/") {
+      config.headers.Authorization = getCookie("jobhax_access_token");
+    }
   }
   if (config.method === "GET") {
     response = await axios.get(url, config).catch(error => {
