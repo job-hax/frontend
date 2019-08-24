@@ -224,6 +224,8 @@ class App extends Component {
     this.jobhax_refresh_token = this.props.cookies.get("jobhax_refresh_token");
     let config = { method: "POST", body: {} };
     config.body["refresh_token"] = this.jobhax_refresh_token;
+    config.body["client_id"] = jobHaxClientId;
+    config.body["client_secret"] = jobHaxClientSecret;
     const response = await axiosCaptcha(USERS("refreshToken"), config, false);
     if (response.statusText === "OK") {
       if (response.data.success == true) {
@@ -231,7 +233,11 @@ class App extends Component {
           response.data.data.token_type
         } ${response.data.data.access_token.trim()}`;
         this.refresh_token = response.data.data.refresh_token;
-        this.setState({ token: this.token });
+        this.setState({
+          token: this.token,
+          isUserLoggedIn: true,
+          active: true
+        });
         let date = new Date();
         date.setSeconds(date.getSeconds() + response.data.data.expires_in);
         this.props.cookies.set(
