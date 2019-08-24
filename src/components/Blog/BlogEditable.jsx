@@ -11,7 +11,7 @@ import {
   makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN
 } from "../../utils/constants/constants";
-import { apiRoot } from "../../utils/constants/endpoints";
+import { apiRoot, BLOGS } from "../../utils/constants/endpoints";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 
 import "./style.scss";
@@ -45,8 +45,10 @@ class BlogEditable extends React.Component {
       created_at: this.props.blog.created_at,
       downvote: this.props.blog.downvote,
       header_image: this.props.blog.header_image,
-      id: this.props.blog.id,
+      id: this.props.blog.id || null,
       is_published: this.props.blog.is_published,
+      is_approved: this.props.blog.is_approved,
+      publish: false,
       title: this.props.blog.title,
       upvote: this.props.blog.upvote,
       view_count: this.props.blog.view_count,
@@ -59,12 +61,14 @@ class BlogEditable extends React.Component {
       upVoted: false,
       downVoted: false,
       editorState: EditorState.createEmpty(),
-      loading: false
+      loading: false,
+      imageFromData: ""
     };
 
     this.toggleEditable = this.toggleEditable.bind(this);
     this.onEditorStateChange = this.onEditorStateChange.bind(this);
     this.handlePhotoUpdate = this.handlePhotoUpdate.bind(this);
+    this.postBlogData = this.postBlogData.bind(this);
   }
 
   componentDidMount() {
@@ -77,6 +81,27 @@ class BlogEditable extends React.Component {
       this.setState({
         editorState: editorState
       });
+    }
+  }
+
+  async postBlogData() {
+    const { id, imageFromData, title, snippet, content, publish } = this.state;
+    let config = id == null ? { method: "POST" } : { method: "PUT" };
+    config.body = {
+      header_image: imageFromData,
+      title: title,
+      snippet: snippet,
+      content: content,
+      publish: publish
+    };
+    if (config.method == "PUT") {
+      config.body["id"] = id;
+    }
+    response = await axiosCaptcha(BLOGS, config);
+    if (response.statusText === "OK") {
+      if (response.data.success === true) {
+        IS_CONSOLE_LOG_OPEN && console.log("done!");
+      }
     }
   }
 
@@ -96,7 +121,7 @@ class BlogEditable extends React.Component {
   handlePhotoUpdate(file) {
     let bodyFormData = new FormData();
     bodyFormData.append("photo", file);
-    console.log(file, bodyFormData);
+    this.setState({ imageFromData: bodyFormData });
     getBase64(file, imageUrl =>
       this.setState({
         header_image: imageUrl,
@@ -379,13 +404,22 @@ class BlogEditable extends React.Component {
   }
 
   render() {
-    console.log("propss", this.props);
     history.pushState(null, null, location.href);
     window.onpopstate = function() {
       window.location.assign("blogs");
     };
     return (
       <div className="blog-details">
+        <div className="fixed-button">
+          <Button
+            type="primary"
+            shape="circle"
+            size="large"
+            onClick={() => this.postBlogData()}
+          >
+            <Icon type="save" />
+          </Button>
+        </div>
         {this.generateBlogHeader()}
         {this.generateBlogBody()}
       </div>

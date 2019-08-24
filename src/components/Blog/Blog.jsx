@@ -283,7 +283,11 @@ class Blog extends React.Component {
 
   render() {
     const footerClass =
-      this.state.blogList.length > 3 ? "" : "bottom-fixed-footer";
+      this.state.edit || this.state.detail_blog_id
+        ? ""
+        : this.state.blogList.length > 3
+        ? ""
+        : "bottom-fixed-footer";
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
