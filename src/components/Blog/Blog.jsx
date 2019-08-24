@@ -5,15 +5,14 @@ import { Redirect } from "react-router-dom";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { getBlogsRequest, postUsersRequest } from "../../utils/api/requests.js";
 import { makeTimeBeautiful } from "../../utils/constants/constants.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import { apiRoot, USERS, BLOGS } from "../../utils/constants/endpoints.js";
+import BlogDetails from "./BlogDetails.jsx";
+import BlogEditable from "./BlogEditable.jsx";
 import BlogCard from "./BlogCard.jsx";
 
 import "./style.scss";
-import { apiRoot } from "../../utils/constants/endpoints.js";
-import BlogDetails from "./BlogDetails.jsx";
-import BlogEditable from "./BlogEditable.jsx";
 
 class Blog extends React.Component {
   constructor(props) {
@@ -90,11 +89,8 @@ class Blog extends React.Component {
       } else {
         await this.getData("detailedRequest");
       }
-      axiosCaptcha(
-        postUsersRequest.url("verifyRecaptcha/"),
-        postUsersRequest.config,
-        "blog"
-      ).then(response => {
+      let config = { method: "POST" };
+      axiosCaptcha(USERS("verifyRecaptcha"), config, "blog").then(response => {
         if (response.statusText === "OK") {
           if (response.data.success != true) {
             IS_CONSOLE_LOG_OPEN &&
@@ -121,57 +117,59 @@ class Blog extends React.Component {
 
   async getData(requestType) {
     this.setState({ isWaitingResponse: true });
-    const { url, config } = getBlogsRequest;
+    let config = { method: "GET" };
     let newUrl =
       this.state.detail_blog_id == null && this.state.edit_blog_id == null
-        ? url +
+        ? BLOGS +
           "?page=" +
           this.state.pageNo +
           "&page_size=" +
           this.state.pageSize
         : this.state.edit_blog_id == null
-        ? url + this.state.detail_blog_id + "/"
-        : url + this.state.edit_blog_id + "/";
+        ? BLOGS + this.state.detail_blog_id + "/"
+        : BLOGS + this.state.edit_blog_id + "/";
     await this.props.handleTokenExpiration("blog getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
-        if (requestType === "initialRequest") {
-          this.setState({
-            blogList: response.data.data,
-            pagination: response.data.pagination,
-            isWaitingResponse: false,
-            isInitialRequest: false
-          });
-        } else if (requestType === "newPageRequest") {
-          this.setState({
-            blogList: response.data.data,
-            pagination: response.data.pagination,
-            isWaitingResponse: false,
-            isNewPageRequested: false
-          });
-        } else if (requestType === "detailedRequest") {
-          this.setState({
-            detail_blog: response.data.data,
-            isWaitingResponse: false,
-            isInitialRequest: false
-          });
-        } else if (requestType === "editRequest") {
-          if (response.data.data.mine) {
+        if (response.data.success) {
+          if (requestType === "initialRequest") {
             this.setState({
-              editable_blog: response.data.data
+              blogList: response.data.data,
+              pagination: response.data.pagination,
+              isWaitingResponse: false,
+              isInitialRequest: false
+            });
+          } else if (requestType === "newPageRequest") {
+            this.setState({
+              blogList: response.data.data,
+              pagination: response.data.pagination,
+              isWaitingResponse: false,
+              isNewPageRequested: false
+            });
+          } else if (requestType === "detailedRequest") {
+            this.setState({
+              detail_blog: response.data.data,
+              isWaitingResponse: false,
+              isInitialRequest: false
+            });
+          } else if (requestType === "editRequest") {
+            if (response.data.data.mine) {
+              this.setState({
+                editable_blog: response.data.data
+              });
+            }
+            this.setState({
+              isWaitingResponse: false,
+              isInitialRequest: false
             });
           }
-          this.setState({
-            isWaitingResponse: false,
-            isInitialRequest: false
-          });
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "BlogRequest Response",
+              response.data,
+              this.state.pagination
+            );
         }
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "BlogRequest Response",
-            response.data,
-            this.state.pagination
-          );
       }
     });
   }

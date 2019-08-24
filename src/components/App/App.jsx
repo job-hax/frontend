@@ -23,26 +23,27 @@ import SignUp from "..//UserAuth/SignUp/SignUp.jsx";
 import Action from "../UserAuth/Action/Action.jsx";
 import LinkedInOAuthAction from "../UserAuth/Action/LinkedInOAuthAction.jsx";
 import ProfilePage from "../ProfilePage/ProfilePage.jsx";
+import Mentors from "../Mentors/Mentors.jsx";
+import Alumni from "../Alumni/Alumni.jsx";
+import Events from "../Events/Events.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 
-import { googleClientId } from "../../config/config.js";
-import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
-import { apiRoot } from "../../utils/constants/endpoints.js";
 import {
-  refreshTokenRequest,
-  updateGoogleTokenRequest,
-  logOutUserRequest,
-  getPollRequest,
-  notificationsRequest,
-  getProfileRequest
-} from "../../utils/api/requests.js";
+  googleClientId,
+  jobHaxClientId,
+  jobHaxClientSecret
+} from "../../config/config.js";
+import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import {
+  apiRoot,
+  USERS,
+  GET_POLL,
+  NOTIFICATIONS
+} from "../../utils/constants/endpoints.js";
 
 import "./style.scss";
 import "../../assets/libraryScss/antd-scss/newantd.scss";
 import "../../assets/libraryScss/area-code.scss";
-import Mentors from "../Mentors/Mentors.jsx";
-import Alumni from "../Alumni/Alumni.jsx";
-import Events from "../Events/Events.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -127,21 +128,21 @@ class App extends Component {
       this.setState({
         isInitialRequest: false
       });
-      axiosCaptcha(getPollRequest.url, getPollRequest.config).then(response => {
+      let config = { method: "GET" };
+      axiosCaptcha(GET_POLL, config).then(response => {
         if (response.statusText === "OK") {
-          this.pollData = response.data.data;
-          this.setState({ pollData: this.pollData, isPollChecking: false });
-          this.state.pollData.map(
-            poll =>
-              poll.is_published === true &&
-              this.setState({ isPollShowing: true })
-          );
+          if (response.data.success) {
+            this.pollData = response.data.data;
+            this.setState({ pollData: this.pollData, isPollChecking: false });
+            this.state.pollData.map(
+              poll =>
+                poll.is_published === true &&
+                this.setState({ isPollShowing: true })
+            );
+          }
         }
       });
-      axiosCaptcha(
-        getProfileRequest.url + "?basic=true/",
-        getProfileRequest.config
-      ).then(response => {
+      axiosCaptcha(USERS("profile/?basic=true"), config).then(response => {
         IS_CONSOLE_LOG_OPEN && console.log("photo first");
         if (response.statusText === "OK") {
           if (response.data.success == true) {
@@ -221,9 +222,9 @@ class App extends Component {
 
   async refreshJobhaxToken() {
     this.jobhax_refresh_token = this.props.cookies.get("jobhax_refresh_token");
-    const { url, config } = refreshTokenRequest;
+    let config = { method: "POST", body: {} };
     config.body["refresh_token"] = this.jobhax_refresh_token;
-    const response = await axiosCaptcha(url, config, false);
+    const response = await axiosCaptcha(USERS("refreshToken"), config, false);
     if (response.statusText === "OK") {
       if (response.data.success == true) {
         this.token = `${
@@ -286,9 +287,9 @@ class App extends Component {
         googleAccessTokenExpiresOn.getTime(),
         { path: "/" }
       );
-      const { url, config } = updateGoogleTokenRequest;
+      let config = { method: "POST" };
       config["body"] = { token: newGoogleToken };
-      axiosCaptcha(url, config, false);
+      axiosCaptcha(USERS("updateGmailToken"), config, false);
       IS_CONSOLE_LOG_OPEN &&
         console.log("google token refreshed", newGoogleToken);
     } else {
@@ -345,17 +346,18 @@ class App extends Component {
 
   async checkNotifications() {
     await this.handleTokenExpiration("app checkNotifications");
-    axiosCaptcha(notificationsRequest.url, notificationsRequest.config).then(
-      response => {
-        if (response.statusText === "OK") {
+    let config = { method: "GET" };
+    axiosCaptcha(NOTIFICATIONS, config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success) {
           this.notificationsList = response.data.data;
           this.setState({
             notificationsList: this.notificationsList
           });
-          IS_CONSOLE_LOG_OPEN && console.log(this.state.notificationsList);
+          return this.notificationsList;
         }
       }
-    );
+    });
   }
 
   handleSignOut() {
@@ -365,44 +367,42 @@ class App extends Component {
       isUserLoggedIn: false
     });
     event && event.preventDefault();
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("handle signout config body", logOutUserRequest.config.body);
-    logOutUserRequest.config.body.token = this.state.token.replace(
-      "Bearer ",
-      ""
-    );
-    axiosCaptcha(logOutUserRequest.url, logOutUserRequest.config, false).then(
-      response => {
-        if (response.statusText === "OK") {
-          IS_CONSOLE_LOG_OPEN && console.log(response.data);
-          if (response.data.success === true) {
-            window.gapi.auth2.getAuthInstance().signOut();
-            this.setState({
-              token: "",
-              active: false,
-              pollData: [],
-              notificationsList: [],
-              profileData: []
-            });
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(
-                "handle signOut isUserLoggedIn",
-                this.state.isUserLoggedIn
-              );
-          } else {
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(response, response.data.error_message);
-            this.showAlert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
+    let config = { method: "POST" };
+    config["body"] = {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret
+    };
+    config.body.token = this.state.token.replace("Bearer ", "");
+    axiosCaptcha(USERS("logout"), config, false).then(response => {
+      if (response.statusText === "OK") {
+        IS_CONSOLE_LOG_OPEN && console.log(response.data);
+        if (response.data.success === true) {
+          window.gapi.auth2.getAuthInstance().signOut();
+          this.setState({
+            token: "",
+            active: false,
+            pollData: [],
+            notificationsList: [],
+            profileData: []
+          });
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "handle signOut isUserLoggedIn",
+              this.state.isUserLoggedIn
             );
-          }
         } else {
-          this.showAlert(5000, "error", "Something went wrong!");
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(response, response.data.error_message);
+          this.showAlert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
         }
+      } else {
+        this.showAlert(5000, "error", "Something went wrong!");
       }
-    );
+    });
   }
 
   showAlert(time, type, message) {
@@ -498,6 +498,8 @@ class App extends Component {
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
                   setProfilePhotoUrlInHeader={this.reRunComponentDidUpdate}
+                  notificationsList={this.state.notificationsList}
+                  notificationCheck={this.checkNotifications}
                 />
               )}
             />

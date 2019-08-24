@@ -7,8 +7,7 @@ import {
   makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN
 } from "../../utils/constants/constants";
-import { apiRoot } from "../../utils/constants/endpoints";
-import { postBlogRequest } from "../../utils/api/requests";
+import { apiRoot, BLOGS } from "../../utils/constants/endpoints";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 
 class BlogDetails extends React.Component {
@@ -61,16 +60,15 @@ class BlogDetails extends React.Component {
         ? this.state.upVote + 1
         : this.state.upVote;
     let body = { action: vote };
-    let config = postBlogRequest.config;
+    let config = { method: "POST" };
     if (type != "view") {
       config.body = body;
       this.setState({ voted: vote, downVote: downvote, upVote: upvote });
     }
     let requestType = type == "view" ? "view" : "vote";
-    let newUrl =
-      postBlogRequest.url(this.props.blog.id) + "/" + requestType + "/";
+    let newUrl = BLOGS + this.props.blog.id + "/" + requestType + "/";
     await this.props.handleTokenExpiration("blogCard postBlogStats");
-    axiosCaptcha(newUrl, config, "blog_stats").then(response => {
+    axiosCaptcha(newUrl, config, false).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
           IS_CONSOLE_LOG_OPEN && console.log(response.data);

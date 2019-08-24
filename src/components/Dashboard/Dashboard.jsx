@@ -15,17 +15,14 @@ import {
 import Column from "./Column/Column.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import {
-  addJobAppsRequest,
-  getJobAppsRequest,
-  updateJobStatusRequest,
-  postUsersRequest,
-  getNewJobappsRequest,
-  deleteJobRequest
-} from "../../utils/api/requests.js";
 import { IS_MOCKING } from "../../config/config.js";
 import { mockJobApps } from "../../utils/api/mockResponses.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import {
+  JOB_APPS,
+  GET_NEW_JOBAPPS,
+  USERS
+} from "../../utils/constants/endpoints.js";
 import { generateCurrentDate } from "../../utils/helpers/helperFunctions.js";
 
 import "./style.scss";
@@ -90,28 +87,28 @@ class Dashboard extends Component {
       if (
         this.props.cookie("get", "google_login_first_instance") != ("" || null)
       ) {
-        IS_CONSOLE_LOG_OPEN && console.log("first instance sync gmail requested");
+        IS_CONSOLE_LOG_OPEN &&
+          console.log("first instance sync gmail requested");
         this.props.cookie("remove", "google_login_first_instance");
         this.setState({ isSycnhingJobApps: true });
       }
       await this.getData();
-      axiosCaptcha(
-        postUsersRequest.url("verify_recaptcha"),
-        postUsersRequest.config,
-        "dashboard"
-      ).then(response => {
-        if (response.statusText === "OK") {
-          if (response.data.success != true) {
-            this.setState({ isUpdating: false });
-            IS_CONSOLE_LOG_OPEN && console.log(response.data.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
+      let config = { method: "POST" };
+      axiosCaptcha(USERS("verifyRecaptcha"), config, "dashboard").then(
+        response => {
+          if (response.statusText === "OK") {
+            if (response.data.success != true) {
+              this.setState({ isUpdating: false });
+              IS_CONSOLE_LOG_OPEN && console.log(response.data.error_message);
+              this.props.alert(
+                5000,
+                "error",
+                "Error: " + response.data.error_message
+              );
+            }
           }
         }
-      });
+      );
     }
   }
 
@@ -122,9 +119,10 @@ class Dashboard extends Component {
       this.state.isSycnhingJobApps == true
     ) {
       this.setState({ isSycnhingJobApps: false });
+      let config = { method: "GET" };
       axiosCaptcha(
-        getNewJobappsRequest.url(`${new Date().getTime() - 5000}`),
-        getNewJobappsRequest.config
+        GET_NEW_JOBAPPS(`${new Date().getTime() - 5000}`),
+        config
       ).then(response => {
         if (response.statusText === "OK") {
           if (response.data.success == true) {
@@ -174,8 +172,8 @@ class Dashboard extends Component {
           this.props.cookie("get", "jobhax_access_token")
         );
       await this.props.handleTokenExpiration("dashboard getData");
-      const { url, config } = getJobAppsRequest;
-      axiosCaptcha(url, config).then(response => {
+      let config = { method: "GET" };
+      axiosCaptcha(JOB_APPS, config).then(response => {
         if (response.statusText === "OK") {
           if (response.data.success == true) {
             let updatedData = response.data.data;
@@ -205,32 +203,32 @@ class Dashboard extends Component {
     this.onsiteInterviewRejected = [];
     this.offerRejected = [];
     for (let application of applications) {
-      switch (application.application_status.value.toLowerCase()) {
-        case "to apply":
+      switch (application.application_status.id) {
+        case 2:
           this.toApply.push(application);
           break;
-        case "applied":
+        case 1:
           if (application.is_rejected) {
             this.appliedRejected.push(application);
           } else {
             this.applied.push(application);
           }
           break;
-        case "phone screen":
+        case 3:
           if (application.is_rejected) {
             this.phoneScreenRejected.push(application);
           } else {
             this.phoneScreen.push(application);
           }
           break;
-        case "onsite interview":
+        case 4:
           if (application.is_rejected) {
             this.onsiteInterviewRejected.push(application);
           } else {
             this.onsiteInterview.push(application);
           }
           break;
-        case "offer":
+        case 5:
           if (application.is_rejected) {
             this.offerRejected.push(application);
           } else {
@@ -312,13 +310,13 @@ class Dashboard extends Component {
     this.sortJobApplications(newDisplayingJobappsList);
     await this.props.handleTokenExpiration("dashboard updateApplications");
     IS_CONSOLE_LOG_OPEN && console.log("ok? after", dropColumnName, statuses);
-    let { url, config } = updateJobStatusRequest;
+    let config = { method: "PUT" };
     config.body = {
       jobapp_id: card.id,
       status_id: card.application_status.id,
       rejected: card.is_rejected
     };
-    axiosCaptcha(url, config).then(response => {
+    axiosCaptcha(JOB_APPS, config).then(response => {
       if (response.data.success != true) {
         window.location.reload(true);
       }
@@ -349,7 +347,7 @@ class Dashboard extends Component {
       }
     };
     await this.props.handleTokenExpiration("dashboard addNewApplication");
-    const { url, config } = addJobAppsRequest;
+    let config = { method: "POST" };
     config.body = {
       job_title: title,
       status_id: statuses[columnName].id,
@@ -357,14 +355,36 @@ class Dashboard extends Component {
       application_date: generateCurrentDate(),
       source: "N/A"
     };
-
-    axiosCaptcha(url, config, "add_job").then(response => {
+    let jobCardFirstInstance = {
+      id: -1,
+      app_source: { value: "N/A" },
+      application_status: { id: statuses[columnName].id },
+      company_object: { company: name },
+      is_rejected: false,
+      position: { job_title: title }
+    };
+    let insertedItemColumn = this.state[columnName].slice();
+    insertedItemColumn.unshift(jobCardFirstInstance);
+    this.setState(() => ({
+      [columnName]: insertedItemColumn
+    }));
+    axiosCaptcha(JOB_APPS, config, "add_job").then(response => {
       if (response.statusText === "OK") {
-        let insertedItemColumn = this.state[columnName].slice();
-        insertedItemColumn.unshift(response.data.data);
-        this.setState(() => ({
-          [columnName]: insertedItemColumn
-        }));
+        if (response.data.success) {
+          let allList = this.state.allApplications.filter(
+            jobapp => jobapp.id != -1
+          );
+          let newDisplayingList = this.state.displayingList.filter(
+            jobapp => jobapp.id != -1
+          );
+          allList.unshift(response.data.data);
+          newDisplayingList.unshift(response.data.data);
+          this.sortJobApplications(newDisplayingList);
+          this.setState(() => ({
+            allApplications: allList,
+            displayingList: newDisplayingList
+          }));
+        }
       }
     });
   }
@@ -514,9 +534,9 @@ class Dashboard extends Component {
       jobapp_ids: requestList,
       status_id: status_id
     };
-    let { url, config } = updateJobStatusRequest;
+    let config = { method: "PUT" };
     config.body = body;
-    axiosCaptcha(url, config).then(response => {
+    axiosCaptcha(JOB_APPS, config).then(response => {
       if (response.data.success == true) {
         message.info("Its done!");
       } else {
@@ -554,9 +574,9 @@ class Dashboard extends Component {
       status_id: status_id,
       rejected: true
     };
-    let { url, config } = updateJobStatusRequest;
+    let config = { method: "PUT" };
     config.body = body;
-    axiosCaptcha(url, config).then(response => {
+    axiosCaptcha(JOB_APPS, config).then(response => {
       if (response.data.success == true) {
         message.info("Its done!");
       } else {
@@ -597,9 +617,9 @@ class Dashboard extends Component {
       const body = {
         jobapp_ids: requestList
       };
-      let { url, config } = deleteJobRequest;
+      let config = { method: "DELETE" };
       config.body = body;
-      axiosCaptcha(url, config).then(response => {
+      axiosCaptcha(JOB_APPS, config).then(response => {
         if (response.data.success == true) {
           message.info("Its done!");
         } else {
@@ -634,9 +654,9 @@ class Dashboard extends Component {
         jobapp_ids: requestList,
         rejected: true
       };
-      let { url, config } = updateJobStatusRequest;
+      let config = { method: "PUT" };
       config.body = body;
-      axiosCaptcha(url, config).then(response => {
+      axiosCaptcha(JOB_APPS, config).then(response => {
         if (response.data.success == true) {
           message.info("Its done!");
         } else {
@@ -677,9 +697,9 @@ class Dashboard extends Component {
         jobapp_ids: toApplyList,
         status_id: 2
       };
-      let { url, config } = updateJobStatusRequest;
+      let config = { method: "PUT" };
       config.body = body;
-      axiosCaptcha(url, config).then(response => {
+      axiosCaptcha(JOB_APPS, config).then(response => {
         if (response.data.success == true) {
           message.info("Its done!");
         } else {

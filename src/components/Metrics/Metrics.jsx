@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 
 import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { postUsersRequest } from "../../utils/api/requests.js";
+import { USERS } from "../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import Map from "./SubComponents/Map/Map.jsx";
 import IndividualMetrics from "./SubComponents/IndividualMetrics/IndividualMetrics.jsx";
@@ -17,25 +17,24 @@ class Metrics extends PureComponent {
 
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
-      await this.props.handleTokenExpiration("metrics getData");
-      axiosCaptcha(
-        postUsersRequest.url("verify_recaptcha"),
-        postUsersRequest.config,
-        "metrics"
-      ).then(response => {
-        if (response.statusText === "OK") {
-          if (response.data.success != true) {
-            this.setState({ isUpdating: false });
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(response, response.data.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
+      await this.props.handleTokenExpiration("metrics componentDidMount");
+      let config = { method: "POST" };
+      axiosCaptcha(USERS("verifyRecaptcha"), config, "metrics").then(
+        response => {
+          if (response.statusText === "OK") {
+            if (response.data.success != true) {
+              this.setState({ isUpdating: false });
+              IS_CONSOLE_LOG_OPEN &&
+                console.log(response, response.data.error_message);
+              this.props.alert(
+                5000,
+                "error",
+                "Error: " + response.data.error_message
+              );
+            }
           }
         }
-      });
+      );
     }
   }
 

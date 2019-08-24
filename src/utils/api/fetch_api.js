@@ -68,6 +68,11 @@ function removeAllCookies() {
 
 export async function axiosCaptcha(url, config, action) {
   let response = null;
+  config.mode = "cors";
+  config.cache = "no-cache";
+  config.headers = {
+    "Content-Type": "application/json; charset=utf-8"
+  };
   if (url.substring(0, apiRoot.length) === apiRoot) {
     config.headers.Authorization = getCookie("jobhax_access_token");
   }
@@ -76,11 +81,12 @@ export async function axiosCaptcha(url, config, action) {
       console.log(error);
     });
     log(url, config, response);
-  } else if (config.method === "POST") {
+  } else {
     if (
       action != false &&
+      action != undefined &&
       grecaptcha != null &&
-      IS_RECAPTCHA_ENABLED === false
+      IS_RECAPTCHA_ENABLED === true
     ) {
       const recaptchaToken = await reCaptchaToken(action);
       if (config.body) {
@@ -90,7 +96,7 @@ export async function axiosCaptcha(url, config, action) {
         config["body"] = { recaptcha_token: recaptchaToken };
         config.body["action"] = action;
       }
-      if (url.split("api")[1] === "/users/verify_recaptcha") {
+      if (url.split("api")[1] === "/users/verifyRecaptcha/") {
         response = await axios({
           method: "POST",
           url: url,
@@ -102,9 +108,9 @@ export async function axiosCaptcha(url, config, action) {
         log(url, config, response);
       }
     }
-    if (url.split("api")[1] != "/users/verify_recaptcha") {
+    if (url.split("api")[1] != "/users/verifyRecaptcha/") {
       response = await axios({
-        method: "POST",
+        method: config.method,
         url: url,
         data:
           config.headers["Content-Type"] != "multipart/form-data"
