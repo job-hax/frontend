@@ -87,19 +87,22 @@ class BlogEditable extends React.Component {
   async postBlogData() {
     const { id, imageFromData, title, snippet, content, publish } = this.state;
     let config = id == null ? { method: "POST" } : { method: "PUT" };
-    config.body = {
-      header_image: imageFromData,
-      title: title,
-      snippet: snippet,
-      content: content,
-      publish: publish
-    };
+    imageFromData.append("title", title);
+    imageFromData.append("snippet", snippet);
+    imageFromData.append("content", content);
+    imageFromData.append("publish", publish);
     if (config.method == "PUT") {
-      config.body["id"] = id;
+      imageFromData.append("blog_id", id);
     }
-    response = await axiosCaptcha(BLOGS, config);
+    config.body = imageFromData;
+    config.headers = {};
+    config.headers["Content-Type"] = "multipart/form-data";
+    let response = await axiosCaptcha(BLOGS, config);
     if (response.statusText === "OK") {
       if (response.data.success === true) {
+        this.setState({
+          id: response.data.data.id
+        });
         IS_CONSOLE_LOG_OPEN && console.log("done!");
       }
     }
@@ -120,7 +123,7 @@ class BlogEditable extends React.Component {
 
   handlePhotoUpdate(file) {
     let bodyFormData = new FormData();
-    bodyFormData.append("photo", file);
+    bodyFormData.append("header_image", file);
     this.setState({ imageFromData: bodyFormData });
     getBase64(file, imageUrl =>
       this.setState({
