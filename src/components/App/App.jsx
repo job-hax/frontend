@@ -8,7 +8,6 @@ import Header from "../Partials/Header/Header.jsx";
 import Blog from "../Blog/Blog.jsx";
 import Dashboard from "../Dashboard/Dashboard.jsx";
 import Metrics from "../Metrics/Metrics.jsx";
-import MetricsGlobal from "../MetricsGlobal/MetricsGlobal.jsx";
 import Companies from "../Companies/Companies.jsx";
 import Home from "../StaticPages/Home/Home.jsx";
 import AboutUs from "../StaticPages/AboutUs/AboutUs.jsx";
@@ -126,7 +125,6 @@ class App extends Component {
       this.state.isUserLoggedIn === true
     ) {
       this.setState({
-        active: true,
         isInitialRequest: false
       });
       axiosCaptcha(getPollRequest.url, getPollRequest.config).then(response => {
@@ -140,35 +138,34 @@ class App extends Component {
           );
         }
       });
-      axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
-        response => {
-          IS_CONSOLE_LOG_OPEN && console.log("photo first");
-          if (response.statusText === "OK") {
-            if (response.data.success == true) {
-              this.props.cookies.set(
-                "user_type",
-                response.data.data.user_type,
-                { path: "/" }
-              );
-              let profilePhotoUrl = "";
-              if (response.data.data.profile_photo_custom == null) {
-                profilePhotoUrl = response.data.data.profile_photo_social;
-              } else {
-                profilePhotoUrl =
-                  apiRoot + response.data.data.profile_photo_custom;
-              }
-              this.setState(
-                {
-                  profilePhotoUrl: profilePhotoUrl,
-                  user: response.data.data.user
-                },
-                IS_CONSOLE_LOG_OPEN &&
-                  console.log("profilePhotoUrl", profilePhotoUrl)
-              );
+      axiosCaptcha(
+        getProfileRequest.url + "?basic=true/",
+        getProfileRequest.config
+      ).then(response => {
+        IS_CONSOLE_LOG_OPEN && console.log("photo first");
+        if (response.statusText === "OK") {
+          if (response.data.success == true) {
+            this.props.cookies.set("user_type", response.data.data.user_type, {
+              path: "/"
+            });
+            let profilePhotoUrl = "";
+            if (response.data.data.profile_photo.substring(0, 4) == "http") {
+              profilePhotoUrl = response.data.data.profile_photo;
+            } else {
+              profilePhotoUrl = apiRoot + response.data.data.profile_photo;
             }
+            this.setState(
+              {
+                active: true,
+                profilePhotoUrl: profilePhotoUrl,
+                user: response.data.data
+              },
+              IS_CONSOLE_LOG_OPEN &&
+                console.log("profilePhotoUrl", profilePhotoUrl)
+            );
           }
         }
-      );
+      });
       this.setState({
         isAuthenticationChecking: false
       });
@@ -687,11 +684,6 @@ class App extends Component {
             <Route
               exact
               path="/metrics"
-              render={() => <Redirect to="/signin" />}
-            />
-            <Route
-              exact
-              path="/metricsGlobal"
               render={() => <Redirect to="/signin" />}
             />
             <Route

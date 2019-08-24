@@ -55,7 +55,7 @@ class BlogEditable extends React.Component {
       view_count: this.props.blog.view_count,
       voted: this.props.blog.voted,
       snippet: this.props.blog.snippet,
-      publisher: this.props.publisher,
+      publisher: this.props.blog.publisher_profile,
       isEditingTitle: true,
       isEditingSnippet: true,
       isEditingContent: false,
@@ -143,7 +143,13 @@ class BlogEditable extends React.Component {
         <div className="blog-info">
           <div>
             {isEditingTitle ? (
-              <div style={{ width: 688, overflow: "hidden" }}>
+              <div
+                style={{
+                  width: 668,
+                  overflow: "hidden",
+                  borderBottomRightRadius: 36
+                }}
+              >
                 <TextArea
                   placeholder="Add title..."
                   autosize={{ minRows: 1, maxRows: 2 }}
@@ -151,7 +157,7 @@ class BlogEditable extends React.Component {
                     border: "none",
                     boxShadow: "none",
                     padding: 0,
-                    minWidth: 704
+                    minWidth: 668
                   }}
                   className="title"
                   id="title"
@@ -165,15 +171,21 @@ class BlogEditable extends React.Component {
           </div>
           <div className="snippet">
             {isEditingSnippet ? (
-              <div style={{ width: 688, overflow: "hidden" }}>
+              <div
+                style={{
+                  width: 668,
+                  overflow: "hidden",
+                  borderBottomRightRadius: 60
+                }}
+              >
                 <TextArea
                   placeholder="Add snippet..."
-                  autosize={{ minRows: 1, maxRows: 4 }}
+                  autosize={{ minRows: 2, maxRows: 4 }}
                   style={{
                     border: "none",
                     boxShadow: "none",
                     padding: 0,
-                    minWidth: 704
+                    minWidth: 668
                   }}
                   className="snippet"
                   id="snippet"
@@ -298,9 +310,9 @@ class BlogEditable extends React.Component {
                 </div>
                 <Editor
                   editorState={editorState}
-                  toolbarClassName="demo-toolbar"
+                  toolbarClassName="toolbar"
                   wrapperClassName="demo-wrapper"
-                  editorClassName="demo-ediitor"
+                  editorClassName="demo-editor editor"
                   onEditorStateChange={this.onEditorStateChange}
                 />
               </div>
@@ -310,9 +322,9 @@ class BlogEditable extends React.Component {
                 onClick={() => this.setState({ isEditingContent: true })}
               >
                 {content == "" ? (
-                  <div>Add content...</div>
+                  <div style={{ minHeight: 440 }}>Add content...</div>
                 ) : content.length == 8 ? (
-                  <div>Add content...</div>
+                  <div style={{ minHeight: 440 }}>Add content...</div>
                 ) : (
                   parse(`${content}`)
                 )}
@@ -370,7 +382,7 @@ class BlogEditable extends React.Component {
   }
 
   render() {
-    console.log(this.state.header_image);
+    console.log("propss", this.props);
     history.pushState(null, null, location.href);
     window.onpopstate = function() {
       window.location.assign("blogs");
