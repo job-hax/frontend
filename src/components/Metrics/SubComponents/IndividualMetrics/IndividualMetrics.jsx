@@ -29,7 +29,7 @@ class IndividualMetrics extends React.Component {
     ) {
       this.setState({ isInitialRequest: true });
       let config = { method: "GET" };
-      axiosCaptcha(METRICS("personal/generic"), config).then(response => {
+      axiosCaptcha(METRICS("personal/generic/"), config).then(response => {
         if (response.statusText === "OK") {
           if (response.data.success) {
             this.data = response.data.data;
@@ -39,7 +39,7 @@ class IndividualMetrics extends React.Component {
           }
         }
       });
-      axiosCaptcha(METRICS("personal/detailed"), config).then(response => {
+      axiosCaptcha(METRICS("personal/detailed/"), config).then(response => {
         if (response.statusText === "OK") {
           if (response.data.success) {
             this.data = response.data.data;

@@ -29,7 +29,10 @@ class UniversityMetrics extends React.Component {
     ) {
       this.setState({ isInitialRequest: true });
       let config = { method: "GET" };
-      axiosCaptcha(METRICS("aggregated/generic"), config).then(response => {
+      axiosCaptcha(
+        METRICS("aggregated/generic/?public=" + this.props.isPublic),
+        config
+      ).then(response => {
         if (response.statusText === "OK") {
           if (response.data.success) {
             this.data = response.data.data;
@@ -39,7 +42,10 @@ class UniversityMetrics extends React.Component {
           }
         }
       });
-      axiosCaptcha(METRICS("aggregated/detailed"), config).then(response => {
+      axiosCaptcha(
+        METRICS("aggregated/detailed/?public=" + this.props.isPublic),
+        config
+      ).then(response => {
         if (response.statusText === "OK") {
           if (response.data.success) {
             this.data = response.data.data;
