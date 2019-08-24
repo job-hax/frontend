@@ -57,21 +57,38 @@ class Metrics extends PureComponent {
             <div className="metric-big-group">
               <IndividualMetrics cookie={this.props.cookie} />
             </div>
+            {this.props.cookie("get", "user_type") > 1 && (
+              <div className="metric-big-group">
+                <div className="university-metrics-header-container">
+                  <div className="header-line" />
+                  <div className="university-metrics-header">
+                    University Job Metrics
+                  </div>
+                  <div className="header-line" />
+                </div>
+                <div>
+                  <UniversityMetrics
+                    cookie={this.props.cookie}
+                    isPublic={false}
+                  />
+                </div>
+              </div>
+            )}
             <div className="metric-big-group">
               <div className="university-metrics-header-container">
                 <div className="header-line" />
                 <div className="university-metrics-header">
-                  University Job Metrics
+                  Jobhax Aggregated Metrics
                 </div>
                 <div className="header-line" />
               </div>
               <div>
-                <UniversityMetrics cookie={this.props.cookie} />
+                <UniversityMetrics cookie={this.props.cookie} isPublic={true} />
               </div>
             </div>
           </div>
         </div>
-        <div>
+        <div style={{ marginTop: 80 }}>
           <Footer />
         </div>
       </div>

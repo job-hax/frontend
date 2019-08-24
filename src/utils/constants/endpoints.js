@@ -19,7 +19,7 @@ export const GET_NEW_JOBAPPS = timestamp =>
 export const NOTES = jobappId => `${apiRoot}/api/jobapps/${jobappId}/notes/`;
 
 //METRICS REQUESTS//
-export const METRICS = type => `${apiRoot}/api/metrics/${type}/`;
+export const METRICS = type => `${apiRoot}/api/metrics/${type}`;
 
 //COMPANIES REQUESTS//
 export const COMPANIES = `${apiRoot}/api/companies/`;
