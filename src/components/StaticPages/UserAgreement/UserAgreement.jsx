@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import parse from "html-react-parser";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
-import { getAgreementsRequest } from "../../../utils/api/requests.js";
+import { AGREEMENTS } from "../../../utils/constants/endpoints.js";
 
 import "./style.scss";
 
@@ -18,8 +18,8 @@ class UserAgreement extends Component {
   }
 
   componentDidMount() {
-    const { url, config } = getAgreementsRequest;
-    axiosCaptcha(url, config).then(response => {
+    let config = { method: "GET" };
+    axiosCaptcha(AGREEMENTS, config).then(response => {
       if (response.statusText === "OK") {
         this.setState({ user_agreement: response.data.data.user_agreement });
       }

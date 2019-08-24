@@ -19,14 +19,12 @@ import {
   jobHaxClientId,
   jobHaxClientSecret
 } from "../../../config/config.js";
-import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
-  registerUserRequest,
-  authenticateRequest,
-  updateProfilePhotoRequest,
-  updateProfileRequest,
-  getAutoCompleteRequest
-} from "../../../utils/api/requests.js";
+  apiRoot,
+  USERS,
+  AUTOCOMPLETE
+} from "../../../utils/constants/endpoints.js";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   IS_CONSOLE_LOG_OPEN,
   USER_TYPES
@@ -34,7 +32,6 @@ import {
 import Footer from "../../Partials/Footer/Footer.jsx";
 
 import "./style.scss";
-import { apiRoot } from "../../../utils/constants/endpoints.js";
 
 class SignUpPage extends Component {
   constructor(props) {
@@ -194,30 +191,35 @@ class SignUpPage extends Component {
               const googleAccessToken = this.googleAuth.currentUser
                 .get()
                 .getAuthResponse().access_token;
-              const { url, config } = authenticateRequest;
+              let config = { method: "POST" };
+              config.body = {
+                client_id: jobHaxClientId,
+                client_secret: jobHaxClientSecret,
+                provider: "google-oauth2"
+              };
               config.body.token = googleAccessToken;
-              axiosCaptcha(url, config, "signin").then(response => {
-                if (response.statusText === "OK") {
-                  if (response.data.success == true) {
-                    this.setCookies(response, googleAccessTokenExpiresOn)
+              axiosCaptcha(USERS("authSocialUser"), config, "signin")
+                .then(response => {
+                  if (response.statusText === "OK") {
+                    if (response.data.success == true) {
+                      this.setCookies(response, googleAccessTokenExpiresOn);
+                    }
                   }
-                }
-                return response
-              }).then( response => {
+                  return response;
+                })
+                .then(response => {
                   if (response.statusText === "OK") {
                     if (response.data.success == true) {
                       if (response.data.data.user_type === 0) {
-                      this.setState({ level: "intro" });
-                    } else {
-                      this.props.cookie("set", "remember_me", true, "/");
-                      this.props.setIsUserLoggedIn(true);
-                    }
-                    this.postGoogleProfilePhoto(photoUrl);
+                        this.setState({ level: "intro" });
+                      } else {
+                        this.props.cookie("set", "remember_me", true, "/");
+                        this.props.setIsUserLoggedIn(true);
+                      }
+                      this.postGoogleProfilePhoto(photoUrl);
                     }
                   }
-                }
-              );
-              ;
+                });
             }
           });
         });
@@ -227,11 +229,9 @@ class SignUpPage extends Component {
   postGoogleProfilePhoto(photoURL) {
     let bodyFormData = new FormData();
     bodyFormData.set("photo_url", photoURL);
-    updateProfilePhotoRequest.config.body = bodyFormData;
-    axiosCaptcha(
-      updateProfilePhotoRequest.url,
-      updateProfilePhotoRequest.config
-    ).then(response => {
+    let config = { method: "POST" };
+    config.body = bodyFormData;
+    axiosCaptcha(USERS("updateProfilePhoto"), config).then(response => {
       if (response.statusText === "OK") {
         IS_CONSOLE_LOG_OPEN && console.log(response);
       }
@@ -239,70 +239,70 @@ class SignUpPage extends Component {
   }
 
   handleFinish() {
-    updateProfileRequest.config.body = {};
+    let config = { method: "POST" };
+    config.body = {};
     if (this.state.first_name != "") {
-      updateProfileRequest.config.body.first_name = this.state.first_name.trim();
+      config.body.first_name = this.state.first_name.trim();
     }
     if (this.state.last_name != "") {
-      updateProfileRequest.config.body.last_name = this.state.last_name.trim();
+      config.body.last_name = this.state.last_name.trim();
     }
     if (this.state.country_id != null) {
-      updateProfileRequest.config.body.country_id = this.state.country_id;
+      config.body.country_id = this.state.country_id;
     }
     if (this.state.state_id != null) {
-      updateProfileRequest.config.body.state_id = this.state.state_id;
+      config.body.state_id = this.state.state_id;
     }
     if (this.state.user_type != null) {
-      updateProfileRequest.config.body.user_type = this.state.user_type;
+      config.body.user_type = this.state.user_type;
     }
     if (this.state.college_id != null) {
-      updateProfileRequest.config.body.college_id = this.state.college_id;
+      config.body.college_id = this.state.college_id;
     }
     if (this.state.major != "") {
-      updateProfileRequest.config.body.major = this.state.major.trim();
+      config.body.major = this.state.major.trim();
     }
     if (this.state.grad_year != null) {
-      updateProfileRequest.config.body.grad_year = this.state.grad_year;
+      config.body.grad_year = this.state.grad_year;
     }
     if (this.state.company != "") {
-      updateProfileRequest.config.body.company = this.state.company.trim();
+      config.body.company = this.state.company.trim();
     }
     if (this.state.job_title != "") {
-      updateProfileRequest.config.body.job_title = this.state.job_title.trim();
+      config.body.job_title = this.state.job_title.trim();
     }
-    axiosCaptcha(updateProfileRequest.url, updateProfileRequest.config).then(
-      response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            this.props.cookie(
-              "set",
-              "user_type",
-              response.data.data.user_type,
-              "/"
-            );
-            this.generateLevelFinal();
-            this.props.alert(
-              5000,
-              "success",
-              "Your account information has been saved successfully!"
-            );
-          } else {
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
-          }
+    axiosCaptcha(USERS("updateProfile"), config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          this.props.cookie(
+            "set",
+            "user_type",
+            response.data.data.user_type,
+            "/"
+          );
+          this.generateLevelFinal();
+          this.props.alert(
+            5000,
+            "success",
+            "Your account information has been saved successfully!"
+          );
         } else {
-          this.props.alert(5000, "error", "Something went wrong!");
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
         }
+      } else {
+        this.props.alert(5000, "error", "Something went wrong!");
       }
-    );
+    });
   }
 
   handleSignUpFormNext(event) {
     event.preventDefault();
-    registerUserRequest.config.body = {};
+    let config = { method: "POST" };
+    config.body = {};
     if (
       event.target[1].value.trim() === (null || "") ||
       event.target[2].value.trim() === (null || "") ||
@@ -312,17 +312,13 @@ class SignUpPage extends Component {
       this.props.alert(3000, "error", "You have to fill out all sign up form!");
     } else {
       if (this.state.isAgreementRead === true) {
-        registerUserRequest.config.body.username = event.target[1].value;
-        registerUserRequest.config.body.email = event.target[2].value;
-        registerUserRequest.config.body.password = event.target[3].value;
-        registerUserRequest.config.body.password2 = event.target[4].value;
-        registerUserRequest.config.body.client_id = jobHaxClientId;
-        registerUserRequest.config.body.client_secret = jobHaxClientSecret;
-        axiosCaptcha(
-          registerUserRequest.url,
-          registerUserRequest.config,
-          "signup"
-        ).then(response => {
+        config.body.username = event.target[1].value;
+        config.body.email = event.target[2].value;
+        config.body.password = event.target[3].value;
+        config.body.password2 = event.target[4].value;
+        config.body.client_id = jobHaxClientId;
+        config.body.client_secret = jobHaxClientSecret;
+        axiosCaptcha(USERS("register"), config, "signup").then(response => {
           if (response.statusText === "OK") {
             IS_CONSOLE_LOG_OPEN && console.log(response.data);
             if (response.data.success === true) {
@@ -1087,66 +1083,69 @@ class SignUpPage extends Component {
   }
 
   generateUrlForGetData(value, type) {
-    const { url } = getAutoCompleteRequest;
     if (type === "majors") {
       this.setState({ major: value });
-      let newUrl = url(type) + "?q=" + value;
+      let newUrl = AUTOCOMPLETE(type) + "?q=" + value;
       return newUrl;
     } else if (type === "positions") {
-      let newUrl = url(type) + "?q=" + value + "&count=5";
+      let newUrl = AUTOCOMPLETE(type) + "?q=" + value + "&count=5";
       this.setState({ job_title: value });
       return newUrl;
     } else if (type === "colleges") {
-      let newUrl = url(type) + "?q=" + value;
+      let newUrl = AUTOCOMPLETE(type) + "?q=" + value;
       this.setState({ college: value });
       return newUrl;
     } else if (type === "countries") {
-      let newUrl = url(type);
+      let newUrl = AUTOCOMPLETE(type);
       return newUrl;
     } else if (type === "stateOrProvince") {
-      let newUrl = url("countries/") + value + "/states/";
+      let newUrl = AUTOCOMPLETE("countries") + value + "/states/";
       return newUrl;
     }
   }
 
   async handleAutoCompleteSearch(value, type) {
-    const { config } = getAutoCompleteRequest;
+    let config = { method: "GET" };
     let newUrl = await this.generateUrlForGetData(value, type);
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log(response.data);
-        let bufferList = [];
-        if (type === "majors") {
-          response.data.data.forEach(element => bufferList.push(element.name));
-          this.setState({ majorAutoCompleteData: bufferList });
-        } else if (type === "positions") {
-          response.data.data.forEach(element =>
-            bufferList.push(element.job_title)
-          );
-          this.setState({ positionAutoCompleteData: bufferList });
-        } else if (type === "colleges") {
-          response.data.data.forEach(element =>
-            bufferList.push(`${element.alpha_two_code} - ${element.name}`)
-          );
-          this.setState({
-            collegeAutoCompleteData: bufferList
-          });
-          if (response.data.data.length > 0) {
-            let collegeList = response.data.data;
+        if (response.data.success) {
+          IS_CONSOLE_LOG_OPEN && console.log(response.data);
+          let bufferList = [];
+          if (type === "majors") {
+            response.data.data.forEach(element =>
+              bufferList.push(element.name)
+            );
+            this.setState({ majorAutoCompleteData: bufferList });
+          } else if (type === "positions") {
+            response.data.data.forEach(element =>
+              bufferList.push(element.job_title)
+            );
+            this.setState({ positionAutoCompleteData: bufferList });
+          } else if (type === "colleges") {
+            response.data.data.forEach(element =>
+              bufferList.push(`${element.alpha_two_code} - ${element.name}`)
+            );
             this.setState({
-              collegeList: collegeList,
-              college_id: collegeList[0].id
+              collegeAutoCompleteData: bufferList
             });
-            IS_CONSOLE_LOG_OPEN && console.log("colleges", collegeList);
+            if (response.data.data.length > 0) {
+              let collegeList = response.data.data;
+              this.setState({
+                collegeList: collegeList,
+                college_id: collegeList[0].id
+              });
+              IS_CONSOLE_LOG_OPEN && console.log("colleges", collegeList);
+            }
+          } else if (type === "countries") {
+            let countriesList = response.data.data;
+            this.setState({ countryList: countriesList });
+            IS_CONSOLE_LOG_OPEN && console.log("countriesList", countriesList);
+          } else if (type === "stateOrProvince") {
+            let statesList = response.data.data;
+            this.setState({ stateOrProvinceList: statesList });
+            IS_CONSOLE_LOG_OPEN && console.log("statesList", statesList);
           }
-        } else if (type === "countries") {
-          let countriesList = response.data.data;
-          this.setState({ countryList: countriesList });
-          IS_CONSOLE_LOG_OPEN && console.log("countriesList", countriesList);
-        } else if (type === "stateOrProvince") {
-          let statesList = response.data.data;
-          this.setState({ stateOrProvinceList: statesList });
-          IS_CONSOLE_LOG_OPEN && console.log("statesList", statesList);
         }
       }
     });

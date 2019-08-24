@@ -4,14 +4,11 @@ import classNames from "classnames";
 import Reviews from "../Reviews/Reviews.jsx";
 import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import {
-  getCompaniesRequest,
-  getReviewsRequest
-} from "../../../utils/api/requests.js";
+import { COMPANIES, REVIEWS } from "../../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
+import CompanyStats from "../../Partials/CompanyStats/CompanyStats.jsx";
 
 import "./style.scss";
-import CompanyStats from "../../Partials/CompanyStats/CompanyStats.jsx";
 
 class CompanyCards extends React.Component {
   constructor(props) {
@@ -35,37 +32,38 @@ class CompanyCards extends React.Component {
 
   async handleSeeReviews() {
     await this.props.handleTokenExpiration("companyCards handleSeeReviews");
+    let companiesConfig = { method: "GET" };
     let newPositionUrl =
-      getCompaniesRequest.url +
-      this.props.company.id +
-      "/positions/?hasReview=true";
-    axiosCaptcha(newPositionUrl, getCompaniesRequest.config).then(response => {
+      COMPANIES + this.props.company.id + "/positions/?hasReview=true";
+    axiosCaptcha(newPositionUrl, companiesConfig).then(response => {
       if (response.statusText === "OK") {
-        this.setState({
-          positionsList: response.data.data
-        });
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "company positions response.data data",
-            response.data.data
-          );
+        if (response.data.success) {
+          this.setState({
+            positionsList: response.data.data
+          });
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "company positions response.data data",
+              response.data.data
+            );
+        }
       }
     });
+    let config = { method: "GET" };
     let newReviewsUrl =
-      getReviewsRequest.url +
-      "?company_id=" +
-      this.props.company.id +
-      "&all_reviews=true";
-    axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
+      REVIEWS + "?company_id=" + this.props.company.id + "&all_reviews=true";
+    axiosCaptcha(newReviewsUrl, config).then(response => {
       if (response.statusText === "OK") {
-        this.setState({
-          reviewsList: response.data.data
-        });
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "company get all reviews response.data data",
-            response.data.data
-          );
+        if (response.data.success) {
+          this.setState({
+            reviewsList: response.data.data
+          });
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "company get all reviews response.data data",
+              response.data.data
+            );
+        }
       }
     });
 

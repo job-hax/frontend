@@ -1,10 +1,10 @@
 import React from "react";
 
 import { IS_CONSOLE_LOG_OPEN } from "../../../../../../../utils/constants/constants.js";
-import { getReviewsRequest } from "../../../../../../../utils/api/requests.js";
 import Reviews from "../../../../../../Companies/Reviews/Reviews.jsx";
 import ReviewInput from "./ReviewInput/ReviewInput.jsx";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api.js";
+import { REVIEWS } from "../../../../../../../utils/constants/endpoints.js";
 
 class PositonReviews extends React.Component {
   constructor(props) {
@@ -32,11 +32,10 @@ class PositonReviews extends React.Component {
     this.getPositionsReviews();
     if (this.props.card.company_object.review_id) {
       //await this.props.handleTokenExpiration("cardModal componentDidMount"); //I am not checking if token expired here because getNotes from Notes.jsx is already checking right before this one is executed!!!
+      let config = { method: "GET" };
       let newReviewsUrl =
-        getReviewsRequest.url +
-        "?review_id=" +
-        this.props.card.company_object.review_id;
-      axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
+        REVIEWS + "?review_id=" + this.props.card.company_object.review_id;
+      axiosCaptcha(newReviewsUrl, config).then(response => {
         if (response.statusText === "OK") {
           this.setState({ review: response.data.data });
           IS_CONSOLE_LOG_OPEN &&
@@ -63,24 +62,22 @@ class PositonReviews extends React.Component {
   }
 
   getPositionsReviews() {
+    let config = { method: "GET" };
     let reviewsUrl =
-      getReviewsRequest.url +
+      REVIEWS +
       "?company_id=" +
       this.props.card.company_object.id +
       "&position_id=" +
       this.props.card.position.id +
       "&all_reviews=true";
-    axiosCaptcha(reviewsUrl, getReviewsRequest.config).then(response => {
+    axiosCaptcha(reviewsUrl, config).then(response => {
       if (response.statusText === "OK") {
-        this.setState({
-          reviewsList: response.data.data,
-          isReviewsDisplaying: true
-        });
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "position reviews response.data data",
-            response.data.data
-          );
+        if (response.data.success) {
+          this.setState({
+            reviewsList: response.data.data,
+            isReviewsDisplaying: true
+          });
+        }
       }
     });
   }

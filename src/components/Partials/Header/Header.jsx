@@ -3,7 +3,7 @@ import { Link, Redirect } from "react-router-dom";
 import { Menu, Icon } from "antd";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { syncUserEmailsRequest } from "../../../utils/api/requests.js";
+import { USERS } from "../../../utils/constants/endpoints";
 import NotificationsBox from "../NotificationsBox/NotificationsBox.jsx";
 import "./style.scss";
 
@@ -66,11 +66,13 @@ class Header extends Component {
       );
     } else {
       this.props.alert(3000, "info", "Syncing with your email...");
-      const { url, config } = syncUserEmailsRequest;
+      let config = { method: "GET" };
       await this.props.handleTokenExpiration("header handleSyncUserEmail");
-      axiosCaptcha(url, config).then(response => {
+      axiosCaptcha(USERS("syncUserEmails"), config).then(response => {
         if (response.statusText === "OK") {
-          this.props.passStatesFromHeader(new Date().getTime());
+          if (response.data.success) {
+            this.props.passStatesFromHeader(new Date().getTime());
+          }
         }
       });
     }

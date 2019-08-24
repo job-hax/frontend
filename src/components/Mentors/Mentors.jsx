@@ -3,7 +3,7 @@ import { Button } from "antd";
 
 import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { postUsersRequest } from "../../utils/api/requests.js";
+import { USERS } from "../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import MentorCategory from "./SubComponents/MentorCategory/MentorCategory.jsx";
 
@@ -310,11 +310,8 @@ class Mentors extends PureComponent {
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       await this.props.handleTokenExpiration("mentors getData");
-      axiosCaptcha(
-        postUsersRequest.url("verify_recaptcha"),
-        postUsersRequest.config,
-        "mentors"
-      ).then(response => {
+      let config = { method: "POST" };
+      axiosCaptcha(USERS("verifyRecaptcha"), config, false).then(response => {
         if (response.statusText === "OK") {
           if (response.data.success != true) {
             this.setState({ isUpdating: false });

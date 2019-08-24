@@ -4,10 +4,7 @@ import { Pagination, Input, Switch } from "antd";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import CompanyCards from "./CompanyCards/CompanyCards.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import {
-  getCompaniesRequest,
-  postUsersRequest
-} from "../../utils/api/requests.js";
+import { USERS, COMPANIES } from "../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import Footer from "../Partials/Footer/Footer.jsx";
 
@@ -41,24 +38,23 @@ class Companies extends React.Component {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       this.setState({ isInitialRequest: true });
       await this.getData("initialRequest");
-      axiosCaptcha(
-        postUsersRequest.url("verify_recaptcha"),
-        postUsersRequest.config,
-        "companies"
-      ).then(response => {
-        if (response.statusText === "OK") {
-          if (response.data.success != true) {
-            this.setState({ isUpdating: false });
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(response, response.data.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
+      let config = { method: "POST" };
+      axiosCaptcha(USERS("verifyRecaptcha"), config, "companies").then(
+        response => {
+          if (response.statusText === "OK") {
+            if (response.data.success != true) {
+              this.setState({ isUpdating: false });
+              IS_CONSOLE_LOG_OPEN &&
+                console.log(response, response.data.error_message);
+              this.props.alert(
+                5000,
+                "error",
+                "Error: " + response.data.error_message
+              );
+            }
           }
         }
-      });
+      );
     }
   }
 
@@ -95,9 +91,13 @@ class Companies extends React.Component {
   async getData(requestType) {
     this.setState({ isWaitingResponse: true });
     const parameters = this.urlBuilder(["q", "hasReview", "mine"]);
-    const { url, config } = getCompaniesRequest;
+    let config = { method: "GET" };
     let newUrl =
-      url + "?page=" + this.state.pageNo + "&page_size=" + this.state.pageSize;
+      COMPANIES +
+      "?page=" +
+      this.state.pageNo +
+      "&page_size=" +
+      this.state.pageSize;
     parameters.forEach(
       parameter =>
         (newUrl = newUrl + "&" + parameter.name + "=" + parameter.value)

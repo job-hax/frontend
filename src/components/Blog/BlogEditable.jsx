@@ -7,17 +7,14 @@ import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-import "./style.scss";
 import {
   makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN
 } from "../../utils/constants/constants";
 import { apiRoot } from "../../utils/constants/endpoints";
-import {
-  postBlogRequest,
-  updateProfilePhotoRequest
-} from "../../utils/api/requests";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
+
+import "./style.scss";
 
 const { TextArea } = Input;
 

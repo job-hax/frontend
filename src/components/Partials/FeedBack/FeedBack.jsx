@@ -1,9 +1,9 @@
 import React from "react";
 import { Rate, Modal } from "antd";
 
-import { feedbackRequest } from "../../../utils/api/requests.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
+import { USERS } from "../../../utils/constants/endpoints.js";
 
 import "./style.scss";
 import "../../../assets/libraryScss/antd-scss/newantd.scss";
@@ -44,13 +44,9 @@ class FeedBack extends React.Component {
     if (feedback.trim() != (null || "")) {
       this.body["text"] = this.state.textValue.trim();
     }
-    feedbackRequest.config.body = this.body;
-    IS_CONSOLE_LOG_OPEN && console.log(feedbackRequest.config.body);
-    const response = await axiosCaptcha(
-      feedbackRequest.url,
-      feedbackRequest.config,
-      "feedback"
-    );
+    let config = { method: "POST" };
+    config.body = this.body;
+    const response = await axiosCaptcha(USERS("feedback"), config, "feedback");
     if (response.statusText === "OK") {
       if (response.data.success === true) {
         this.setState({ textValue: "" });

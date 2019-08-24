@@ -4,9 +4,9 @@ import { Modal } from "antd";
 import ContactCard from "../../../../../../Partials/ContactCards/ContactCard.jsx";
 import ContactCardOnEdit from "../../../../../../Partials/ContactCards/ContactCardOnEdit.jsx";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api";
-import { getContactsRequest } from "../../../../../../../utils/api/requests.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../../../../../utils/constants/constants.js";
 import AlumniCard from "../../../../../../Partials/AlumniCards/AlumniCard.jsx";
+import { CONTACTS } from "../../../../../../../utils/constants/endpoints.js";
 
 class Contacts extends React.Component {
   constructor(props) {
@@ -31,16 +31,17 @@ class Contacts extends React.Component {
   async getContacts() {
     await this.props.handleTokenExpiration("contacts getContacts");
     const { card } = this.props;
-    let { url, config } = getContactsRequest;
-    url = url + "?jobapp_id=" + card.id;
-    axiosCaptcha(url, config).then(response => {
+    let config = { method: "GET" };
+    axiosCaptcha(CONTACTS(card.id), config).then(response => {
       if (response.statusText === "OK") {
-        this.contacts = response.data.data.contacts;
-        this.alumni = response.data.data.alumni;
-        this.setState({
-          contacts: this.contacts,
-          alumni: this.alumni
-        });
+        if (response.data.success == true) {
+          this.contacts = response.data.data.contacts;
+          this.alumni = response.data.data.alumni;
+          this.setState({
+            contacts: this.contacts,
+            alumni: this.alumni
+          });
+        }
       }
     });
   }

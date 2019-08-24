@@ -2,10 +2,10 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { getUsersRequest } from "../../../utils/api/requests.js";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import ChangePassword from "../ChangePassword/ChangePassword.jsx";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
+import { USERS } from "../../../utils/constants/endpoints";
 
 class Action extends React.Component {
   constructor(props) {
@@ -32,10 +32,8 @@ class Action extends React.Component {
         this.setState({ code: code });
         IS_CONSOLE_LOG_OPEN &&
           console.log("action : ", action, "\ncode : ", code);
-        axiosCaptcha(
-          getUsersRequest.url(action + "?code=" + code),
-          getUsersRequest.config
-        ).then(response => {
+        let config = { method: "GET" };
+        axiosCaptcha(USERS(action + "?code=" + code), config).then(response => {
           if (response.statusText === "OK") {
             if (response.data.success === true) {
               if (action === "activate") {
