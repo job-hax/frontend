@@ -21,10 +21,7 @@ class BlogDetails extends React.Component {
       isDetailsShowing: false,
       upVote: null,
       downVote: null,
-      upVote: null,
-      downVote: null,
-      voted: null,
-      snippet: " "
+      voted: null
     };
 
     this.postBlogStats = this.postBlogStats.bind(this);
@@ -34,60 +31,62 @@ class BlogDetails extends React.Component {
     this.setState({
       viewCount: this.props.blog.view_count + 1,
       upVote: this.props.blog.upvote,
-      downVote: this.props.blog.downvote
+      downVote: this.props.blog.downvote,
+      voted: this.props.blog.voted
     });
     this.postBlogStats("view");
   }
 
   async postBlogStats(type) {
-    if (type == "upvote" && this.state.upVoted) {
-      return;
-    } else if (type == "downvote" && this.state.downVoted) {
-      return;
+    let vote = this.state.voted;
+    let value = type == "upvote" ? 1 : -1;
+    let downvote = this.state.downVote;
+    let upvote = this.state.upVote;
+    console.log("vote", vote, "value", value);
+    if (vote == value) {
+      vote = 0;
     } else {
-      let newUrl = postBlogRequest.url(this.props.blog.id) + "/" + type + "/";
-      await this.props.handleTokenExpiration("blogCard postBlogStats");
-      axiosCaptcha(newUrl, postBlogRequest.config, "blog_stats").then(
-        response => {
-          if (response.statusText === "OK") {
-            if (response.data.success === true) {
-              IS_CONSOLE_LOG_OPEN && console.log(response.data);
-              if (type === "upvote") {
-                this.setState({
-                  upVoted: true,
-                  downVoted: false,
-                  upVote: response.data.data.upvote,
-                  downVote: response.data.data.downvote
-                });
-              }
-              if (type === "downvote") {
-                this.setState({
-                  upVoted: false,
-                  downVoted: true,
-                  upVote: response.data.data.upvote,
-                  downVote: response.data.data.downvote
-                });
-              }
-              if (type === "view") {
-                this.setState({
-                  snippet: response.data.data.snippet
-                });
-              }
-            } else {
-              IS_CONSOLE_LOG_OPEN &&
-                console.log(response, response.data.error_message);
-              this.props.alert(
-                5000,
-                "error",
-                "Error: " + response.data.error_message
-              );
-            }
-          } else {
-            this.props.alert(5000, "error", "Something went wrong!");
-          }
-        }
-      );
+      vote = value;
     }
+    downvote =
+      this.state.voted == -1
+        ? this.state.downVote + -1
+        : type == "downvote"
+        ? this.state.downVote + 1
+        : this.state.downVote;
+    upvote =
+      this.state.voted == 1
+        ? this.state.upVote + -1
+        : type == "upvote"
+        ? this.state.upVote + 1
+        : this.state.upVote;
+    let body = { action: vote };
+    let config = postBlogRequest.config;
+    if (type != "view") {
+      config.body = body;
+      this.setState({ voted: vote, downVote: downvote, upVote: upvote });
+    }
+    let requestType = type == "view" ? "view" : "vote";
+    let newUrl =
+      postBlogRequest.url(this.props.blog.id) + "/" + requestType + "/";
+    await this.props.handleTokenExpiration("blogCard postBlogStats");
+    axiosCaptcha(newUrl, config, "blog_stats").then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          IS_CONSOLE_LOG_OPEN && console.log(response.data);
+        } else {
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(response, response.data.error_message);
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
+      } else {
+        this.props.alert(5000, "error", "Something went wrong!");
+      }
+    });
   }
 
   generateBlogHeader() {
@@ -110,7 +109,7 @@ class BlogDetails extends React.Component {
         </div>
         <div className="blog-info">
           <div className="title">{blog.title}</div>
-          <div className="snippet">{this.state.snippet}</div>
+          <div className="snippet">{blog.snippet}</div>
           <div className="info-container">
             <div className="info">
               {longDate + " at " + time.split("at")[1]}
@@ -156,8 +155,8 @@ class BlogDetails extends React.Component {
 
   generateBlogBody() {
     const { blog } = this.props;
-    const upVoteType = this.state.upVoted ? "primary" : "";
-    const downVoteType = this.state.downVoted ? "primary" : "";
+    const upVoteType = this.state.voted == 1 ? "primary" : "";
+    const downVoteType = this.state.voted == -1 ? "primary" : "";
     return (
       <div className="blog-body">
         <div className="blog-data">
@@ -228,6 +227,18 @@ class BlogDetails extends React.Component {
     };
     return (
       <div className="blog-details">
+        {this.props.blog.mine == true && (
+          <div className="fixed-button">
+            <Button
+              type="primary"
+              shape="circle"
+              size="large"
+              onClick={() => this.props.setBlogEdit(this.props.blog)}
+            >
+              <Icon type="edit" />
+            </Button>
+          </div>
+        )}
         {this.generateBlogHeader()}
         {this.generateBlogBody()}
       </div>

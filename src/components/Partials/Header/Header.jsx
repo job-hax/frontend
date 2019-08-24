@@ -17,7 +17,12 @@ class Header extends Component {
         this.props.cookie("get", "user_type") != ("" || null)
           ? this.props.cookie("get", "user_type")
           : 0,
-      current: window.location.pathname,
+      current:
+        window.location.pathname != "/blogs"
+          ? window.location.pathname
+          : window.location.search != "?edit=true"
+          ? window.location.pathname
+          : window.location.pathname + window.location.search,
       request: false
     };
 
@@ -79,13 +84,19 @@ class Header extends Component {
       this.props.handleSignOut();
     } else if (page == "/events") {
       if (window.location.pathname.substring(0, 6) == "/event") {
-        window.location.assign("/events");
+        window.location = "/events";
+      } else {
+        this.setState({ current: page });
+      }
+    } else if (page == "/blogs?edit=true") {
+      if (window.location.pathname.substring(0, 5) == "/blog") {
+        window.location = "/blogs?edit=true";
       } else {
         this.setState({ current: page });
       }
     } else if (page == "/blogs") {
       if (window.location.pathname.substring(0, 5) == "/blog") {
-        window.location.assign("/blogs");
+        window.location = "/blogs";
       } else {
         this.setState({ current: page });
       }
@@ -121,7 +132,9 @@ class Header extends Component {
           <div className="jobhax-logo-container">
             <div
               className="jobhax-logo"
-              onClick={() => this.setState({ current: "/dashboard", request: true })}
+              onClick={() =>
+                this.setState({ current: "/dashboard", request: true })
+              }
             />
           </div>
         </div>
@@ -211,6 +224,7 @@ class Header extends Component {
               }
             >
               <Menu.Item key="/profile">Profile</Menu.Item>
+              <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
               <Menu.Item key="/logout">
                 <Icon type="logout" />
                 Logout

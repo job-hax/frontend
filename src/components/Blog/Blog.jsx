@@ -1,5 +1,6 @@
 import React from "react";
 import { Pagination, Icon, Affix, Button } from "antd";
+import { Redirect } from "react-router-dom";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
@@ -17,6 +18,7 @@ import BlogEditable from "./BlogEditable.jsx";
 class Blog extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       isWaitingResponse: false,
       isInitialRequest: "beforeRequest",
@@ -25,8 +27,33 @@ class Blog extends React.Component {
       pagination: {},
       pageNo: 1,
       pageSize: 10,
-      edit: false,
-      detail_blog_id: window.location.search.split("=")[1] || null,
+      edit:
+        window.location.search
+          .split("&")
+          .slice(-1)[0]
+          .split("=")[1] == "true"
+          ? true
+          : false,
+      editRequested: false,
+      edit_blog_id:
+        window.location.search
+          .split("&")
+          .slice(-1)[0]
+          .split("=")[1] != "true"
+          ? null
+          : window.location.search
+              .split("&")
+              .slice(-1)[0]
+              .split("=")[0] == "edit"
+          ? window.location.search.split("&")[0].split("=")[1]
+          : null,
+      detail_blog_id:
+        window.location.search
+          .split("&")
+          .slice(-1)[0]
+          .split("=")[1] != "true"
+          ? window.location.search.split("=")[1]
+          : null,
       detail_blog: {},
       user_type: this.props.cookie("get", "user_type"),
       editable_blog: {
@@ -40,25 +67,31 @@ class Blog extends React.Component {
         upvote: 0,
         view_count: 0,
         voted: 0,
-        snippet: ""
+        snippet: "",
+        publisher_profile: this.props.user
       }
     };
 
     this.getData = this.getData.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
     this.setBlogDetail = this.setBlogDetail.bind(this);
+    this.setBlogEdit = this.setBlogEdit.bind(this);
   }
 
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       this.setState({ isInitialRequest: true });
       if (this.state.detail_blog_id == null) {
-        await this.getData("initialRequest");
+        if (this.state.edit_blog_id == null) {
+          await this.getData("initialRequest");
+        } else {
+          await this.getData("editRequest");
+        }
       } else {
         await this.getData("detailedRequest");
       }
       axiosCaptcha(
-        postUsersRequest.url("verify_recaptcha"),
+        postUsersRequest.url("verifyRecaptcha/"),
         postUsersRequest.config,
         "blog"
       ).then(response => {
@@ -90,13 +123,15 @@ class Blog extends React.Component {
     this.setState({ isWaitingResponse: true });
     const { url, config } = getBlogsRequest;
     let newUrl =
-      this.state.detail_blog_id == null
+      this.state.detail_blog_id == null && this.state.edit_blog_id == null
         ? url +
           "?page=" +
           this.state.pageNo +
           "&page_size=" +
           this.state.pageSize
-        : url + this.state.detail_blog_id + "/";
+        : this.state.edit_blog_id == null
+        ? url + this.state.detail_blog_id + "/"
+        : url + this.state.edit_blog_id + "/";
     await this.props.handleTokenExpiration("blog getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
@@ -120,6 +155,16 @@ class Blog extends React.Component {
             isWaitingResponse: false,
             isInitialRequest: false
           });
+        } else if (requestType === "editRequest") {
+          if (response.data.data.mine) {
+            this.setState({
+              editable_blog: response.data.data
+            });
+          }
+          this.setState({
+            isWaitingResponse: false,
+            isInitialRequest: false
+          });
         }
         IS_CONSOLE_LOG_OPEN &&
           console.log(
@@ -138,6 +183,15 @@ class Blog extends React.Component {
       detail_blog: blog
     });
     this.getData("detailedRequest");
+  }
+
+  setBlogEdit(blog) {
+    this.setState({
+      edit: true,
+      editRequested: true,
+      edit_blog_id: blog.id,
+      editable_blog: blog
+    });
   }
 
   handlePageChange(page) {
@@ -236,6 +290,23 @@ class Blog extends React.Component {
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing blogs..." />;
+    else if (this.state.editRequested == true) {
+      return (
+        <Redirect
+          to={
+            "action?type=redirect&/blogs?id=" +
+            this.state.edit_blog_id +
+            "&edit=true"
+          }
+        />
+      );
+    } else if (
+      this.state.edit == true &&
+      (this.props.user.user_type != (3 || 4) &&
+        this.props.user.is_admin != true)
+    ) {
+      return <Redirect to={"action?type=redirect&/blogs"} />;
+    }
     return (
       <div>
         <div className="blog-page-container">
@@ -250,26 +321,14 @@ class Blog extends React.Component {
                 <BlogDetails
                   blog={this.state.detail_blog}
                   handleTokenExpiration={this.props.handleTokenExpiration}
+                  setBlogEdit={this.setBlogEdit}
                 />
-              )}
-              {this.state.user_type == 2 && (
-                <div className="fixed-button">
-                  <Button
-                    type="primary"
-                    shape="circle"
-                    size="large"
-                    onClick={() => this.setState({ edit: true })}
-                  >
-                    <Icon type="plus" />
-                  </Button>
-                </div>
               )}
             </div>
           ) : (
             <div>
               <BlogEditable
                 blog={this.state.editable_blog}
-                publisher={this.props.user}
                 handleTokenExpiration={this.props.handleTokenExpiration}
               />
             </div>
