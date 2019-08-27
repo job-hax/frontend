@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, Button, Affix, Input, Upload, message } from "antd";
+import { Icon, Button, Input, Upload, message, Checkbox } from "antd";
 import parse from "html-react-parser";
 import { EditorState, convertToRaw, ContentState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
@@ -43,12 +43,14 @@ class BlogEditable extends React.Component {
       isLinkDisplaying: false,
       content: this.props.blog.content,
       created_at: this.props.blog.created_at,
+      updated_at: this.props.blog.updated_at,
       downvote: this.props.blog.downvote,
       header_image: this.props.blog.header_image,
       id: this.props.blog.id || null,
-      is_published: this.props.blog.is_published,
+      is_publish: this.props.blog.is_publish,
       is_approved: this.props.blog.is_approved,
-      publish: false,
+      is_publish: this.props.blog.is_publish,
+      is_public: this.props.blog.is_public,
       title: this.props.blog.title,
       upvote: this.props.blog.upvote,
       view_count: this.props.blog.view_count,
@@ -62,13 +64,15 @@ class BlogEditable extends React.Component {
       downVoted: false,
       editorState: EditorState.createEmpty(),
       loading: false,
-      imageFromData: ""
+      fromData: new FormData()
     };
 
     this.toggleEditable = this.toggleEditable.bind(this);
     this.onEditorStateChange = this.onEditorStateChange.bind(this);
     this.handlePhotoUpdate = this.handlePhotoUpdate.bind(this);
+    this.saveBlogData = this.saveBlogData.bind(this);
     this.postBlogData = this.postBlogData.bind(this);
+    this.handlePublicCheckbox = this.handlePublicCheckbox.bind(this);
   }
 
   componentDidMount() {
@@ -85,24 +89,54 @@ class BlogEditable extends React.Component {
   }
 
   async postBlogData() {
-    const { id, imageFromData, title, snippet, content, publish } = this.state;
+    await this.setState({ is_publish: true });
+    this.saveBlogData();
+  }
+
+  async saveBlogData() {
+    const {
+      id,
+      fromData,
+      title,
+      snippet,
+      content,
+      is_publish,
+      is_public
+    } = this.state;
     let config = id == null ? { method: "POST" } : { method: "PUT" };
-    imageFromData.append("title", title);
-    imageFromData.append("snippet", snippet);
-    imageFromData.append("content", content);
-    imageFromData.append("publish", publish);
+    fromData.append("title", title);
+    fromData.append("snippet", snippet);
+    fromData.append("content", content);
+    fromData.append("is_publish", is_publish);
+    fromData.append("is_public", is_public);
     if (config.method == "PUT") {
-      imageFromData.append("blog_id", id);
+      fromData.append("blog_id", id);
     }
-    config.body = imageFromData;
+    config.body = fromData;
     config.headers = {};
     config.headers["Content-Type"] = "multipart/form-data";
     let response = await axiosCaptcha(BLOGS, config);
     if (response.statusText === "OK") {
       if (response.data.success === true) {
+        let update_date = new Date().toISOString();
         this.setState({
-          id: response.data.data.id
+          id: response.data.data.id,
+          updated_at: update_date,
+          is_publish: false
         });
+        !is_publish
+          ? this.props.alert(3000, "success", "Saved!")
+          : this.props.alert(
+              3000,
+              "success",
+              "Your blog has been sent for approval! Approval procedure may take several days!"
+            );
+        if (config.method == "POST") {
+          let create_date = new Date().toISOString();
+          this.setState({
+            created_at: create_date
+          });
+        }
         IS_CONSOLE_LOG_OPEN && console.log("done!");
       }
     }
@@ -114,21 +148,26 @@ class BlogEditable extends React.Component {
     });
   }
 
+  handlePublicCheckbox(e) {
+    this.setState({ is_public: !e.target.checked, is_publish: false });
+  }
+
   onChange(event) {
     event.persist();
     let type = event.target.id;
     let value = event.target.value;
-    this.setState({ [type]: value });
+    this.setState({ [type]: value, is_publish: false });
   }
 
   handlePhotoUpdate(file) {
     let bodyFormData = new FormData();
     bodyFormData.append("header_image", file);
-    this.setState({ imageFromData: bodyFormData });
+    this.setState({ fromData: bodyFormData });
     getBase64(file, imageUrl =>
       this.setState({
         header_image: imageUrl,
-        loading: false
+        loading: false,
+        is_publish: false
       })
     );
   }
@@ -137,7 +176,8 @@ class BlogEditable extends React.Component {
     let html = draftToHtml(convertToRaw(editorState.getCurrentContent()));
     this.setState({
       editorState: editorState,
-      content: html
+      content: html,
+      is_publish: false
     });
   }
 
@@ -407,21 +447,73 @@ class BlogEditable extends React.Component {
   }
 
   render() {
+    const {
+      content,
+      title,
+      snippet,
+      header_image,
+      updated_at,
+      is_public
+    } = this.state;
+    const { blog } = this.props;
+    const isAnytingEdited =
+      content != blog.content ||
+      title != blog.title ||
+      snippet != blog.snippet ||
+      header_image != blog.header_image ||
+      is_public != blog.is_public;
+    const isRequiredFieldsFilled = content && title && snippet && header_image;
     history.pushState(null, null, location.href);
     window.onpopstate = function() {
       window.location.assign("blogs");
     };
     return (
       <div className="blog-details">
-        <div className="fixed-button">
-          <Button
-            type="primary"
-            shape="circle"
-            size="large"
-            onClick={() => this.postBlogData()}
-          >
-            <Icon type="save" />
-          </Button>
+        <div className="fixed-button" style={{ boxShadow: "none" }}>
+          <div className="fixed-button" style={{ boxShadow: "none" }}>
+            {isAnytingEdited && (
+              <Button
+                type="primary"
+                shape="circle"
+                size="large"
+                onClick={() => this.saveBlogData()}
+              >
+                <Icon type="save" />
+              </Button>
+            )}
+
+            {isAnytingEdited && isRequiredFieldsFilled && (
+              <Button
+                type="primary"
+                style={{ margin: "0 0 0 8px" }}
+                onClick={() => this.postBlogData()}
+              >
+                Send for Approval
+              </Button>
+            )}
+          </div>
+          {isRequiredFieldsFilled && (
+            <div
+              className="fixed-button"
+              style={{ boxShadow: "none", margin: "48px 0 0 0" }}
+            >
+              <Checkbox
+                checked={!this.state.is_public}
+                onChange={e => this.handlePublicCheckbox(e)}
+              >
+                Share only with school
+              </Checkbox>
+            </div>
+          )}
+          {updated_at && (
+            <div
+              className="no-data"
+              style={{ boxShadow: "none", margin: "80px 8px 0 0" }}
+            >
+              {"last update " +
+                makeTimeBeautiful(this.state.updated_at, "dateandtime")}
+            </div>
+          )}
         </div>
         {this.generateBlogHeader()}
         {this.generateBlogBody()}

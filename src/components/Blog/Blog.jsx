@@ -61,13 +61,15 @@ class Blog extends React.Component {
         downvote: 0,
         header_image: "",
         id: null,
-        is_published: false,
+        is_publish: false,
+        is_public: false,
         title: "",
         upvote: 0,
         view_count: 0,
         voted: 0,
         snippet: "",
-        publisher_profile: this.props.user
+        publisher_profile: this.props.user,
+        updated_at: null
       }
     };
 
@@ -332,6 +334,7 @@ class Blog extends React.Component {
               <BlogEditable
                 blog={this.state.editable_blog}
                 handleTokenExpiration={this.props.handleTokenExpiration}
+                alert={this.props.alert}
               />
             </div>
           )}
