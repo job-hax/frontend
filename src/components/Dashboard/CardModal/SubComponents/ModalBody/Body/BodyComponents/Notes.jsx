@@ -4,15 +4,10 @@ import { Input } from "antd";
 
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api";
 import {
-  updateNoteRequest,
-  addNoteRequest,
-  deleteNoteRequest,
-  getNotesRequest
-} from "../../../../../../../utils/api/requests.js";
-import {
   IS_CONSOLE_LOG_OPEN,
   makeTimeBeautiful
 } from "../../../../../../../utils/constants/constants.js";
+import { NOTES } from "../../../../../../../utils/constants/endpoints";
 
 const { TextArea } = Input;
 
@@ -48,14 +43,15 @@ class Notes extends React.Component {
   async getNotes() {
     await this.props.handleTokenExpiration("notes getNotes");
     const { card } = this.props;
-    let { url, config } = getNotesRequest;
-    url = url + "?jopapp_id=" + card.id;
-    axiosCaptcha(url, config).then(response => {
+    let config = { method: "GET" };
+    axiosCaptcha(NOTES(card.id), config).then(response => {
       if (response.statusText === "OK") {
-        this.notes = response.data.data;
-        this.setState({
-          notes: this.notes
-        });
+        if (response.data.success) {
+          this.notes = response.data.data;
+          this.setState({
+            notes: this.notes
+          });
+        }
       }
     });
   }
@@ -131,21 +127,22 @@ class Notes extends React.Component {
     const reqBody =
       this.currentNote == null
         ? {
-            jobapp_id: card.id,
             description: addNoteForm
           }
         : {
             jobapp_note_id: this.currentNote.id,
             description: updateNoteForm
           };
-    let { url, config } =
-      this.currentNote == null ? addNoteRequest : updateNoteRequest;
+    let config =
+      this.currentNote == null ? { method: "POST" } : { method: "PUT" };
     config.body = reqBody;
-    axiosCaptcha(url, config, "jobapp_note")
+    axiosCaptcha(NOTES(card.id), config, "jobapp_note")
       .catch(error => console.error(error))
       .then(response => {
         if (response.statusText === "OK") {
-          this.saveNotes(response.data.data, reqBody, this.currentNote);
+          if (response.data.success) {
+            this.saveNotes(response.data.data, reqBody, this.currentNote);
+          }
         }
       });
   }
@@ -155,11 +152,15 @@ class Notes extends React.Component {
     const body = {
       jobapp_note_id: id
     };
-    let { url, config } = deleteNoteRequest;
+    let newNotes = this.state.notes.filter(note => note.id != id);
+    this.setState({ notes: newNotes });
+    let config = { method: "DELETE" };
     config.body = body;
-    axiosCaptcha(url, config).then(response => {
+    axiosCaptcha(NOTES(this.props.card.id), config).then(response => {
       if (response.statusText === "OK") {
-        this.getNotes();
+        if (!response.data.success) {
+          this.getNotes();
+        }
       }
     });
   }

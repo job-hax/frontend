@@ -2,7 +2,6 @@ import React from "react";
 
 import MentorGroup from "../Containers/MentorGroupContainer.jsx";
 import { axiosCaptcha } from "../../../../utils/api/fetch_api.js";
-import { getMetrics } from "../../../../utils/api/requests.js";
 import Spinner from "../../../Partials/Spinner/Spinner.jsx";
 
 class MentorCategory extends React.Component {

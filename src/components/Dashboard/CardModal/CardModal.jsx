@@ -4,10 +4,7 @@ import ReactDOM from "react-dom";
 import ModalHeader from "./SubComponents/ModalHeader/ModalHeader.jsx";
 import ModalBody from "./SubComponents/ModalBody/ModalBody.jsx";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import {
-  getReviewsRequest,
-  postUsersRequest
-} from "../../../utils/api/requests.js";
+import { USERS } from "../../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
@@ -26,24 +23,23 @@ class CardModal extends PureComponent {
   }
 
   async componentDidMount() {
-    axiosCaptcha(
-      postUsersRequest.url("verify_recaptcha"),
-      postUsersRequest.config,
-      "card_modal"
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success != true) {
-          this.setState({ isUpdating: false });
-          IS_CONSOLE_LOG_OPEN &&
-            console.log(response, response.data.error_message);
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
+    let config = { method: "POST" };
+    axiosCaptcha(USERS("verifyRecaptcha"), config, "card_modal").then(
+      response => {
+        if (response.statusText === "OK") {
+          if (response.data.success != true) {
+            this.setState({ isUpdating: false });
+            IS_CONSOLE_LOG_OPEN &&
+              console.log(response, response.data.error_message);
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
         }
       }
-    });
+    );
   }
 
   updateHeader() {

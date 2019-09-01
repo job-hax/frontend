@@ -2,11 +2,11 @@ import React, { PureComponent } from "react";
 import classNames from "classnames";
 import { AutoComplete, Select, Icon, Menu } from "antd";
 
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { getAutoCompleteRequest } from "../../../utils/api/requests.js";
+import { AUTOCOMPLETE } from "../../../utils/constants/endpoints";
 
 import "./style.scss";
-import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 
 class JobInput extends PureComponent {
   constructor(props) {
@@ -80,18 +80,20 @@ class JobInput extends PureComponent {
   async handlePositionsSearch(value) {
     this.setState({ jobTitle: value });
     await this.props.handleTokenExpiration("jobInput handlePositionsSearch");
-    const { url, config } = getAutoCompleteRequest;
-    let newUrl = url("positions") + "?q=" + value + "&count=5";
+    let config = { method: "GET" };
+    let newUrl = AUTOCOMPLETE("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log(response.data);
-        let bufferPositionsList = [];
-        response.data.data.forEach(position =>
-          bufferPositionsList.push(position.job_title)
-        );
-        this.setState({
-          autoCompletePositionsData: bufferPositionsList
-        });
+        if (response.data.success) {
+          IS_CONSOLE_LOG_OPEN && console.log(response.data);
+          let bufferPositionsList = [];
+          response.data.data.forEach(position =>
+            bufferPositionsList.push(position.job_title)
+          );
+          this.setState({
+            autoCompletePositionsData: bufferPositionsList
+          });
+        }
       }
     });
   }

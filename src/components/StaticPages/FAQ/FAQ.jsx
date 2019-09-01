@@ -3,8 +3,7 @@ import { Collapse } from "antd";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-import { getFAQsRequest } from "../../../utils/api/requests.js";
-import { axiosCaptcha } from "../../../utils/api/fetch_api";
+import { FAQS } from "../../../utils/constants/endpoints.js";
 import Footer from "../../Partials/Footer/Footer.jsx";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 
@@ -20,7 +19,8 @@ class FAQ extends React.Component {
   }
 
   async componentDidMount() {
-    const response = await axios.get(getFAQsRequest.url, getFAQsRequest.config);
+    let config = { method: "GET" };
+    const response = await axios.get(FAQS, config);
     this.setState({ faqList: response.data.data });
   }
 

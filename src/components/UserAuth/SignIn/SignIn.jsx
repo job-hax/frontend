@@ -4,15 +4,13 @@ import { Modal, Form, Input, Icon, Button, Checkbox, Alert } from "antd";
 
 import Footer from "../../Partials/Footer/Footer.jsx";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
-import { googleClientId } from "../../../config/config.js";
-
-import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
-  authenticateRequest,
-  loginUserRequest,
-  updateProfilePhotoRequest,
-  postUsersRequest
-} from "../../../utils/api/requests.js";
+  googleClientId,
+  jobHaxClientId,
+  jobHaxClientSecret
+} from "../../../config/config.js";
+import { USERS } from "../../../utils/constants/endpoints.js";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
 
 import "./style.scss";
 
@@ -55,11 +53,8 @@ class SignInPage extends Component {
     super(props);
 
     this.state = {
-      token: "",
       username: "",
       password: "",
-      isUserLoggedIn: false,
-      isAuthenticationChecking: false,
       isVerificationReSendDisplaying: false,
       showModal: false
     };
@@ -84,58 +79,17 @@ class SignInPage extends Component {
         return;
       }
       IS_CONSOLE_LOG_OPEN && console.log("Received values of form: ", values);
-      postUsersRequest.config["body"] = { username: values.username };
-      axiosCaptcha(
-        postUsersRequest.url("forgot_password"),
-        postUsersRequest.config,
-        "forgot_password"
-      ).then(response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            this.toggleModal();
-            this.props.alert(
-              5000,
-              "info",
-              "A link to reset password has sent to your email!"
-            );
-          } else {
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
-          }
-        } else {
-          this.props.alert(5000, "error", "Something went wrong!");
-        }
-      });
-      form.resetFields();
-    });
-  }
-
-  saveFormRef(formRef) {
-    this.formRef = formRef;
-  }
-
-  postUser(type) {
-    if (type === "generate_activation_code") {
-      postUsersRequest.config.body = {
-        username: this.state.username,
-        password: this.state.password
-      };
-      axiosCaptcha(postUsersRequest.url(type), postUsersRequest.config).then(
+      let config = { method: "POST" };
+      config["body"] = { username: values.username };
+      axiosCaptcha(USERS("forgotPassword"), config, "forgotPassword").then(
         response => {
           if (response.statusText === "OK") {
             if (response.data.success === true) {
-              this.setState({
-                isVerificationReSendDisplaying: false,
-                username: "",
-                password: ""
-              });
+              this.toggleModal();
               this.props.alert(
                 5000,
                 "info",
-                "New activation link has sent to your email!"
+                "A link to reset password has sent to your email!"
               );
             } else {
               this.props.alert(
@@ -149,6 +103,45 @@ class SignInPage extends Component {
           }
         }
       );
+      form.resetFields();
+    });
+  }
+
+  saveFormRef(formRef) {
+    this.formRef = formRef;
+  }
+
+  postUser(type) {
+    if (type === "sendActivationCode") {
+      let config = { method: "POST" };
+      config.body = {
+        username: this.state.username,
+        password: this.state.password
+      };
+      axiosCaptcha(USERS(type), config).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            this.setState({
+              isVerificationReSendDisplaying: false,
+              username: "",
+              password: ""
+            });
+            this.props.alert(
+              5000,
+              "info",
+              "New activation link has sent to your email!"
+            );
+          } else {
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
+        } else {
+          this.props.alert(5000, "error", "Something went wrong!");
+        }
+      });
     }
   }
 
@@ -156,86 +149,110 @@ class SignInPage extends Component {
     IS_CONSOLE_LOG_OPEN && console.log("handle sign in first");
     event.preventDefault();
     let rememberMe = event.target[3].checked;
-    loginUserRequest.config.body.username = event.target[1].value;
-    loginUserRequest.config.body.password = event.target[2].value;
-    axiosCaptcha(loginUserRequest.url, loginUserRequest.config, "signin").then(
-      response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            this.token = `${
-              response.data.data.token_type
-            } ${response.data.data.access_token.trim()}`;
-            IS_CONSOLE_LOG_OPEN && console.log(this.token);
-            this.refresh_token = response.data.data.refresh_token;
-            let date = new Date();
-            date.setSeconds(date.getSeconds() + response.data.data.expires_in);
-            this.expires_in = date;
-            this.props.cookie("set", "remember_me", rememberMe, "/");
-            this.props.cookie(
-              "set",
-              "user_type",
-              response.data.data.user_type,
-              "/"
-            );
-            this.props.cookie(
-              "set",
-              "jobhax_access_token",
-              this.token,
-              "/",
-              date
-            );
-            this.props.cookie(
-              "set",
-              "jobhax_access_token_expiration",
-              date.getTime(),
-              "/"
-            );
-            this.props.cookie(
-              "set",
-              "jobhax_refresh_token",
-              this.refresh_token,
-              "/"
-            );
+    let config = { method: "POST" };
+    config.body = {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret
+    };
+    config.body.username = event.target[1].value;
+    config.body.password = event.target[2].value;
+    axiosCaptcha(USERS("login"), config, "signin").then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          this.token = `${
+            response.data.data.token_type
+          } ${response.data.data.access_token.trim()}`;
+          IS_CONSOLE_LOG_OPEN && console.log(this.token);
+          this.refresh_token = response.data.data.refresh_token;
+          let date = new Date();
+          date.setSeconds(date.getSeconds() + response.data.data.expires_in);
+          this.expires_in = date;
+          this.props.cookie("set", "remember_me", rememberMe, "/");
+          this.props.cookie(
+            "set",
+            "user_type",
+            response.data.data.user_type,
+            "/"
+          );
+          this.props.cookie(
+            "set",
+            "jobhax_access_token",
+            this.token,
+            "/",
+            date
+          );
+          this.props.cookie(
+            "set",
+            "jobhax_access_token_expiration",
+            date.getTime(),
+            "/"
+          );
+          this.props.cookie(
+            "set",
+            "jobhax_refresh_token",
+            this.refresh_token,
+            "/"
+          );
+          //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn -> true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
+          if (
+            window.location.search.split("=")[1] === "reCapthcaCouldNotPassed"
+          ) {
+            window.location = "/signin";
+          } else {
             if (response.data.data.user_type === 0) {
               window.location = "/signup?=intro";
             } else {
-              this.setState({
-                token: this.token
-              });
-              this.props.passStatesFromSignin(this.token, true);
-              this.setState({
-                isUserLoggedIn: true,
-                isAuthenticationChecking: false
-              });
               this.props.setIsUserLoggedIn(true);
               this.props.setIsAuthenticationChecking(false);
             }
-            //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn:true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
-            if (
-              window.location.search.split("=")[1] === "reCapthcaCouldNotPassed"
-            ) {
-              window.location = "/signin";
-            }
-          } else {
-            if (response.data.error_code === 13) {
-              this.setState({
-                isVerificationReSendDisplaying: true,
-                username: loginUserRequest.config.body.username,
-                password: loginUserRequest.config.body.password
-              });
-            } else {
-              this.props.alert(
-                5000,
-                "error",
-                "Error: " + response.data.error_message
-              );
-            }
           }
         } else {
-          this.props.alert(5000, "error", "Something went wrong!");
+          if (response.data.error_code === 13) {
+            this.setState({
+              isVerificationReSendDisplaying: true,
+              username: config.body.username,
+              password: config.body.password
+            });
+          } else {
+            this.props.alert(
+              5000,
+              "error",
+              "Error: " + response.data.error_message
+            );
+          }
         }
+      } else {
+        this.props.alert(5000, "error", "Something went wrong!");
       }
+    });
+  }
+
+  setCookies(response, googleAccessTokenExpiresOn) {
+    this.token = `${
+      response.data.data.token_type
+    } ${response.data.data.access_token.trim()}`;
+    IS_CONSOLE_LOG_OPEN && console.log(this.token);
+    this.refresh_token = response.data.data.refresh_token;
+    let date = new Date();
+    date.setSeconds(date.getSeconds() + response.data.data.expires_in);
+    this.props.cookie("set", "user_type", response.data.data.user_type, "/");
+    this.props.cookie(
+      "set",
+      "google_access_token_expiration",
+      googleAccessTokenExpiresOn.getTime(),
+      "/",
+      googleAccessTokenExpiresOn
     );
+    this.props.cookie("set", "google_login_first_instance", true, "/");
+    this.props.cookie("set", "jobhax_access_token", this.token, "/", date);
+    this.props.cookie(
+      "set",
+      "jobhax_access_token_expiration",
+      date.getTime(),
+      "/"
+    );
+    this.props.cookie("set", "jobhax_refresh_token", this.refresh_token, "/");
+    this.props.cookie("set", "remember_me", true, "/");
   }
 
   handleGoogleSignIn() {
@@ -257,81 +274,50 @@ class SignInPage extends Component {
               googleAccessTokenExpiresOn.setSeconds(
                 googleAccessTokenExpiresOn.getSeconds() + response.Zi.expires_in
               );
-              const { url, config } = authenticateRequest;
+              let config = { method: "POST" };
+              config.body = {
+                client_id: jobHaxClientId,
+                client_secret: jobHaxClientSecret,
+                provider: "google-oauth2"
+              };
               config.body.token = this.googleAuth.currentUser
                 .get()
                 .getAuthResponse().access_token;
-              axiosCaptcha(url, config, "signin").then(response => {
-                if (response.statusText === "OK") {
-                  this.token = `${
-                    response.data.data.token_type
-                  } ${response.data.data.access_token.trim()}`;
-                  IS_CONSOLE_LOG_OPEN && console.log(this.token);
-                  this.refresh_token = response.data.data.refresh_token;
-                  let date = new Date();
-                  date.setSeconds(
-                    date.getSeconds() + response.data.data.expires_in
-                  );
-                  this.props.cookie(
-                    "set",
-                    "user_type",
-                    response.data.data.user_type,
-                    "/"
-                  );
-                  this.props.cookie(
-                    "set",
-                    "google_access_token_expiration",
-                    googleAccessTokenExpiresOn.getTime(),
-                    "/",
-                    googleAccessTokenExpiresOn
-                  );
-                  this.props.cookie(
-                    "set",
-                    "google_login_first_instance",
-                    true,
-                    "/"
-                  );
-                  this.props.cookie(
-                    "set",
-                    "jobhax_access_token",
-                    this.token,
-                    "/",
-                    date
-                  );
-                  this.props.cookie(
-                    "set",
-                    "jobhax_access_token_expiration",
-                    date.getTime(),
-                    "/"
-                  );
-                  this.props.cookie(
-                    "set",
-                    "jobhax_refresh_token",
-                    this.refresh_token,
-                    "/"
-                  );
-                  this.props.cookie("set", "remember_me", true, "/");
-                  this.postGoogleProfilePhoto(photoUrl);
-                  IS_CONSOLE_LOG_OPEN &&
-                    console.log(this.token, "profile updated?");
-                  this.props.passStatesFromSignin(this.token, true);
-                  if (response.data.data.user_type === 0) {
-                    window.location = "/signup?=intro";
+              axiosCaptcha(USERS("authSocialUser"), config, "signin")
+                .then(response => {
+                  if (response.statusText === "OK") {
+                    if (response.data.success == true) {
+                      this.setCookies(response, googleAccessTokenExpiresOn);
+                    }
                   }
-                  this.setState({ token: this.token });
-                  //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn:true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
-                  if (
-                    window.location.search.split("=")[1] ===
-                    "reCapthcaCouldNotPassed"
-                  ) {
-                    window.location = "/signin";
+                  return response;
+                })
+                .then(response => {
+                  if (response.statusText === "OK") {
+                    if (response.data.success == true) {
+                      this.postGoogleProfilePhoto(photoUrl);
+                      IS_CONSOLE_LOG_OPEN &&
+                        console.log(this.token, "profile updated?");
+                      if (response.data.data.user_type === 0) {
+                        window.location = "/signup?=intro";
+                      }
+                      //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn -> true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
+                      if (
+                        window.location.search.split("=")[1] ===
+                        "reCapthcaCouldNotPassed"
+                      ) {
+                        window.location = "/signin";
+                      } else {
+                        if (response.data.data.user_type === 0) {
+                          window.location = "/signup?=intro";
+                        } else {
+                          this.props.setIsUserLoggedIn(true);
+                          this.props.setIsAuthenticationChecking(false);
+                        }
+                      }
+                    }
                   }
-                  this.setState({ isUserLoggedIn: true });
-                  this.props.setIsUserLoggedIn(true);
-                }
-              });
-              this.setState({ isAuthenticationChecking: false });
-              this.props.setIsAuthenticationChecking(false);
+                });
             }
           });
         });
@@ -341,12 +327,9 @@ class SignInPage extends Component {
   postGoogleProfilePhoto(photoURL) {
     let bodyFormData = new FormData();
     bodyFormData.set("photo_url", photoURL);
-    updateProfilePhotoRequest.config.body = bodyFormData;
-    IS_CONSOLE_LOG_OPEN && console.log(updateProfilePhotoRequest);
-    axiosCaptcha(
-      updateProfilePhotoRequest.url,
-      updateProfilePhotoRequest.config
-    ).then(response => {
+    let config = { method: "POST" };
+    config.body = bodyFormData;
+    axiosCaptcha(USERS("updateProfilePhoto"), config).then(response => {
       if (response.statusText === "OK") {
         IS_CONSOLE_LOG_OPEN && console.log(response);
       }
@@ -450,7 +433,7 @@ class SignInPage extends Component {
           {this.state.isVerificationReSendDisplaying && (
             <div
               style={styleResendPassword}
-              onClick={() => this.postUser("generate_activation_code")}
+              onClick={() => this.postUser("sendActivationCode")}
             >
               <a> Resend activation email? </a>
             </div>
