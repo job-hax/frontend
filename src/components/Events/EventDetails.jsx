@@ -2,12 +2,12 @@ import React from "react";
 import { Icon, Button, Affix } from "antd";
 import parse from "html-react-parser";
 
-import "./style.scss";
 import { makeTimeBeautiful } from "../../utils/constants/constants";
-import { apiRoot } from "../../utils/constants/endpoints";
-import Map from "../Metrics/SubComponents/Map/Map.jsx";
-import { postEventsRequest } from "../../utils/api/requests";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
+import { apiRoot, EVENTS } from "../../utils/constants/endpoints";
+import Map from "../Metrics/SubComponents/Map/Map.jsx";
+
+import "./style.scss";
 
 class EventDetails extends React.Component {
   constructor(props) {
@@ -20,9 +20,9 @@ class EventDetails extends React.Component {
 
   async postAttendeeRequest(answer) {
     await this.props.handleTokenExpiration("event postData");
-    let newUrl =
-      postEventsRequest.url + "/" + this.props.event.id + "/" + answer;
-    axiosCaptcha(newUrl, postEventsRequest.config, "events").then(response => {
+    let config = { method: "POST" };
+    let newUrl = EVENTS + this.props.event.id + "/" + answer + "/";
+    axiosCaptcha(newUrl, config, false).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success == true) {
           let attend = answer == "attend" ? true : false;

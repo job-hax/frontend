@@ -3,8 +3,7 @@ import React from "react";
 import DetailedMetricsGroup from "../Containers/DetailedGroupContainer.jsx";
 import SummaryMetricsGroup from "../Containers/SummaryGroupContainer.jsx";
 import { axiosCaptcha } from "../../../../utils/api/fetch_api.js";
-import { getMetrics } from "../../../../utils/api/requests.js";
-import Spinner from "../../../Partials/Spinner/Spinner.jsx";
+import { METRICS } from "../../../../utils/constants/endpoints.js";
 
 class IndividualMetrics extends React.Component {
   constructor(props) {
@@ -29,19 +28,20 @@ class IndividualMetrics extends React.Component {
       this.state.isInitialRequest === "beforeRequest"
     ) {
       this.setState({ isInitialRequest: true });
-      axiosCaptcha(getMetrics.url("personal/generic"), getMetrics.config).then(
-        response => {
-          if (response.statusText === "OK") {
+      let config = { method: "GET" };
+      axiosCaptcha(METRICS("personal/generic/"), config).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success) {
             this.data = response.data.data;
             this.setState({
               genericData: this.data
             });
           }
         }
-      );
-      axiosCaptcha(getMetrics.url("personal/detailed"), getMetrics.config).then(
-        response => {
-          if (response.statusText === "OK") {
+      });
+      axiosCaptcha(METRICS("personal/detailed/"), config).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success) {
             this.data = response.data.data;
             this.setState({
               detailedData: this.data,
@@ -49,7 +49,7 @@ class IndividualMetrics extends React.Component {
             });
           }
         }
-      );
+      });
     }
   }
 

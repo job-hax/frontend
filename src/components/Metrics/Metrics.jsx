@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 
 import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { postUsersRequest } from "../../utils/api/requests.js";
+import { USERS } from "../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import Map from "./SubComponents/Map/Map.jsx";
 import IndividualMetrics from "./SubComponents/IndividualMetrics/IndividualMetrics.jsx";
@@ -17,25 +17,24 @@ class Metrics extends PureComponent {
 
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
-      await this.props.handleTokenExpiration("metrics getData");
-      axiosCaptcha(
-        postUsersRequest.url("verify_recaptcha"),
-        postUsersRequest.config,
-        "metrics"
-      ).then(response => {
-        if (response.statusText === "OK") {
-          if (response.data.success != true) {
-            this.setState({ isUpdating: false });
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(response, response.data.error_message);
-            this.props.alert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
-            );
+      await this.props.handleTokenExpiration("metrics componentDidMount");
+      let config = { method: "POST" };
+      axiosCaptcha(USERS("verifyRecaptcha"), config, "metrics").then(
+        response => {
+          if (response.statusText === "OK") {
+            if (response.data.success != true) {
+              this.setState({ isUpdating: false });
+              IS_CONSOLE_LOG_OPEN &&
+                console.log(response, response.data.error_message);
+              this.props.alert(
+                5000,
+                "error",
+                "Error: " + response.data.error_message
+              );
+            }
           }
         }
-      });
+      );
     }
   }
 
@@ -58,21 +57,38 @@ class Metrics extends PureComponent {
             <div className="metric-big-group">
               <IndividualMetrics cookie={this.props.cookie} />
             </div>
+            {this.props.cookie("get", "user_type") > 1 && (
+              <div className="metric-big-group">
+                <div className="university-metrics-header-container">
+                  <div className="header-line" />
+                  <div className="university-metrics-header">
+                    University Job Metrics
+                  </div>
+                  <div className="header-line" />
+                </div>
+                <div>
+                  <UniversityMetrics
+                    cookie={this.props.cookie}
+                    isPublic={false}
+                  />
+                </div>
+              </div>
+            )}
             <div className="metric-big-group">
               <div className="university-metrics-header-container">
                 <div className="header-line" />
                 <div className="university-metrics-header">
-                  University Job Metrics
+                  Jobhax Aggregated Metrics
                 </div>
                 <div className="header-line" />
               </div>
               <div>
-                <UniversityMetrics cookie={this.props.cookie} />
+                <UniversityMetrics cookie={this.props.cookie} isPublic={true} />
               </div>
             </div>
           </div>
         </div>
-        <div>
+        <div style={{ marginTop: 80 }}>
           <Footer />
         </div>
       </div>

@@ -3,10 +3,10 @@ import { Redirect } from "react-router-dom";
 import { Form, Input, Button } from "antd";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { postUsersRequest } from "../../../utils/api/requests.js";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
+import { USERS } from "../../../utils/constants/endpoints";
 
 import "./style.scss";
-import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 
 class ChangePassword extends React.Component {
   constructor(props) {
@@ -27,15 +27,12 @@ class ChangePassword extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         IS_CONSOLE_LOG_OPEN && console.log("Received values of form: ", values);
-        postUsersRequest.config.body = {
+        let config = { method: "POST" };
+        config.body = {
           code: this.props.code,
           password: values.password
         };
-        IS_CONSOLE_LOG_OPEN && console.log(postUsersRequest);
-        axiosCaptcha(
-          postUsersRequest.url("reset_password"),
-          postUsersRequest.config
-        ).then(response => {
+        axiosCaptcha(USERS("resetPassword"), config).then(response => {
           if (response.statusText === "OK") {
             if (response.data.success === true) {
               this.setState({ redirect: "signin" });

@@ -3,14 +3,13 @@ import { Icon } from "antd";
 import parse from "html-react-parser";
 
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { getBlogRequest, postBlogRequest } from "../../utils/api/requests.js";
+import { apiRoot } from "../../utils/constants/endpoints";
 import {
   IS_CONSOLE_LOG_OPEN,
   makeTimeBeautiful
 } from "../../utils/constants/constants.js";
 
 import "./style.scss";
-import { apiRoot } from "../../utils/constants/endpoints";
 
 class BlogCard extends React.Component {
   constructor(props) {

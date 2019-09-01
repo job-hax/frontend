@@ -2,15 +2,14 @@ import React from "react";
 import { Rate, Select, Radio, Checkbox } from "antd";
 
 import { axiosCaptcha } from "../../../../../../../../utils/api/fetch_api.js";
+import { IS_CONSOLE_LOG_OPEN } from "../../../../../../../../utils/constants/constants.js";
 import {
-  reviewSubmitRequest,
-  getSourceTypesRequest,
-  getEmploymentStatusesRequest,
-  getEmploymentAuthsRequest
-} from "../../../../../../../../utils/api/requests.js";
+  USERS,
+  REVIEWS,
+  SOURCE_TYPES
+} from "../../../../../../../../utils/constants/endpoints.js";
 
 import "./style.scss";
-import { IS_CONSOLE_LOG_OPEN } from "../../../../../../../../utils/constants/constants.js";
 
 const desc = ["terrible", "bad", "normal", "good", "perfect"];
 const descDifficulty = ["too easy", "easy", "normal", "hard", "too hard"];
@@ -83,43 +82,38 @@ class ReviewInput extends React.Component {
 
   async componentDidMount() {
     await this.props.handleTokenExpiration("reviewInput componentDidMount");
-    axiosCaptcha(getSourceTypesRequest.url, getSourceTypesRequest.config).then(
+    let config = { method: "GET" };
+    axiosCaptcha(SOURCE_TYPES, config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          this.setState({ sourceTypes: response.data.data });
+        }
+      }
+    });
+    let employmentStatusesConfig = { method: "GET" };
+    axiosCaptcha(USERS("employmentStatuses"), employmentStatusesConfig).then(
       response => {
         if (response.statusText === "OK") {
           if (response.data.success === true) {
             IS_CONSOLE_LOG_OPEN &&
-              console.log("getSourceTypesRequest response", response.data.data);
-            this.setState({ sourceTypes: response.data.data });
+              console.log(
+                "employmentStatusesRequest response",
+                response.data.data
+              );
+            this.setState({ employmentStatuses: response.data.data });
           }
         }
       }
     );
+    let employmentAuthorizationsConfig = { method: "GET" };
     axiosCaptcha(
-      getEmploymentStatusesRequest.url,
-      getEmploymentStatusesRequest.config
+      USERS("employmentAuthorizations"),
+      employmentAuthorizationsConfig
     ).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
           IS_CONSOLE_LOG_OPEN &&
-            console.log(
-              "getEmploymentStatusesRequest response",
-              response.data.data
-            );
-          this.setState({ employmentStatuses: response.data.data });
-        }
-      }
-    });
-    axiosCaptcha(
-      getEmploymentAuthsRequest.url,
-      getEmploymentAuthsRequest.config
-    ).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success === true) {
-          IS_CONSOLE_LOG_OPEN &&
-            console.log(
-              "getEmploymentAuthsRequest response",
-              response.data.data
-            );
+            console.log("employmentAuthsRequest response", response.data.data);
           this.setState({ employmentAuths: response.data.data });
         }
       }
@@ -182,21 +176,15 @@ class ReviewInput extends React.Component {
     event.preventDefault();
     await this.props.handleTokenExpiration("reviewInput handleSubmit");
     this.props.toggleReview();
-    reviewSubmitRequest.config.body = this.body;
-    IS_CONSOLE_LOG_OPEN &&
-      console.log(
-        "reviewSubmitRequest.config.body",
-        reviewSubmitRequest.config.body
-      );
-    axiosCaptcha(
-      reviewSubmitRequest.url,
-      reviewSubmitRequest.config,
-      "review"
-    ).then(response => {
+    let config = this.props.card.company_object.review_id
+      ? { method: "PUT" }
+      : { method: "POST" };
+    config.body = this.body;
+    axiosCaptcha(REVIEWS, config, "review").then(response => {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
           IS_CONSOLE_LOG_OPEN &&
-            console.log("reviewSubmitRequest response", response.data.data);
+            console.log("review Submit Request response", response.data.data);
           this.props.setCompany(response.data.data.company);
           this.props.setReview(response.data.data.review);
           this.props.renewReviews();

@@ -8,11 +8,10 @@ import {
 } from "../../../../../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api.js";
 import {
-  getAutoCompleteRequest,
-  getSourcesRequest,
-  editJobAppRequest
-} from "../../../../../../../utils/api/requests.js";
-import CompanyStats from "../../../../../../Partials/CompanyStats/CompanyStats.jsx";
+  JOB_APPS,
+  GET_SOURCES,
+  AUTOCOMPLETE
+} from "../../../../../../../utils/constants/endpoints.js";
 
 class JobDetails extends React.Component {
   constructor(props) {
@@ -24,7 +23,8 @@ class JobDetails extends React.Component {
       isApplyDateEditing: false,
       isApplicationSourcesEditing: false,
       companyName:
-        this.props.card.company_object && this.props.card.company_object.company,
+        this.props.card.company_object &&
+        this.props.card.company_object.company,
       jobTitle: this.props.card.position && this.props.card.position.job_title,
       apply_date: makeTimeBeautiful(this.props.card.apply_date, "date"),
       source:
@@ -79,9 +79,9 @@ class JobDetails extends React.Component {
       this.body["company"] = this.state.companyName.trim();
     }
     this.body["source"] = this.state.source;
-    const { url, config } = editJobAppRequest;
+    let config = { method: "PATCH" };
     config.body = this.body;
-    const response = await axiosCaptcha(url, config);
+    const response = await axiosCaptcha(JOB_APPS, config);
     if (response.statusText === "OK") {
       if (response.data.success === true) {
         this.props.updateCard(
@@ -222,18 +222,20 @@ class JobDetails extends React.Component {
 
   handlePositionsSearch(value) {
     this.setState({ jobTitle: value });
-    const { url, config } = getAutoCompleteRequest;
-    let newUrl = url("positions") + "?q=" + value + "&count=5";
+    let config = { method: "GET" };
+    let newUrl = AUTOCOMPLETE("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log(response.data);
-        let bufferPositionsList = [];
-        response.data.data.forEach(position =>
-          bufferPositionsList.push(position.job_title)
-        );
-        this.setState({
-          autoCompletePositionsData: bufferPositionsList
-        });
+        if (response.data.success) {
+          IS_CONSOLE_LOG_OPEN && console.log(response.data);
+          let bufferPositionsList = [];
+          response.data.data.forEach(position =>
+            bufferPositionsList.push(position.job_title)
+          );
+          this.setState({
+            autoCompletePositionsData: bufferPositionsList
+          });
+        }
       }
     });
   }
@@ -332,13 +334,15 @@ class JobDetails extends React.Component {
   }
 
   getApplicationSources() {
-    const { url, config } = getSourcesRequest;
-    axiosCaptcha(url, config).then(response => {
+    let config = { method: "GET" };
+    axiosCaptcha(GET_SOURCES, config).then(response => {
       if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log(response.data);
-        this.setState({
-          sourcesList: response.data.data
-        });
+        if (response.data.success) {
+          IS_CONSOLE_LOG_OPEN && console.log(response.data);
+          this.setState({
+            sourcesList: response.data.data
+          });
+        }
       }
     });
   }
