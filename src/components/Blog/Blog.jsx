@@ -1,21 +1,23 @@
 import React from "react";
 import { Pagination, Icon, Affix, Button } from "antd";
+import { Redirect } from "react-router-dom";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { getBlogsRequest, postUsersRequest } from "../../utils/api/requests.js";
 import { makeTimeBeautiful } from "../../utils/constants/constants.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import { apiRoot, USERS, BLOGS } from "../../utils/constants/endpoints.js";
+import BlogDetails from "./BlogDetails.jsx";
+import BlogEditable from "./BlogEditable.jsx";
 import BlogCard from "./BlogCard.jsx";
 
 import "./style.scss";
-import { apiRoot } from "../../utils/constants/endpoints.js";
-import BlogDetails from "./BlogDetails.jsx";
 
 class Blog extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       isWaitingResponse: false,
       isInitialRequest: "beforeRequest",
@@ -24,29 +26,73 @@ class Blog extends React.Component {
       pagination: {},
       pageNo: 1,
       pageSize: 10,
-      detail_blog_id: window.location.search.split("=")[1] || null,
+      edit:
+        window.location.search
+          .split("&")
+          .slice(-1)[0]
+          .split("=")[1] == "true"
+          ? true
+          : false,
+      editRequested: false,
+      edit_blog_id:
+        window.location.search
+          .split("&")
+          .slice(-1)[0]
+          .split("=")[1] != "true"
+          ? null
+          : window.location.search
+              .split("&")
+              .slice(-1)[0]
+              .split("=")[0] == "edit"
+          ? window.location.search.split("&")[0].split("=")[1]
+          : null,
+      detail_blog_id:
+        window.location.search
+          .split("&")
+          .slice(-1)[0]
+          .split("=")[1] != "true"
+          ? window.location.search.split("=")[1]
+          : null,
       detail_blog: {},
-      detail_blog_snippet: " "
+      user_type: this.props.cookie("get", "user_type"),
+      editable_blog: {
+        content: "",
+        created_at: new Date().toISOString(),
+        downvote: 0,
+        header_image: "",
+        id: null,
+        is_publish: false,
+        is_public: false,
+        title: "",
+        upvote: 0,
+        view_count: 0,
+        voted: 0,
+        snippet: "",
+        publisher_profile: this.props.user,
+        updated_at: null
+      }
     };
 
     this.getData = this.getData.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
     this.setBlogDetail = this.setBlogDetail.bind(this);
+    this.setBlogEdit = this.setBlogEdit.bind(this);
   }
 
   async componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       this.setState({ isInitialRequest: true });
       if (this.state.detail_blog_id == null) {
-        await this.getData("initialRequest");
+        if (this.state.edit_blog_id == null) {
+          await this.getData("initialRequest");
+        } else {
+          await this.getData("editRequest");
+        }
       } else {
         await this.getData("detailedRequest");
       }
-      axiosCaptcha(
-        postUsersRequest.url("verify_recaptcha"),
-        postUsersRequest.config,
-        "blog"
-      ).then(response => {
+      let config = { method: "POST" };
+      axiosCaptcha(USERS("verifyRecaptcha"), config, "blog").then(response => {
         if (response.statusText === "OK") {
           if (response.data.success != true) {
             IS_CONSOLE_LOG_OPEN &&
@@ -73,45 +119,59 @@ class Blog extends React.Component {
 
   async getData(requestType) {
     this.setState({ isWaitingResponse: true });
-    const { url, config } = getBlogsRequest;
+    let config = { method: "GET" };
     let newUrl =
-      this.state.detail_blog_id == null
-        ? url +
+      this.state.detail_blog_id == null && this.state.edit_blog_id == null
+        ? BLOGS +
           "?page=" +
           this.state.pageNo +
           "&page_size=" +
           this.state.pageSize
-        : url + this.state.detail_blog_id + "/";
+        : this.state.edit_blog_id == null
+        ? BLOGS + this.state.detail_blog_id + "/"
+        : BLOGS + this.state.edit_blog_id + "/";
     await this.props.handleTokenExpiration("blog getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
-        if (requestType === "initialRequest") {
-          this.setState({
-            blogList: response.data.data,
-            pagination: response.data.pagination,
-            isWaitingResponse: false,
-            isInitialRequest: false
-          });
-        } else if (requestType === "newPageRequest") {
-          this.setState({
-            blogList: response.data.data,
-            pagination: response.data.pagination,
-            isWaitingResponse: false,
-            isNewPageRequested: false
-          });
-        } else if (requestType === "detailedRequest") {
-          this.setState({
-            detail_blog: response.data.data,
-            isWaitingResponse: false,
-            isInitialRequest: false
-          });
+        if (response.data.success) {
+          if (requestType === "initialRequest") {
+            this.setState({
+              blogList: response.data.data,
+              pagination: response.data.pagination,
+              isWaitingResponse: false,
+              isInitialRequest: false
+            });
+          } else if (requestType === "newPageRequest") {
+            this.setState({
+              blogList: response.data.data,
+              pagination: response.data.pagination,
+              isWaitingResponse: false,
+              isNewPageRequested: false
+            });
+          } else if (requestType === "detailedRequest") {
+            this.setState({
+              detail_blog: response.data.data,
+              isWaitingResponse: false,
+              isInitialRequest: false
+            });
+          } else if (requestType === "editRequest") {
+            if (response.data.data.mine) {
+              this.setState({
+                editable_blog: response.data.data
+              });
+            }
+            this.setState({
+              isWaitingResponse: false,
+              isInitialRequest: false
+            });
+          }
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "BlogRequest Response",
+              response.data,
+              this.state.pagination
+            );
         }
-        IS_CONSOLE_LOG_OPEN &&
-          console.log(
-            "BlogRequest Response",
-            response.data,
-            this.state.pagination
-          );
       }
     });
   }
@@ -120,10 +180,18 @@ class Blog extends React.Component {
     let blog = this.state.blogList.filter(blog => id == blog.id)[0];
     await this.setState({
       detail_blog_id: id,
-      detail_blog: blog,
-      detail_blog_snippet: blog.snippet
+      detail_blog: blog
     });
     this.getData("detailedRequest");
+  }
+
+  setBlogEdit(blog) {
+    this.setState({
+      edit: true,
+      editRequested: true,
+      edit_blog_id: blog.id,
+      editable_blog: blog
+    });
   }
 
   handlePageChange(page) {
@@ -170,7 +238,7 @@ class Blog extends React.Component {
         : apiRoot + blog.publisher_profile.profile_photo;
     return (
       <div>
-        <Affix offset={80}>
+        <Affix offsetTop={80}>
           <div className="featured-blog">
             <div className="header-photo">
               <img src={apiRoot + blog.header_image} />
@@ -217,25 +285,58 @@ class Blog extends React.Component {
 
   render() {
     const footerClass =
-      this.state.blogList.length > 3 ? "" : "bottom-fixed-footer";
+      this.state.edit || this.state.detail_blog_id
+        ? ""
+        : this.state.blogList.length > 3
+        ? ""
+        : "bottom-fixed-footer";
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing blogs..." />;
+    else if (this.state.editRequested == true) {
+      return (
+        <Redirect
+          to={
+            "action?type=redirect&/blogs?id=" +
+            this.state.edit_blog_id +
+            "&edit=true"
+          }
+        />
+      );
+    } else if (
+      this.state.edit == true &&
+      (this.props.user.user_type != (3 || 4) &&
+        this.props.user.is_admin != true)
+    ) {
+      return <Redirect to={"action?type=redirect&/blogs"} />;
+    }
     return (
       <div>
         <div className="blog-page-container">
-          {this.state.detail_blog_id == null ? (
-            <div className="blog-page-main-container">
-              <div>{this.generateFeaturedBlog()}</div>
-              <div>{this.generateBlogsList()}</div>
+          {this.state.edit != true ? (
+            <div>
+              {this.state.detail_blog_id == null ? (
+                <div className="blog-page-main-container">
+                  <div>{this.generateFeaturedBlog()}</div>
+                  <div>{this.generateBlogsList()}</div>
+                </div>
+              ) : (
+                <BlogDetails
+                  blog={this.state.detail_blog}
+                  handleTokenExpiration={this.props.handleTokenExpiration}
+                  setBlogEdit={this.setBlogEdit}
+                />
+              )}
             </div>
           ) : (
-            <BlogDetails
-              blog={this.state.detail_blog}
-              snippet={this.state.detail_blog_snippet}
-              handleTokenExpiration={this.props.handleTokenExpiration}
-            />
+            <div>
+              <BlogEditable
+                blog={this.state.editable_blog}
+                handleTokenExpiration={this.props.handleTokenExpiration}
+                alert={this.props.alert}
+              />
+            </div>
           )}
         </div>
         <div className={footerClass}>

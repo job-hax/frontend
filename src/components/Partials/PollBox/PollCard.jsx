@@ -4,8 +4,8 @@ import {
   makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN
 } from "../../../utils/constants/constants.js";
-import { votePollRequest } from "../../../utils/api/requests.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
+import { VOTE_POLL } from "../../../utils/constants/endpoints.js";
 
 import "./style.scss";
 
@@ -29,14 +29,11 @@ class PollCard extends React.Component {
 
   async submit(id) {
     await this.props.handleTokenExpiration("pollCard submit");
-    const urlFunction = votePollRequest.url;
-    votePollRequest.url = votePollRequest.url(id);
-    votePollRequest.config.body = {
+    let config = { method: "POST" };
+    config.body = {
       item_id: this.state.selectedAnswer
     };
-    IS_CONSOLE_LOG_OPEN && console.log(votePollRequest);
-    axiosCaptcha(votePollRequest.url, votePollRequest.config).then(response => {
-      votePollRequest.url = urlFunction;
+    axiosCaptcha(VOTE_POLL(id), config).then(response => {
       if (response.statusText === "OK") {
         IS_CONSOLE_LOG_OPEN && console.log(response);
         if (response.data.success == false) {

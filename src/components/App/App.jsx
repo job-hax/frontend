@@ -8,7 +8,6 @@ import Header from "../Partials/Header/Header.jsx";
 import Blog from "../Blog/Blog.jsx";
 import Dashboard from "../Dashboard/Dashboard.jsx";
 import Metrics from "../Metrics/Metrics.jsx";
-import MetricsGlobal from "../MetricsGlobal/MetricsGlobal.jsx";
 import Companies from "../Companies/Companies.jsx";
 import Home from "../StaticPages/Home/Home.jsx";
 import AboutUs from "../StaticPages/AboutUs/AboutUs.jsx";
@@ -24,26 +23,27 @@ import SignUp from "..//UserAuth/SignUp/SignUp.jsx";
 import Action from "../UserAuth/Action/Action.jsx";
 import LinkedInOAuthAction from "../UserAuth/Action/LinkedInOAuthAction.jsx";
 import ProfilePage from "../ProfilePage/ProfilePage.jsx";
+import Mentors from "../Mentors/Mentors.jsx";
+import Alumni from "../Alumni/Alumni.jsx";
+import Events from "../Events/Events.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 
-import { googleClientId } from "../../config/config.js";
-import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
-import { apiRoot } from "../../utils/constants/endpoints.js";
 import {
-  refreshTokenRequest,
-  updateGoogleTokenRequest,
-  logOutUserRequest,
-  getPollRequest,
-  notificationsRequest,
-  getProfileRequest
-} from "../../utils/api/requests.js";
+  googleClientId,
+  jobHaxClientId,
+  jobHaxClientSecret
+} from "../../config/config.js";
+import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import {
+  apiRoot,
+  USERS,
+  GET_POLL,
+  NOTIFICATIONS
+} from "../../utils/constants/endpoints.js";
 
 import "./style.scss";
 import "../../assets/libraryScss/antd-scss/newantd.scss";
 import "../../assets/libraryScss/area-code.scss";
-import Mentors from "../Mentors/Mentors.jsx";
-import Alumni from "../Alumni/Alumni.jsx";
-import Events from "../Events/Events.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -75,10 +75,7 @@ class App extends Component {
       pollData: [],
       notificationsList: [],
       syncResponseTimestamp: null,
-      isFirstLoginWithGoogle:
-        this.cookie("get", "google_access_token_expiration") == ("" || null)
-          ? false
-          : true
+      user: {}
     };
     this.notificationsList = [];
     this.handleSignOut = this.handleSignOut.bind(this);
@@ -87,7 +84,6 @@ class App extends Component {
     this.toggleNotificationsDisplay = this.toggleNotificationsDisplay.bind(
       this
     );
-    this.passStatesFromSignin = this.passStatesFromSignin.bind(this);
     this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this);
     this.setIsAuthenticationChecking = this.setIsAuthenticationChecking.bind(
       this
@@ -97,7 +93,6 @@ class App extends Component {
     this.cookie = this.cookie.bind(this);
     this.handleTokenExpiration = this.handleTokenExpiration.bind(this);
     this.passStatesFromHeader = this.passStatesFromHeader.bind(this);
-    this.passStatesFromDashboard = this.passStatesFromDashboard.bind(this);
   }
 
   componentDidMount() {
@@ -131,39 +126,47 @@ class App extends Component {
       this.state.isUserLoggedIn === true
     ) {
       this.setState({
-        active: true,
         isInitialRequest: false
       });
-      axiosCaptcha(getPollRequest.url, getPollRequest.config).then(response => {
+      let config = { method: "GET" };
+      axiosCaptcha(GET_POLL, config).then(response => {
         if (response.statusText === "OK") {
-          this.pollData = response.data.data;
-          this.setState({ pollData: this.pollData, isPollChecking: false });
-          this.state.pollData.map(
-            poll =>
-              poll.is_published === true &&
-              this.setState({ isPollShowing: true })
-          );
+          if (response.data.success) {
+            this.pollData = response.data.data;
+            this.setState({ pollData: this.pollData, isPollChecking: false });
+            this.state.pollData.map(
+              poll =>
+                poll.is_published === true &&
+                this.setState({ isPollShowing: true })
+            );
+          }
         }
       });
-      axiosCaptcha(getProfileRequest.url, getProfileRequest.config).then(
-        response => {
-          IS_CONSOLE_LOG_OPEN && console.log("photo first");
-          if (response.statusText === "OK") {
+      axiosCaptcha(USERS("profile/?basic=true"), config).then(response => {
+        IS_CONSOLE_LOG_OPEN && console.log("photo first");
+        if (response.statusText === "OK") {
+          if (response.data.success == true) {
+            this.props.cookies.set("user_type", response.data.data.user_type, {
+              path: "/"
+            });
             let profilePhotoUrl = "";
-            if (response.data.data.profile_photo_custom == null) {
-              profilePhotoUrl = response.data.data.profile_photo_social;
+            if (response.data.data.profile_photo.substring(0, 4) == "http") {
+              profilePhotoUrl = response.data.data.profile_photo;
             } else {
-              profilePhotoUrl =
-                apiRoot + response.data.data.profile_photo_custom;
+              profilePhotoUrl = apiRoot + response.data.data.profile_photo;
             }
             this.setState(
-              { profilePhotoUrl: profilePhotoUrl },
+              {
+                active: true,
+                profilePhotoUrl: profilePhotoUrl,
+                user: response.data.data
+              },
               IS_CONSOLE_LOG_OPEN &&
                 console.log("profilePhotoUrl", profilePhotoUrl)
             );
           }
         }
-      );
+      });
       this.setState({
         isAuthenticationChecking: false
       });
@@ -219,31 +222,39 @@ class App extends Component {
 
   async refreshJobhaxToken() {
     this.jobhax_refresh_token = this.props.cookies.get("jobhax_refresh_token");
-    const { url, config } = refreshTokenRequest;
+    let config = { method: "POST", body: {} };
     config.body["refresh_token"] = this.jobhax_refresh_token;
-    const response = await axiosCaptcha(url, config, false);
+    config.body["client_id"] = jobHaxClientId;
+    config.body["client_secret"] = jobHaxClientSecret;
+    const response = await axiosCaptcha(USERS("refreshToken"), config, false);
     if (response.statusText === "OK") {
-      this.token = `${
-        response.data.data.token_type
-      } ${response.data.data.access_token.trim()}`;
-      this.refresh_token = response.data.data.refresh_token;
-      this.setState({ token: this.token });
-      let date = new Date();
-      date.setSeconds(date.getSeconds() + response.data.data.expires_in);
-      this.props.cookies.set(
-        "jobhax_access_token",
-        this.token,
-        { path: "/" },
-        date
-      );
-      this.props.cookies.set(
-        "jobhax_access_token_expiration",
-        parseFloat(date.getTime()),
-        { path: "/" }
-      );
-      this.props.cookies.set("jobhax_refresh_token", this.refresh_token, {
-        path: "/"
-      });
+      if (response.data.success == true) {
+        this.token = `${
+          response.data.data.token_type
+        } ${response.data.data.access_token.trim()}`;
+        this.refresh_token = response.data.data.refresh_token;
+        this.setState({
+          token: this.token,
+          isUserLoggedIn: true,
+          active: true
+        });
+        let date = new Date();
+        date.setSeconds(date.getSeconds() + response.data.data.expires_in);
+        this.props.cookies.set(
+          "jobhax_access_token",
+          this.token,
+          { path: "/" },
+          date
+        );
+        this.props.cookies.set(
+          "jobhax_access_token_expiration",
+          parseFloat(date.getTime()),
+          { path: "/" }
+        );
+        this.props.cookies.set("jobhax_refresh_token", this.refresh_token, {
+          path: "/"
+        });
+      }
     }
   }
 
@@ -282,9 +293,9 @@ class App extends Component {
         googleAccessTokenExpiresOn.getTime(),
         { path: "/" }
       );
-      const { url, config } = updateGoogleTokenRequest;
+      let config = { method: "POST" };
       config["body"] = { token: newGoogleToken };
-      axiosCaptcha(url, config, false);
+      axiosCaptcha(USERS("updateGmailToken"), config, false);
       IS_CONSOLE_LOG_OPEN &&
         console.log("google token refreshed", newGoogleToken);
     } else {
@@ -302,25 +313,16 @@ class App extends Component {
     });
   }
 
-  passStatesFromDashboard(newState) {
-    this.setState({ isFirstLoginWithGoogle: newState });
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("loginGoogle app", this.state.isFirstLoginWithGoogle);
-  }
-
   passStatesFromHeader(timestamp) {
     this.setState({ syncResponseTimestamp: timestamp });
   }
 
-  passStatesFromSignin(token, active) {
-    this.setState({
-      token: token,
-      active: active
-    });
-  }
-
   setIsUserLoggedIn(isUserLoggedIn) {
-    this.setState({ isUserLoggedIn: isUserLoggedIn });
+    this.reRunComponentDidUpdate();
+    this.setState({
+      isUserLoggedIn: isUserLoggedIn,
+      token: this.cookie("get", "jobhax_access_token")
+    });
   }
 
   setIsAuthenticationChecking(isAuthenticationChecking) {
@@ -338,6 +340,7 @@ class App extends Component {
       cookies.remove("jobhax_access_token", { path: "/" });
       cookies.remove("jobhax_refresh_token", { path: "/" });
       cookies.remove("google_access_token_expiration", { path: "/" });
+      cookies.remove("google_login_first_instance", { path: "/" });
       cookies.remove("jobhax_access_token_expiration", { path: "/" });
       cookies.remove("remember_me", { path: "/" });
       cookies.remove("user_type", { path: "/" });
@@ -349,17 +352,18 @@ class App extends Component {
 
   async checkNotifications() {
     await this.handleTokenExpiration("app checkNotifications");
-    axiosCaptcha(notificationsRequest.url, notificationsRequest.config).then(
-      response => {
-        if (response.statusText === "OK") {
+    let config = { method: "GET" };
+    axiosCaptcha(NOTIFICATIONS, config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success) {
           this.notificationsList = response.data.data;
           this.setState({
             notificationsList: this.notificationsList
           });
-          IS_CONSOLE_LOG_OPEN && console.log(this.state.notificationsList);
+          return this.notificationsList;
         }
       }
-    );
+    });
   }
 
   handleSignOut() {
@@ -369,44 +373,42 @@ class App extends Component {
       isUserLoggedIn: false
     });
     event && event.preventDefault();
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("handle signout config body", logOutUserRequest.config.body);
-    logOutUserRequest.config.body.token = this.state.token.replace(
-      "Bearer ",
-      ""
-    );
-    axiosCaptcha(logOutUserRequest.url, logOutUserRequest.config, false).then(
-      response => {
-        if (response.statusText === "OK") {
-          IS_CONSOLE_LOG_OPEN && console.log(response.data);
-          if (response.data.success === true) {
-            window.gapi.auth2.getAuthInstance().signOut();
-            this.setState({
-              token: "",
-              active: false,
-              pollData: [],
-              notificationsList: [],
-              profileData: []
-            });
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(
-                "handle signOut isUserLoggedIn",
-                this.state.isUserLoggedIn
-              );
-          } else {
-            IS_CONSOLE_LOG_OPEN &&
-              console.log(response, response.data.error_message);
-            this.showAlert(
-              5000,
-              "error",
-              "Error: " + response.data.error_message
+    let config = { method: "POST" };
+    config["body"] = {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret
+    };
+    config.body.token = this.state.token.replace("Bearer ", "");
+    axiosCaptcha(USERS("logout"), config, false).then(response => {
+      if (response.statusText === "OK") {
+        IS_CONSOLE_LOG_OPEN && console.log(response.data);
+        if (response.data.success === true) {
+          window.gapi.auth2.getAuthInstance().signOut();
+          this.setState({
+            token: "",
+            active: false,
+            pollData: [],
+            notificationsList: [],
+            profileData: []
+          });
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(
+              "handle signOut isUserLoggedIn",
+              this.state.isUserLoggedIn
             );
-          }
         } else {
-          this.showAlert(5000, "error", "Something went wrong!");
+          IS_CONSOLE_LOG_OPEN &&
+            console.log(response, response.data.error_message);
+          this.showAlert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
         }
+      } else {
+        this.showAlert(5000, "error", "Something went wrong!");
       }
-    );
+    });
   }
 
   showAlert(time, type, message) {
@@ -498,11 +500,12 @@ class App extends Component {
               path="/profile"
               render={() => (
                 <ProfilePage
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
                   setProfilePhotoUrlInHeader={this.reRunComponentDidUpdate}
+                  notificationsList={this.state.notificationsList}
+                  notificationCheck={this.checkNotifications}
                 />
               )}
             />
@@ -511,10 +514,10 @@ class App extends Component {
               path="/blogs"
               render={() => (
                 <Blog
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
+                  user={this.state.user}
                 />
               )}
             />
@@ -528,13 +531,10 @@ class App extends Component {
               path="/dashboard"
               render={() => (
                 <Dashboard
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
                   syncResponseTimestamp={this.state.syncResponseTimestamp}
-                  isFirstLoginWithGoogle={this.state.isFirstLoginWithGoogle}
-                  passStatesFromDashboard={this.passStatesFromDashboard}
                 />
               )}
             />
@@ -543,7 +543,6 @@ class App extends Component {
               path="/metrics"
               render={() => (
                 <Metrics
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
@@ -555,6 +554,7 @@ class App extends Component {
               path="/alumni"
               render={() => (
                 <Alumni
+                  alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
                 />
@@ -568,6 +568,7 @@ class App extends Component {
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
+                  user={this.state.user}
                 />
               )}
             />
@@ -576,19 +577,6 @@ class App extends Component {
               path="/mentors"
               render={() => (
                 <Mentors
-                  active={this.state.active}
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/metricsGlobal"
-              render={() => (
-                <MetricsGlobal
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
@@ -600,7 +588,6 @@ class App extends Component {
               path="/companies"
               render={() => (
                 <Companies
-                  active={this.state.active}
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
@@ -647,11 +634,7 @@ class App extends Component {
               path="/underconstruction"
               render={() => <UnderConstruction />}
             />
-            <Route
-              exact
-              path="/faqs"
-              render={() => <FAQ active={this.state.active} />}
-            />
+            <Route exact path="/faqs" render={() => <FAQ />} />
             <Route
               exact
               path="/action"
@@ -713,11 +696,6 @@ class App extends Component {
             />
             <Route
               exact
-              path="/metricsGlobal"
-              render={() => <Redirect to="/signin" />}
-            />
-            <Route
-              exact
               path="/companies"
               render={() => <Redirect to="/signin" />}
             />
@@ -737,7 +715,6 @@ class App extends Component {
               render={() => (
                 <SignIn
                   googleAuth={this.googleAuth}
-                  passStatesFromSignin={this.passStatesFromSignin}
                   setIsUserLoggedIn={this.setIsUserLoggedIn}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
                   alert={this.showAlert}
@@ -753,17 +730,12 @@ class App extends Component {
                   googleAuth={this.googleAuth}
                   alert={this.showAlert}
                   setIsAuthenticationChecking={this.setIsAuthenticationChecking}
-                  passStatesFromSignin={this.passStatesFromSignin}
                   setIsUserLoggedIn={this.setIsUserLoggedIn}
                   cookie={this.cookie}
                 />
               )}
             />
-            <Route
-              exact
-              path="/faqs"
-              render={() => <FAQ active={this.state.active} />}
-            />
+            <Route exact path="/faqs" render={() => <FAQ />} />
             <Route
               exact
               path="/blogs"

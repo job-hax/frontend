@@ -5,10 +5,7 @@ import {
   IS_CONSOLE_LOG_OPEN
 } from "../../../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../../../utils/api/fetch_api";
-import {
-  deleteJobRequest,
-  updateJobStatusRequest
-} from "../../../../../utils/api/requests.js";
+import { JOB_APPS } from "../../../../../utils/constants/endpoints.js";
 
 class MoveOptions extends React.Component {
   constructor(props) {
@@ -33,10 +30,9 @@ class MoveOptions extends React.Component {
     const body = {
       jobapp_id: card.id
     };
-    let { url, config } = deleteJobRequest;
-    IS_CONSOLE_LOG_OPEN && console.log("delete job request body\n", body);
+    let config = { method: "DELETE" };
     config.body = body;
-    axiosCaptcha(url, config).then(response => {
+    axiosCaptcha(JOB_APPS, config).then(response => {
       IS_CONSOLE_LOG_OPEN &&
         console.log("delete job request response\n", response, card);
       if (response.statusText === "OK") {
@@ -55,16 +51,15 @@ class MoveOptions extends React.Component {
       status_id: card.application_status.id,
       rejected: is_rejected
     };
-    let { url, config } = updateJobStatusRequest;
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("update to rejected request body\n", body);
+    let config = { method: "PUT" };
     config.body = body;
-    axiosCaptcha(url, config).then(response => {
+    axiosCaptcha(JOB_APPS, config).then(response => {
       IS_CONSOLE_LOG_OPEN &&
         console.log("update to rejected request response\n", response, card);
       if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log("function ", columnName, card.id);
-        moveToRejected(columnName, card, is_rejected);
+        if (response.data.success) {
+          moveToRejected(columnName, card, is_rejected);
+        }
       }
     });
   }

@@ -2,11 +2,11 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { linkedInAccessTokenRequester } from "../../../utils/helpers/oAuthHelperFunctions.js";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import ChangePassword from "../ChangePassword/ChangePassword.jsx";
-import { linkSocialAccountRequest } from "../../../utils/api/requests";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
+import { jobHaxClientId, jobHaxClientSecret } from "../../../config/config";
+import { USERS } from "../../../utils/constants/endpoints";
 
 class LinkedInOAuthAction extends React.Component {
   constructor(props) {
@@ -26,55 +26,30 @@ class LinkedInOAuthAction extends React.Component {
       if (param.substring(0, 6) === "?code=") {
         let authCode = param.split("code=")[1];
         IS_CONSOLE_LOG_OPEN && console.log("authCode", authCode);
-        linkSocialAccountRequest.config.body.provider = "linkedin-oauth2";
-        linkSocialAccountRequest.config.body.token = authCode;
-        await axiosCaptcha(
-          linkSocialAccountRequest.url("link_social_account"),
-          linkSocialAccountRequest.config
-        ).then(response => {
-          if (response.statusText === "OK") {
-            IS_CONSOLE_LOG_OPEN && console.log(response);
+        let config = { method: "POST" };
+        config.body = {
+          client_id: jobHaxClientId,
+          client_secret: jobHaxClientSecret,
+          provider: "linkedin-oauth2"
+        };
+        config.body.token = authCode;
+        await axiosCaptcha(USERS("linkSocialAccount"), config).then(
+          response => {
+            if (response.statusText === "OK") {
+              IS_CONSOLE_LOG_OPEN && console.log(response);
+            }
           }
-        });
+        );
         this.setState({ code: authCode, redirect: "signup" });
         window.close();
-        {
-          /*
-        linkedInAccessTokenRequester(authCode);
-        ---*---
-        axiosCaptcha(
-          getUsersRequest.url(action + "?code=" + code),
-          getUsersRequest.config
-        ).then(response => {
-          if (response.statusText === "OK") {
-            if (response.data.success === true) {
-              if (action === "activate") {
-                this.setState({ redirect: "signin" });
-                this.props.alert(
-                  5000,
-                  "success",
-                  "Your LinekdIn account has synced successfully!"
-                );
-              } else if (action === "check_forgot_password") {
-                this.setState({ redirect: "check_forgot_password" });
-              }
-            } else {
-              this.props.alert(5000, "error", "Something went wrong!");
-              this.setState({ redirect: "home" });
-            }
-          } else {
-            this.props.alert(5000, "error", "Something went wrong!");
-          }
-        });
-      */
-        }
       } else {
         this.setState({ redirect: "home" });
       }
     } else {
       const error = params[0].split("=")[1];
       const description = params[1].split("=")[1];
-      IS_CONSOLE_LOG_OPEN && console.log("error", error, "\ndescription", description);
+      IS_CONSOLE_LOG_OPEN &&
+        console.log("error", error, "\ndescription", description);
       this.setState({ redirect: "profile" });
       this.props.alert(5000, "error", description);
     }
@@ -82,7 +57,7 @@ class LinkedInOAuthAction extends React.Component {
   render() {
     if (this.state.redirect === "home") {
       return <Redirect to="/home" />;
-    } else if (this.state.redirect === "check_forgot_password") {
+    } else if (this.state.redirect === "validateForgotPassword") {
       return <ChangePassword code={this.state.code} alert={this.props.alert} />;
     } else if (this.state.redirect === "signin") {
       return <Redirect to="/signin" />;

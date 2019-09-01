@@ -3,10 +3,7 @@ import { Pagination, Input, Menu, Dropdown, Icon, Button } from "antd";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import {
-  getAlumniRequest,
-  getAutoCompleteRequest
-} from "../../utils/api/requests.js";
+import { ALUMNI, AUTOCOMPLETE } from "../../utils/constants/endpoints.js";
 import AlumniCard from "../Partials/AlumniCards/AlumniCard.jsx";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import Footer from "../Partials/Footer/Footer.jsx";
@@ -89,8 +86,8 @@ class Alumni extends React.Component {
         : type == "states"
         ? "countries/" + id + "/states"
         : "colleges/" + type;
-    const { url, config } = getAutoCompleteRequest;
-    axiosCaptcha(url(newType), config).then(response => {
+    let config = { method: "GET" };
+    axiosCaptcha(AUTOCOMPLETE(newType), config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
           IS_CONSOLE_LOG_OPEN && console.log(response.data.data);
@@ -125,9 +122,13 @@ class Alumni extends React.Component {
       "state_id",
       "position_id"
     ]);
-    const { url, config } = getAlumniRequest;
+    let config = { method: "GET" };
     let newUrl =
-      url + "?page=" + this.state.pageNo + "&page_size=" + this.state.pageSize;
+      ALUMNI +
+      "?page=" +
+      this.state.pageNo +
+      "&page_size=" +
+      this.state.pageSize;
     parameters.forEach(
       parameter =>
         (newUrl = newUrl + "&" + parameter.name + "=" + parameter.value)

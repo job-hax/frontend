@@ -185,6 +185,12 @@
                     overflow: hidden;
                 }
 
+                .short-description {
+                    color: gray;
+                    font-size: 110%;
+                    margin: 0 0 8px 0;
+                }
+
                 .host-info {
                     display: flex;
                     justify-content: flex-start;
@@ -416,5 +422,16 @@
 
             }
         }
+    }
+
+    .fixed-button {
+        position: fixed;
+        display: flex;
+        align-items: center;
+        top: 80px;
+        right: 20px;
+        border-radius: 20px;
+        z-index: 201;
+        box-shadow: 1px 1px 4px 4px rgba(0, 0, 0, 0.2);
     }
 }
