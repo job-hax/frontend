@@ -3,11 +3,9 @@ import { Icon, Input, AutoComplete } from "antd";
 import ReactTelInput from "react-telephone-input";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import {
-  postContactsRequest,
-  getAutoCompleteRequest
-} from "../../../utils/api/requests.js";
+import { CONTACTS, AUTOCOMPLETE } from "../../../utils/constants/endpoints";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
+
 import "./style.scss";
 
 const { TextArea } = Input;
@@ -71,22 +69,19 @@ class ContactCardOnEdit extends React.Component {
       body["contact_id"] = this.state.contactId;
     }
     await this.props.handleTokenExpiration("contacts add/edit handleSubmit");
-    let { url, config } = postContactsRequest;
-    config.body = body;
-    axiosCaptcha(url(`${this.props.type + "_contact"}`), config).then(
-      response => {
-        if (response.statusText === "OK") {
-          if (response.data.success === true) {
-            let contact = response.data.data;
-            this.props.type === "add" && this.props.addToContactsList(contact);
-            this.props.type === "update" &&
-              this.props.editContactsList(contact);
-            IS_CONSOLE_LOG_OPEN && console.log("contact added", contact);
-            this.props.setContactEditDisplay(false);
-          }
+    let config = { body: body };
+    config.method = this.props.type == "add" ? "POST" : "PUT";
+    axiosCaptcha(CONTACTS(this.props.card.id), config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          let contact = response.data.data;
+          this.props.type === "add" && this.props.addToContactsList(contact);
+          this.props.type === "update" && this.props.editContactsList(contact);
+          IS_CONSOLE_LOG_OPEN && console.log("contact added", contact);
+          this.props.setContactEditDisplay(false);
         }
       }
-    );
+    });
   }
 
   async handleDelete() {
@@ -94,13 +89,14 @@ class ContactCardOnEdit extends React.Component {
       contact_id: this.state.contactId
     };
     await this.props.handleTokenExpiration("contacts edit deleteSubmit");
-    let { url, config } = postContactsRequest;
+    let config = { method: "DELETE" };
     config.body = body;
-    axiosCaptcha(url("delete_contact"), config).then(response => {
+    axiosCaptcha(CONTACTS(this.props.card.id), config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success === true) {
           this.props.deleteFromContactsList(this.state.contactId);
-          IS_CONSOLE_LOG_OPEN && console.log("contact deleted", contactId);
+          IS_CONSOLE_LOG_OPEN &&
+            console.log("contact deleted", this.state.contactId);
           this.props.setContactEditDisplay(false);
         }
       }
@@ -146,18 +142,20 @@ class ContactCardOnEdit extends React.Component {
   handlePositionsSearch(value) {
     this.setState({ position: value });
     this.setIsClickOutsideActive(false);
-    const { url, config } = getAutoCompleteRequest;
-    let newUrl = url("positions") + "?q=" + value + "&count=5";
+    let config = { method: "GET" };
+    let newUrl = AUTOCOMPLETE("positions") + "?q=" + value + "&count=5";
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log(response.data);
-        let bufferPositionsList = [];
-        response.data.data.forEach(position =>
-          bufferPositionsList.push(position.job_title)
-        );
-        this.setState({
-          autoCompletePositionsData: bufferPositionsList
-        });
+        if (response.data.success) {
+          IS_CONSOLE_LOG_OPEN && console.log(response.data);
+          let bufferPositionsList = [];
+          response.data.data.forEach(position =>
+            bufferPositionsList.push(position.job_title)
+          );
+          this.setState({
+            autoCompletePositionsData: bufferPositionsList
+          });
+        }
       }
     });
   }

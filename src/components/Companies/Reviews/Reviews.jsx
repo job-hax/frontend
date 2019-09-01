@@ -4,7 +4,7 @@ import { Rate, Radio, Select, Menu, Dropdown, Button, Icon } from "antd";
 import CompanyRating from "./CompanyRating/CompanyRating.jsx";
 import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { getReviewsRequest } from "../../../utils/api/requests.js";
+import { REVIEWS } from "../../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
@@ -46,14 +46,15 @@ class Reviews extends React.Component {
       await this.props.handleTokenExpiration(
         "reviews handlePositionFilterChange"
       );
+      let config = { method: "GET" };
       let newReviewsUrl =
-        getReviewsRequest.url +
+        REVIEWS +
         "?company_id=" +
         this.props.company_id +
         "&position_id=" +
         id +
         "&all_reviews=true";
-      axiosCaptcha(newReviewsUrl, getReviewsRequest.config).then(response => {
+      axiosCaptcha(newReviewsUrl, config).then(response => {
         if (response.statusText === "OK") {
           this.setState({ reviewsList: response.data.data });
           IS_CONSOLE_LOG_OPEN &&
@@ -101,26 +102,22 @@ class Reviews extends React.Component {
                       )}
                     </div>
                     <div className="company-review-text-container">
-                      {review.pros != null &&
-                        review.pros != "" &&
-                        (
-                            <div>
-                              <label>Pros:</label>
-                              <div className="company-review-text">
-                                {review.pros}
-                              </div>
-                            </div>
-                          )}
-                      {review.cons != null &&
-                        review.cons != "" &&
-                        (
-                            <div>
-                              <label>Cons:</label>
-                              <div className="company-review-text">
-                                {review.cons}
-                              </div>
-                            </div>
-                          )}
+                      {review.pros != null && review.pros != "" && (
+                        <div>
+                          <label>Pros:</label>
+                          <div className="company-review-text">
+                            {review.pros}
+                          </div>
+                        </div>
+                      )}
+                      {review.cons != null && review.cons != "" && (
+                        <div>
+                          <label>Cons:</label>
+                          <div className="company-review-text">
+                            {review.cons}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="body-company-ratings">
@@ -177,17 +174,16 @@ class Reviews extends React.Component {
                   </div>
                 </div>
                 {review.interview_notes != null &&
-                  review.interview_notes !="" && 
-                  (
-                      <div className="interview-experience">
-                        <label style={{ margin: "10px 4px 6px 0px" }}>
-                          Interview Experience:
-                        </label>
-                        <div className="interview-notes">
-                          {review.interview_notes}
-                        </div>
+                  review.interview_notes != "" && (
+                    <div className="interview-experience">
+                      <label style={{ margin: "10px 4px 6px 0px" }}>
+                        Interview Experience:
+                      </label>
+                      <div className="interview-notes">
+                        {review.interview_notes}
                       </div>
-                    )}
+                    </div>
+                  )}
               </div>
             </div>
           </div>

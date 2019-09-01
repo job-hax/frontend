@@ -3,7 +3,7 @@ import { Link, Redirect } from "react-router-dom";
 import { Menu, Icon } from "antd";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { syncUserEmailsRequest } from "../../../utils/api/requests.js";
+import { USERS } from "../../../utils/constants/endpoints";
 import NotificationsBox from "../NotificationsBox/NotificationsBox.jsx";
 import "./style.scss";
 
@@ -17,7 +17,12 @@ class Header extends Component {
         this.props.cookie("get", "user_type") != ("" || null)
           ? this.props.cookie("get", "user_type")
           : 0,
-      current: window.location.pathname,
+      current:
+        window.location.pathname != "/blogs"
+          ? window.location.pathname
+          : window.location.search != "?edit=true"
+          ? window.location.pathname
+          : window.location.pathname + window.location.search,
       request: false
     };
 
@@ -61,18 +66,19 @@ class Header extends Component {
       );
     } else {
       this.props.alert(3000, "info", "Syncing with your email...");
-      const { url, config } = syncUserEmailsRequest;
+      let config = { method: "GET" };
       await this.props.handleTokenExpiration("header handleSyncUserEmail");
-      axiosCaptcha(url, config).then(response => {
+      axiosCaptcha(USERS("syncUserEmails"), config).then(response => {
         if (response.statusText === "OK") {
-          this.props.passStatesFromHeader(new Date().getTime());
+          if (response.data.success) {
+            this.props.passStatesFromHeader(new Date().getTime());
+          }
         }
       });
     }
   }
 
   async handleMenuClick(event) {
-    console.log("click ", event);
     this.setState({ request: true });
     let page = event.key;
     if (page == "/logout") {
@@ -80,13 +86,19 @@ class Header extends Component {
       this.props.handleSignOut();
     } else if (page == "/events") {
       if (window.location.pathname.substring(0, 6) == "/event") {
-        window.location.assign("/events");
+        this.setState({ current: "action?type=redirect&/events" });
+      } else {
+        this.setState({ current: page });
+      }
+    } else if (page == "/blogs?edit=true") {
+      if (window.location.pathname.substring(0, 5) == "/blog") {
+        this.setState({ current: "action?type=redirect&/blogs?edit=true" });
       } else {
         this.setState({ current: page });
       }
     } else if (page == "/blogs") {
       if (window.location.pathname.substring(0, 5) == "/blog") {
-        window.location.assign("/blogs");
+        this.setState({ current: "action?type=redirect&/blogs" });
       } else {
         this.setState({ current: page });
       }
@@ -96,7 +108,6 @@ class Header extends Component {
   }
 
   render() {
-    console.log("page", this.state.current, window.location.pathname, this);
     if (
       this.state.current &&
       this.state.current != "logout" &&
@@ -123,7 +134,9 @@ class Header extends Component {
           <div className="jobhax-logo-container">
             <div
               className="jobhax-logo"
-              onClick={() => this.setState({ current: "/dashboard", request: true })}
+              onClick={() =>
+                this.setState({ current: "/dashboard", request: true })
+              }
             />
           </div>
         </div>
@@ -213,6 +226,7 @@ class Header extends Component {
               }
             >
               <Menu.Item key="/profile">Profile</Menu.Item>
+              <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
               <Menu.Item key="/logout">
                 <Icon type="logout" />
                 Logout
@@ -253,12 +267,6 @@ class Header extends Component {
             <Link to="/mentors">
               <img src="../../../src/assets/icons/MentorIcon.png" />
               <span>Mentorship</span>
-            </Link>
-          </div>
-          <div className="header-icon general tooltips">
-            <Link to="/metricsGlobal">
-              <img src="../../../src/assets/icons/globe.png" />
-              <span>Aggregated Metrics</span>
             </Link>
           </div>
           <div className="header-icon general tooltips">

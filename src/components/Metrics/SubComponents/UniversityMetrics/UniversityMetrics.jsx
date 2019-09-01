@@ -3,7 +3,7 @@ import React from "react";
 import DetailedMetricsGroup from "../Containers/DetailedGroupContainer.jsx";
 import SummaryMetricsGroup from "../Containers/SummaryGroupContainer.jsx";
 import { axiosCaptcha } from "../../../../utils/api/fetch_api.js";
-import { getMetrics } from "../../../../utils/api/requests.js";
+import { METRICS } from "../../../../utils/constants/endpoints.js";
 
 class UniversityMetrics extends React.Component {
   constructor(props) {
@@ -28,27 +28,32 @@ class UniversityMetrics extends React.Component {
       this.state.isInitialRequest === "beforeRequest"
     ) {
       this.setState({ isInitialRequest: true });
+      let config = { method: "GET" };
       axiosCaptcha(
-        getMetrics.url("aggregated/generic"),
-        getMetrics.config
+        METRICS("aggregated/generic/?public=" + this.props.isPublic),
+        config
       ).then(response => {
         if (response.statusText === "OK") {
-          this.data = response.data.data;
-          this.setState({
-            genericData: this.data
-          });
+          if (response.data.success) {
+            this.data = response.data.data;
+            this.setState({
+              genericData: this.data
+            });
+          }
         }
       });
       axiosCaptcha(
-        getMetrics.url("aggregated/detailed"),
-        getMetrics.config
+        METRICS("aggregated/detailed/?public=" + this.props.isPublic),
+        config
       ).then(response => {
         if (response.statusText === "OK") {
-          this.data = response.data.data;
-          this.setState({
-            detailedData: this.data,
-            isInitialRequest: false
-          });
+          if (response.data.success) {
+            this.data = response.data.data;
+            this.setState({
+              detailedData: this.data,
+              isInitialRequest: false
+            });
+          }
         }
       });
     }
