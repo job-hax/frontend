@@ -57,8 +57,6 @@ class BlogEditable extends React.Component {
       voted: this.props.blog.voted,
       snippet: this.props.blog.snippet,
       publisher: this.props.blog.publisher_profile,
-      isEditingTitle: true,
-      isEditingSnippet: true,
       isEditingContent: false,
       upVoted: false,
       downVoted: false,
@@ -73,6 +71,7 @@ class BlogEditable extends React.Component {
     this.saveBlogData = this.saveBlogData.bind(this);
     this.postBlogData = this.postBlogData.bind(this);
     this.handlePublicCheckbox = this.handlePublicCheckbox.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
@@ -207,60 +206,52 @@ class BlogEditable extends React.Component {
         </div>
         <div className="blog-info">
           <div>
-            {isEditingTitle ? (
-              <div
+            <div
+              style={{
+                width: 668,
+                overflow: "hidden",
+                borderBottomRightRadius: 36
+              }}
+            >
+              <TextArea
+                placeholder="Add title..."
+                autosize={{ minRows: 1, maxRows: 2 }}
                 style={{
-                  width: 668,
-                  overflow: "hidden",
-                  borderBottomRightRadius: 36
+                  border: "none",
+                  boxShadow: "none",
+                  padding: 0,
+                  minWidth: 668
                 }}
-              >
-                <TextArea
-                  placeholder="Add title..."
-                  autosize={{ minRows: 1, maxRows: 2 }}
-                  style={{
-                    border: "none",
-                    boxShadow: "none",
-                    padding: 0,
-                    minWidth: 668
-                  }}
-                  className="title"
-                  id="title"
-                  value={title}
-                  onChange={e => this.onChange(e)}
-                />
-              </div>
-            ) : (
-              <div className="title">{title}</div>
-            )}
+                className="title"
+                id="title"
+                value={title}
+                onChange={e => this.onChange(e)}
+              />
+            </div>
           </div>
           <div className="snippet">
-            {isEditingSnippet ? (
-              <div
+            <div
+              style={{
+                width: 668,
+                overflow: "hidden",
+                borderBottomRightRadius: 60
+              }}
+            >
+              <TextArea
+                placeholder="Add snippet..."
+                autosize={{ minRows: 2, maxRows: 4 }}
                 style={{
-                  width: 668,
-                  overflow: "hidden",
-                  borderBottomRightRadius: 60
+                  border: "none",
+                  boxShadow: "none",
+                  padding: 0,
+                  minWidth: 668
                 }}
-              >
-                <TextArea
-                  placeholder="Add snippet..."
-                  autosize={{ minRows: 2, maxRows: 4 }}
-                  style={{
-                    border: "none",
-                    boxShadow: "none",
-                    padding: 0,
-                    minWidth: 668
-                  }}
-                  className="snippet"
-                  id="snippet"
-                  value={snippet}
-                  onChange={e => this.onChange(e)}
-                />
-              </div>
-            ) : (
-              <div className="snippet">{snippet}</div>
-            )}
+                className="snippet"
+                id="snippet"
+                value={snippet}
+                onChange={e => this.onChange(e)}
+              />
+            </div>
           </div>
           <div className="info-container">
             <div className="info">
@@ -446,7 +437,7 @@ class BlogEditable extends React.Component {
     );
   }
 
-  render() {
+  generateFixedButtons() {
     const {
       content,
       title,
@@ -463,58 +454,64 @@ class BlogEditable extends React.Component {
       header_image != blog.header_image ||
       is_public != blog.is_public;
     const isRequiredFieldsFilled = content && title && snippet && header_image;
+    return (
+      <div className="fixed-button" style={{ boxShadow: "none" }}>
+        <div className="fixed-button" style={{ boxShadow: "none" }}>
+          {isAnytingEdited && (
+            <Button
+              type="primary"
+              shape="circle"
+              size="large"
+              onClick={() => this.saveBlogData()}
+            >
+              <Icon type="save" />
+            </Button>
+          )}
+
+          {isAnytingEdited && isRequiredFieldsFilled && (
+            <Button
+              type="primary"
+              style={{ margin: "0 0 0 8px" }}
+              onClick={() => this.postBlogData()}
+            >
+              Send for Approval
+            </Button>
+          )}
+        </div>
+        {isRequiredFieldsFilled && (
+          <div
+            className="fixed-button"
+            style={{ boxShadow: "none", margin: "48px 0 0 0" }}
+          >
+            <Checkbox
+              checked={!this.state.is_public}
+              onChange={e => this.handlePublicCheckbox(e)}
+            >
+              Share only with school
+            </Checkbox>
+          </div>
+        )}
+        {updated_at && (
+          <div
+            className="no-data"
+            style={{ boxShadow: "none", margin: "80px 8px 0 0" }}
+          >
+            {"last update " +
+              makeTimeBeautiful(this.state.updated_at, "dateandtime")}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  render() {
     history.pushState(null, null, location.href);
     window.onpopstate = function() {
       window.location.assign("blogs");
     };
     return (
       <div className="blog-details">
-        <div className="fixed-button" style={{ boxShadow: "none" }}>
-          <div className="fixed-button" style={{ boxShadow: "none" }}>
-            {isAnytingEdited && (
-              <Button
-                type="primary"
-                shape="circle"
-                size="large"
-                onClick={() => this.saveBlogData()}
-              >
-                <Icon type="save" />
-              </Button>
-            )}
-
-            {isAnytingEdited && isRequiredFieldsFilled && (
-              <Button
-                type="primary"
-                style={{ margin: "0 0 0 8px" }}
-                onClick={() => this.postBlogData()}
-              >
-                Send for Approval
-              </Button>
-            )}
-          </div>
-          {isRequiredFieldsFilled && (
-            <div
-              className="fixed-button"
-              style={{ boxShadow: "none", margin: "48px 0 0 0" }}
-            >
-              <Checkbox
-                checked={!this.state.is_public}
-                onChange={e => this.handlePublicCheckbox(e)}
-              >
-                Share only with school
-              </Checkbox>
-            </div>
-          )}
-          {updated_at && (
-            <div
-              className="no-data"
-              style={{ boxShadow: "none", margin: "80px 8px 0 0" }}
-            >
-              {"last update " +
-                makeTimeBeautiful(this.state.updated_at, "dateandtime")}
-            </div>
-          )}
-        </div>
+        {this.generateFixedButtons()}
         {this.generateBlogHeader()}
         {this.generateBlogBody()}
       </div>
