@@ -9,6 +9,7 @@ import EventDetails from "./EventDetails.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 
 import "./style.scss";
+import EventEditable from "./EventEditable.jsx";
 
 class Events extends React.Component {
   constructor(props) {
@@ -22,8 +23,63 @@ class Events extends React.Component {
       pagination: {},
       pageNo: 1,
       pageSize: 9,
-      detail_event_id: window.location.search.split("=")[1] || null,
-      detail_event: {}
+      detail_event_id:
+        window.location.search
+          .split("&")
+          .slice(-1)[0]
+          .split("=")[1] != "true"
+          ? window.location.search.split("=")[1]
+          : null,
+      detail_event: {},
+      edit:
+        window.location.search
+          .split("&")
+          .slice(-1)[0]
+          .split("=")[1] == "true"
+          ? true
+          : false,
+      editRequested: false,
+      edit_event_id:
+        window.location.search
+          .split("&")
+          .slice(-1)[0]
+          .split("=")[1] != "true"
+          ? null
+          : window.location.search
+              .split("&")
+              .slice(-1)[0]
+              .split("=")[0] == "edit"
+          ? window.location.search.split("&")[0].split("=")[1]
+          : null,
+      user_type: this.props.cookie("get", "user_type"),
+      editable_event: {
+        attended: true,
+        attendee_count: 0,
+        attendee_list: [],
+        created_at: new Date().toISOString(),
+        details: "",
+        event_date_start: new Date().toISOString(),
+        event_date_end: new Date(
+          new Date().setTime(new Date().getTime() + 3 * 60 * 60 * 1000)
+        ).toISOString(),
+        id: null,
+        event_type: {
+          id: 3,
+          name: "MeetUp"
+        },
+        header_image: "",
+        is_publish: false,
+        is_public: false,
+        title: "",
+        location_address: "",
+        location_title: "",
+        location_lat: 37.389194,
+        location_lon: -121.9306859,
+        spot_count: 0,
+        short_description: "",
+        host_user: this.props.user,
+        updated_at: null
+      }
     };
 
     this.setEventDetail = this.setEventDetail.bind(this);
@@ -33,7 +89,11 @@ class Events extends React.Component {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       this.setState({ isInitialRequest: true });
       if (this.state.detail_event_id == null) {
-        await this.getData("initialRequest");
+        if (this.state.edit_event_id == null) {
+          await this.getData("initialRequest");
+        } else {
+          await this.getData("editRequest");
+        }
       } else {
         await this.getData("detailedRequest");
       }
@@ -67,13 +127,15 @@ class Events extends React.Component {
     this.setState({ isWaitingResponse: true });
     let config = { method: "GET" };
     let newUrl =
-      this.state.detail_event_id == null
+      this.state.detail_event_id == null && this.state.edit_event_id == null
         ? EVENTS +
           "?page=" +
           this.state.pageNo +
           "&page_size=" +
           this.state.pageSize
-        : EVENTS + this.state.detail_event_id + "/";
+        : this.state.edit_event_id == null
+        ? EVENTS + this.state.detail_event_id + "/"
+        : EVENTS + this.state.edit_event_id + "/";
     await this.props.handleTokenExpiration("events getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
@@ -95,6 +157,16 @@ class Events extends React.Component {
           } else if (requestType === "detailedRequest") {
             this.setState({
               detail_event: response.data.data,
+              isWaitingResponse: false,
+              isInitialRequest: false
+            });
+          } else if (requestType === "editRequest") {
+            if (response.data.data.mine) {
+              this.setState({
+                editable_event: response.data.data
+              });
+            }
+            this.setState({
               isWaitingResponse: false,
               isInitialRequest: false
             });
@@ -151,19 +223,46 @@ class Events extends React.Component {
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing events..." />;
+    else if (this.state.editRequested == true) {
+      return (
+        <Redirect
+          to={
+            "action?type=redirect&/events?id=" +
+            this.state.edit_event_id +
+            "&edit=true"
+          }
+        />
+      );
+    } else if (
+      this.state.edit == true &&
+      (this.props.user.user_type != (3 || 4) &&
+        this.props.user.is_admin != true)
+    ) {
+      return <Redirect to={"action?type=redirect&/events"} />;
+    }
     return (
       <div>
         <div className="events-page-big-container">
-          <div>
-            {this.state.detail_event_id == null ? (
-              this.generateEventsGrid()
-            ) : (
-              <EventDetails
-                event={this.state.detail_event}
+          {this.state.edit != true ? (
+            <div>
+              {this.state.detail_event_id == null ? (
+                this.generateEventsGrid()
+              ) : (
+                <EventDetails
+                  event={this.state.detail_event}
+                  handleTokenExpiration={this.props.handleTokenExpiration}
+                />
+              )}
+            </div>
+          ) : (
+            <div>
+              <EventEditable
+                event={this.state.editable_event}
                 handleTokenExpiration={this.props.handleTokenExpiration}
+                alert={this.props.alert}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
         <div className={footerClass}>
           <Footer />

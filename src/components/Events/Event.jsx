@@ -3,6 +3,7 @@ import { Icon } from "antd";
 
 import "./style.scss";
 import { makeTimeBeautiful } from "../../utils/constants/constants";
+import { apiRoot } from "../../utils/constants/endpoints";
 
 class Event extends React.Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class Event extends React.Component {
         onClick={() => this.props.setEventDetail(event.id)}
       >
         <div className="image">
-          <img src={"https://backend.jobhax.com" + event.header_image} />
+          <img src={apiRoot + event.header_image} />
         </div>
         <div className="date-box">
           <div className="month">{time.split("-")[1].toUpperCase()}</div>
