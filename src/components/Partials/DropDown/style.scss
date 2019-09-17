@@ -9,13 +9,13 @@
         display: flex;
         justify-content: center;
         width: fit-content;
-        color: #261268;
+        color: black;
         height: 30px;
         border-radius: 8px;
     }
 
     .filter-indicator {
-        color: #261268;
+        color: black;
         font-weight: 500;
         margin: 12px;
     }
@@ -47,7 +47,7 @@
         .dropdown-item {
             margin: 2px;
             padding-right: 8px;
-            border-bottom: 1px solid #26126870;
+            border-bottom: 1px solid black70;
             cursor: pointer;
         }
 

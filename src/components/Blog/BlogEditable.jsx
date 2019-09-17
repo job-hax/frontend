@@ -192,9 +192,9 @@ class BlogEditable extends React.Component {
       isEditingSnippet
     } = this.state;
     let photoUrl =
-      publisher.profile_photo.substring(0, 4) == "http"
-        ? publisher.profile_photo
-        : apiRoot + publisher.profile_photo;
+      publisher.profile_photo != ("" || null)
+        ? apiRoot + publisher.profile_photo
+        : "../../../src/assets/icons/User@3x.png";
     let time = makeTimeBeautiful(created_at, "dateandtime");
     let longDate = makeTimeBeautiful(created_at, "longDate");
     let joinDate = makeTimeBeautiful(publisher.date_joined, "longDate");

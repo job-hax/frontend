@@ -1,126 +1,293 @@
-.column-container {
+$column_header_height: 50px;
+$column_header_height_add_job: 162px;
+$rejected_button_height: 48px;
+$column_parts_margin: 8px;
+
+
+
+.column-big-container {
   margin: 0 auto;
   width: 100%;
   max-width: 330px;
   min-width: 240px;
+  margin: 4px 8px 4px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
-  .column-header-container {
-    font-size: 20px;
-    font-weight: bold;
-    padding-bottom: 15px;
+  .column-ongoings-container {
+    background-color: rgb(238, 238, 238);
+    border-radius: 12px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    &.--single {
+      min-height: -webkit-calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
+      min-height: -moz-calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
+      min-height: calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
+      max-height: -webkit-calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
+      max-height: -moz-calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
+      max-height: calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
+    }
+
+    &.--double {
+      min-height: -webkit-calc(50% - #{$column_parts_margin});
+      min-height: -moz-calc(50% - #{$column_parts_margin});
+      min-height: calc(50% - #{$column_parts_margin});
+      max-height: -webkit-calc(50% - #{$column_parts_margin});
+      max-height: -moz-calc(50% - #{$column_parts_margin});
+      max-height: calc(50% - #{$column_parts_margin});
+    }
 
     &.--column-active {
-      background-color: rgba(228, 220, 255, 1);
+      background-color: rgba(63, 129, 216, 0.3);
     }
 
     &.--column-dropable {
-      background-color: rgba(228, 220, 255, 0.6);
+      background-color: rgba(63, 124, 216, 0.1);
     }
 
-    &.no-card {
-      border-radius: 4px;
-    }
-
-    &.add-job-height {
-      height: 200px;
-    }
-
-    .column-header {
-      font-size: 18px;
-      font-weight: 600;
+    .column-container {
+      position: relative;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      max-height: 100%;
+      min-height: 100%;
+      flex-shrink: 1;
+      width: 105%;
 
-      &.column-icon {
-        margin-top: 30px;
+      .column-header-container {
+        font-size: 20px;
+        height: $column_header_height;
+        font-weight: bold;
+        max-width: 330px;
+        min-width: 240px;
+        padding-bottom: 8px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        position: relative;
+        //background-color: rgb(238, 238, 238);
+        z-index: 2;
 
-        img {
-          height: 20px;
-          width: auto;
+        &.no-card {
+          border-radius: 4px;
+        }
+
+        &.add-job-height {
+          height: 200px;
+        }
+
+        .column-header {
+          font-size: 14px;
+          font-weight: 600;
+          display: flex;
+          justify-content: start;
+          padding-left: 8px;
+
+          &.column-icon {
+            margin-top: 16px;
+
+            img {
+              height: 20px;
+              width: auto;
+            }
+          }
+
+          &.column-title {
+            margin-top: 16px;
+            margin-left: 8px;
+          }
         }
       }
 
-      &.column-title {
-        margin-top: 30px;
-        margin-left: 8px;
+      .column-body-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        min-height: -webkit-calc(100% - #{$column_header_height});
+        min-height: -moz-calc(100% - #{$column_header_height});
+        min-height: calc(100% - #{$column_header_height});
+        max-height: -webkit-calc(100% - #{$column_header_height});
+        max-height: -moz-calc(100% - #{$column_header_height});
+        max-height: calc(100% - #{$column_header_height});
+
+        .column-card-container {
+          overflow-x: hidden;
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 1;
+
+          &.middle {
+            //max-height: 57%;
+          }
+
+          &.--short {
+            min-height: -webkit-calc(100% - #{$column_header_height_add_job});
+            min-height: -moz-calc(100% - #{$column_header_height_add_job});
+            min-height: calc(100% - #{$column_header_height_add_job});
+            max-height: -webkit-calc(100% - #{$column_header_height_add_job});
+            max-height: -moz-calc(100% - #{$column_header_height_add_job});
+            max-height: calc(100% - #{$column_header_height_add_job});
+          }
+
+          &.shortest {
+            //max-height: 49%;
+          }
+        }
+
+        .job-input-button {
+          margin: 12px 16px 12px 12px;
+          width: 86%;
+          height: 30px;
+          min-height: 30px;
+          max-height: 30px;
+          border-radius: 8px;
+          background-color: white;
+          text-align: center;
+          cursor: pointer;
+          box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+
+          .button-inside {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 180%;
+            height: 100%;
+            color: rgb(150, 150, 150);
+          }
+        }
+      }
+
+      .column-indicator-container {
+        text-align: center;
+        background-color: #ecebf1;
+        font-size: 18px;
+        font-weight: 300;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        margin: 0px 15px 15px 15px;
+        box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        z-index: 10;
+
+        img {
+          width: 12px;
+          height: 6px;
+          margin-bottom: 4px;
+        }
+
+        .column-indicator-details {
+          font-size: 12px;
+          font-weight: normal;
+        }
+
+        &.--column-active {
+          background-color: rgba(228, 220, 255, 1);
+        }
+
+        &.--column-dropable {
+          background-color: rgba(228, 220, 255, 0.6);
+        }
+
+        &.ongoing-indicator {
+          padding-bottom: 15px;
+          margin-top: 165px;
+          border: 1px solid green;
+        }
+
+        &.rejected-indicator {
+          margin-bottom: -115px;
+          margin-top: 65px;
+        }
+
+        .cards-switch-button {
+          border: 0;
+        }
       }
     }
   }
 
-  .column-card-container {
-    max-height: 65.4%;
-    overflow-x: hidden;
-    height: fit-content;
-    height: -moz-fit-content;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-
-    &.--column-active {
-      background-color: rgba(228, 220, 255, 1);
-    }
-
-    &.--column-dropable {
-      background-color: rgba(228, 220, 255, 0.6);
-    }
-
-    &.middle {
-      max-height: 57%;
-    }
-
-    &.short {
-      max-height: 57.4%;
-    }
-
-    &.shortest {
-      max-height: 49%;
-    }
-  }
-
-  .column-indicator-container {
-    text-align: center;
-    background-color: #ecebf1;
-    font-size: 18px;
-    font-weight: 300;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    margin-top: 0px;
-    padding-top: 15px;
-    margin-left: 15px;
-    margin-right: 15px;
+  .column-rejecteds-container {
+    margin: $column_parts_margin auto;
     box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    z-index: 10;
+    width: 99%;
+    overflow: hidden;
 
-    img {
-      width: 12px;
-      height: 6px;
-      margin-bottom: 4px;
+    &.--double {
+      min-height: -webkit-calc(50% - #{$column_parts_margin});
+      min-height: -moz-calc(50% - #{$column_parts_margin});
+      min-height: calc(50% - #{$column_parts_margin});
+      max-height: -webkit-calc(50% - #{$column_parts_margin});
+      max-height: -moz-calc(50% - #{$column_parts_margin});
+      max-height: calc(50% - #{$column_parts_margin});
     }
 
-    .column-indicator-details {
-      font-size: 12px;
-      font-weight: normal;
+    .rejecteds-button {
+      padding: 12px;
+      width: 100%;
+      height: $rejected_button_height;
+      min-height: 30px;
+      max-height: 50px;
+      background-color: white;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+
+      .button-inside {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        font-size: 14px;
+        height: 100%;
+        color: black;
+      }
+
+      .expand-arrow {
+        height: auto;
+        width: 20px;
+
+        &.--horizontal-flip {
+          -webkit-transform: scaleY(-1);
+          transform: scaleY(-1);
+        }
+      }
     }
 
-    &.--column-active {
-      background-color: rgba(228, 220, 255, 1);
-    }
+    .column-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: -webkit-calc(100% - #{$rejected_button_height});
+      min-height: -moz-calc(100% - #{$rejected_button_height});
+      min-height: calc(100% - #{$rejected_button_height});
+      max-height: -webkit-calc(100% - #{$rejected_button_height});
+      max-height: -moz-calc(100% - #{$rejected_button_height});
+      max-height: calc(100% - #{$rejected_button_height});
+      flex-shrink: 1;
+      width: 105%;
 
-    &.--column-dropable {
-      background-color: rgba(228, 220, 255, 0.6);
-    }
+      .column-body-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        max-height: 100%;
+        justify-content: space-between;
+        position: relative;
 
-    &.ongoing-indicator {
-      padding-bottom: 15px;
-    }
-
-    &.rejected-indicator {
-      padding-bottom: 15px;
-      margin-top: -2px;
-    }
-
-    .cards-switch-button {
-      border: 0;
+        .column-card-container {
+          overflow-x: hidden;
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 1;
+        }
+      }
     }
   }
 }

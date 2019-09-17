@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Exo');
+@import url('https://fonts.googleapis.com/css?family=Helvetica');
 
 
 body {
-  font-family: Exo;
-  //color: rgb(38, 18, 104);
+  font-family: Helvetica, sans-serif;
+  color: rgb(0, 0, 0);
 }
 
 body,
@@ -11,7 +11,7 @@ html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: #ecebf1;
+  background-color: white;
 }
 
 .main-container {

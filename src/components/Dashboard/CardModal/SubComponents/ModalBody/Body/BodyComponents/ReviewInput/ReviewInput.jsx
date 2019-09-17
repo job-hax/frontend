@@ -6,7 +6,8 @@ import { IS_CONSOLE_LOG_OPEN } from "../../../../../../../../utils/constants/con
 import {
   USERS,
   REVIEWS,
-  SOURCE_TYPES
+  SOURCE_TYPES,
+  EMPLOYMENT_AUTHORIZATIONS
 } from "../../../../../../../../utils/constants/endpoints.js";
 
 import "./style.scss";
@@ -107,7 +108,7 @@ class ReviewInput extends React.Component {
     );
     let employmentAuthorizationsConfig = { method: "GET" };
     axiosCaptcha(
-      USERS("employmentAuthorizations"),
+      EMPLOYMENT_AUTHORIZATIONS,
       employmentAuthorizationsConfig
     ).then(response => {
       if (response.statusText === "OK") {

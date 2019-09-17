@@ -43,9 +43,9 @@ class EventDetails extends React.Component {
   generateEventHeader() {
     const { event } = this.props;
     let photoUrl =
-      event.host_user.profile_photo.substring(0, 4) == "http"
-        ? event.host_user.profile_photo
-        : apiRoot + event.host_user.profile_photo;
+      event.host_user.profile_photo != ("" || null)
+        ? apiRoot + event.host_user.profile_photo
+        : "../../../src/assets/icons/User@3x.png";
     let time = makeTimeBeautiful(event.event_date_start, "dateandtime");
     let longDate = makeTimeBeautiful(event.event_date_start, "longDate");
     return (
@@ -120,9 +120,9 @@ class EventDetails extends React.Component {
 
   generateAttendeeCard(attendee) {
     let photoUrl =
-      attendee.user.profile_photo.substring(0, 4) == "http"
-        ? attendee.user.profile_photo
-        : apiRoot + attendee.user.profile_photo;
+      attendee.user.profile_photo != ("" || null)
+        ? apiRoot + attendee.user.profile_photo
+        : "../../../src/assets/icons/User@3x.png";
     return (
       <div className="attendee-card-container" key={attendee.id}>
         <div>

@@ -34,7 +34,7 @@ class DetailedMetricSingle extends React.Component {
                 style={{
                   height: 14,
                   width: (source.value / total) * 180,
-                  backgroundColor: "#261268"
+                  backgroundColor: "black"
                 }}
               />
             </div>
@@ -78,7 +78,7 @@ class DetailedMetricSingle extends React.Component {
           <div
             style={{
               margin: "10px 0 0 20px",
-              color: "#261268",
+              color: "black",
               fontWeight: "bold"
             }}
           >

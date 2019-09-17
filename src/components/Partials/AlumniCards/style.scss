@@ -2,7 +2,7 @@
     width: 100%;
     height: fit-content;
     height: -moz-fit-content;
-    box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.1);
+    //box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     cursor: pointer;
 
@@ -138,4 +138,8 @@
             }
         }
     }
+}
+
+.alumni-card:hover {
+    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
 }

@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Exo:400,500,600,700');
+@import url('https://fonts.googleapis.com/css?family=Helvetica:400,500,600,700');
 
 .home-container {
     background: white;
-    font-family: 'Exo', sans-serif;
-    color: #261268;
+    font-family: 'Helvetica', sans-serif;
+    color: black;
     font-size: 16pt;
     font-weight: 400;
 
@@ -69,12 +69,12 @@ a:active {
         text-decoration: none;
         font-weight: 400;
         border-radius: 8px;
-        color: #261268;
+        color: black;
     }
 
     button {
         color: white;
-        font-family: 'Exo', sans-serif;
+        font-family: 'Helvetica', sans-serif;
         font-size: 12pt;
         background: rgba(255, 255, 255, 0.05);
         border: none;
@@ -95,7 +95,7 @@ a:active {
             font-size: 24pt;
             font-weight: 700;
             margin-bottom: 0;
-            color: #261268;
+            color: black;
         }
     }
 
@@ -116,7 +116,7 @@ a:active {
             width: 300px;
             flex-grow: 1;
             text-align: center;
-            color: #261268;
+            color: black;
 
             img {
                 width: 60%;
@@ -124,14 +124,14 @@ a:active {
             }
 
             h4 {
-                color: #261268;
+                color: black;
                 // text-align: left;
             }
 
             p {
                 max-width: 380px;
                 margin: auto;
-                color: #261268;
+                color: black;
                 // text-align: left;
             }
         }
@@ -176,7 +176,7 @@ a:active {
         font-size: 24pt;
         font-weight: 600;
         margin: 0;
-        color: #261268;
+        color: black;
     }
 
     p {
