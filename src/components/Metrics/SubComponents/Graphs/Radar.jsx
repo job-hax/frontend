@@ -14,22 +14,22 @@ class Radar extends React.Component {
         "#0077B5",
         "#2164f4",
         "rgb(64,151,219)",
-        "#261268",
+        "black",
         "rgb(0,0,0)"
       ],
       backgroundColor: "white",
       textStyle: {
-        fontType: "Exo",
-        color: "#261268"
+        fontType: "Helvetica",
+        color: "black"
       },
       title: {
         textStyle: {
-          color: "#261268"
+          color: "black"
         }
       },
       splitLine: {
         lineStyle: {
-          color: "#261268"
+          color: "black"
         }
       },
       line: {
@@ -61,7 +61,7 @@ class Radar extends React.Component {
           saveAsImage: {
             show: true,
             title: "save",
-            iconStyle: { color: "#261268", emphasis: { color: "#261268" } }
+            iconStyle: { color: "black", emphasis: { color: "black" } }
           }
         }
       },
@@ -91,7 +91,7 @@ class Radar extends React.Component {
             }}
           >
             <div
-              style={{ fontWeight: "bold", color: "#261268", fontSize: "130%" }}
+              style={{ fontWeight: "bold", color: "black", fontSize: "130%" }}
             >
               {this.props.metric.title}
             </div>
@@ -99,7 +99,7 @@ class Radar extends React.Component {
               style={{
                 width: 40,
                 height: 40,
-                margin: "-12px 0 0px 90px",
+                margin: "-12px 0 0px 100px",
                 zIndex: "20"
               }}
               src="../../../../src/assets/icons/beta_flag_2.png"

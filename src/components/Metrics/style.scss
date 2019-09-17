@@ -1,6 +1,6 @@
 .metrics_feature_area {
     background-color: white;
-    color: #261268;
+    color: black;
     padding-top: 32px;
     min-height: 600px;
     height: auto;
@@ -12,7 +12,7 @@
         h2 {
             font-size: 24pt;
             margin-bottom: 24px;
-            color: #261268;
+            color: black;
         }
     }
 
@@ -44,17 +44,17 @@
                 padding-bottom: 4px;
                 max-width: 380px;
                 margin: auto;
-                color: #261268;
+                color: black;
             }
 
             p {
                 max-width: 380px;
                 margin: auto;
-                color: #261268;
+                color: black;
             }
 
             a {
-                color: #261268;
+                color: black;
                 text-decoration: none;
                 ;
             }
@@ -71,6 +71,7 @@
         min-height: 700px;
         max-height: 800px;
         padding: 8px 110px 20px 110px;
+        margin: 12px 0 0 0;
 
         .metric-group {
             display: flex;
@@ -80,8 +81,10 @@
                 height: 180px;
                 width: 272px;
                 overflow: hidden;
-                border: 1px solid #261268;
-                margin: 0px 5px 0px 5px;
+                //box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+                border: 1px solid white;
+                margin: 0px 12px 12px 12px;
+                border-radius: 8px;
 
 
                 .metric-summary {
@@ -92,11 +95,16 @@
                 }
             }
 
+            .metric-summary-container:hover {
+                box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+            }
+
             .metric-detailed-container {
-                margin: 8px 11px 0 11px;
+                margin: 12px 12px 0 12px;
                 height: 500px;
-                width: 260px;
-                border: 1px solid #261268;
+                width: 272px;
+                //box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+                border: 1px solid white;
                 background-color: white;
                 border-radius: 8px;
 
@@ -121,6 +129,9 @@
                 }
             }
 
+            .metric-detailed-container:hover {
+                box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+            }
 
         }
 
@@ -141,7 +152,7 @@
                 margin: 10px 0 0 0;
                 width: 420px;
                 height: 1px;
-                background-color: #261268;
+                background-color: black;
             }
         }
     }
@@ -191,7 +202,7 @@
         justify-content: center;
         position: absolute;
         width: fit-content;
-        color: #261268;
+        color: black;
         height: 50px;
 
         .dropdown-menu {

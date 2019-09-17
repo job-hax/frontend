@@ -388,7 +388,7 @@ class SignUpPage extends Component {
         <Link to="/">
           <img
             className="logo"
-            src="src/assets/icons/JobHax-logo-white.svg"
+            src="src/assets/icons/JobHax-logo-black.svg"
             alt="JobHax-logo"
           />
         </Link>

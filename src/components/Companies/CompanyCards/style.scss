@@ -1,8 +1,6 @@
 .company-card-container {
     min-height: 200px;
     background-color: white;
-    border: 1px solid rgb(167, 167, 167);
-    box-shadow: 1px 1px rgba(167, 167, 167, 0.322);
     border-radius: 4px;
     width: 800px;
     margin-bottom: 20px;
@@ -24,7 +22,7 @@
                 justify-content: left;
 
                 .company-name {
-                    font-size: 200%;
+                    font-size: 150%;
                     margin-top: 20px;
                     margin-left: 36px;
                 }
@@ -69,6 +67,10 @@
             display: none;
         }
     }
+}
+
+.company-card-container:hover {
+    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
 }
 
 .pagination-container {

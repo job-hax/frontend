@@ -893,7 +893,6 @@ class Dashboard extends Component {
               this.addToSelectedJobApplicationsList
             }
           />
-          <div className="column-divider" />
           <Column
             name="applied"
             id="1"
@@ -915,7 +914,6 @@ class Dashboard extends Component {
               this.addToSelectedJobApplicationsList
             }
           />
-          <div className="column-divider" />
           <Column
             name="phoneScreen"
             id="3"
@@ -938,7 +936,6 @@ class Dashboard extends Component {
               this.addToSelectedJobApplicationsList
             }
           />
-          <div className="column-divider" />
           <Column
             name="onsiteInterview"
             id="4"
@@ -961,7 +958,6 @@ class Dashboard extends Component {
               this.addToSelectedJobApplicationsList
             }
           />
-          <div className="column-divider" />
           <Column
             name="offer"
             id="5"

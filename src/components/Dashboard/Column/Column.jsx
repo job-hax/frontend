@@ -47,7 +47,7 @@ class Column extends Component {
     }));
   }
 
-  renderCards() {
+  renderCards(type) {
     const {
       cards,
       cardsRejecteds,
@@ -61,7 +61,7 @@ class Column extends Component {
       alert
     } = this.props;
 
-    if (this.state.showRejectedCards) {
+    if (type == "rejected") {
       return (
         <div style={{ margin: "15px 0px 0px 0px" }}>
           {cardsRejecteds &&
@@ -117,7 +117,8 @@ class Column extends Component {
       isCardOverColumn,
       name,
       title,
-      totalCount
+      totalCount,
+      cards
     } = this.props;
 
     const { showJobInput } = this.state;
@@ -133,17 +134,17 @@ class Column extends Component {
     return (
       <div className={columnHeaderClass}>
         <div className="column-header">
-          <div className="column-header column-icon">
+          {/*<div className="column-header column-icon">
             <img src={this.props.icon} />
-          </div>
+    </div>*/}
           <div className="column-header column-title">
             {title}
             {totalCount > MIN_CARD_NUMBER_IN_COLUMN && (
-              <div style={{ marginLeft: "4px" }}>({totalCount})</div>
+              <div style={{ marginLeft: "4px" }}>({cards.length})</div>
             )}
           </div>
         </div>
-        <div>
+        {showJobInput && (
           <JobInput
             addNewApplication={addNewApplication}
             showInput={showJobInput}
@@ -152,7 +153,7 @@ class Column extends Component {
             alert={this.props.alert}
             handleTokenExpiration={this.props.handleTokenExpiration}
           />
-        </div>
+        )}
       </div>
     );
   }
@@ -213,43 +214,116 @@ class Column extends Component {
       isCardOverColumn,
       message,
       totalCount,
-      isLastColumn
+      isLastColumn,
+      addNewApplication,
+      name
     } = this.props;
 
     const columnCardContainerClass = classNames({
       "column-card-container": true,
-      middle: showJobInput,
+      "--short": showJobInput
+    });
+
+    const ongoingsContainerClass = classNames({
+      "column-ongoings-container": true,
+      "--single": !showRejectedCards,
+      "--double": showRejectedCards,
       "--column-dropable": canDropCardInColumn && !isCardOverColumn,
       "--column-active": canDropCardInColumn && isCardOverColumn
     });
 
-    const columnRejectedCardContainerClass = classNames({
-      "column-card-container": true,
-      shortest: showJobInput,
-      short: !showJobInput
+    const rejectedsContainerClass = classNames({
+      "column-rejecteds-container": true,
+      "--double": showRejectedCards
     });
 
     const columnContainerClass = classNames({
       "column-container": true
     });
 
+    const expandArrowClass = classNames({
+      "expand-arrow": true,
+      "--horizontal-flip": showRejectedCards
+    });
+
     return connectDropTarget(
-      <div className={columnContainerClass}>
-        <div>{this.generateColumnHeader()}</div>
-        {showRejectedCards && <div>{this.renderIndicator(message)}</div>}
-        {showRejectedCards ? (
-          <div className={columnRejectedCardContainerClass}>
-            {this.renderCards()}
+      <div className="column-big-container">
+        <div className={ongoingsContainerClass}>
+          <div className={columnContainerClass}>
+            {this.generateColumnHeader()}
+            <div className="column-body-container">
+              <div className={columnCardContainerClass}>
+                {this.renderCards("ongoing")}
+              </div>
+              {!showJobInput && (
+                <div
+                  onClick={() => this.setState({ showJobInput: !showJobInput })}
+                  className="job-input-button"
+                >
+                  <div className="button-inside">+</div>
+                </div>
+              )}
+            </div>
           </div>
-        ) : (
-          <div className={columnCardContainerClass}>{this.renderCards()}</div>
-        )}
+        </div>
         {totalCount - cards.length > MIN_CARD_NUMBER_IN_COLUMN && (
-          <div>{!showRejectedCards && this.renderIndicator(message)}</div>
+          <div className={rejectedsContainerClass}>
+            <div
+              onClick={() =>
+                this.setState({ showRejectedCards: !showRejectedCards })
+              }
+              className="rejecteds-button"
+            >
+              <div className="button-inside">
+                Rejected ({totalCount - cards.length})
+              </div>
+              <div>
+                <img
+                  className={expandArrowClass}
+                  src="../../src/assets/icons/ExpandArrow@3x.png"
+                />
+              </div>
+            </div>
+            {showRejectedCards && (
+              <div className="column-container">
+                <div className="column-body-container">
+                  <div className="column-card-container">
+                    {this.renderCards("rejected")}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         )}
       </div>
     );
   }
+}
+
+{
+  /*
+      <div className="column-big-container">
+        <div className="column-medium-container">
+          <div className={columnContainerClass}>
+            {this.generateColumnHeader()}
+            {showRejectedCards && <div>{this.renderIndicator(message)}</div>}
+            {showRejectedCards ? (
+              <div className={columnRejectedCardContainerClass}>
+                {this.renderCards()}
+              </div>
+            ) : (
+              <div className={columnCardContainerClass}>
+                {this.renderCards()}
+              </div>
+            )}
+            {totalCount - cards.length > MIN_CARD_NUMBER_IN_COLUMN && (
+              <div>{!showRejectedCards && this.renderIndicator(message)}</div>
+            )}
+          </div>
+        </div>
+      </div>
+
+*/
 }
 
 Column.propTypes = {

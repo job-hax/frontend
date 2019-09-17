@@ -90,9 +90,9 @@ class BlogDetails extends React.Component {
   generateBlogHeader() {
     const { blog } = this.props;
     let photoUrl =
-      blog.publisher_profile.profile_photo.substring(0, 4) == "http"
-        ? blog.publisher_profile.profile_photo
-        : apiRoot + blog.publisher_profile.profile_photo;
+      blog.publisher_profile.profile_photo != ("" || null)
+        ? apiRoot + blog.publisher_profile.profile_photo
+        : "../../../src/assets/icons/User@3x.png";
     let time = makeTimeBeautiful(blog.created_at, "dateandtime");
     let longDate = makeTimeBeautiful(blog.created_at, "longDate");
     let joinDate = makeTimeBeautiful(
