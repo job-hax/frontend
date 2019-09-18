@@ -107,7 +107,7 @@ class FeedBack extends React.Component {
       position: "fixed",
       marginTop: "10%",
       right: "20px",
-      color: "#261268"
+      color: "black"
     };
     const textBoxStyle = {
       border: "1px solid rgba(132, 100, 239, 1)",
@@ -167,7 +167,7 @@ class FeedBack extends React.Component {
           onCancel={this.handleCancel}
           footer={null}
         >
-          <h4 style={{ color: "#261268" }}>
+          <h4 style={{ color: "black" }}>
             Your feedback is important for us
           </h4>
           <form onSubmit={this.handleSubmit}>

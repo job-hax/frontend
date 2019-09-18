@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import classNames from "classnames";
-import { AutoComplete, Select, Icon, Menu } from "antd";
+import { AutoComplete, Select, Icon, Menu, Button } from "antd";
 
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
@@ -98,14 +98,14 @@ class JobInput extends PureComponent {
     });
   }
 
-  handleAddNewApplication(e) {
-    e.preventDefault();
+  handleAddNewApplication() {
     const { columnName } = this.props;
+    this.props.toggleJobInput();
     this.props
       .addNewApplication({
         columnName,
-        name: e.target[0].value,
-        title: e.target[1].value
+        name: this.state.companyName,
+        title: this.state.jobTitle
       })
       .then(({ ok }) => {
         if (ok) {
@@ -128,13 +128,7 @@ class JobInput extends PureComponent {
   render() {
     const { showInput, toggleJobInput } = this.props;
     const { companyName, jobTitle } = this.state;
-    const addJobButtonClass = classNames({
-      "column-addJob-form-button": true,
-      "--addJob": true,
-      "--button-disabled":
-        companyName.trim().length < 1 || jobTitle.trim().length < 1
-    });
-    return showInput ? (
+    return (
       <div>
         <form
           className="column-addJob-form"
@@ -142,7 +136,8 @@ class JobInput extends PureComponent {
         >
           <AutoComplete
             dataSource={this.state.autoCompleteCompanyData}
-            style={{ width: "90%", marginTop: "4px" }}
+            style={{ marginTop: "4px" }}
+            className="input-addJob"
             onSearch={this.handleSearch}
             placeholder="Company Name"
             value={companyName}
@@ -150,7 +145,8 @@ class JobInput extends PureComponent {
           />
           <AutoComplete
             dataSource={this.state.autoCompletePositionsData}
-            style={{ width: "90%", marginTop: "4px" }}
+            style={{ marginTop: "4px" }}
+            className="input-addJob"
             onSearch={this.handlePositionsSearch}
             placeholder="Job Title"
             value={jobTitle}
@@ -164,15 +160,17 @@ class JobInput extends PureComponent {
             >
               Cancel
             </button>
-            <button className={addJobButtonClass} type="submit">
+            <Button
+              type="primary"
+              disabled={
+                companyName.trim().length < 1 || jobTitle.trim().length < 1
+              }
+              onClick={this.handleAddNewApplication}
+            >
               Add Job
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
-    ) : (
-      <div className="column-addJob" onClick={toggleJobInput}>
-        <div className="button-inside">+</div>
       </div>
     );
   }

@@ -88,7 +88,7 @@ class Metrics extends PureComponent {
             </div>
           </div>
         </div>
-        <div style={{ marginTop: 80 }}>
+        <div>
           <Footer />
         </div>
       </div>
