@@ -1,9 +1,13 @@
+@import "../../App/style.scss";
+
 .header-container {
   display: flex;
   justify-content: space-between;
   height: 60px;
   width: 100%;
-  background-image: linear-gradient(to right, #bc2bff, #8a3ffc);
+  color: $text_color;
+  background-color: white;
+  //background-image: linear-gradient(to right, #bc2bff, #8a3ffc);
   z-index: 2000;
 
   .left-container {
@@ -74,9 +78,16 @@
   }
 
   .svg_ics {
-    fill: white;
+    fill: black;
   }
 
+  .ant-menu-horizontal>.ant-menu-submenu {
+    vertical-align: top;
+  }
+
+  .ant-menu-horizontal>.ant-menu-submenu-selected {
+    max-height: 52px;
+  }
 
   .header-icon.tooltips {
     position: relative;
@@ -130,9 +141,23 @@
       width: 40px;
       height: 40px;
       cursor: pointer;
-      background-image: url('../../../assets/icons/JobHax-logo-white.svg');
+      background-image: url('../../../assets/icons/JobHax-logo-black.svg');
       background-size: 100%;
       background-repeat: no-repeat;
+      transition: transform .3s;
+      -webkit-transition: transform .3s;
+      -moz-transition: transform .3s;
+      -o-transition: transform .3s;
+      -ms-transition: transform .3s;
+    }
+
+    .jobhax-logo:hover {
+      z-index: 51;
+      transform: scale(1.2) rotate(360deg);
+      -webkit-transform: scale(1.2) rotate(360deg);
+      -moz-transform: scale(1.2) rotate(360deg);
+      -o-transform: scale(1.2) rotate(360deg);
+      -ms-transform: scale(1.2) rotate(360deg);
     }
   }
 }

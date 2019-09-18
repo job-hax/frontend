@@ -1,15 +1,37 @@
+@import "../../App/style.scss";
+
+$cardChangeAnimationTransitionDuration: .5s;
+$cardChangeAnimationFromZeroScale: 0.0;
+
 .card-container {
   border-radius: 8px;
-  margin: 0px 15px 15px 15px;
+  margin: 0px 25px 8px 15px;
   min-height: 70px;
+  height: fit-content;
+  height: -moz-fit-content;
+  max-width: 85%;
   display: flex;
   justify-content: start;
   background-color: rgb(255, 255, 255);
   cursor: pointer;
   box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+  transition: transform $cardChangeAnimationTransitionDuration;
+  -webkit-transition: transform $cardChangeAnimationTransitionDuration;
+  -moz-transition: transform $cardChangeAnimationTransitionDuration;
+  -o-transition: transform $cardChangeAnimationTransitionDuration;
+  -ms-transition: transform $cardChangeAnimationTransitionDuration;
+
+  &.--animation-from-zero {
+    transform: scale($cardChangeAnimationFromZeroScale);
+    -webkit-transform: scale($cardChangeAnimationFromZeroScale);
+    -moz-transform: scale($cardChangeAnimationFromZeroScale);
+    -o-transform: scale($cardChangeAnimationFromZeroScale);
+    -ms-transform: scale($cardChangeAnimationFromZeroScale);
+  }
 
   &.rejected-cards {
-    opacity: 0.6;
+    opacity: 0.8;
+    background-color: rgba(252, 252, 252, 0.4);
     text-align: left;
   }
 
@@ -42,22 +64,25 @@
     height: fit-content;
 
     .card-company-name {
-      font-size: 18px;
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 600;
       word-break: break-all;
     }
 
     .card-job-position {
       font-size: 12px;
       font-weight: normal;
+      color: rgba(94, 94, 94, 0.7);
       word-break: break-all;
     }
   }
 
   .card-job-details {
+    position: relative;
+    right: 9%;
     padding-top: 2%;
-    margin-right: 2%;
     height: 5px;
+    width: 0;
     font-size: 80%;
     cursor: pointer;
 

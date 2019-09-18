@@ -1,3 +1,5 @@
+@import "../../../../../../../App/style.scss";
+
 .review-form-container {
     width: 500px;
 
@@ -25,7 +27,7 @@
             max-height: 250px;
             min-width: 212px;
             min-height: 50px;
-            border: 1px solid rgba(132, 100, 239, 1);
+            border: 1px solid $border_color;
             border-radius: 4px;
             padding: 8px;
 
