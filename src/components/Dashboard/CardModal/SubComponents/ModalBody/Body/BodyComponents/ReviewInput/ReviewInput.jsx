@@ -1,5 +1,5 @@
 import React from "react";
-import { Rate, Select, Radio, Checkbox } from "antd";
+import { Rate, Select, Radio, Checkbox, Button } from "antd";
 
 import { axiosCaptcha } from "../../../../../../../../utils/api/fetch_api.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../../../../../../utils/constants/constants.js";
@@ -443,7 +443,7 @@ class ReviewInput extends React.Component {
   generateReviewForm() {
     return (
       <div className="review-form-container">
-        <form onSubmit={this.handleSubmit}>
+        <form>
           <div className="review-form">
             <div className="company-reviews">
               {this.generateCompanyReviewsPart()}
@@ -460,15 +460,16 @@ class ReviewInput extends React.Component {
                 Anonymous
               </Checkbox>
               <div className="review-button-container">
-                <button
-                  className="review-button"
-                  onClick={this.props.toggleReview}
-                >
+                <Button type="primary" onClick={this.props.toggleReview}>
                   Cancel
-                </button>
-                <button className="review-button" type="submit">
+                </Button>
+                <Button
+                  type="primary"
+                  style={{ marginLeft: 12 }}
+                  onClick={this.handleSubmit}
+                >
                   Submit
-                </button>
+                </Button>
               </div>
             </div>
           </div>

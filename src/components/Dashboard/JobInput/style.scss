@@ -1,8 +1,10 @@
+@import "../../App/style.scss";
+
 .column-addJob-form {
   margin: 8px 15px 15px 15px;
   padding: 8px 12px;
   text-align: center;
-  width: 85%;
+  max-width: 85%;
   height: 132px;
   color: rgb(150, 150, 150);
   background-color: white;

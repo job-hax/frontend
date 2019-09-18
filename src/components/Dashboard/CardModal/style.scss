@@ -1,3 +1,5 @@
+@import "../../App/style.scss";
+
 .modal {
   position: fixed;
   top: 0;
@@ -23,7 +25,7 @@
     margin-right: 24px;
 
     .modal-header {
-      border-bottom: 1px solid rgba(38, 18, 104, 0.4);
+      border-bottom: 1px solid $highlight_color;
       height: 100px;
       color: black;
       display: flex;
@@ -92,7 +94,7 @@
           display: flex;
           justify-content: center;
           color: white;
-          background-color: rgba(132, 100, 239, 1);
+          background-color: $primary_button_color;
           text-align: center;
           margin-top: 28px;
           padding-top: 4px;
@@ -119,7 +121,7 @@
           font-family: exo;
           padding-left: 16px;
           background-color: white;
-          border: 1px solid rgba(132, 100, 239, 0.2);
+          border: 1px solid $highlight_color;
           z-index: 100;
 
           .options {
@@ -136,7 +138,7 @@
             p {
               margin-left: 10px;
               padding-top: 10px;
-              border-top: 0.5px solid rgba(132, 100, 239, 0.4);
+              border-top: 0.5px solid $highlight_color;
               margin-top: -28px;
             }
 
@@ -196,7 +198,7 @@
             margin-top: -4px;
             margin-left: -16px;
             width: 160px;
-            border-top: 0.5px solid rgba(132, 100, 239, 0.6);
+            border-top: 0.5px solid $highlight_color;
             padding-top: 12px;
             cursor: pointer;
 
@@ -255,7 +257,7 @@
     height: 540px;
     display: flex;
     justify-content: flex-start;
-    color: black;
+    color: $text-color;
     overflow-x: hidden;
 
     &.navigation {
@@ -265,7 +267,7 @@
       margin-left: 14px;
       display: table;
       text-align: right;
-      border-right: 1px solid rgba(38, 18, 104, 0.4);
+      border-right: 1px solid $highlight_color;
 
       &.subheaders {
         border: none;
@@ -278,10 +280,16 @@
         margin-left: 14px;
         padding-right: 8px;
         cursor: pointer;
+
+        &.--selected {
+          background-color: $selection_color;
+          font-weight: 450;
+          color: white;
+        }
       }
 
       &.subheaders:hover {
-        background-color: rgba(132, 100, 239, 0.05) //rgba(38, 18, 104, 0.05);
+        background-color: $highlight_color;
       }
     }
 
@@ -328,7 +336,7 @@
           }
 
           .text-editable:hover {
-            background-color: rgba(132, 100, 239, 0.05);
+            background-color: $highlight_color;
             cursor: text;
           }
         }
@@ -353,7 +361,7 @@
             width: -moz-fit-content;
             height: 28px;
             padding: 4px 8px 4px 8px;
-            background-color: rgba(132, 100, 239, 1);
+            background-color: $primary_button_color;
             color: white;
             text-align: center;
             cursor: pointer;
@@ -457,7 +465,7 @@
             max-height: 400px;
             min-width: 486px;
             min-height: 40px;
-            border: 1px solid rgba(132, 100, 239, 1);
+            border: 1px solid $border_color;
             border-radius: 4px;
             padding: 4px 4px 2px 8px;
 
@@ -480,9 +488,6 @@
               color: white;
               width: auto;
               height: 24px;
-              padding: 4px;
-              padding-right: 8px;
-              padding-left: 8px;
               margin-top: 2px;
               border: none;
               border-radius: 4px;
@@ -493,14 +498,15 @@
             &.save {
               position: relative;
               margin-left: 8px;
-              background-color: rgba(132, 100, 239, 1);
+              background-color: $primary_button_color;
               font-weight: lighter;
             }
 
             &.cancel {
+              padding: 4px 8px;
               margin-left: -32px;
               position: relative;
-              color: rgba(132, 100, 239, 0.6);
+              color: $selection-color;
               font-weight: bold;
               font-size: 110%;
               background: transparent;

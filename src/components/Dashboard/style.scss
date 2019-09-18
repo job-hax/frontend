@@ -1,18 +1,11 @@
+@import "../App/style.scss";
+
 .dashboard-container {
   height: 92vh;
   width: 100%;
   padding-left: 8px;
   display: flex;
   overflow-y: hidden;
-}
-
-.column-divider {
-  height: 100%;
-  margin-top: 12px;
-  width: 1px;
-  color: #e4dcff;
-  border-left: 1px solid #ecebf1;
-  box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
 }
 
 .icon {
