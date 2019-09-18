@@ -1,4 +1,4 @@
 /node_modules
 *.idea
 /build
-src/config/config.js
+src/config/
