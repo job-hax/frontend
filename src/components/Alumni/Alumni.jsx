@@ -85,7 +85,7 @@ class Alumni extends React.Component {
         ? type
         : type == "states"
         ? "countries/" + id + "/states"
-        : "colleges/" + type;
+        : "alumni/" + type;
     let config = { method: "GET" };
     axiosCaptcha(AUTOCOMPLETE(newType), config).then(response => {
       if (response.statusText === "OK") {

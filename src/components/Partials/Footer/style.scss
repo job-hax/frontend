@@ -1,20 +1,19 @@
+@import "../../App/style.scss";
+
 .footer-container {
   display: flex;
   justify-content: space-between;
   padding: 20px 75px;
-  background: rgb(92, 39, 195);
-  background-image: url(../../../assets/images/homebanner.jpg);
+  background-color: white;
   background-size: 100% 100%;
   overflow-y: hidden;
   z-index: 0;
 
   a {
-    color: white;
     text-decoration: none;
   }
 
   .footer-content {
-    color: white;
     font-size: 10pt;
 
     &.footer-social-links {

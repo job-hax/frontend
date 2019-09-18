@@ -1,9 +1,19 @@
-@import url('https://fonts.googleapis.com/css?family=Exo');
+@import url('https://fonts.googleapis.com/css?family=Helvetica');
 
+
+$text_color: black;
+$base_color: rgba(0, 0, 0, 0.5);
+$border_color: rgba(0, 0, 0, 1);
+$highlight_color: rgba(63, 124, 216, 0.1);
+$selection_color: rgba(63, 124, 216, 0.6);
+$hover_color: rgba(63, 129, 216, 0.7);
+$active_color: rgba(63, 129, 216, 0.8);
+$primary_button_color: rgba(63, 104, 216, 0.7);
+$spinner_background_color: rgba(0, 0, 0, 0.2);
 
 body {
-  font-family: Exo;
-  //color: rgb(38, 18, 104);
+  font-family: Helvetica, sans-serif;
+  color: $text_color;
 }
 
 body,
@@ -11,7 +21,7 @@ html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: #ecebf1;
+  background-color: white;
 }
 
 .main-container {
