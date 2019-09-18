@@ -1,3 +1,5 @@
+@import "../App/style.scss";
+
 .events-page-big-container {
     background-color: white;
     min-height: 92vh;
@@ -176,7 +178,7 @@
                 }
 
                 .title {
-                    color: black;
+                    color: $text_color;
                     font-size: 220%;
                     font-weight: bolder;
                     display: -webkit-box;
@@ -241,7 +243,7 @@
                     margin: 0 0 16px 0;
 
                     .question {
-                        color: black;
+                        color: $text_color;
                         font-size: 120%;
                         font-weight: 600;
                         margin: 0 8px 0 0;
@@ -308,7 +310,7 @@
                         font-size: 120%;
                         font-weight: 550;
                         margin: 0 0 16px 0;
-                        color: black;
+                        color: $text_color;
                     }
 
                     .details {}
@@ -321,7 +323,7 @@
                         font-size: 120%;
                         font-weight: 550;
                         margin: 0 0 16px 0;
-                        color: black;
+                        color: $text_color;
                     }
 
                     .attendee-list {
@@ -376,7 +378,7 @@
                                 width: 100px;
                                 font-size: 90%;
                                 font-weight: 550;
-                                color: black;
+                                color: $text_color;
                                 text-align: center
                             }
                         }

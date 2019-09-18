@@ -233,9 +233,9 @@ class Blog extends React.Component {
     const blog = this.state.blogList[0];
     let longDate = makeTimeBeautiful(blog.created_at, "longDate");
     let photoUrl =
-      blog.publisher_profile.profile_photo.substring(0, 4) == "http"
-        ? blog.publisher_profile.profile_photo
-        : apiRoot + blog.publisher_profile.profile_photo;
+      blog.publisher_profile.profile_photo != ("" || null)
+        ? apiRoot + blog.publisher_profile.profile_photo
+        : "../../../src/assets/icons/User@3x.png";
     return (
       <div>
         <Affix offsetTop={80}>

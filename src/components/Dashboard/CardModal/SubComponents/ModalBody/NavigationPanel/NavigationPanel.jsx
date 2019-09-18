@@ -6,17 +6,15 @@ class NavigationPanel extends React.Component {
   }
 
   generateNavigationPanel() {
-    const styleNormal = {};
-    const styleSelected = {
-      fontWeight: "450",
-      color: "white",
-      backgroundColor: "rgba(132, 100, 239, 1)" //"rgba(38, 18, 104, 0.4)"
-    };
+    const subheaderFixedClassName = "modal-body navigation subheaders";
     return this.props.sections.map(section => (
       <div
-        style={this.props.displaying == section ? styleSelected : styleNormal}
         key={this.props.sections.indexOf(section)}
-        className="modal-body navigation subheaders"
+        className={
+          this.props.displaying == section
+            ? subheaderFixedClassName + " --selected"
+            : subheaderFixedClassName
+        }
         onClick={() => this.props.setDisplaying(section)}
       >
         {section}

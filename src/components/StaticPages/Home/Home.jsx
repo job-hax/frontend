@@ -3,8 +3,80 @@ import Footer from "../../Partials/Footer/Footer.jsx";
 import { Link } from "react-router-dom";
 
 import "./style.scss";
+import { apiRoot } from "../../../utils/constants/endpoints.js";
+import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
+import { jobHaxClientId, jobHaxClientSecret } from "../../../config/config.js";
 
 class Home extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+
+    this.handleDemo = this.handleDemo.bind(this);
+  }
+
+  handleDemo() {
+    IS_CONSOLE_LOG_OPEN && console.log("handle demo first");
+    let rememberMe = false;
+    let config = { method: "POST" };
+    config.body = {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret
+    };
+    axiosCaptcha(apiRoot + "/api/demo/", config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success === true) {
+          this.token = `${
+            response.data.data.token_type
+          } ${response.data.data.access_token.trim()}`;
+          IS_CONSOLE_LOG_OPEN && console.log(this.token);
+          this.refresh_token = response.data.data.refresh_token;
+          let date = new Date();
+          date.setSeconds(date.getSeconds() + response.data.data.expires_in);
+          this.expires_in = date;
+          this.props.cookie("set", "remember_me", rememberMe, "/");
+          this.props.cookie(
+            "set",
+            "user_type",
+            response.data.data.user_type,
+            "/"
+          );
+          this.props.cookie(
+            "set",
+            "jobhax_access_token",
+            this.token,
+            "/",
+            date
+          );
+          this.props.cookie(
+            "set",
+            "jobhax_access_token_expiration",
+            date.getTime(),
+            "/"
+          );
+          this.props.cookie(
+            "set",
+            "jobhax_refresh_token",
+            this.refresh_token,
+            "/"
+          );
+          this.props.setIsUserLoggedIn(true);
+          this.props.setIsAuthenticationChecking(false);
+        } else {
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
+      } else {
+        this.props.alert(5000, "error", "Something went wrong!");
+      }
+    });
+  }
+
   generateTopButtons() {
     const { isUserLoggedIn } = this.props;
 
@@ -55,8 +127,8 @@ class Home extends Component {
           <p>
             Improve your job search experience in a seamless & intuitive way
           </p>
-          <a className="how_it_works_btn" href="#howitworks">
-            How It Works
+          <a className="how_it_works_btn" onClick={() => this.handleDemo()}>
+            Live Demo
           </a>
         </div>
       </section>

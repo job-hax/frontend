@@ -212,12 +212,17 @@ class EventEditable extends React.Component {
   }
 
   generateEventHeader() {
-    const { title, short_description, event_date_start } = this.state;
+    const {
+      title,
+      short_description,
+      event_date_start,
+      host_user
+    } = this.state;
     const { event } = this.props;
     let photoUrl =
-      event.host_user.profile_photo.substring(0, 4) == "http"
-        ? event.host_user.profile_photo
-        : apiRoot + event.host_user.profile_photo;
+      host_user.profile_photo != ("" || null)
+        ? apiRoot + host_user.profile_photo
+        : "../../../src/assets/icons/User@3x.png";
     let time = makeTimeBeautiful(event_date_start, "dateandtime");
     let longDate = makeTimeBeautiful(event_date_start, "longDate");
     return (
@@ -281,7 +286,7 @@ class EventEditable extends React.Component {
             <div className="name">
               <div>Hosted by</div>
               <div className="host-name">
-                {event.host_user.first_name + " " + event.host_user.last_name}
+                {host_user.first_name + " " + host_user.last_name}
               </div>
             </div>
           </div>
@@ -293,9 +298,9 @@ class EventEditable extends React.Component {
 
   generateAttendeeCard(attendee) {
     let photoUrl =
-      attendee.user.profile_photo.substring(0, 4) == "http"
-        ? attendee.user.profile_photo
-        : apiRoot + attendee.user.profile_photo;
+      attendee.user.profile_photo != ("" || null)
+        ? apiRoot + attendee.user.profile_photo
+        : "../../../src/assets/icons/User@3x.png";
     return (
       <div className="attendee-card-container" key={attendee.id}>
         <div>

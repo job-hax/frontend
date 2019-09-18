@@ -1,3 +1,5 @@
+@import "../../App/style.scss";
+
 .poll {
   position: fixed;
   top: 0;
@@ -23,7 +25,7 @@
       margin-right: 24px;
       border-bottom: 1px solid rgba(38, 18, 104, 0.4);
       height: 100px;
-      color: #261268;
+      color: black;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -73,7 +75,7 @@
           justify-content: flex-end;
 
           .submit {
-            background-color: #261268;
+            background-color: black;
             color: white;
             font-size: 90%;
             border-radius: 4px;

@@ -3,6 +3,7 @@ import { Modal } from "antd";
 
 import AlumniCardDetailed from "./AlumniCardDetailed.jsx";
 import "./style.scss";
+import { apiRoot } from "../../../utils/constants/endpoints.js";
 
 class AlumniCard extends React.Component {
   constructor(props) {
@@ -27,10 +28,10 @@ class AlumniCard extends React.Component {
       <div className="header">
         <div className="header-left">
           <div className="avatar">
-            {alumni.profile_photo_social != ("" && null) ? (
-              <img src={alumni.profile_photo_social} />
+            {alumni.profile_photo != ("" || null) ? (
+              <img src={apiRoot + alumni.profile_photo} />
             ) : (
-              <img src="../../../src/assets/icons/SeyfoIcon@2x.png" />
+              <img src="../../../src/assets/icons/User@3x.png" />
             )}
           </div>
           <div>

@@ -401,15 +401,7 @@ class ProfilePage extends React.Component {
           <div className="profile-page-left-first-inside">
             <div className="profile-image">
               {this.state.data != null && (
-                <img
-                  src={
-                    this.state.data.profile_photo_custom == null
-                      ? this.state.data.profile_photo_social
-                        ? this.state.data.profile_photo_social
-                        : "../../src/assets/icons/SeyfoIcon@3x.png"
-                      : apiRoot + this.state.data.profile_photo_custom
-                  }
-                />
+                <img src={apiRoot + this.state.data.profile_photo} />
               )}
             </div>
             <div className="profile-image-update-container">
@@ -422,10 +414,10 @@ class ProfilePage extends React.Component {
               </div>
             </div>
             <div className="register-date">
-              {this.state.data != null && this.state.data.user.date_joined && (
+              {this.state.data != null && this.state.data.date_joined && (
                 <span>
                   Registered on{" "}
-                  {makeTimeBeautiful(this.state.data.user.date_joined, "date")}
+                  {makeTimeBeautiful(this.state.data.date_joined, "date")}
                 </span>
               )}
             </div>
@@ -483,15 +475,15 @@ class ProfilePage extends React.Component {
           <div className="profile-header">
             <div className="name">
               <div className="first-name">
-                {this.state.data != null && this.state.data.user.first_name ? (
-                  this.state.data.user.first_name
+                {this.state.data != null && this.state.data.first_name ? (
+                  this.state.data.first_name
                 ) : (
                   <span>First Name</span>
                 )}
               </div>
               <div className="last-name">
-                {this.state.data != null && this.state.data.user.last_name ? (
-                  this.state.data.user.last_name
+                {this.state.data != null && this.state.data.last_name ? (
+                  this.state.data.last_name
                 ) : (
                   <span>Last Name</span>
                 )}
@@ -578,8 +570,8 @@ class ProfilePage extends React.Component {
                 <div className="info-content-body-item">
                   <div className="info-content-body-item-label">Email:</div>
                   <div className="info-content-body-item-text">
-                    {this.state.data != null && this.state.data.user.email ? (
-                      this.state.data.user.email
+                    {this.state.data != null && this.state.data.email ? (
+                      this.state.data.email
                     ) : (
                       <span className="not-specified-notice">
                         Not specified!
@@ -705,15 +697,7 @@ class ProfilePage extends React.Component {
             <div className="profile-page-left-first-inside">
               <div className="profile-image">
                 {this.state.data != null && (
-                  <img
-                    src={
-                      this.state.data.profile_photo_custom == null
-                        ? this.state.data.profile_photo_social
-                          ? this.state.data.profile_photo_social
-                          : "../../src/assets/icons/SeyfoIcon@3x.png"
-                        : apiRoot + this.state.data.profile_photo_custom
-                    }
-                  />
+                  <img src={apiRoot + this.state.data.profile_photo} />
                 )}
               </div>
               <div className="profile-image-update-container">
@@ -728,8 +712,8 @@ class ProfilePage extends React.Component {
               <div className="register-date">
                 <span>Registered on </span>
                 {this.state.data != null &&
-                  this.state.data.user.date_joined &&
-                  makeTimeBeautiful(this.state.data.user.date_joined, "date")}
+                  this.state.data.date_joined &&
+                  makeTimeBeautiful(this.state.data.date_joined, "date")}
               </div>
               <div className="professional-info-container">
                 <div className="professional-info-header">
@@ -768,9 +752,8 @@ class ProfilePage extends React.Component {
                       name="first-name"
                       className="first-name"
                       placeholder={
-                        this.state.data != null &&
-                        this.state.data.user.first_name
-                          ? this.state.data.user.first_name
+                        this.state.data != null && this.state.data.first_name
+                          ? this.state.data.first_name
                           : "First Name"
                       }
                     />
@@ -783,9 +766,8 @@ class ProfilePage extends React.Component {
                       name="last-name"
                       className="last-name"
                       placeholder={
-                        this.state.data != null &&
-                        this.state.data.user.last_name
-                          ? this.state.data.user.last_name
+                        this.state.data != null && this.state.data.last_name
+                          ? this.state.data.last_name
                           : "Last Name"
                       }
                     />
@@ -844,8 +826,8 @@ class ProfilePage extends React.Component {
                   <div className="info-content-body-item">
                     <div className="info-content-body-item-label">Email:</div>
                     <div className="info-content-body-item-text">
-                      {this.state.data != null && this.state.data.user.email ? (
-                        this.state.data.user.email
+                      {this.state.data != null && this.state.data.email ? (
+                        this.state.data.email
                       ) : (
                         <span className="not-specified-notice">
                           Not specified!
@@ -976,9 +958,8 @@ class ProfilePage extends React.Component {
                       <div className="setting">
                         <label>
                           User Name:
-                          {this.state.data != null &&
-                          this.state.data.user.username
-                            ? " " + this.state.data.user.username
+                          {this.state.data != null && this.state.data.username
+                            ? " " + this.state.data.username
                             : " Get one!"}
                           <input
                             defaultValue=""

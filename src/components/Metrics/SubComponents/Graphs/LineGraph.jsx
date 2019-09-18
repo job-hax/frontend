@@ -14,22 +14,22 @@ class LineGraph extends React.Component {
         "#0077B5",
         "#2164f4",
         "rgb(64,151,219)",
-        "#261268",
+        "black",
         "rgb(0,0,0)"
       ],
       backgroundColor: "white",
       textStyle: {
-        fontType: "Exo",
-        color: "#261268"
+        fontType: "Helvetica",
+        color: "black"
       },
       title: {
         textStyle: {
-          color: "#261268"
+          color: "black"
         }
       },
       splitLine: {
         lineStyle: {
-          color: "#261268"
+          color: "black"
         }
       },
       line: {
@@ -56,7 +56,7 @@ class LineGraph extends React.Component {
       },
       /*legend: {
         data: this.props.metric.legend,
-        textStyle: { color: "#261268" },
+        textStyle: { color: "black" },
         x: "center",
         top: "28px"
       },*/
@@ -67,7 +67,7 @@ class LineGraph extends React.Component {
           saveAsImage: {
             show: true,
             title: "save",
-            iconStyle: { color: "#261268", emphasis: { color: "#261268" } }
+            iconStyle: { color: "black", emphasis: { color: "black" } }
           }
         }
       },
