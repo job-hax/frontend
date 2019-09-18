@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css?family=Exo:400,500,600,700');
+@import url('https://fonts.googleapis.com/css?family=Helvetica:400,500,600,700');
 
 .about_us-container {
     background-color: white;
     margin-top: -80px;
     height: 96vh;
-    font-family: 'Exo', sans-serif;
-    color: #261268;
+    font-family: 'Helvetica', sans-serif;
+    color: black;
 
     .team-diagram {
         width: 100%;
@@ -15,7 +15,7 @@
     }
 
     .header_area {
-        background-image: url('../../../assets/images/homebanner.jpg');
+        background-color: rgb(42, 123, 190);
         background-size: cover;
         color: white;
         height: 46vh;
@@ -24,7 +24,7 @@
 
         button {
             color: white;
-            font-family: Exo;
+            font-family: Helvetica;
             font-size: 12pt;
             background: rgba(255, 255, 255, 0.05);
             border: none;

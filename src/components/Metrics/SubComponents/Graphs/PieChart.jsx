@@ -12,12 +12,12 @@ class PieChart extends React.Component {
       color: ["#F4EBC1", "#A0C1B8", "#709FB0", "#726A95", "#351F39"],
       backgroundColor: "white",
       textStyle: {
-        fontType: "Exo",
-        color: "#261268"
+        fontType: "Helvetica",
+        color: "black"
       },
       title: {
         textStyle: {
-          color: "#261268"
+          color: "black"
         }
       }
     });
@@ -46,7 +46,7 @@ class PieChart extends React.Component {
           saveAsImage: {
             show: true,
             title: "save",
-            iconStyle: { color: "#261268", emphasis: { color: "#261268" } }
+            iconStyle: { color: "black", emphasis: { color: "black" } }
           }
         }
       },

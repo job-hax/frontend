@@ -46,7 +46,7 @@ class SummaryMetricSingle extends React.Component {
                   fontSize: "150%",
                   fontWeight: "600",
                   margin: "60px 0 0 0px",
-                  color: "#261268"
+                  color: "black"
                 }}
               >
                 {this.props.metric.value}
@@ -72,8 +72,8 @@ class SummaryMetricSingle extends React.Component {
               style={{
                 width: 30,
                 height: 30,
-                margin: "-4px 0 0px 240px",
-                zIndex: "20"
+                margin: "-5px 0 0px 240px",
+                zIndex: "21"
               }}
               src="../../../../src/assets/icons/beta_flag_2.png"
             />

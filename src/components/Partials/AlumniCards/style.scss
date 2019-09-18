@@ -1,8 +1,10 @@
+@import "../../App/style.scss";
+
 .alumni-card {
     width: 100%;
     height: fit-content;
     height: -moz-fit-content;
-    box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.1);
+    //box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     cursor: pointer;
 
@@ -26,7 +28,7 @@
                 overflow: hidden;
                 position: relative;
                 margin: 4px 24px 0 0;
-                order: 1px solid rgba(0, 0, 0, 0.1);
+                border: 1px solid rgba(0, 0, 0, 0.1);
 
 
                 img {
@@ -131,11 +133,15 @@
                 margin: -2px 0 0 0;
                 padding: 2px 8px 4px 8px;
                 margin-left: 16px;
-                background-color: rgba(132, 100, 239, 1);
+                background-color: $primary_button_color;
                 font-weight: lighter;
                 color: white;
                 cursor: pointer;
             }
         }
     }
+}
+
+.alumni-card:hover {
+    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
 }

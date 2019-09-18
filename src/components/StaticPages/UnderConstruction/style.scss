@@ -1,11 +1,11 @@
 .under_construction-container {
     margin-top: -80px;
     height: 96vh;
-    font-family: Exo;
-    color: #261268;
+    font-family: Helvetica;
+    color: black;
 
     .header_area {
-        background-image: url('../../../assets/images/homebanner.jpg');
+        background-color: rgb(42, 123, 190);
         background-size: 100%;
         color: white;
         height: 400px;
@@ -25,7 +25,7 @@
 
             button {
                 color: white;
-                font-family: Exo;
+                font-family: Helvetica;
                 font-size: 12pt;
                 background: rgba(255, 255, 255, 0.05);
                 border: none;
@@ -48,7 +48,7 @@
     h2 {
         font-weight: bolder;
         margin-top: 120px;
-        color: #261268;
+        color: black;
     }
 }
 

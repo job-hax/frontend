@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import { Input } from "antd";
+import { Input, Button } from "antd";
 
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api";
 import {
@@ -256,7 +256,6 @@ class Notes extends React.Component {
             ) : (
               <form
                 className="add-note-area"
-                onSubmit={this.handleAddNote}
                 style={{ borderBottom: "1px solid rgba(32, 32, 32, 0.1)" }}
               >
                 <div>
@@ -275,9 +274,9 @@ class Notes extends React.Component {
                   >
                     cancel
                   </button>
-                  <button className="notepad-buttons save" type="submit">
+                  <Button type="primary" onClick={this.handleAddNote}>
                     save
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}
@@ -296,7 +295,7 @@ class Notes extends React.Component {
       <div>
         <div>
           {this.state.isEditing ? (
-            <form className="add-note-area" onSubmit={this.handleAddNote}>
+            <form className="add-note-area">
               <div>
                 <TextArea
                   name="addNoteForm"
@@ -314,9 +313,9 @@ class Notes extends React.Component {
                 >
                   cancel
                 </button>
-                <button className="notepad-buttons save" type="submit">
+                <Button type="primary" onClick={this.handleAddNote}>
                   save
-                </button>
+                </Button>
               </div>
             </form>
           ) : (

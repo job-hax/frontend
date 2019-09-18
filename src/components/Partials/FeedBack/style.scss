@@ -1,5 +1,7 @@
+@import "../../App/style.scss";
+
 .feedback-container {
-    color: #261268;
+    color: $text_color;
     position: fixed;
     z-index: 2100;
 
@@ -8,7 +10,6 @@
         bottom: 16px;
         right: 16px;
         background-color: #595959;
-        border-style: double;
         color: white;
         height: 48px;
         width: 48px;
@@ -39,7 +40,7 @@
             max-height: 200px;
             min-width: 256px;
             min-height: 120px;
-            border: 1px solid rgba(132, 100, 239, 1);
+            border: 1px solid $primary_button_color;
             border-radius: 4px;
             padding: 8px;
         }
