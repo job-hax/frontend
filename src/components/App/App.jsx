@@ -41,9 +41,9 @@ import {
   NOTIFICATIONS
 } from "../../utils/constants/endpoints.js";
 
-import "./style.scss";
 import "../../assets/libraryScss/antd-scss/newantd.scss";
 import "../../assets/libraryScss/area-code.scss";
+import "./style.scss";
 
 class App extends Component {
   constructor(props) {
@@ -149,9 +149,10 @@ class App extends Component {
             this.props.cookies.set("user_type", response.data.data.user_type, {
               path: "/"
             });
-            let profilePhotoUrl = response.data.data.profile_photo != ("" || null)
-              ? apiRoot + response.data.data.profile_photo
-              : "../../../src/assets/icons/User@3x.png";
+            let profilePhotoUrl =
+              response.data.data.profile_photo != ("" || null)
+                ? apiRoot + response.data.data.profile_photo
+                : "../../../src/assets/icons/User@3x.png";
             this.setState(
               {
                 active: true,

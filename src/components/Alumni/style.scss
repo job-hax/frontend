@@ -1,15 +1,15 @@
+@import "../App/style.scss";
+
 .alumni-big-container {
-    color: black;
+    color: $text_color;
     height: 100%;
     padding-top: 40px;
 
     .title {
         text-align: center;
         margin-bottom: 20px;
-        color: black;
 
         h2 {
-            color: black;
             font-size: 24pt;
             margin-bottom: 0;
         }
@@ -35,7 +35,6 @@
             margin: 40px 0 100px 0;
             background-color: white;
             border-radius: 4px;
-            //box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
 
             .title {
                 padding: 24px 0 0 0;

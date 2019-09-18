@@ -1,4 +1,4 @@
-export const apiRoot = "https://backend.jobhax.com"; //"http://10.0.0.75:8000"; //"http://0.0.0.0:8000";
+export const apiRoot = "https://backend.jobhax.com"; //"https://backend.jobhax.com"; //"http://10.0.0.75:8000"; //"http://0.0.0.0:8000";
 
 //USER REQUESTS//
 export const USERS = type => `${apiRoot}/api/users/${type}/`;
@@ -38,13 +38,15 @@ export const REVIEWS = `${apiRoot}/api/reviews/`;
 
 export const SOURCE_TYPES = `${apiRoot}/api/reviews/sourceTypes/`;
 
+export const EMPLOYMENT_AUTHORIZATIONS = `${apiRoot}/api/reviews/employmentAuthorizations/`;
+
 //AUTOCOMPLETE REQUEST//
 export const AUTOCOMPLETE = type => `${apiRoot}/api/${type}/`;
 
 //POLL REQUESTS//
-export const GET_POLL = `${apiRoot}/api/poll/`;
+export const GET_POLL = `${apiRoot}/api/polls/`;
 
-export const VOTE_POLL = pollId => `${apiRoot}/api/poll/${pollId}/vote/`;
+export const VOTE_POLL = pollId => `${apiRoot}/api/polls/${pollId}/vote/`;
 
 //NOTIFICATIONS REQUESTS//
 export const NOTIFICATIONS = `${apiRoot}/api/notifications/`;

@@ -1,7 +1,14 @@
+@import "../../App/style.scss";
+
 $column_header_height: 50px;
 $column_header_height_add_job: 162px;
 $rejected_button_height: 48px;
 $column_parts_margin: 8px;
+$amountChangeAnimationTransitionDuration: .3s;
+$amountChangeAnimationZoomInScale: 1.2;
+$amountChangeAnimationZoomOutScale: 0.8;
+$addJobButtonAnimationTransitionDuration: .15s;
+$addJobButtonAnimationZoomInScale: 1.03;
 
 
 
@@ -63,7 +70,7 @@ $column_parts_margin: 8px;
         font-size: 20px;
         height: $column_header_height;
         font-weight: bold;
-        max-width: 330px;
+        max-width: 346.5px;
         min-width: 240px;
         padding-bottom: 8px;
         border-top-left-radius: 12px;
@@ -71,10 +78,6 @@ $column_parts_margin: 8px;
         position: relative;
         //background-color: rgb(238, 238, 238);
         z-index: 2;
-
-        &.no-card {
-          border-radius: 4px;
-        }
 
         &.add-job-height {
           height: 200px;
@@ -84,7 +87,7 @@ $column_parts_margin: 8px;
           font-size: 14px;
           font-weight: 600;
           display: flex;
-          justify-content: start;
+          justify-content: left;
           padding-left: 8px;
 
           &.column-icon {
@@ -99,6 +102,27 @@ $column_parts_margin: 8px;
           &.column-title {
             margin-top: 16px;
             margin-left: 8px;
+            transition: transform $amountChangeAnimationTransitionDuration;
+            -webkit-transition: transform $amountChangeAnimationTransitionDuration;
+            -moz-transition: transform $amountChangeAnimationTransitionDuration;
+            -o-transition: transform $amountChangeAnimationTransitionDuration;
+            -ms-transition: transform $amountChangeAnimationTransitionDuration;
+
+            &.--animation-increase {
+              transform: scale($amountChangeAnimationZoomInScale);
+              -webkit-transform: scale($amountChangeAnimationZoomInScale);
+              -moz-transform: scale($amountChangeAnimationZoomInScale);
+              -o-transform: scale($amountChangeAnimationZoomInScale);
+              -ms-transform: scale($amountChangeAnimationZoomInScale);
+            }
+
+            &.--animation-decrease {
+              transform: scale($amountChangeAnimationZoomOutScale);
+              -webkit-transform: scale($amountChangeAnimationZoomOutScale);
+              -moz-transform: scale($amountChangeAnimationZoomOutScale);
+              -o-transform: scale($amountChangeAnimationZoomOutScale);
+              -ms-transform: scale($amountChangeAnimationZoomOutScale);
+            }
           }
         }
       }
@@ -150,6 +174,12 @@ $column_parts_margin: 8px;
           text-align: center;
           cursor: pointer;
           box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+          transition: transform $addJobButtonAnimationTransitionDuration;
+          -webkit-transition: transform $addJobButtonAnimationTransitionDuration;
+          -moz-transition: transform $addJobButtonAnimationTransitionDuration;
+          -o-transition: transform $addJobButtonAnimationTransitionDuration;
+          -ms-transition: transform $addJobButtonAnimationTransitionDuration;
+
 
           .button-inside {
             display: flex;
@@ -160,52 +190,13 @@ $column_parts_margin: 8px;
             color: rgb(150, 150, 150);
           }
         }
-      }
 
-      .column-indicator-container {
-        text-align: center;
-        background-color: #ecebf1;
-        font-size: 18px;
-        font-weight: 300;
-        border-bottom-left-radius: 4px;
-        border-bottom-right-radius: 4px;
-        margin: 0px 15px 15px 15px;
-        box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        z-index: 10;
-
-        img {
-          width: 12px;
-          height: 6px;
-          margin-bottom: 4px;
-        }
-
-        .column-indicator-details {
-          font-size: 12px;
-          font-weight: normal;
-        }
-
-        &.--column-active {
-          background-color: rgba(228, 220, 255, 1);
-        }
-
-        &.--column-dropable {
-          background-color: rgba(228, 220, 255, 0.6);
-        }
-
-        &.ongoing-indicator {
-          padding-bottom: 15px;
-          margin-top: 165px;
-          border: 1px solid green;
-        }
-
-        &.rejected-indicator {
-          margin-bottom: -115px;
-          margin-top: 65px;
-        }
-
-        .cards-switch-button {
-          border: 0;
+        .job-input-button:hover {
+          transform: scale($addJobButtonAnimationZoomInScale);
+          -webkit-transform: scale($addJobButtonAnimationZoomInScale);
+          -moz-transform: scale($addJobButtonAnimationZoomInScale);
+          -o-transform: scale($addJobButtonAnimationZoomInScale);
+          -ms-transform: scale($addJobButtonAnimationZoomInScale);
         }
       }
     }
@@ -228,7 +219,7 @@ $column_parts_margin: 8px;
     }
 
     .rejecteds-button {
-      padding: 12px;
+      padding: 12px 20px;
       width: 100%;
       height: $rejected_button_height;
       min-height: 30px;
@@ -247,6 +238,27 @@ $column_parts_margin: 8px;
         font-size: 14px;
         height: 100%;
         color: black;
+        transition: transform $amountChangeAnimationTransitionDuration;
+        -webkit-transition: transform $amountChangeAnimationTransitionDuration;
+        -moz-transition: transform $amountChangeAnimationTransitionDuration;
+        -o-transition: transform $amountChangeAnimationTransitionDuration;
+        -ms-transition: transform $amountChangeAnimationTransitionDuration;
+
+        &.--animation-increase {
+          transform: scale($amountChangeAnimationZoomInScale);
+          -webkit-transform: scale($amountChangeAnimationZoomInScale);
+          -moz-transform: scale($amountChangeAnimationZoomInScale);
+          -o-transform: scale($amountChangeAnimationZoomInScale);
+          -ms-transform: scale($amountChangeAnimationZoomInScale);
+        }
+
+        &.--animation-decrease {
+          transform: scale($amountChangeAnimationZoomOutScale);
+          -webkit-transform: scale($amountChangeAnimationZoomOutScale);
+          -moz-transform: scale($amountChangeAnimationZoomOutScale);
+          -o-transform: scale($amountChangeAnimationZoomOutScale);
+          -ms-transform: scale($amountChangeAnimationZoomOutScale);
+        }
       }
 
       .expand-arrow {

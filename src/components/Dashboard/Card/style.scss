@@ -1,3 +1,8 @@
+@import "../../App/style.scss";
+
+$cardChangeAnimationTransitionDuration: .5s;
+$cardChangeAnimationFromZeroScale: 0.0;
+
 .card-container {
   border-radius: 8px;
   margin: 0px 25px 8px 15px;
@@ -10,6 +15,19 @@
   background-color: rgb(255, 255, 255);
   cursor: pointer;
   box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+  transition: transform $cardChangeAnimationTransitionDuration;
+  -webkit-transition: transform $cardChangeAnimationTransitionDuration;
+  -moz-transition: transform $cardChangeAnimationTransitionDuration;
+  -o-transition: transform $cardChangeAnimationTransitionDuration;
+  -ms-transition: transform $cardChangeAnimationTransitionDuration;
+
+  &.--animation-from-zero {
+    transform: scale($cardChangeAnimationFromZeroScale);
+    -webkit-transform: scale($cardChangeAnimationFromZeroScale);
+    -moz-transform: scale($cardChangeAnimationFromZeroScale);
+    -o-transform: scale($cardChangeAnimationFromZeroScale);
+    -ms-transform: scale($cardChangeAnimationFromZeroScale);
+  }
 
   &.rejected-cards {
     opacity: 0.8;
@@ -60,9 +78,11 @@
   }
 
   .card-job-details {
+    position: relative;
+    right: 9%;
     padding-top: 2%;
-    margin-right: 2%;
     height: 5px;
+    width: 0;
     font-size: 80%;
     cursor: pointer;
 

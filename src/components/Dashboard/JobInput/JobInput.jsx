@@ -100,6 +100,7 @@ class JobInput extends PureComponent {
 
   handleAddNewApplication() {
     const { columnName } = this.props;
+    this.props.toggleJobInput();
     this.props
       .addNewApplication({
         columnName,

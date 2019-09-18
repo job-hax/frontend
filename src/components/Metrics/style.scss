@@ -1,6 +1,8 @@
+@import "../App/style.scss";
+
 .metrics_feature_area {
     background-color: white;
-    color: black;
+    color: $text_color;
     padding-top: 32px;
     min-height: 600px;
     height: auto;
@@ -12,7 +14,6 @@
         h2 {
             font-size: 24pt;
             margin-bottom: 24px;
-            color: black;
         }
     }
 
@@ -44,17 +45,14 @@
                 padding-bottom: 4px;
                 max-width: 380px;
                 margin: auto;
-                color: black;
             }
 
             p {
                 max-width: 380px;
                 margin: auto;
-                color: black;
             }
 
             a {
-                color: black;
                 text-decoration: none;
                 ;
             }
@@ -81,10 +79,14 @@
                 height: 180px;
                 width: 272px;
                 overflow: hidden;
-                //box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
                 border: 1px solid white;
                 margin: 0px 12px 12px 12px;
                 border-radius: 8px;
+                transition: transform .3s;
+                -webkit-transition: transform .3s;
+                -moz-transition: transform .3s;
+                -o-transition: transform .3s;
+                -ms-transition: transform .3s;
 
 
                 .metric-summary {
@@ -96,7 +98,13 @@
             }
 
             .metric-summary-container:hover {
-                box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+                z-index: 51;
+                transform: scale(1.1);
+                -webkit-transform: scale(1.1);
+                -moz-transform: scale(1.1);
+                -o-transform: scale(1.1);
+                -ms-transform: scale(1.1);
+                box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.1);
             }
 
             .metric-detailed-container {
@@ -107,6 +115,11 @@
                 border: 1px solid white;
                 background-color: white;
                 border-radius: 8px;
+                transition: transform .3s;
+                -webkit-transition: transform .3s;
+                -moz-transition: transform .3s;
+                -o-transition: transform .3s;
+                -ms-transition: transform .3s;
 
 
                 .metric {
@@ -130,7 +143,13 @@
             }
 
             .metric-detailed-container:hover {
-                box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+                z-index: 51;
+                transform: scale(1.1);
+                -webkit-transform: scale(1.1);
+                -moz-transform: scale(1.1);
+                -o-transform: scale(1.1);
+                -ms-transform: scale(1.1);
+                box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.1);
             }
 
         }

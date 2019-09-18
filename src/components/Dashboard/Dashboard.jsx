@@ -203,6 +203,9 @@ class Dashboard extends Component {
     this.onsiteInterviewRejected = [];
     this.offerRejected = [];
     for (let application of applications) {
+      if (!application.is_changed) {
+        application["is_changed"] = false;
+      }
       switch (application.application_status.id) {
         case 2:
           this.toApply.push(application);
@@ -299,13 +302,14 @@ class Dashboard extends Component {
     if (dragColumnName === dropColumnName) {
       return;
     }
-    console.log(statuses);
+    //IS_CONSOLE_LOG_OPEN && console.log(statuses);
     let newDisplayingJobappsList = this.state.displayingList.filter(
       jobapp => jobapp.id != card.id
     );
     let updatedCard = card;
     let newStatus = statuses[dropColumnName];
     updatedCard.application_status = newStatus;
+    updatedCard.is_changed = "added";
     newDisplayingJobappsList.unshift(updatedCard);
     this.sortJobApplications(newDisplayingJobappsList);
     await this.props.handleTokenExpiration("dashboard updateApplications");
@@ -361,7 +365,8 @@ class Dashboard extends Component {
       application_status: { id: statuses[columnName].id },
       company_object: { company: name },
       is_rejected: false,
-      position: { job_title: title }
+      position: { job_title: title },
+      is_changed: "added"
     };
     let insertedItemColumn = this.state[columnName].slice();
     insertedItemColumn.unshift(jobCardFirstInstance);
@@ -402,7 +407,9 @@ class Dashboard extends Component {
       return job.id !== card.id;
     });
     let insertedItemColumn = this.state[listToAdd].slice();
-    insertedItemColumn.unshift(card);
+    updatedCard = card;
+    updatedCard.is_changed = "added";
+    insertedItemColumn.unshift(updatedCard);
     this.setState(() => ({
       [listToRemove]: removedItemColumn,
       [listToAdd]: insertedItemColumn
@@ -518,6 +525,7 @@ class Dashboard extends Component {
         if (displayingJobApp.id == selectedJobApp.jobApp_id) {
           displayingJobApp.application_status.id = status_id;
           displayingJobApp.application_status.value = status_name;
+          displayingJobApp.is_changed = "added";
         }
       })
     );
@@ -527,6 +535,7 @@ class Dashboard extends Component {
         if (jobApp.id == selectedJobApp.jobApp_id) {
           jobApp.application_status.id = status_id;
           jobApp.application_status.value = status_name;
+          jobApp.is_changed = "added";
         }
       })
     );
@@ -556,6 +565,7 @@ class Dashboard extends Component {
           displayingJobApp.application_status.id = status_id;
           displayingJobApp.application_status.value = status_name;
           displayingJobApp.is_rejected = true;
+          displayingJobApp.is_changed = "added";
         }
       })
     );
@@ -566,6 +576,7 @@ class Dashboard extends Component {
           jobApp.application_status.id = status_id;
           jobApp.application_status.value = status_name;
           jobApp.is_rejected = true;
+          jobApp.is_changed = "added";
         }
       })
     );
@@ -593,7 +604,7 @@ class Dashboard extends Component {
     IS_CONSOLE_LOG_OPEN && console.log("click", event);
     let requestList = [];
     this.state.selectedJobApplications.forEach(selectedJobApp =>
-      requestList.push(selectedJobApp.jobApp_id)
+      requestList.unshift(selectedJobApp.jobApp_id)
     );
     if (event.key === "deleteAll") {
       let newList = this.state.displayingList;
@@ -636,6 +647,7 @@ class Dashboard extends Component {
             selectedJobApp.application_status.id != 2
           ) {
             displayingJobApp.is_rejected = true;
+            displayingJobApp.is_changed = "added";
           }
         })
       );
@@ -647,6 +659,7 @@ class Dashboard extends Component {
             selectedJobApp.application_status.id != 2
           ) {
             jobApp.is_rejected = true;
+            jobApp.is_changed = "added";
           }
         })
       );
@@ -677,7 +690,8 @@ class Dashboard extends Component {
           ) {
             displayingJobApp.application_status.id = 2;
             displayingJobApp.application_status.value = "TO APPLY";
-            toApplyList.push(selectedJobApp.jobApp_id);
+            displayingJobApp.is_changed = "added";
+            toApplyList.unshift(selectedJobApp.jobApp_id);
           }
         })
       );
@@ -690,6 +704,7 @@ class Dashboard extends Component {
           ) {
             jobApp.application_status.id = 2;
             jobApp.application_status.value = "TO APPLY";
+            jobApp.is_changed = "added";
           }
         })
       );
@@ -887,6 +902,7 @@ class Dashboard extends Component {
             title="TO APPLY"
             totalCount={this.state.toApply.length}
             cards={this.state.toApply}
+            cardsRejecteds={[]}
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
             addToSelectedJobApplicationsList={

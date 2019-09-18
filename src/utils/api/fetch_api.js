@@ -64,10 +64,12 @@ function removeAllCookies() {
     "jobhax_refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   document.cookie =
     "remember_me=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "user_type=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 
 export async function axiosCaptcha(url, config, action) {
-  let response = null;
+  let response = "before";
   config.mode = "cors";
   config.cache = "no-cache";
   if (!config.headers) {
@@ -110,6 +112,10 @@ export async function axiosCaptcha(url, config, action) {
           console.log(error);
         });
         log(url, config, response);
+        if (response.data.error_code === 99) {
+          removeAllCookies();
+          window.location = "/signin?alert=reCapthcaCouldNotPassed";
+        }
       }
     }
     if (url.split("api")[1] != "/users/verifyRecaptcha/") {
@@ -128,11 +134,24 @@ export async function axiosCaptcha(url, config, action) {
     }
   }
 
-  if (response != null) {
-    if (response.data.error_code === 99) {
-      removeAllCookies();
-      window.location = "/signin?alert=reCapthcaCouldNotPassed";
-    }
-    return response;
+  if (response == undefined) {
+    IS_CONSOLE_LOG_OPEN &&
+      console.log(
+        "response undefined URL: ",
+        url,
+        "\nconfig: ",
+        config,
+        "action: ",
+        action
+      );
+    response = { statusText: "no response received" };
+    removeAllCookies();
+    window.location = "/";
   }
+  if (response == "before") {
+    response = {
+      statusText: "request has not been sent because of internal filters"
+    };
+  }
+  return response;
 }

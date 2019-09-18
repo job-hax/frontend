@@ -1,6 +1,8 @@
+@import "../App/style.scss";
+
 .blog-page-container {
     font-family: Helvetica;
-    color: black;
+    color: $text_color;
     background-color: white;
     min-height: 92vh;
     overflow-y: hidden;
@@ -310,7 +312,7 @@
                 }
 
                 .title {
-                    color: black;
+                    color: $text_color;
                     font-size: 220%;
                     font-weight: bolder;
                     display: -webkit-box;
@@ -428,7 +430,7 @@
                         font-size: 120%;
                         font-weight: 550;
                         margin: 0 0 16px 0;
-                        color: black;
+                        color: $text_color;
                     }
 
                     .details {}
@@ -450,7 +452,7 @@
                         }
 
                         a {
-                            color: black;
+                            color: $text_color;
                         }
                     }
 

@@ -51,13 +51,27 @@ class Card extends PureComponent {
       showModal: false,
       imageLoadError: true,
       showSelect: false,
-      isSelected: this.props.isSelected
+      isSelected: this.props.isSelected,
+      animate: false
     };
     this.toggleModal = this.toggleModal.bind(this);
     this.updateCompany = this.updateCompany.bind(this);
     this.updateCard = this.updateCard.bind(this);
     this.toggleSelect = this.toggleSelect.bind(this);
     this.onSelectChange = this.onSelectChange.bind(this);
+  }
+
+  async componentDidMount() {
+    if (this.props.is_changed != false) {
+      await this.setState({ animate: true });
+      setTimeout(
+        () =>
+          this.setState({
+            animate: false
+          }),
+        100
+      );
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -134,28 +148,31 @@ class Card extends PureComponent {
         position,
         is_rejected,
         app_source,
-        handleTokenExpiration,
         columnName,
-        deleteJobFromList,
-        moveToRejected,
-        updateApplications,
         icon,
         id,
-        alert
+        is_changed
       },
+      alert,
+      handleTokenExpiration,
+      deleteJobFromList,
+      moveToRejected,
+      updateApplications,
+      card,
       isDragging
     } = this.props;
 
-    const { showModal } = this.state;
+    const { showModal, animate } = this.state;
 
     const cardClass = classNames({
       "card-container": true,
       "rejected-cards": is_rejected,
-      "--is_dragging": isDragging
+      "--is_dragging": isDragging,
+      "--animation-from-zero": animate && is_changed == "added"
     });
 
     return (
-      <div onMouseEnter={this.toggleSelect} onMouseLeave={this.toggleSelect}>
+      <div>
         {showModal && (
           <CardModal
             handleTokenExpiration={handleTokenExpiration}
@@ -172,7 +189,11 @@ class Card extends PureComponent {
             {...this.props}
           />
         )}
-        <div className={cardClass}>
+        <div
+          className={cardClass}
+          onMouseEnter={this.toggleSelect}
+          onMouseLeave={this.toggleSelect}
+        >
           <div className="card-company-icon" onClick={this.toggleModal}>
             {company_object.cb_company_logo === null ? (
               <img src={company_object.company_logo || defaultLogo} />
