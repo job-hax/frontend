@@ -22,7 +22,8 @@ class Alumni extends React.Component {
       isInitialRequest: "beforeRequest",
       isNewPageRequested: false,
       isDetailsRequested: false,
-      alumniList: {},
+      alumniList: [],
+      pagination: {},
       pageNo: 1,
       pageSize: 5,
       q: "",
@@ -136,27 +137,33 @@ class Alumni extends React.Component {
     await this.props.handleTokenExpiration("alumni getData");
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
-        if (requestType === "initialRequest") {
-          this.setState({
-            alumniList: response.data,
-            isWaitingResponse: false,
-            isInitialRequest: false
-          });
-        } else if (requestType === "newPageRequest") {
-          this.setState({
-            alumniList: response.data,
-            isWaitingResponse: false,
-            isNewPageRequested: false
-          });
-        } else if (requestType === "queryRequest") {
-          this.setState({
-            alumniList: response.data,
-            isWaitingResponse: false,
-            isQueryRequested: false
-          });
+        if (response.data.success) {
+          let alumniListReceived = response.data.data;
+          if (requestType === "initialRequest") {
+            this.setState({
+              alumniList: alumniListReceived,
+              pagination: response.data.pagination,
+              isWaitingResponse: false,
+              isInitialRequest: false
+            });
+          } else if (requestType === "newPageRequest") {
+            this.setState({
+              alumniList: alumniListReceived,
+              pagination: response.data.pagination,
+              isWaitingResponse: false,
+              isNewPageRequested: false
+            });
+          } else if (requestType === "queryRequest") {
+            this.setState({
+              alumniList: alumniListReceived,
+              pagination: response.data.pagination,
+              isWaitingResponse: false,
+              isQueryRequested: false
+            });
+          }
+          IS_CONSOLE_LOG_OPEN &&
+            console.log("alumni response.data data", response.data);
         }
-        IS_CONSOLE_LOG_OPEN &&
-          console.log("alumni response.data data", response.data);
       }
     });
   }
@@ -176,7 +183,7 @@ class Alumni extends React.Component {
   }
 
   generateAlumniCards() {
-    return this.state.alumniList.data.map(alumni => (
+    return this.state.alumniList.map(alumni => (
       <div key={alumni.id} style={{ width: 412, backgroundColor: "white" }}>
         <AlumniCard
           alumni={alumni}
@@ -355,7 +362,7 @@ class Alumni extends React.Component {
 
   generateFilterArea() {
     const height = this.state.states.length > 0 ? 380 : 330;
-    const marginTop = this.state.alumniList.pagination.total_count < 5 ? 8 : 40;
+    const marginTop = this.state.pagination.total_count < 5 ? 8 : 40;
     const style = { height: height, marginTop: marginTop };
     return (
       <div className="filter-area-container" style={style}>
@@ -400,7 +407,7 @@ class Alumni extends React.Component {
                 <div>{this.generateFilterArea()}</div>
                 <div>
                   <div>
-                    {this.state.alumniList.pagination.total_count == 0 && (
+                    {this.state.pagination.total_count == 0 && (
                       <div className="no-data">
                         No Alumni found based on selected criteria!
                       </div>
@@ -409,12 +416,10 @@ class Alumni extends React.Component {
                     <div className="pagination-container">
                       <Pagination
                         onChange={this.handlePageChange}
-                        defaultCurrent={
-                          this.state.alumniList.pagination.current_page
-                        }
+                        defaultCurrent={this.state.pagination.current_page}
                         pageSize={this.state.pageSize}
-                        current={this.state.alumniList.pagination.current_page}
-                        total={this.state.alumniList.pagination.total_count}
+                        current={this.state.pagination.current_page}
+                        total={this.state.pagination.total_count}
                       />
                     </div>
                   </div>

@@ -36,7 +36,9 @@ class Contacts extends React.Component {
       if (response.statusText === "OK") {
         if (response.data.success == true) {
           this.contacts = response.data.data.contacts;
-          this.alumni = response.data.data.alumni;
+          this.alumni = response.data.data.alumni.filter(
+            each => each.job_position
+          );
           this.setState({
             contacts: this.contacts,
             alumni: this.alumni
