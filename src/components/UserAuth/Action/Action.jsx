@@ -33,7 +33,7 @@ class Action extends React.Component {
         IS_CONSOLE_LOG_OPEN &&
           console.log("action : ", action, "\ncode : ", code);
         let config = { method: "GET" };
-        axiosCaptcha(USERS(action + "?code=" + code), config).then(response => {
+        axiosCaptcha(USERS(action) + "?code=" + code, config).then(response => {
           if (response.statusText === "OK") {
             if (response.data.success === true) {
               if (action === "activate") {
