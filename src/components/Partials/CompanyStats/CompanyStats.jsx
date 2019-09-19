@@ -46,7 +46,7 @@ class CompanyStats extends React.Component {
             width: 188
           }}
         >
-          <label style={{ fontWeight: "450", marginTop: "6px" }}>
+          <label style={{ fontWeight: "450", margin: "12px 24px 0px -24px" }}>
             {stat.value}
           </label>
           <div style={{ display: "flex", justifyContent: "left" }}>
