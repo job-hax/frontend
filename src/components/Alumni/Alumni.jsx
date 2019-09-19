@@ -9,7 +9,6 @@ import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import Footer from "../Partials/Footer/Footer.jsx";
 
 import "./style.scss";
-import "../../assets/libraryScss/antd-scss/newantd.scss";
 
 const Search = Input.Search;
 

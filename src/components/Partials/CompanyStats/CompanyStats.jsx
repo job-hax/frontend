@@ -1,7 +1,5 @@
 import React from "react";
 import { Rate, Statistic, Icon } from "antd";
-
-import "../../../assets/libraryScss/antd-scss/newantd.scss";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 
 class CompanyStats extends React.Component {

@@ -6,7 +6,6 @@ import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import { USERS } from "../../../utils/constants/endpoints.js";
 
 import "./style.scss";
-import "../../../assets/libraryScss/antd-scss/newantd.scss";
 
 const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 
@@ -167,9 +166,7 @@ class FeedBack extends React.Component {
           onCancel={this.handleCancel}
           footer={null}
         >
-          <h4 style={{ color: "black" }}>
-            Your feedback is important for us
-          </h4>
+          <h4 style={{ color: "black" }}>Your feedback is important for us</h4>
           <form onSubmit={this.handleSubmit}>
             <div style={quesitonContainerStyle} className="question">
               <label style={quesitonLabelStyle} className="question-label">

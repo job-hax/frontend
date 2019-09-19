@@ -81,14 +81,6 @@
     fill: black;
   }
 
-  .ant-menu-horizontal>.ant-menu-submenu {
-    vertical-align: top;
-  }
-
-  .ant-menu-horizontal>.ant-menu-submenu-selected {
-    max-height: 52px;
-  }
-
   .header-icon.tooltips {
     position: relative;
     display: inline;
@@ -160,4 +152,21 @@
       -ms-transform: scale(1.2) rotate(360deg);
     }
   }
+}
+
+.ant-menu-horizontal>.ant-menu-submenu-selected {
+  border-bottom: 2px solid $base_color;
+}
+
+.ant-menu-horizontal>.ant-menu-submenu:hover {
+  border-bottom: 2px solid $base_color;
+}
+
+.ant-menu-horizontal>.ant-menu-submenu {
+  vertical-align: top;
+  max-height: 52px;
+}
+
+.ant-menu-horizontal>.ant-menu-submenu-selected {
+  max-height: 52px;
 }

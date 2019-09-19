@@ -41,8 +41,6 @@ import {
   NOTIFICATIONS
 } from "../../utils/constants/endpoints.js";
 
-import "../../assets/libraryScss/antd-scss/newantd.scss";
-import "../../assets/libraryScss/area-code.scss";
 import "./style.scss";
 
 class App extends Component {

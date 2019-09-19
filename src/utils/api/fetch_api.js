@@ -145,8 +145,8 @@ export async function axiosCaptcha(url, config, action) {
         action
       );
     response = { statusText: "no response received" };
-    removeAllCookies();
-    window.location = "/?alert=your-session-has-been-terminated";
+    //removeAllCookies();
+    //window.location = "/?alert=your-session-has-been-terminated";
   }
   if (response == "before") {
     response = {
