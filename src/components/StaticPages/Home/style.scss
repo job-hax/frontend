@@ -48,6 +48,29 @@
                     justify-content: space-between;
                     width: 330px;
 
+                    .ant-btn {
+                        color: $primary_button_color;
+                        border: 2px solid $primary_button_color;
+                    }
+
+                    .ant-btn-primary {
+                        color: #fff !important;
+                        background-color: $primary_button_color;
+                        border: $primary_button_color !important;
+
+                    }
+
+                    .ant-btn:hover {
+                        color: rgb(64, 169, 255) !important;
+                        border-color: rgb(64, 169, 255) !important;
+                    }
+
+                    .ant-btn-primary:hover {
+                        color: #fff !important;
+                        background-color: rgb(64, 169, 255) !important;
+                        border: rgb(64, 169, 255) !important;
+
+                    }
 
                     .ant-btn-lg {
                         height: 48px;
@@ -222,6 +245,33 @@ a:active {
 .how_it_works_area {
     margin-bottom: 80px;
 
+    .ant-btn {
+        color: $primary_button_color;
+        border: $primary_button_color;
+    }
+
+    .ant-btn-primary {
+        color: #fff !important;
+        background-color: $primary_button_color;
+        border: $primary_button_color !important;
+
+    }
+
+    .ant-btn:hover {
+        background-color: rgb(64, 169, 255) !important;
+        border-color: rgb(64, 169, 255) !important;
+    }
+
+
+
+    .ant-btn-lg {
+        height: 34px;
+        padding: 0px 24px;
+        font-size: 15px;
+        border-radius: 26px;
+
+    }
+
     .row {
         display: flex;
         align-items: center;
@@ -268,29 +318,4 @@ a:active {
     }
 
     p {}
-}
-
-
-.ant-btn {
-    color: $primary_button_color;
-    border: 2px solid $primary_button_color;
-}
-
-.ant-btn-primary {
-    color: #fff !important;
-    background-color: $primary_button_color;
-    border: $primary_button_color !important;
-
-}
-
-.ant-btn:hover {
-    border-color: rgb(64, 169, 255) !important;
-}
-
-.ant-btn-lg {
-    height: 34px;
-    padding: 0px 24px;
-    font-size: 15px;
-    border-radius: 26px;
-
 }
