@@ -46,7 +46,16 @@
                 .buttons-container {
                     display: flex;
                     justify-content: space-between;
-                    width: 280px;
+                    width: 330px;
+
+
+                    .ant-btn-lg {
+                        height: 48px;
+                        padding: 0px 28px;
+                        font-size: 18px;
+                        border-radius: 26px;
+
+                    }
                 }
             }
         }
