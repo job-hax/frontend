@@ -273,14 +273,18 @@ a:active {
 
 .ant-btn {
     color: $primary_button_color;
-    border-color: $primary_button_color;
+    border: 2px solid $primary_button_color;
 }
 
 .ant-btn-primary {
     color: #fff !important;
-    //background-color: $primary_button_color;
-    border-color: $primary_button_color !important;
+    background-color: $primary_button_color;
+    border: $primary_button_color !important;
 
+}
+
+.ant-btn:hover {
+    border-color: rgb(64, 169, 255) !important;
 }
 
 .ant-btn-lg {
