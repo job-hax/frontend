@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Helvetica:400,500,600,700');
 @import "../../App/style.scss";
 
 
@@ -120,72 +119,10 @@ a:active {
     color: $active_color;
 }
 
-.header_area,
 .feature_area,
 .how_it_works_area {
     padding-left: 75px;
     padding-right: 75px;
-}
-
-.header_area {
-    // background-image: linear-gradient(124deg, rgb(170, 0, 255), rgb(92, 39, 195));
-    background-image: url('../../../assets/images/homebanner.jpg');
-    background-size: cover;
-    color: white;
-    padding-top: 65px;
-    padding-bottom: 100px;
-
-    .top_buttons_and_logo {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 45px;
-    }
-
-    .top_buttons {
-        text-align: right;
-
-        button {
-            margin-left: 30px;
-        }
-    }
-
-    .logo {
-        width: 90px;
-    }
-
-    h2 {
-        font-size: 56pt;
-        font-weight: 600;
-        margin-top: 0;
-        color: white;
-    }
-
-    p {
-        margin-top: -40px;
-        margin-bottom: 90px;
-        color: white;
-    }
-
-    .how_it_works_btn {
-        padding: 25px 60px;
-        background: white;
-        text-decoration: none;
-        font-weight: 400;
-        border-radius: 8px;
-        color: black;
-    }
-
-    button {
-        color: white;
-        font-family: 'Helvetica', sans-serif;
-        font-size: 12pt;
-        background: rgba(255, 255, 255, 0.05);
-        border: none;
-        border-radius: 50px;
-        padding: 15px 35px;
-        cursor: pointer;
-    }
 }
 
 .feature_area {

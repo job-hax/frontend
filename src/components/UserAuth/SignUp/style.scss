@@ -1,3 +1,5 @@
+@import "../../App/style.scss";
+
 .sign_up-background {
     background-color: white;
     height: 16vh;
@@ -37,9 +39,8 @@
                 border-bottom: 1px solid rgba(150, 150, 150, 0.4);
                 padding: 0 0 8px 0;
                 background-color: white;
-                font-family: Helvetica;
                 cursor: default;
-                color: rgb(0, 0, 0);
+                color: $text_color;
                 font-size: 12pt;
 
                 img {
@@ -101,28 +102,6 @@
 
 }
 
-
-.sign_up-top {
-    display: flex;
-    justify-content: space-between;
-    padding: 2vh 8vh;
-
-    button {
-        color: white;
-        font-family: Helvetica;
-        font-size: 12pt;
-        background-color: rgba(0, 0, 0, 0.2);
-        border: none;
-        border-radius: 50px;
-        padding: 15px 35px;
-        margin-top: 4vh;
-        cursor: pointer;
-    }
-
-    .logo {
-        width: 90px;
-    }
-}
 
 .bottom-fixed-footer-sign_up {
     position: fixed;

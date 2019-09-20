@@ -1,13 +1,14 @@
 @import "../../App/style.scss";
 
 .header-container {
+  position: fixed;
   display: flex;
   justify-content: space-between;
   height: 60px;
   width: 100%;
   color: $text_color;
   background-color: white;
-  z-index: 2000;
+  z-index: 21;
 
   .left-container {
     display: flex;
@@ -173,6 +174,10 @@
       -ms-transform: scale(1.2) rotate(360deg);
     }
   }
+}
+
+.header-height {
+  height: 60px;
 }
 
 .ant-menu-horizontal>.ant-menu-submenu-selected {

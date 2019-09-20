@@ -12,7 +12,7 @@ class PieChart extends React.Component {
       color: ["#F4EBC1", "#A0C1B8", "#709FB0", "#726A95", "#351F39"],
       backgroundColor: "white",
       textStyle: {
-        fontType: "Helvetica",
+        fontType: "HelveticaNeue",
         color: "black"
       },
       title: {

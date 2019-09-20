@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Helvetica');
+@import url('https://fonts.googleapis.com/css?family=HelveticaNeue');
 @import '~antd/dist/antd.css';
 @import '~react-telephone-input/css/default.css';
 
@@ -12,11 +12,16 @@ $hover_color: rgba(63, 129, 216, 0.7);
 $active_color: rgba(63, 129, 216, 0.8);
 $primary_button_color: #0048BA;
 $spinner_background_color: rgba(0, 0, 0, 0.2);
+$line_color: rgb(239, 239, 239);
+$gray_text_color: #aaaaaa;
 
 $banner_image: url('https://jobhax.com/src/assets/images/homebanner.jpg');
 
+$primary_font_type: HelveticaNeue,
+sans-serif;
+
 body {
-  font-family: Helvetica, sans-serif;
+  font-family: $primary_font_type;
   color: $text_color;
 }
 

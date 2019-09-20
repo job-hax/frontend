@@ -19,7 +19,7 @@ class BarGraph extends React.Component {
       ],
       backgroundColor: "white",
       textStyle: {
-        fontType: "Helvetica",
+        fontType: "HelveticaNeue",
         color: "black"
       },
       title: {

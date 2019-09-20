@@ -2,6 +2,8 @@ import React from "react";
 import { Rate, Statistic, Icon } from "antd";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 
+import "./style.scss";
+
 class CompanyStats extends React.Component {
   constructor(props) {
     super(props);
@@ -34,46 +36,33 @@ class CompanyStats extends React.Component {
   generateEmploymentAuthStats() {
     const { company } = this.props;
     return company.supported_employment_auths.map(stat => (
-      <div
-        className="authorization-stat-container"
-        key={stat.id}
-        style={{ marginTop: "6px" }}
-      >
+      <div className="authorization-stat-container" key={stat.id}>
         <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: 188
-          }}
+          style={
+            stat.id == 1
+              ? { fontWeight: "450", marginRight: "5px" }
+              : {
+                  fontWeight: "450",
+                  marginRight: 5,
+                  paddingLeft: 10,
+                  borderLeft: "1px solid rgb(239, 239, 239)"
+                }
+          }
         >
-          <label style={{ fontWeight: "450", margin: "12px 24px 0px -24px" }}>
-            {stat.value}
-          </label>
-          <div style={{ display: "flex", justifyContent: "left" }}>
-            <div style={{ marginRight: "12px" }}>
-              <Statistic
-                title="Hire"
-                value={
-                  stat.yes == 0 ? 0 : (stat.yes / (stat.yes + stat.no)) * 100
-                }
-                precision={2}
-                valueStyle={{ color: "#3f8600" }}
-                prefix={<Icon type="arrow-up" />}
-                suffix="%"
-              />
-            </div>
-            <div style={{ marginRight: "12px" }}>
-              <Statistic
-                title="Nope"
-                value={
-                  stat.no == 0 ? 0 : (stat.no / (stat.yes + stat.no)) * 100
-                }
-                precision={2}
-                valueStyle={{ color: "#cf1322" }}
-                prefix={<Icon type="arrow-down" />}
-                suffix="%"
-              />
-            </div>
+          {stat.value}
+        </div>
+        <div style={{ display: "flex", justifyContent: "left" }}>
+          <div style={{ marginRight: "5px", color: "#3db900" }}>
+            {stat.yes == 0
+              ? 0
+              : Math.round((stat.yes / (stat.yes + stat.no)) * 100)}
+            %
+          </div>
+          <div style={{ marginRight: "10px", color: "#e02020" }}>
+            {stat.no == 0
+              ? 0
+              : Math.round((stat.no / (stat.yes + stat.no)) * 100)}
+            %
           </div>
         </div>
       </div>
@@ -82,9 +71,9 @@ class CompanyStats extends React.Component {
 
   generateCompanyStatistics() {
     return (
-      <div style={{ width: "240px", fontSize: "90%" }}>
+      <div>
         {this.generateCompanyRatings()}
-        <div style={{ marginTop: "12px" }}>
+        <div className="statistics-container">
           {this.generateEmploymentAuthStats()}
         </div>
       </div>
@@ -92,11 +81,7 @@ class CompanyStats extends React.Component {
   }
 
   render() {
-    return (
-      <div className="statistics-container">
-        {this.generateCompanyStatistics()}
-      </div>
-    );
+    return <div>{this.generateCompanyStatistics()}</div>;
   }
 }
 

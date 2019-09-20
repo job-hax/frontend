@@ -5,6 +5,7 @@ import Reviews from "../../../../../../Companies/Reviews/Reviews.jsx";
 import ReviewInput from "./ReviewInput/ReviewInput.jsx";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api.js";
 import { REVIEWS } from "../../../../../../../utils/constants/endpoints.js";
+import { Button } from "antd";
 
 class PositonReviews extends React.Component {
   constructor(props) {
@@ -94,18 +95,20 @@ class PositonReviews extends React.Component {
       console.log("reviews render", this.state.reviewsList);
     const { card } = this.props;
     return (
-      <div style={{ height: "520px", overflowX: "hidden" }}>
-        <div className="review-container">
+      <div style={{ height: "520px", overflow: "hidden" }}>
+        <div className="modal-review-big-container">
           {!this.state.isEnteringReview && (
             <div className="review-entry-container">
-              <div
-                className="review-button"
-                style={{ margin: "10px 0px 20px 400px", position: "absolute" }}
-                onClick={this.toggleReviewEdit}
-              >
-                {this.props.card.company_object.review_id
-                  ? "Update Your Review"
-                  : "Add a Review"}
+              <div className="review-button">
+                <Button
+                  type="primary"
+                  style={{ position: "absolute", borderRadius: 0 }}
+                  onClick={this.toggleReviewEdit}
+                >
+                  {this.props.card.company_object.review_id
+                    ? "Update Your Review"
+                    : "Add a Review"}
+                </Button>
               </div>
               <div>
                 {this.state.reviewsList.length == 0 && (
@@ -115,30 +118,14 @@ class PositonReviews extends React.Component {
                   </div>
                 )}
                 {this.state.isReviewsDisplaying === true && (
-                  <Reviews
-                    reviewsList={this.state.reviewsList}
-                    positionsList={[]}
-                    company_id={this.props.card.company_object.id}
-                    filterDisplay={false}
-                    style={{
-                      height: "auto",
-                      width: "560px",
-                      marginLeft: "12px",
-                      marginTop: "32px",
-                      paddingTop: 0,
-                      minHeight: "480px",
-                      maxHeight: "480px",
-                      display: "block"
-                    }}
-                    reviewContainerStyle={{
-                      display: "block",
-                      marginBottom: 20
-                    }}
-                    leftWidth={{
-                      minWidth: "220px",
-                      maxWidth: "220px"
-                    }}
-                  />
+                  <div style={{ marginTop: 40 }}>
+                    <Reviews
+                      reviewsList={this.state.reviewsList}
+                      positionsList={[]}
+                      company_id={this.props.card.company_object.id}
+                      filterDisplay={false}
+                    />
+                  </div>
                 )}
               </div>
             </div>

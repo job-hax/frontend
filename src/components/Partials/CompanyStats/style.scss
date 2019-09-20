@@ -1,26 +1,20 @@
 @import "../../App/style.scss";
 
 .statistics-container {
-    display: table;
-    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: calc(100vh * 2.4/100);
+    line-height: calc(100% * 18/14) !important;
 
     .authorization-stat-container {
         display: flex;
         justify-content: flex-start;
-        border: 1px solid red;
+        font-size: calc(100% * 16/14) !important;
+        line-height: calc(100% * 18/14) !important;
     }
+
 }
 
-.ant-statistic-content {
-    font-size: 14px;
-    width: 80px;
-    margin: 0px 8px 0px -12px;
-}
-
-.ant-statistic-content-value-decimal {
-    font-size: 12px;
-}
-
-.ant-statistic-content-suffix {
-    font-size: 14px;
+.ant-rate {
+    line-height: calc(100vh * 20/1440) !important;
 }

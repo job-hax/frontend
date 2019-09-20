@@ -460,9 +460,7 @@ class ReviewInput extends React.Component {
                 Anonymous
               </Checkbox>
               <div className="review-button-container">
-                <Button type="primary" onClick={this.props.toggleReview}>
-                  Cancel
-                </Button>
+                <Button onClick={this.props.toggleReview}>Cancel</Button>
                 <Button
                   type="primary"
                   style={{ marginLeft: 12 }}

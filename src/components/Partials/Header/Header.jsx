@@ -256,6 +256,7 @@ class Header extends Component {
   }
 
   render() {
+    let header = "";
     if (this.props.isUserLoggedIn) {
       if (
         this.state.current &&
@@ -268,7 +269,7 @@ class Header extends Component {
           return <Redirect to={this.state.current} />;
         }
       }
-      return this.generateLoggedInHeader();
+      header = this.generateLoggedInHeader();
     } else {
       if (
         this.state.current != window.location.pathname &&
@@ -277,8 +278,14 @@ class Header extends Component {
         this.setState({ request: false });
         return <Redirect to={this.state.current} />;
       }
-      return this.generateNonLoggedInHeader();
+      header = this.generateNonLoggedInHeader();
     }
+    return (
+      <div>
+        {header}
+        <div className="header-height"></div>
+      </div>
+    );
   }
 }
 
