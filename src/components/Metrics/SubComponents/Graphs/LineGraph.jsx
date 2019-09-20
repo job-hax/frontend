@@ -19,7 +19,7 @@ class LineGraph extends React.Component {
       ],
       backgroundColor: "white",
       textStyle: {
-        fontType: "Helvetica",
+        fontType: "HelveticaNeue",
         color: "black"
       },
       title: {

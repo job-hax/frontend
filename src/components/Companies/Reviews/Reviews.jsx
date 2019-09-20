@@ -10,6 +10,7 @@ import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import "./style.scss";
 
 const descDifficulty = ["too easy", "easy", "normal", "hard", "too hard"];
+const desc = ["terrible", "bad", "normal", "good", "perfect"];
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -33,8 +34,8 @@ class Reviews extends React.Component {
 
   async handlePositionFilterChange(event) {
     console.log(event);
-    let value = event.item.props.children;
-    let id = event.key;
+    let value = event.key;
+    let id = event.item.props.value;
     if (value == "Reset") {
       this.setState({
         reviewsList: this.props.reviewsList,
@@ -70,30 +71,30 @@ class Reviews extends React.Component {
     return this.state.reviewsList.map(
       review =>
         review.is_published === true && (
-          <div
-            key={review.id}
-            className="review-container"
-            style={this.props.reviewContainerStyle}
-          >
+          <div key={review.id} className="review-container">
             <div className="review-header">
               <div className="reviewer-name">
                 {review.anonymous === false ? review.username : "Anonymous"}
               </div>
-              <div className="date">
-                last updated on{" "}
-                {makeTimeBeautiful(review.update_date, "dateandtime")}
+              <div className="header-bottom">
+                <div>
+                  <Rate
+                    tooltips={desc}
+                    disabled
+                    value={review.overall_company_experience}
+                  />
+                </div>
+                <div className="date">
+                  {makeTimeBeautiful(review.update_date, "dateandtime")}
+                </div>
               </div>
             </div>
             <div className="review-body">
               <div className="review-body-company">
-                <div className="body-company-title">Company</div>
                 <div className="body-company-sub-container">
-                  <div
-                    className="body-company-data"
-                    style={this.props.leftWidth}
-                  >
+                  <div className="body-company-data">
                     <div className="employment-status">
-                      <label>Employment Type:</label>
+                      <label>Employment type:</label>
                       {review.emp_status === null ? (
                         <div className="not-specified">"Not specified"</div>
                       ) : (
@@ -119,52 +120,35 @@ class Reviews extends React.Component {
                       )}
                     </div>
                   </div>
-                  <div className="body-company-ratings">
-                    <label>Overall:</label>
-                    <CompanyRating
-                      emp_auths={review.emp_auths}
-                      rating={review.overall_company_experience}
-                    />
-                  </div>
                 </div>
               </div>
               <div className="review-body-interview">
-                <div className="body-interview-title">Interview</div>
                 <div className="interview-ratings">
-                  <div
-                    className="overall-experience-container"
-                    style={this.props.leftWidth}
-                  >
-                    <label>Overall:</label>
+                  <div className="overall-experience-container">
+                    <label>Interview overall:</label>
                     <div className="overall-experience">
-                      <RadioGroup
-                        name="overall_interview_experience"
-                        value={
-                          review.overall_interview_experience != null &&
-                          review.overall_interview_experience.toString()
+                      <Icon
+                        style={{ fontSize: 20, marginTop: "-5px" }}
+                        type="like"
+                        theme={
+                          review.overall_interview_experience &&
+                          review.overall_interview_experience == 0 &&
+                          "filled"
                         }
-                        onChange={this.handleInputChange}
-                        //style={{marginTop:"-8px"}}
-                      >
-                        <RadioButton
-                          id="overall-interview-experience-good"
-                          value="0"
-                        >
-                          Good
-                        </RadioButton>
-                        <RadioButton
-                          id="overall-interview-experience-bad"
-                          value="1"
-                        >
-                          Bad
-                        </RadioButton>
-                      </RadioGroup>
+                      />
+                      <Icon
+                        type="dislike"
+                        style={{ margin: "2px 0px 0px 5px", fontSize: 20 }}
+                        theme={
+                          review.overall_interview_experience &&
+                          review.overall_interview_experience == 1 &&
+                          "filled"
+                        }
+                      />
                     </div>
                   </div>
-                  <div className="difficulty-container">
-                    <label style={{ margin: "10px 8px 6px 4px" }}>
-                      Difficulty:
-                    </label>
+                  <div>
+                    <label>Interview difficulty:</label>
                     <Rate
                       tooltips={descDifficulty}
                       disabled
@@ -176,7 +160,7 @@ class Reviews extends React.Component {
                   review.interview_notes != "" && (
                     <div className="interview-experience">
                       <label style={{ margin: "10px 4px 6px 0px" }}>
-                        Interview Experience:
+                        Interview experience:
                       </label>
                       <div className="interview-notes">
                         {review.interview_notes}
@@ -200,12 +184,13 @@ class Reviews extends React.Component {
           textAlign: "left",
           overflowX: "hidden"
         }}
+        selectedKeys={[this.state.displaying]}
         onClick={event => this.handlePositionFilterChange(event)}
       >
         {this.props.positionsList.map(position => (
           <Menu.Item
             id="company-positions"
-            key={position.id}
+            key={position.job_title}
             value={position.id}
           >
             {position.job_title}
@@ -217,28 +202,18 @@ class Reviews extends React.Component {
     );
 
     return (
-      <div>
+      <div className="reviews-big-container">
         {this.props.filterDisplay && (
           <div className="filter">
-            <label>Filter:</label>
             <Dropdown overlay={menu} placement="bottomCenter">
-              <Button
-                className="ant-dropdown-link"
-                style={{
-                  color: "rgba(100, 100, 100, 0.9)",
-                  width: 200,
-                  overflow: "hidden"
-                }}
-              >
+              <Button>
                 {this.state.displaying}
                 <Icon type="down" />
               </Button>
             </Dropdown>
           </div>
         )}
-        <div style={this.props.style} className="reviews-container">
-          {this.mapReviews()}
-        </div>
+        <div className="reviews-container">{this.mapReviews()}</div>
       </div>
     );
   }

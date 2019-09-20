@@ -1,165 +1,141 @@
 @import "../../App/style.scss";
 
-.reviews-container {
-    width: 95%;
-    margin-left: 5%;
-    padding-right: 5%;
-    padding-bottom: 32px;
-    overflow-x: hidden;
+.reviews-big-container {
+    width: 100%;
+    min-width: 100%;
 
-    .review-container {
-        width: 100%;
-        height: fit-content;
-        height: -moz-fit-content;
-        margin-top: 20px;
-        border-radius: 4px;
-        border: 1px solid rgba(100, 100, 100, 0.5);
-        box-shadow: 0 2px 2px 0 rgba(153, 153, 153, 0.4);
+    .reviews-container {
+        width: 105%;
+        min-width: 105%;
+        max-height: 100%;
+        overflow-x: hidden;
 
-        .review-header {
-            padding: 24px;
-            border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+        .review-container {
+            width: calc(100% * 100/105);
+            height: fit-content;
+            height: -moz-fit-content;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 4px;
+            border: 1px solid $line_color;
 
-            .reviewer-name {
-                font-size: 120%;
-                font-weight: 500;
-            }
+            .review-header {
+                padding-bottom: 15px;
+                border-bottom: 1px solid $line_color;
 
-            .date {
-                width: 100%;
-                font-size: 90%;
-                color: rgba(116, 116, 116, 0.4);
-                text-align: end;
-            }
-        }
-
-        .review-body {
-            padding: 24px;
-
-            .review-body-company {
-                margin: 0 0 16px 0;
-                padding-right: 40px;
-
-                .body-company-title {
-                    font-weight: 450;
-                    font-size: 110%;
-                    margin: 12px 0px 8px 0px;
+                .reviewer-name {
+                    font-size: 120%;
+                    font-weight: 500;
                 }
 
-                .body-company-sub-container {
+                .header-bottom {
                     display: flex;
-                    justify-content: flex-start;
+                    justify-content: space-between;
+                    width: 100%;
+                    max-height: 20px;
 
-                    .body-company-data {
-                        min-width: 320px;
-                        max-width: 320px;
+                    .date {
+                        font-size: 16px;
+                        color: $gray_text_color;
+                        text-align: end;
+                    }
+                }
+            }
 
-                        .employment-status {
+            .review-body {
+                padding: 15px 0px 20px 0px;
 
-                            .info {
-                                margin-left: 24px;
+                .review-body-company {
+
+                    .body-company-sub-container {
+                        display: flex;
+                        flex-direction: column;
+
+                        .body-company-data {
+
+                            .employment-status {
+                                display: flex;
+
+                                .info {}
                             }
-                        }
 
-                        label {
-                            font-weight: 450;
-                            margin: 10px 0px 6px 8px;
-                        }
+                            .company-review-text-container {
 
-                        .company-review-text-container {
-                            margin-top: 12px;
-
-                            .company-review-text {
-                                margin-left: 24px;
+                                .company-review-text {
+                                    margin-top: 15px;
+                                }
                             }
                         }
                     }
+                }
 
-                    .body-company-ratings {
-                        display: flex;
-                        justify-content: flex-start;
-                        min-width: 312px;
-                        max-width: 312px;
+                .review-body-interview {
 
-                        label {
-                            font-weight: 450;
-                            margin: 10px 16px 6px 8px;
+                    .interview-ratings {
+
+                        .overall-experience-container {
+                            display: flex;
+                            justify-content: flex-start;
+                            margin-top: 15px;
+
+                            .overall-experience {
+                                display: flex;
+                                height: 30px;
+                            }
                         }
 
+                        .difficulty-container {
+                            display: flex;
+                            justify-content: flex-start;
+                        }
                     }
 
+                    .interview-experience {
+                        margin-top: 12px;
+
+                        .interview-notes {
+                            margin-left: 24px;
+                        }
+                    }
                 }
-            }
 
-            .review-body-interview {
-
-                .body-interview-title {
+                label {
                     font-weight: 450;
-                    font-size: 110%;
-                    margin: 12px 0px 8px 0px;
+                    margin-right: 5px;
+                    color: $gray_text_color;
                 }
 
-                .interview-ratings {
-                    display: flex;
-                    justify-content: flex-start;
-
-                    .overall-experience-container {
-                        display: flex;
-                        justify-content: flex-start;
-                        min-width: 320px;
-                        max-width: 320px;
-                        margin-top: 10px;
-
-                        .overall-experience {
-                            margin-left: 12px;
-                            margin-top: -8px;
-                        }
-                    }
-
-                    .difficulty-container {
-                        display: flex;
-                        justify-content: flex-start;
-                        min-width: 312px;
-                        max-width: 312px;
-                    }
-
-                    label {
-                        font-weight: 450;
-                    }
-                }
-
-                .interview-experience {
-                    margin-top: 12px;
-
-                    label {
-                        font-weight: 450;
-                    }
-
-                    .interview-notes {
-                        margin-left: 24px;
-                    }
+                .not-specified {
+                    font-size: 90%;
+                    color: rgba(116, 116, 116, 0.4);
+                    font-style: italic;
+                    margin-left: 5px
                 }
             }
         }
     }
-}
 
-.not-specified {
-    font-size: 90%;
-    color: rgba(116, 116, 116, 0.4);
-    font-style: italic;
-    margin-left: 24px
-}
 
-.filter {
-    margin-left: 6.8%;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    width: 260px;
+    .filter {
+        margin-bottom: 15px;
 
-    label {
-        margin: 4px 0 0 0;
-        font-weight: 500;
+        .ant-btn {
+            background-color: $line_color;
+            color: $gray_text_color;
+            width: 200px;
+            height: 40px;
+            border-radius: 20px;
+            border-color: $line_color;
+            text-overflow: ellipsis !important;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ant-btn:hover {
+            border-color: $gray_text_color;
+            color: $gray_text_color;
+        }
     }
 }

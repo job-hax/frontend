@@ -1,3 +1,5 @@
+@import "../../App/style.scss";
+
 .sign_in-background {
     background-color: white;
     height: 16vh;
@@ -10,7 +12,6 @@
 
     button {
         color: white;
-        font-family: Helvetica;
         font-size: 12pt;
         background-color: rgba(0, 0, 0, 0.2);
         border: none;
@@ -61,7 +62,6 @@
                 padding: none;
                 background-color: white;
                 cursor: default;
-                font-family: Helvetica;
                 color: rgb(0, 0, 0);
                 font-size: 12pt;
 

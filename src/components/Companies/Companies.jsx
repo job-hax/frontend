@@ -1,5 +1,5 @@
 import React from "react";
-import { Pagination, Input, Switch } from "antd";
+import { Pagination, Input, Switch, Icon, Checkbox } from "antd";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import CompanyCards from "./CompanyCards/CompanyCards.jsx";
@@ -165,45 +165,11 @@ class Companies extends React.Component {
     if (this.state.isInitialRequest === false) {
       return (
         <div>
-          <div className="reviews-container">
-            {this.generateFeatureArea()}
-            <div className="company-cards-container">
-              <div>
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    minWidth: 800,
-                    justifyContent: "space-between",
-                    fontWeight: 500
-                  }}
-                >
-                  <div>
-                    My applications only{" "}
-                    <Switch
-                      defaultChecked={this.state.mine}
-                      onChange={checked =>
-                        this.setState({
-                          mine: checked,
-                          isQueryRequested: true,
-                          pageNo: 1
-                        })
-                      }
-                    />
-                  </div>
-                  <div>
-                    With reviews only{" "}
-                    <Switch
-                      defaultChecked={this.state.hasReview}
-                      onChange={checked =>
-                        this.setState({
-                          hasReview: checked,
-                          isQueryRequested: true,
-                          pageNo: 1
-                        })
-                      }
-                    />
-                  </div>
+          <div className="companies-big-container">
+            <div className="companies-container">
+              {this.generateFeatureArea()}
+              <div className="company-cards-container">
+                <div className="companies-search">
                   <Search
                     placeholder="search"
                     onSearch={value =>
@@ -213,10 +179,36 @@ class Companies extends React.Component {
                         pageNo: 1
                       })
                     }
-                    style={{ width: 300, margin: "0 0 24px 0" }}
                   />
                 </div>
-
+                <div className="checkbox-container">
+                  <div style={{ marginRight: 25 }}>
+                    <Checkbox
+                      defaultChecked={this.state.mine}
+                      onChange={event =>
+                        this.setState({
+                          mine: event.target.checked,
+                          isQueryRequested: true,
+                          pageNo: 1
+                        })
+                      }
+                    />
+                    My applications only
+                  </div>
+                  <div>
+                    <Checkbox
+                      defaultChecked={this.state.hasReview}
+                      onChange={event =>
+                        this.setState({
+                          hasReview: event.target.checked,
+                          isQueryRequested: true,
+                          pageNo: 1
+                        })
+                      }
+                    />
+                    With reviews only
+                  </div>
+                </div>
                 <div>
                   {this.state.companies.pagination.total_count == 0 ? (
                     <div

@@ -1,24 +1,89 @@
 @import "../App/style.scss";
 
-.reviews-container {
+.companies-big-container {
     color: $text_color;
     height: 100%;
+    display: flex;
+    justify-content: center;
     padding-top: 60px;
 
-    .title {
-        text-align: center;
-        margin-bottom: 50px;
+    .companies-container {
+        width: 37.5vh;
+        min-width: 576px;
+        max-width: 37.5vh;
 
-        h2 {
-            font-size: 24pt;
-            margin-bottom: 0;
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+
+            h2 {
+                font-size: 36px;
+                margin-bottom: 0;
+            }
         }
-    }
 
-    .company-cards-container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
+        .company-cards-container {
+            width: 100%;
+
+            .companies-search {
+
+                .ant-input {
+                    text-align: center !important;
+                    border: none !important;
+                    background-color: $line_color !important;
+                    border-radius: 20px !important;
+                    height: 40px !important;
+                    margin-bottom: 15px !important;
+                }
+
+                .ant-input-affix-wrapper .ant-input-suffix {
+                    right: 12px !important;
+                    color: $gray_text_color !important;
+                    top: 20px !important;
+                }
+
+                .ant-input-search-icon {
+                    color: $gray_text_color;
+                }
+
+                .ant-input:focus {
+                    box-shadow: 0 0 2px 1px #aaaaaa6b;
+                    //text-align: left !important;
+                    color: $text_color !important;
+                }
+
+                .ant-input::placeholder {
+                    color: $gray_text_color;
+                }
+            }
+
+            .checkbox-container {
+                display: flex;
+                justify-content: flex-start;
+                color: $gray_text_color !important;
+                margin-bottom: 30px;
+
+                .ant-checkbox-inner,
+                .ant-checkbox-checked .ant-checkbox-inner {
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 2px;
+                    border: none;
+                    background-color: $line_color;
+                    margin-right: 5px;
+                    color: $gray_text_color !important;
+                }
+
+                .ant-checkbox-checked .ant-checkbox-inner::after {
+                    left: 30%;
+                    border: 2px solid $gray_text_color;
+                    border-top: 0;
+                    border-left: 0;
+                    -webkit-transform: rotate(45deg) scale(1) translate(-50%, -50%);
+                    -ms-transform: rotate(45deg) scale(1) translate(-50%, -50%);
+                }
+            }
+        }
     }
 }
 

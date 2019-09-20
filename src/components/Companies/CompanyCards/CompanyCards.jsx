@@ -9,6 +9,7 @@ import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import CompanyStats from "../../Partials/CompanyStats/CompanyStats.jsx";
 
 import "./style.scss";
+import { Icon } from "antd";
 
 class CompanyCards extends React.Component {
   constructor(props) {
@@ -80,38 +81,34 @@ class CompanyCards extends React.Component {
       <div className="company-card-container">
         <div className="company-card-initial">
           <div className="company-card-left">
-            <div className="company-card-header">
-              <div className="company-logo">
-                {company.cb_company_logo == null ? (
-                  <img src={company.company_logo || defaultLogo} />
-                ) : (
-                  <img src={company.cb_company_logo} />
-                )}
-              </div>
-              <div className="company-name">{company.company}</div>
-            </div>
-            <div className="company-card-info" />
-            {this.props.company.review_count != 0 &&
-              (!this.state.isReviewsShowing ? (
-                <div
-                  className="see-reviews-button"
-                  onClick={this.handleSeeReviews}
-                >
-                  See {this.props.company.review_count} reviews
-                </div>
+            <div className="company-logo">
+              {company.cb_company_logo == null ? (
+                <img src={company.company_logo || defaultLogo} />
               ) : (
-                <div
-                  className="see-reviews-button"
-                  onClick={this.toggleReviewsDisplay}
-                >
-                  See less...
-                </div>
-              ))}
+                <img src={company.cb_company_logo} />
+              )}
+            </div>
           </div>
           <div className="company-card-right">
+            <div className="company-name">{company.company}</div>
             <CompanyStats company={this.props.company} />
           </div>
         </div>
+        {this.props.company.review_count != 0 &&
+          (!this.state.isReviewsShowing ? (
+            <div className="see-reviews-button" onClick={this.handleSeeReviews}>
+              View {this.props.company.review_count} reviews
+              <Icon type="down" style={{ margin: "2px 0px 0px 5px" }} />
+            </div>
+          ) : (
+            <div
+              className="see-reviews-button"
+              onClick={this.toggleReviewsDisplay}
+            >
+              Hide {this.props.company.review_count} reviews
+              <Icon type="up" style={{ margin: "2px 0px 0px 5px" }} />
+            </div>
+          ))}
         {this.state.reviewsList.length != 0 && (
           <div className={reviewsClass}>
             <Reviews

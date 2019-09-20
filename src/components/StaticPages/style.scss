@@ -3,7 +3,6 @@
 
 .static-page-container {
     height: 96vh;
-    font-family: Helvetica;
 
     .header-area {
         background-image: $banner_image;
@@ -27,7 +26,6 @@
 
             button {
                 color: white;
-                font-family: Helvetica;
                 font-size: 12pt;
                 background: rgba(255, 255, 255, 0.05);
                 border: none;

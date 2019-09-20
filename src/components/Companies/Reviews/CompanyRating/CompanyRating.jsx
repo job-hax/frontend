@@ -22,7 +22,7 @@ class CompanyRating extends React.Component {
     if (emp_auths.length != 0) {
       return emp_auths.map(rating => (
         <div
-          className="authorization-stat-container"
+          className="review-authorization-stat-container"
           key={rating.id}
           style={{ marginTop: "6px" }}
         >
@@ -75,7 +75,7 @@ class CompanyRating extends React.Component {
 
   render() {
     return (
-      <div className="statistics-container">
+      <div className="review-statistics-container">
         {this.generateCompanyStatistics()}
       </div>
     );
