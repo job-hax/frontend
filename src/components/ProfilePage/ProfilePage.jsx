@@ -1,5 +1,15 @@
 import React from "react";
-import { Upload, message, Button, Icon, DatePicker } from "antd";
+import {
+  Upload,
+  message,
+  Button,
+  Icon,
+  DatePicker,
+  Input,
+  Dropdown,
+  Menu,
+  Radio
+} from "antd";
 import ReactTelInput from "react-telephone-input";
 import moment from "moment";
 
@@ -18,8 +28,10 @@ import {
   jobHaxClientSecret
 } from "../../config/config.js";
 
-import "./react-datepicker.scss";
 import "./style.scss";
+
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 class ProfilePage extends React.Component {
   constructor(props) {
@@ -36,6 +48,8 @@ class ProfilePage extends React.Component {
       employmentStatusList: [],
       selectedDateShowing: new Date(),
       data: null,
+      employmentStatus: null,
+      gender: null,
       body: {},
       isInitialRequest: "beforeRequest"
     };
@@ -50,6 +64,7 @@ class ProfilePage extends React.Component {
     this.handleDatePickerChange = this.handleDatePickerChange.bind(this);
     this.handleSettingsSubmit = this.handleSettingsSubmit.bind(this);
     this.handleStudentMailChange = this.handleStudentMailChange.bind(this);
+    this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePhoneNumberChange = this.handlePhoneNumberChange.bind(this);
     this.handleProfilePhotoUpdate = this.handleProfilePhotoUpdate.bind(this);
     this.handleGoogleOAuth = this.handleGoogleOAuth.bind(this);
@@ -87,8 +102,16 @@ class ProfilePage extends React.Component {
                 selectedDateShowing: new Date(this.data.dob + "T06:00:00")
               });
             }
-            IS_CONSOLE_LOG_OPEN &&
-              console.log("profile page received data", this.state.data);
+            if (this.data.emp_status) {
+              this.setState({
+                employmentStatus: this.data.emp_status.value
+              });
+            }
+            if (this.data.gender) {
+              this.setState({
+                gender: this.data.gender
+              });
+            }
           }
         }
       });
@@ -166,7 +189,6 @@ class ProfilePage extends React.Component {
     axiosCaptcha(USERS("updateProfilePhoto"), config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success == true) {
-          IS_CONSOLE_LOG_OPEN && console.log(response);
           this.data = response.data.data;
           this.setState({ data: this.data });
           this.props.setProfilePhotoUrlInHeader();
@@ -194,7 +216,6 @@ class ProfilePage extends React.Component {
   }
 
   async submitProfileUpdate(target) {
-    IS_CONSOLE_LOG_OPEN && console.log(target);
     await this.props.handleTokenExpiration("profilePage submitProfileUpdate");
     this.setState({
       isUpdating: true
@@ -204,10 +225,8 @@ class ProfilePage extends React.Component {
     for (let i = 0; i < target.length - 1; i++) {
       if (target[i].name == "last-name") {
         lastName = i;
-        console.log("lastName", target[i].value);
       } else if (target[i].name == "first-name") {
         firstName = i;
-        console.log("firstName", target[i].value);
       }
     }
     if (target[firstName].value.trim() != (null || "")) {
@@ -316,12 +335,18 @@ class ProfilePage extends React.Component {
       event.target.value.trim() + "@students.itu.edu";
   }
 
+  handleEmailChange(event) {
+    this.body["email"] = event.target.value;
+  }
+
   handleGenderClick(event) {
+    this.setState({ gender: event.target.value });
     this.body["gender"] = event.target.value;
   }
 
   handleStatusClick(event) {
-    this.body["emp_status_id"] = Number(event.target.value);
+    this.setState({ employmentStatus: event.item.props.value });
+    this.body["emp_status_id"] = Number(event.key);
   }
 
   handleDatePickerChange(event) {
@@ -386,7 +411,6 @@ class ProfilePage extends React.Component {
   }
 
   generateNonEditableProfileMainArea() {
-    IS_CONSOLE_LOG_OPEN && console.log("data", this.state.data);
     const props = {
       name: "file",
       showUploadList: false,
@@ -461,8 +485,8 @@ class ProfilePage extends React.Component {
                   Employment Status:{" "}
                 </div>
                 <div className="employment-status-content">
-                  {this.state.data != null && this.state.data.emp_status ? (
-                    this.state.data.emp_status.value
+                  {this.state.employmentStatus ? (
+                    this.state.employmentStatus
                   ) : (
                     <span className="not-specified-notice">Not specified!</span>
                   )}
@@ -664,19 +688,28 @@ class ProfilePage extends React.Component {
   }
 
   mapEmploymentStatuses() {
-    return this.state.employmentStatusList.map(status => (
-      <div key={status.id}>
-        <label>
-          <input
-            type="radio"
-            name="status"
-            value={status.id}
-            onClick={this.handleStatusClick}
-          />{" "}
-          {status.value}{" "}
-        </label>
-      </div>
-    ));
+    const menu = () => (
+      <Menu onClick={event => this.handleStatusClick(event)}>
+        {this.state.employmentStatusList.map(status => (
+          <Menu.Item key={status.id} value={status.value}>
+            {status.value}
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
+    return (
+      <Dropdown overlay={menu()} placement="bottomCenter">
+        <Button
+          className="ant-dropdown-link"
+          style={{ color: "rgba(100, 100, 100, 0.9)" }}
+        >
+          {this.state.employmentStatus
+            ? this.state.employmentStatus
+            : "Please Select"}
+          <Icon type="down" />
+        </Button>
+      </Dropdown>
+    );
   }
 
   generateEditableProfileMainArea() {
@@ -729,15 +762,14 @@ class ProfilePage extends React.Component {
                   <div className="core-skills-content">professional bio</div>
                 </div>
               </div>
-              <div
-                className="employment-status-container"
-                style={{ marginTop: 40 }}
-              >
-                <div className="employment-status-label">
-                  Employment Status:{" "}
-                </div>
-                <div className="employment-status-content">
-                  {this.mapEmploymentStatuses()}
+              <div className="employment-status-big-container">
+                <div className="employment-status-container">
+                  <div className="employment-status-label">
+                    Employment Status:{" "}
+                  </div>
+                  <div className="employment-status-content">
+                    {this.mapEmploymentStatuses()}
+                  </div>
                 </div>
               </div>
             </div>
@@ -748,7 +780,7 @@ class ProfilePage extends React.Component {
                 <div className="first-name">
                   <label>
                     First Name:
-                    <input
+                    <Input
                       name="first-name"
                       className="first-name"
                       placeholder={
@@ -762,7 +794,7 @@ class ProfilePage extends React.Component {
                 <div className="last-name">
                   <label>
                     Last Name:
-                    <input
+                    <Input
                       name="last-name"
                       className="last-name"
                       placeholder={
@@ -796,43 +828,43 @@ class ProfilePage extends React.Component {
                         onChange={this.handleDatePickerChange}
                         defaultValue={moment(selectedDateShowing, dateFormat)}
                         format={dateFormat}
-                        style={{ width: "168px", margin: "-6px 0 6px 0" }}
+                        style={{
+                          width: "168px",
+                          margin: "-6px 0px 12px 0px"
+                        }}
                       />
                     </div>
                   </div>
                   <div className="info-content-body-item">
                     <div className="info-content-body-item-label">Gender:</div>
                     <div className="info-content-body-item-text">
-                      <label>
-                        <input
-                          type="radio"
-                          name="gender"
-                          value="F"
-                          onClick={this.handleGenderClick}
-                        />{" "}
-                        Female{" "}
-                      </label>
-                      <label>
-                        <input
-                          type="radio"
-                          name="gender"
-                          value="M"
-                          onClick={this.handleGenderClick}
-                        />{" "}
-                        Male{" "}
-                      </label>
+                      <RadioGroup
+                        name="gender"
+                        style={{ margin: "-6px 0px 4px 5px" }}
+                        value={this.state.gender != null && this.state.gender}
+                        onChange={this.handleGenderClick}
+                      >
+                        <RadioButton id="female" value="F">
+                          Female
+                        </RadioButton>
+                        <RadioButton id="male" value="M">
+                          Male
+                        </RadioButton>
+                      </RadioGroup>
                     </div>
                   </div>
                   <div className="info-content-body-item">
                     <div className="info-content-body-item-label">Email:</div>
                     <div className="info-content-body-item-text">
-                      {this.state.data != null && this.state.data.email ? (
-                        this.state.data.email
-                      ) : (
-                        <span className="not-specified-notice">
-                          Not specified!
-                        </span>
-                      )}
+                      <Input
+                        style={{ width: 168, margin: "-6px 0px 4px 5px" }}
+                        onChange={this.handleEmailChange}
+                        placeholder={
+                          this.state.data != null && this.state.data.email
+                            ? this.state.data.email
+                            : "email"
+                        }
+                      />
                     </div>
                   </div>
                   <div className="info-content-body-item">
@@ -841,8 +873,8 @@ class ProfilePage extends React.Component {
                     </div>
                     <div className="info-content-body-item-text">
                       <label>
-                        <input
-                          className="input"
+                        <Input
+                          style={{ width: 168, margin: "-6px 0px 4px 5px" }}
                           onChange={this.handleStudentMailChange}
                           placeholder={
                             this.state.data != null &&
@@ -859,7 +891,11 @@ class ProfilePage extends React.Component {
                     <div className="info-content-body-item-label">Phone:</div>
                     <div
                       className="info-content-body-item-text"
-                      style={{ width: 168, height: 28 }}
+                      style={{
+                        width: 168,
+                        height: 32,
+                        margin: "-6px 0px 0px 0px"
+                      }}
                     >
                       <ReactTelInput
                         defaultCountry="us"
@@ -873,9 +909,9 @@ class ProfilePage extends React.Component {
                 </div>
               </div>
               <div className="save-button-container">
-                <button className="save-button" type="submit">
+                <Button type="primary" htmlType="submit">
                   Save
-                </button>
+                </Button>
               </div>
             </div>
             <div className="badges-container">
@@ -911,8 +947,6 @@ class ProfilePage extends React.Component {
       notificationsBoxHeight,
       position: "relative"
     };
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("profile pagerender run! \n data:", this.state.data);
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     if (this.state.data == null) {
@@ -929,14 +963,19 @@ class ProfilePage extends React.Component {
               ? this.generateNonEditableProfileMainArea()
               : this.generateEditableProfileMainArea()}
             <div className="profile-page-right">
-              <div
-                className="edit-button"
+              <Button
+                type={!this.state.isEditing ? "primary" : ""}
+                style={
+                  !this.state.isEditing
+                    ? { marginLeft: "310px" }
+                    : { marginLeft: "290px" }
+                }
                 onClick={() =>
                   this.setState({ isEditing: !this.state.isEditing })
                 }
               >
                 {!this.state.isEditing ? "Edit" : "Cancel"}
-              </div>
+              </Button>
               <div className="profile-notifications" style={heightForSettings}>
                 <NotificationsBox
                   notificationsList={this.props.notificationsList}
@@ -961,31 +1000,44 @@ class ProfilePage extends React.Component {
                           {this.state.data != null && this.state.data.username
                             ? " " + this.state.data.username
                             : " Get one!"}
-                          <input
-                            defaultValue=""
-                            placeholder="Enter a new username"
+                          <Input
+                            prefix={
+                              <Icon
+                                type="user"
+                                style={{ color: "rgba(0,0,0,.25)" }}
+                              />
+                            }
+                            placeholder="Username"
+                            style={{ width: "272px" }}
                           />
                         </label>
                       </div>
                       <div className="setting">
-                        <label>
-                          Password:
-                          <input
-                            type="password"
-                            defaultValue=""
-                            placeholder="Enter a new password"
-                          />
-                        </label>
+                        <Input
+                          prefix={
+                            <Icon
+                              type="lock"
+                              style={{ color: "rgba(0,0,0,.25)" }}
+                            />
+                          }
+                          type="password"
+                          placeholder="Password"
+                          style={{ width: "272px" }}
+                        />
                       </div>
                       <div className="setting">
-                        <label>
-                          Password:
-                          <input
-                            type="password"
-                            defaultValue=""
-                            placeholder="Retype the new password"
-                          />
-                        </label>
+                        <Input
+                          prefix={
+                            <Icon
+                              type="lock"
+                              style={{ color: "rgba(0,0,0,.25)" }}
+                            />
+                          }
+                          type="password"
+                          placeholder="Confirm Password"
+                          style={{ width: "272px" }}
+                          onBlur={this.handleConfirmBlur}
+                        />
                       </div>
                     </div>
                     <div className="settings-buttons-container">
@@ -994,25 +1046,25 @@ class ProfilePage extends React.Component {
                           this.setState({ isProfileSettingsOpen: false })
                         }
                       >
-                        <button className="settings-editing-button">
-                          Cancel
-                        </button>
+                        <Button>Cancel</Button>
                       </div>
                       <div>
-                        <button
-                          type="submit"
-                          className="settings-editing-button"
+                        <Button
+                          type="primary"
+                          style={{ margin: "0 120px 0 12px" }}
+                          htmlType="submit"
                         >
                           Save
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </form>
                 </div>
               )}
               {!this.state.isProfileSettingsOpen && (
-                <div
-                  className="settings-button"
+                <Button
+                  type="primary"
+                  style={{ marginLeft: "230px" }}
                   onClick={() =>
                     this.setState({
                       isProfileSettingsOpen: !this.state.isProfileSettingsOpen
@@ -1020,7 +1072,7 @@ class ProfilePage extends React.Component {
                   }
                 >
                   Profile Settings
-                </div>
+                </Button>
               )}
             </div>
           </div>

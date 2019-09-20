@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css?family=Helvetica:400,500,600,700');
+@import "../../App/style.scss";
+
 
 .about_us-container {
     background-color: white;
-    margin-top: -80px;
     height: 96vh;
     font-family: 'Helvetica', sans-serif;
     color: black;
@@ -19,34 +19,8 @@
         background-size: cover;
         color: white;
         height: 46vh;
-        padding-top: 65px;
+        padding-top: 120px;
         padding-bottom: 80px;
-
-        button {
-            color: white;
-            font-family: Helvetica;
-            font-size: 12pt;
-            background: rgba(255, 255, 255, 0.05);
-            border: none;
-            border-radius: 50px;
-            padding: 15px 35px;
-            cursor: pointer;
-        }
-
-        .top_buttons_and_logo {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 45px;
-        }
-
-        .top_buttons {
-            text-align: right;
-
-            button {
-                margin-left: 30px;
-            }
-        }
     }
 
     .animation {
@@ -197,7 +171,7 @@
 
 .footer-bottom {
     position: absolute;
-    z-index: 20;
+    z-index: 0;
     width: 100%;
     bottom: 0%;
 }

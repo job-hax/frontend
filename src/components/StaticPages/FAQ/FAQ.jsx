@@ -7,8 +7,6 @@ import { FAQS } from "../../../utils/constants/endpoints.js";
 import Footer from "../../Partials/Footer/Footer.jsx";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 
-import "./style.scss";
-
 const Panel = Collapse.Panel;
 
 class FAQ extends React.Component {
@@ -24,27 +22,9 @@ class FAQ extends React.Component {
     this.setState({ faqList: response.data.data });
   }
 
-  generateTopButtons() {
-    return (
-      <div className="legal-top">
-        <Link to="/home">
-          <img
-            className="logo"
-            src="src/assets/icons/JobHax-logo-white.svg"
-            alt="JobHax-logo"
-          />
-        </Link>
-        <Link to="/home">
-          <button>Home</button>
-        </Link>
-      </div>
-    );
-  }
-
   generateHeaderArea() {
     return (
-      <section className="header_area">
-        {this.generateTopButtons()}
+      <section className="header-area">
         <div>
           <h2>Frequently Asked Questions</h2>
         </div>
@@ -68,10 +48,10 @@ class FAQ extends React.Component {
     if (this.state.faqList.length == 0)
       return <Spinner message="Reaching the FAQs..." />;
     return (
-      <div className="faqs-container">
+      <div className="static-page-container">
         <div>{this.generateHeaderArea()}</div>
         <div>{this.generateAccordion()}</div>
-        <div className="footer-bottom">
+        <div>
           <Footer />
         </div>
       </div>

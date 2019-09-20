@@ -1,7 +1,5 @@
 import React from "react";
 import { Rate, Statistic, Icon } from "antd";
-
-import "../../../assets/libraryScss/antd-scss/newantd.scss";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
 
 class CompanyStats extends React.Component {
@@ -48,7 +46,7 @@ class CompanyStats extends React.Component {
             width: 188
           }}
         >
-          <label style={{ fontWeight: "450", marginTop: "6px" }}>
+          <label style={{ fontWeight: "450", margin: "12px 24px 0px -24px" }}>
             {stat.value}
           </label>
           <div style={{ display: "flex", justifyContent: "left" }}>

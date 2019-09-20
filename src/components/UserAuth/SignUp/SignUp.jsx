@@ -382,23 +382,6 @@ class SignUpPage extends Component {
     }
   }
 
-  generateTopButtons() {
-    return (
-      <div className="sign_up-top">
-        <Link to="/">
-          <img
-            className="logo"
-            src="src/assets/icons/JobHax-logo-black.svg"
-            alt="JobHax-logo"
-          />
-        </Link>
-        <Link to="/home">
-          <button>Home</button>
-        </Link>
-      </div>
-    );
-  }
-
   generateSignUpForm() {
     const { getFieldDecorator } = this.props.form;
 
@@ -1397,7 +1380,6 @@ class SignUpPage extends Component {
     };
     return (
       <div>
-        <div className="sign_up-background">{this.generateTopButtons()}</div>
         <div className="sign_up-vertical-container">
           <div className="sign_up-container">
             {this.state.level === "undefined" ? (

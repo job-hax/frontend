@@ -8,7 +8,6 @@ import { REVIEWS } from "../../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
-import "../../../assets/libraryScss/antd-scss/newantd.scss";
 
 const descDifficulty = ["too easy", "easy", "normal", "hard", "too hard"];
 const RadioButton = Radio.Button;

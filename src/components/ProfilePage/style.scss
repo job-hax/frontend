@@ -92,6 +92,7 @@
 
                                 .employment-status-label {
                                     font-weight: 450;
+                                    margin: 8px 0 0 0;
                                 }
 
                                 .employment-status-content {
@@ -211,31 +212,6 @@
             .profile-page-right {
                 width: 420px;
 
-                .edit-button {
-                    border-radius: 16px;
-                    background-color: black;
-                    color: white;
-                    width: 80px;
-                    height: 24px;
-                    margin-left: 290px;
-                    text-align: center;
-                    padding-top: 4px;
-                    cursor: pointer;
-                }
-
-                .settings-button {
-                    position: relative;
-                    border-radius: 16px;
-                    background-color: black;
-                    color: white;
-                    width: 140px;
-                    height: 24px;
-                    margin-left: 230px;
-                    text-align: center;
-                    padding-top: 4px;
-                    cursor: pointer;
-                }
-
                 .profile-notifications {
                     position: relative;
                     margin-top: 20px;
@@ -319,19 +295,8 @@
             }
 
             .save-button-container {
-                margin-left: 100px;
-
-                .save-button {
-                    border-radius: 16px;
-                    background-color: black;
-                    color: white;
-                    width: 80px;
-                    height: 30px;
-                    margin-left: 290px;
-                    text-align: center;
-                    padding-top: 2px;
-                    cursor: pointer;
-                }
+                display: flex;
+                justify-content: flex-end;
             }
 
 

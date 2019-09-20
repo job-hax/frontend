@@ -6,8 +6,6 @@ import parse from "html-react-parser";
 import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
 import { AGREEMENTS } from "../../../utils/constants/endpoints.js";
 
-import "./style.scss";
-
 class UserAgreement extends Component {
   constructor(props) {
     super(props);
@@ -26,27 +24,9 @@ class UserAgreement extends Component {
     });
   }
 
-  generateTopButtons() {
-    return (
-      <div className="legal-top">
-        <Link to="/home">
-          <img
-            className="logo"
-            src="src/assets/icons/JobHax-logo-white.svg"
-            alt="JobHax-logo"
-          />
-        </Link>
-        <Link to="/home">
-          <button>Home</button>
-        </Link>
-      </div>
-    );
-  }
-
   generateHeaderArea() {
     return (
-      <section className="header_area">
-        {this.generateTopButtons()}
+      <section className="header-area">
         <div>
           <h2>User Agreement</h2>
         </div>
@@ -68,12 +48,12 @@ class UserAgreement extends Component {
 
   render() {
     return (
-      <div className="under_constrution-container">
+      <div className="static-page-container">
         <div>
           {this.generateHeaderArea()}
           {this.generateInfo()}
         </div>
-        <div className="footer-bottom">
+        <div>
           <Footer />
         </div>
       </div>

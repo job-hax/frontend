@@ -4,6 +4,7 @@
   display: flex;
   justify-content: space-between;
   padding: 20px 75px;
+  color: $text_color;
   background-color: white;
   background-size: 100% 100%;
   overflow-y: hidden;
@@ -11,6 +12,17 @@
 
   a {
     text-decoration: none;
+    color: $text_color;
+    cursor: pointer;
+    transition: color .3s;
+    -webkit-transition: color .3s;
+    -moz-transition: color .3s;
+    -o-transition: color .3s;
+    -ms-transition: color .3s;
+  }
+
+  a:hover {
+    color: $hover_color;
   }
 
   .footer-content {
