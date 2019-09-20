@@ -174,10 +174,9 @@ class Home extends Component {
       <div className="homepage-first-item">
         <div className="content-big-container">
           <div className="content-container">
-            <h4>Your automatic job application tracker in one click</h4>
+            <h4>Simplify your job hunt!</h4>
             <p className="small-text">
-              Track your application with AI-powered synchronization with your
-              emails
+              Track your application progress in a seamless and intuitive way.
             </p>
             <div className="buttons-container">
               <Button onClick={this.handleDemo} size="large">
@@ -209,18 +208,18 @@ class Home extends Component {
       <div className="how_it_works_area" id="howitworks">
         {this.generateInteriorItem(
           "src/assets/images/mail_parse.png",
-          "Create job cards from application emails automatically",
-          "Track your application with AI-powered synchronization with your emails"
+          "Create a card for each application",
+          "Apply anywhere - get it tracked in one place. Automatically."
         )}
         {this.generateInteriorItemFlipLR(
           "src/assets/images/move.png",
           "Organize your job hunting progress",
-          "Track your application with AI-powered synchronization with your emails"
+          "Application process is visualized like no spreadsheet can do."
         )}
         {this.generateInteriorItem(
           "src/assets/images/hiw-predictions.jpg",
-          "Get metrics & analytics on your job search",
-          "As you progress through your job search, we make it easy to identify problem areas so that you can constantly make improvements. For example, we can provide you with metrics on common attributes (skills, position, experience, etc.) among jobs which you are being rejected for so you can make changes to your resume."
+          "Leverage data to step up your job search game",
+          "Hiring trends, skill analysis, interview success rate to help you hunt like a pro."
         )}
       </div>
     );
