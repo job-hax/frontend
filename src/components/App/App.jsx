@@ -678,7 +678,7 @@ class App extends Component {
         "/useragreement",
         "/faqs",
         "/aboutus",
-        "action",
+        "/action",
         "/action-linkedin-oauth"
       ];
       if (!allowed.includes(page)) {
