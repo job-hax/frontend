@@ -1,20 +1,24 @@
 import React, { Component } from "react";
 import Footer from "../../Partials/Footer/Footer.jsx";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 import "./style.scss";
 import { apiRoot } from "../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import { jobHaxClientId, jobHaxClientSecret } from "../../../config/config.js";
+import { Button } from "antd";
 
 class Home extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      redirect: null
+    };
 
     this.handleDemo = this.handleDemo.bind(this);
+    this.generateSignupButton = this.generateSignupButton.bind(this);
   }
 
   handleDemo() {
@@ -77,61 +81,15 @@ class Home extends Component {
     });
   }
 
-  generateTopButtons() {
-    const { isUserLoggedIn } = this.props;
-
-    return isUserLoggedIn ? (
-      <div className="top_buttons">
-        <Link to="/dashboard">
-          <button>Dashboard</button>
-        </Link>
-        <Link to="/aboutus">
-          <button>About us</button>
-        </Link>
-      </div>
-    ) : (
-      <div className="top_buttons">
-        <Link to="/aboutus">
-          <button>About us</button>
-        </Link>
-        <Link to="/signup">
-          <button>Sign up</button>
-        </Link>
-        <Link to="/signin">
-          <button>Sign in</button>
-        </Link>
-      </div>
-    );
-  }
-
-  generateHeaderArea() {
+  generateSignupButton() {
     return (
-      <section className="header_area" id="home">
-        <div className="top_buttons_and_logo">
-          <div>
-            <a href="#home">
-              <img
-                className="logo"
-                src="src/assets/icons/JobHax-logo-white.svg"
-                alt="JobHax-logo"
-              />
-              <div style={{ marginLeft: 30, fontSize: "60%", color: "white" }}>
-                Alpha
-              </div>
-            </a>
-          </div>
-          {this.generateTopButtons()}
-        </div>
-        <div className="intro">
-          <h2>Simplify your job hunt!</h2>
-          <p>
-            Improve your job search experience in a seamless & intuitive way
-          </p>
-          <a className="how_it_works_btn" onClick={() => this.handleDemo()}>
-            Live Demo
-          </a>
-        </div>
-      </section>
+      <Button
+        type="primary"
+        size="large"
+        onClick={() => this.setState({ redirect: "/signup" })}
+      >
+        Sign up for free
+      </Button>
     );
   }
 
@@ -189,12 +147,13 @@ class Home extends Component {
           <div className="text-group">
             <h4>{header}</h4>
             <p className="small-text">{body}</p>
-            {/* <a className="main_btn" href="#">See Details</a> */}
+            {this.generateSignupButton()}
           </div>
         </div>
       </section>
     );
   }
+
   generateInteriorItemFlipLR(imageLink, header, body) {
     return (
       <section className="interior_area">
@@ -202,7 +161,7 @@ class Home extends Component {
           <div className="text-group">
             <h4>{header}</h4>
             <p className="small-text">{body}</p>
-            {/* <a className="main_btn" href="#">See Details</a> */}
+            {this.generateSignupButton()}
           </div>
           <img src={imageLink} alt="" />
         </div>
@@ -210,18 +169,53 @@ class Home extends Component {
     );
   }
 
+  generateHomePageFirstItem() {
+    return (
+      <div className="homepage-first-item">
+        <div className="content-big-container">
+          <div className="content-container">
+            <h4>Your automatic job application tracker in one click</h4>
+            <p className="small-text">
+              Track your application with AI-powered synchronization with your
+              emails
+            </p>
+            <div className="buttons-container">
+              <Button onClick={this.handleDemo} size="large">
+                {" "}
+                Try it out!{" "}
+              </Button>
+              {this.generateSignupButton()}
+            </div>
+          </div>
+        </div>
+        <div className="image-big-container">
+          <div className="image-container">
+            <img
+              className="envelopes"
+              src={"src/assets/images/gmail_envelopes.png"}
+            ></img>
+            <img
+              className="dashboard-main"
+              src={"src/assets/images/dashboard_main.png"}
+            ></img>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   generateHowItWorksArea() {
     return (
       <div className="how_it_works_area" id="howitworks">
         {this.generateInteriorItem(
-          "src/assets/images/hiw-apply.jpg",
-          "Apply to jobs & have them all automatically tracked",
-          "Anytime you apply for a job, we track it automatically! When we see job application emails in your inbox, we add it to your jobs dashboard. Of course, you can also manually add jobs you are interested in to have it tracked."
+          "src/assets/images/mail_parse.png",
+          "Create job cards from application emails automatically",
+          "Track your application with AI-powered synchronization with your emails"
         )}
         {this.generateInteriorItemFlipLR(
-          "src/assets/images/hiw-organize.jpg",
-          "See your progression & organize your job search",
-          "Once you have applied to jobs you are interested in, we want you to easily visualize and organize your job search. You can quickly see the status of all your job applications, add new information, keep all your contacts & relevant details like dates, tasks, salaries, etc. linked to your job card."
+          "src/assets/images/move.png",
+          "Organize your job hunting progress",
+          "Track your application with AI-powered synchronization with your emails"
         )}
         {this.generateInteriorItem(
           "src/assets/images/hiw-predictions.jpg",
@@ -233,10 +227,12 @@ class Home extends Component {
   }
 
   render() {
+    if (this.state.redirect != null) {
+      return <Redirect to={this.state.redirect} />;
+    }
     return (
       <div className="home-container">
-        {this.generateHeaderArea()}
-        {this.generateFeatureArea()}
+        {this.generateHomePageFirstItem()}
         {this.generateHowItWorksArea()}
         <Footer />
       </div>

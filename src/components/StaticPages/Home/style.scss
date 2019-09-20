@@ -1,19 +1,91 @@
 @import url('https://fonts.googleapis.com/css?family=Helvetica:400,500,600,700');
+@import "../../App/style.scss";
+
 
 .home-container {
     background: white;
-    font-family: 'Helvetica', sans-serif;
-    color: black;
+    overflow: hidden;
+    max-width: 100%;
     font-size: 16pt;
     font-weight: 400;
 
     .small-text {
         font-size: 12pt;
     }
+
+    .homepage-first-item {
+        display: flex;
+        justify-content: space-between;
+        flex-grow: 1;
+        margin: 0px 0px 0px 68px;
+        width: 100%;
+        height: auto;
+
+        .content-big-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8%;
+            width: 30%;
+            min-width: 380px;
+            max-width: 30%;
+
+
+            .content-container {
+
+                h4 {
+                    min-width: 380px;
+                    max-width: 90%;
+                    font-size: 44px;
+                }
+
+                p {
+                    min-width: 410px;
+                    font-size: 24px;
+                }
+
+                .buttons-container {
+                    display: flex;
+                    justify-content: space-between;
+                    width: 280px;
+                }
+            }
+        }
+
+        .image-big-container {
+            display: flex;
+            justify-content: flex-end;
+            flex-grow: 1;
+            min-width: 60%;
+            max-width: 60%;
+
+            .image-container {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                height: auto;
+
+                .envelopes {
+                    z-index: 0;
+                    margin-left: 26%;
+                    max-width: 30%;
+                    height: auto;
+                }
+
+                .dashboard-main {
+                    z-index: 2;
+                    margin-left: 4%;
+                    margin-top: -3%;
+                    max-width: 100%;
+                    min-width: 100%;
+                    height: auto;
+                }
+            }
+        }
+    }
 }
 
 a:active {
-    color: rgb(170, 0, 255);
+    color: $active_color;
 }
 
 .header_area,
@@ -144,13 +216,15 @@ a:active {
     .row {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         margin-top: 80px;
     }
 
     img {
         border-radius: 20px;
         margin-right: 60px;
-        width: 50%;
+        width: 60%;
+        max-width: 60%;
         flex-grow: 1;
     }
 
@@ -158,8 +232,11 @@ a:active {
         text-align: right;
 
         img {
-            margin-left: 60px;
             margin-right: 0;
+        }
+
+        h4 {
+            margin-left: 10%;
         }
 
         p {
@@ -168,18 +245,39 @@ a:active {
     }
 
     .text-group {
-        width: 50%;
+        min-width: 305px;
         flex-grow: 1;
+        width: 30%;
+        max-width: 30%;
     }
 
     h4 {
         font-size: 24pt;
         font-weight: 600;
         margin: 0;
-        color: black;
+        max-width: 90%;
     }
 
-    p {
-        max-width: 700px;
-    }
+    p {}
+}
+
+
+.ant-btn {
+    color: $primary_button_color;
+    border-color: $primary_button_color;
+}
+
+.ant-btn-primary {
+    color: #fff !important;
+    //background-color: $primary_button_color;
+    border-color: $primary_button_color !important;
+
+}
+
+.ant-btn-lg {
+    height: 34px;
+    padding: 0px 24px;
+    font-size: 15px;
+    border-radius: 26px;
+
 }

@@ -112,8 +112,6 @@ class ProfilePage extends React.Component {
                 gender: this.data.gender
               });
             }
-            IS_CONSOLE_LOG_OPEN &&
-              console.log("profile page received data", this.state.data);
           }
         }
       });
@@ -191,7 +189,6 @@ class ProfilePage extends React.Component {
     axiosCaptcha(USERS("updateProfilePhoto"), config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success == true) {
-          IS_CONSOLE_LOG_OPEN && console.log(response);
           this.data = response.data.data;
           this.setState({ data: this.data });
           this.props.setProfilePhotoUrlInHeader();
@@ -219,7 +216,6 @@ class ProfilePage extends React.Component {
   }
 
   async submitProfileUpdate(target) {
-    IS_CONSOLE_LOG_OPEN && console.log(target);
     await this.props.handleTokenExpiration("profilePage submitProfileUpdate");
     this.setState({
       isUpdating: true
@@ -229,10 +225,8 @@ class ProfilePage extends React.Component {
     for (let i = 0; i < target.length - 1; i++) {
       if (target[i].name == "last-name") {
         lastName = i;
-        console.log("lastName", target[i].value);
       } else if (target[i].name == "first-name") {
         firstName = i;
-        console.log("firstName", target[i].value);
       }
     }
     if (target[firstName].value.trim() != (null || "")) {
@@ -351,7 +345,6 @@ class ProfilePage extends React.Component {
   }
 
   handleStatusClick(event) {
-    console.log(event);
     this.setState({ employmentStatus: event.item.props.value });
     this.body["emp_status_id"] = Number(event.key);
   }
@@ -418,7 +411,6 @@ class ProfilePage extends React.Component {
   }
 
   generateNonEditableProfileMainArea() {
-    IS_CONSOLE_LOG_OPEN && console.log("data", this.state.data);
     const props = {
       name: "file",
       showUploadList: false,
@@ -955,8 +947,6 @@ class ProfilePage extends React.Component {
       notificationsBoxHeight,
       position: "relative"
     };
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("profile pagerender run! \n data:", this.state.data);
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     if (this.state.data == null) {

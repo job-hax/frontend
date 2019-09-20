@@ -73,7 +73,8 @@ class App extends Component {
       pollData: [],
       notificationsList: [],
       syncResponseTimestamp: null,
-      user: {}
+      user: {},
+      page: window.location.pathname.split("?")[0]
     };
     this.notificationsList = [];
     this.handleSignOut = this.handleSignOut.bind(this);
@@ -91,6 +92,27 @@ class App extends Component {
     this.cookie = this.cookie.bind(this);
     this.handleTokenExpiration = this.handleTokenExpiration.bind(this);
     this.passStatesFromHeader = this.passStatesFromHeader.bind(this);
+
+    this.pages = [
+      "/",
+      "/home",
+      "/signup",
+      "/signin",
+      "/dashboard",
+      "/metrics",
+      "/blogs",
+      "/events",
+      "/companies",
+      "/profile",
+      "/alumni",
+      "/action",
+      "/action-linkedin-oauth2",
+      "/underconstruction",
+      "/useragreement",
+      "/faqs",
+      "/privacypolicy",
+      "/aboutus"
+    ];
   }
 
   componentDidMount() {
@@ -166,6 +188,10 @@ class App extends Component {
       this.setState({
         isAuthenticationChecking: false
       });
+    }
+    if (window.location.pathname.split("?")[0] != this.state.page) {
+      console.log("page", this.state.page);
+      this.setState({ page: window.location.pathname.split("?")[0] });
     }
   }
 
@@ -366,7 +392,8 @@ class App extends Component {
     IS_CONSOLE_LOG_OPEN && console.log("handle signout first");
     this.cookie("remove_all");
     this.setState({
-      isUserLoggedIn: false
+      isUserLoggedIn: false,
+      page: "/home"
     });
     event && event.preventDefault();
     let config = { method: "POST" };
@@ -443,40 +470,43 @@ class App extends Component {
   }
 
   render() {
-    const { isUserLoggedIn } = this.state;
+    const { isUserLoggedIn, page, token, active } = this.state;
     IS_CONSOLE_LOG_OPEN &&
       console.log(
-        "app isUserLoggedIn",
+        "page",
+        page,
+        "\nisUserLoggedIn",
         isUserLoggedIn,
         "\n--token",
-        this.state.token,
+        token,
         "\n--active?",
-        this.state.active,
-        "\n cookies",
-        this.props.cookies.getAll()
+        active
+        //"\n cookies",
+        //this.props.cookies.getAll()
       );
     if (this.state.isAuthenticationChecking)
       return <Spinner message="Connecting..." />;
     else if (isUserLoggedIn && !this.state.active)
       return <Spinner message="Reaching your account..." />;
-    else
-      return isUserLoggedIn && this.state.active ? (
+    else if (!this.pages.includes(page))
+      return <Spinner message="Page not found!" />;
+    else if (isUserLoggedIn && this.state.active)
+      return (
         <Router>
           <div className="main-container">
-            {window.location.pathname != "/home" && (
-              <Header
-                handleSignOut={this.handleSignOut}
-                alert={this.showAlert}
-                notificationsList={this.state.notificationsList}
-                notificationCheck={this.checkNotifications}
-                isNotificationsShowing={this.state.isNotificationsShowing}
-                toggleNotifications={this.toggleNotificationsDisplay}
-                profilePhotoUrl={this.state.profilePhotoUrl}
-                cookie={this.cookie}
-                handleTokenExpiration={this.handleTokenExpiration}
-                passStatesFromHeader={this.passStatesFromHeader}
-              />
-            )}
+            <Header
+              handleSignOut={this.handleSignOut}
+              alert={this.showAlert}
+              notificationsList={this.state.notificationsList}
+              notificationCheck={this.checkNotifications}
+              isNotificationsShowing={this.state.isNotificationsShowing}
+              toggleNotifications={this.toggleNotificationsDisplay}
+              profilePhotoUrl={this.state.profilePhotoUrl}
+              cookie={this.cookie}
+              handleTokenExpiration={this.handleTokenExpiration}
+              passStatesFromHeader={this.passStatesFromHeader}
+              isUserLoggedIn={true}
+            />
             <FeedBack
               alert={this.showAlert}
               handleTokenExpiration={this.handleTokenExpiration}
@@ -519,11 +549,6 @@ class App extends Component {
             />
             <Route
               exact
-              path="/home"
-              render={() => <Home isUserLoggedIn={this.state.isUserLoggedIn} />}
-            />
-            <Route
-              exact
               path="/dashboard"
               render={() => (
                 <Dashboard
@@ -533,6 +558,29 @@ class App extends Component {
                   syncResponseTimestamp={this.state.syncResponseTimestamp}
                 />
               )}
+            />
+            <Route
+              exact
+              path="/signin"
+              render={() =>
+                window.location.search.split("=")[1] ===
+                "reCapthcaCouldNotPassed" ? (
+                  <Spinner message="checking reCaptcha..." />
+                ) : (
+                  <Redirect to="/dashboard" />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/signup"
+              render={() => <Redirect to="/dashboard" />}
+            />
+            <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
+            <Route
+              exact
+              path="/home"
+              render={() => <Redirect to="/dashboard" />}
             />
             <Route
               exact
@@ -590,31 +638,7 @@ class App extends Component {
                 />
               )}
             />
-            <Route
-              exact
-              path="/signin"
-              render={() =>
-                window.location.search.split("=")[1] ===
-                "reCapthcaCouldNotPassed" ? (
-                  <Spinner message="checking reCaptcha..." />
-                ) : (
-                  <Redirect to="/dashboard" />
-                )
-              }
-            />
-            <Route
-              exact
-              path="/signup"
-              render={() => <Redirect to="/dashboard" />}
-            />
-            <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
-            <Route
-              exact
-              path="/aboutus"
-              render={() => (
-                <AboutUs isUserLoggedIn={this.state.isUserLoggedIn} />
-              )}
-            />
+            <Route exact path="/aboutus" render={() => <AboutUs />} />
             <Route
               exact
               path="/privacypolicy"
@@ -631,130 +655,6 @@ class App extends Component {
               render={() => <UnderConstruction />}
             />
             <Route exact path="/faqs" render={() => <FAQ />} />
-            <Route
-              exact
-              path="/action"
-              render={() => <Action alert={this.showAlert} />}
-            />
-            <Route
-              exact
-              path="/action-linkedin-oauth2"
-              render={() => <LinkedInOAuthAction alert={this.showAlert} />}
-            />
-          </div>
-        </Router>
-      ) : (
-        <Router>
-          <div className="main-container">
-            {this.state.isAlertShowing && <div>{this.generateAlert()}</div>}
-            <Route exact path="/home" render={() => <Redirect to="/" />} />
-            <Route
-              exact
-              path="/"
-              render={() => (
-                <Home
-                  isUserLoggedIn={this.state.isUserLoggedIn}
-                  setIsUserLoggedIn={this.setIsUserLoggedIn}
-                  setIsAuthenticationChecking={this.setIsAuthenticationChecking}
-                  alert={this.showAlert}
-                  cookie={this.cookie}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/aboutus"
-              render={() => (
-                <AboutUs isUserLoggedIn={this.state.isUserLoggedIn} />
-              )}
-            />
-            <Route
-              exact
-              path="/underconstruction"
-              render={() => <UnderConstruction />}
-            />
-            <Route
-              exact
-              path="/dashboard"
-              render={() => <Redirect to="signin" />}
-            />
-            <Route
-              exact
-              path="/alumni"
-              render={() => <Redirect to="signin" />}
-            />
-            <Route
-              exact
-              path="/events"
-              render={() => <Redirect to="signin" />}
-            />
-            <Route
-              exact
-              path="/mentors"
-              render={() => <Redirect to="signin" />}
-            />
-            <Route
-              exact
-              path="/metrics"
-              render={() => <Redirect to="/signin" />}
-            />
-            <Route
-              exact
-              path="/companies"
-              render={() => <Redirect to="/signin" />}
-            />
-            <Route
-              exact
-              path="/profile"
-              render={() => <Redirect to="/signin" />}
-            />
-            <Route
-              exact
-              path="/events"
-              render={() => <Redirect to="/signin" />}
-            />
-            <Route
-              exact
-              path="/signin"
-              render={() => (
-                <SignIn
-                  googleAuth={this.googleAuth}
-                  setIsUserLoggedIn={this.setIsUserLoggedIn}
-                  setIsAuthenticationChecking={this.setIsAuthenticationChecking}
-                  alert={this.showAlert}
-                  cookie={this.cookie}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/signup"
-              render={() => (
-                <SignUp
-                  googleAuth={this.googleAuth}
-                  alert={this.showAlert}
-                  setIsAuthenticationChecking={this.setIsAuthenticationChecking}
-                  setIsUserLoggedIn={this.setIsUserLoggedIn}
-                  cookie={this.cookie}
-                />
-              )}
-            />
-            <Route exact path="/faqs" render={() => <FAQ />} />
-            <Route
-              exact
-              path="/blogs"
-              render={() => <Redirect to="/signin" />}
-            />
-            <Route
-              exact
-              path="/privacypolicy"
-              render={() => <PrivacyPolicy />}
-            />
-            <Route
-              exact
-              path="/useragreement"
-              render={() => <UserAgreement />}
-            />
             <Route
               exact
               path="/action"
@@ -768,6 +668,115 @@ class App extends Component {
           </div>
         </Router>
       );
+    else {
+      let allowed = [
+        "/",
+        "/home",
+        "/signin",
+        "/signup",
+        "/privacypolicy",
+        "/useragreement",
+        "/faqs",
+        "/aboutus",
+        "action",
+        "/action-linkedin-oauth"
+      ];
+      if (!allowed.includes(page)) {
+        let redirect_path = "/signin";
+        window.location.href = redirect_path;
+      } else
+        return (
+          <Router>
+            <div className="main-container">
+              <Header
+                alert={this.showAlert}
+                isUserLoggedIn={false}
+                cookie={this.cookie}
+              />
+              {this.state.isAlertShowing && <div>{this.generateAlert()}</div>}
+              <Route exact path="/" render={() => <Redirect to="/home" />} />
+              <Route
+                exact
+                path="/home"
+                render={() => (
+                  <Home
+                    isUserLoggedIn={false}
+                    setIsUserLoggedIn={this.setIsUserLoggedIn}
+                    setIsAuthenticationChecking={
+                      this.setIsAuthenticationChecking
+                    }
+                    alert={this.showAlert}
+                    cookie={this.cookie}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path="/aboutus"
+                render={() => (
+                  <AboutUs isUserLoggedIn={this.state.isUserLoggedIn} />
+                )}
+              />
+              <Route
+                exact
+                path="/underconstruction"
+                render={() => <UnderConstruction />}
+              />
+              <Route
+                exact
+                path="/signin"
+                render={() => (
+                  <SignIn
+                    googleAuth={this.googleAuth}
+                    setIsUserLoggedIn={this.setIsUserLoggedIn}
+                    setIsAuthenticationChecking={
+                      this.setIsAuthenticationChecking
+                    }
+                    alert={this.showAlert}
+                    cookie={this.cookie}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path="/signup"
+                render={() => (
+                  <SignUp
+                    googleAuth={this.googleAuth}
+                    alert={this.showAlert}
+                    setIsAuthenticationChecking={
+                      this.setIsAuthenticationChecking
+                    }
+                    setIsUserLoggedIn={this.setIsUserLoggedIn}
+                    cookie={this.cookie}
+                  />
+                )}
+              />
+              <Route exact path="/faqs" render={() => <FAQ />} />
+              <Route
+                exact
+                path="/privacypolicy"
+                render={() => <PrivacyPolicy />}
+              />
+              <Route
+                exact
+                path="/useragreement"
+                render={() => <UserAgreement />}
+              />
+              <Route
+                exact
+                path="/action"
+                render={() => <Action alert={this.showAlert} />}
+              />
+              <Route
+                exact
+                path="/action-linkedin-oauth2"
+                render={() => <LinkedInOAuthAction alert={this.showAlert} />}
+              />
+            </div>
+          </Router>
+        );
+    }
   }
 }
 

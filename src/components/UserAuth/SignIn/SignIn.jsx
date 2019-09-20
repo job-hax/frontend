@@ -336,23 +336,6 @@ class SignInPage extends Component {
     });
   }
 
-  generateTopButtons() {
-    return (
-      <div className="sign_in-top">
-        <Link to="/">
-          <img
-            className="logo"
-            src="src/assets/icons/JobHax-logo-black.svg"
-            alt="JobHax-logo"
-          />
-        </Link>
-        <Link to="/home">
-          <button>Home</button>
-        </Link>
-      </div>
-    );
-  }
-
   generateSignInForm() {
     const { getFieldDecorator } = this.props.form;
     const styleResendPassword = {
@@ -498,7 +481,6 @@ class SignInPage extends Component {
     return (
       <div>
         {this.generateReCaptchaAlert()}
-        <div className="sign_in-background">{this.generateTopButtons()}</div>
         <div className="sign_in-vertical-container">
           <div className="sign_in-container">{this.generateSignIn()}</div>
         </div>

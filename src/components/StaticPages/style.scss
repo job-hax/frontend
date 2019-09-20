@@ -1,24 +1,26 @@
-.under_construction-container {
-    margin-top: -80px;
+@import "../App/style.scss";
+
+
+.static-page-container {
     height: 96vh;
     font-family: Helvetica;
-    color: black;
 
-    .header_area {
-        background-color: rgb(42, 123, 190);
+    .header-area {
+        background-image: $banner_image;
         background-size: 100%;
-        color: white;
-        height: 400px;
+        height: 280px;
         text-align: center;
-        padding-top: 20px;
+        padding-top: 120px;
         padding-bottom: 80px;
 
         h2 {
             font-weight: bolder;
+            color: white;
             margin-top: 0px;
+            font-size: 220%;
         }
 
-        .top-buttons {
+        .legal-top {
             display: flex;
             justify-content: space-between;
             padding-top: 120px;
@@ -42,13 +44,23 @@
     }
 }
 
-.info-area {
-    text-align: center;
+.info-container {
+    display: flex;
+    justify-content: center;
 
-    h2 {
-        font-weight: bolder;
-        margin-top: 120px;
-        color: black;
+    .info-area {
+        margin-top: 50px;
+        margin-bottom: 100px;
+        text-align: left;
+        height: fit-content;
+        height: -moz-fit-content;
+        width: 80%;
+
+        h2 {
+            font-weight: bolder;
+            margin-top: 120px;
+            color: black;
+        }
     }
 }
 
@@ -56,5 +68,4 @@
     position: fixed;
     width: 100%;
     bottom: 0%;
-    z-index: 0;
 }

@@ -78,11 +78,10 @@ class Header extends Component {
     }
   }
 
-  async handleMenuClick(event) {
+  handleMenuClick(event) {
     this.setState({ request: true });
     let page = event.key;
     if (page == "/logout") {
-      await this.setState({ current: "/home" });
       this.props.handleSignOut();
     } else if (page == "/events") {
       if (window.location.pathname.substring(0, 6) == "/event") {
@@ -107,19 +106,7 @@ class Header extends Component {
     }
   }
 
-  render() {
-    if (
-      this.state.current &&
-      this.state.current != "logout" &&
-      this.state.current != "/" &&
-      this.state.request == true
-    ) {
-      if (this.state.current != window.location.pathname) {
-        this.setState({ request: false });
-        return <Redirect to={this.state.current} />;
-      }
-    }
-
+  generateLoggedInHeader() {
     const isDashboardOpenedByDefault =
       window.location.pathname == "/" ? "/dashboard" : "";
     const profilePhotoUrl = this.props.profilePhotoUrl
@@ -233,64 +220,65 @@ class Header extends Component {
               </Menu.Item>
             </SubMenu>
           </Menu>
-          {/*<div className="header-icon general tooltips">
-            <Link to="/metrics">
-              <img src="../../../src/assets/icons/StatsIcon@3x.png" />
-              <span>Metrics</span>
-            </Link>
-          </div>
-          {(this.state.user_type == 2 || this.state.user_type == 3) && (
-            <div className="header-icon general tooltips">
-              <Link to="/alumni">
-                <img src="../../../src/assets/icons/AlumniIcon.png" />
-                <span>Alumni</span>
-              </Link>
-            </div>
-          )}
-          {window.location.pathname.substring(0, 6) == "/event" ? (
-            <div
-              className="header-icon general tooltips"
-              onClick={() => window.location.assign("/events")}
-            >
-              <img src="../../../src/assets/icons/EventIcon.png" />
-              <span>Events</span>
-            </div>
-          ) : (
-            <div className="header-icon general tooltips">
-              <Link to="/events">
-                <img src="../../../src/assets/icons/EventIcon.png" />
-                <span>Events</span>
-              </Link>
-            </div>
-          )}
-          <div className="header-icon general tooltips">
-            <Link to="/mentors">
-              <img src="../../../src/assets/icons/MentorIcon.png" />
-              <span>Mentorship</span>
-            </Link>
-          </div>
-          <div className="header-icon general tooltips">
-            <Link to="/companies">
-              <img src="../../../src/assets/icons/company_icon.png" />
-              <span>Companies</span>
-            </Link>
-          </div>
-          <div className="header-icon user-icon">
-            <Link to="/profile">
-              <img src={profilePhotoUrl} />
-            </Link>
-          </div>
-          <div className="header-icon sign_out">
-            <Link to="/home">
-              <img
-                onClick={() => this.props.handleSignOut()}
-                src="../../../src/assets/icons/log-out@3x.png"
-              />
-            </Link>
-          </div>*/}
         </div>
       </div>
     );
+  }
+
+  generateNonLoggedInHeader() {
+    return (
+      <div className="header-container">
+        <div className="left-container">
+          <div className="jobhax-logo-container">
+            <div
+              className="jobhax-logo"
+              onClick={() => this.setState({ current: "/home", request: true })}
+            />
+          </div>
+        </div>
+        <div className="right-container out">
+          <div
+            className="option"
+            onClick={() => this.setState({ current: "/signin", request: true })}
+          >
+            Log In
+          </div>
+          <div>/</div>
+          <div
+            className="option"
+            onClick={() => this.setState({ current: "/signup", request: true })}
+          >
+            Sign Up
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    if (this.props.isUserLoggedIn) {
+      if (
+        this.state.current &&
+        this.state.current != "logout" &&
+        this.state.current != "/" &&
+        this.state.request == true
+      ) {
+        if (this.state.current != window.location.pathname) {
+          this.setState({ request: false });
+          return <Redirect to={this.state.current} />;
+        }
+      }
+      return this.generateLoggedInHeader();
+    } else {
+      if (
+        this.state.current != window.location.pathname &&
+        this.state.request
+      ) {
+        this.setState({ request: false });
+        return <Redirect to={this.state.current} />;
+      }
+      return this.generateNonLoggedInHeader();
+    }
   }
 }
 
