@@ -32,6 +32,9 @@ $addJobButtonAnimationZoomInScale: 1.03;
     flex-direction: column;
 
     &.--single {
+      height: -webkit-calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
+      height: -moz-calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
+      height: calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
       min-height: -webkit-calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
       min-height: -moz-calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
       min-height: calc(100% - #{$rejected_button_height} - #{$column_parts_margin}*2);
@@ -41,6 +44,9 @@ $addJobButtonAnimationZoomInScale: 1.03;
     }
 
     &.--double {
+      height: -webkit-calc(50% - #{$column_parts_margin});
+      height: -moz-calc(50% - #{$column_parts_margin});
+      height: calc(50% - #{$column_parts_margin});
       min-height: -webkit-calc(50% - #{$column_parts_margin});
       min-height: -moz-calc(50% - #{$column_parts_margin});
       min-height: calc(50% - #{$column_parts_margin});
@@ -61,10 +67,17 @@ $addJobButtonAnimationZoomInScale: 1.03;
       position: relative;
       display: flex;
       flex-direction: column;
-      max-height: 100%;
-      min-height: 100%;
-      flex-shrink: 1;
+      //flex-grow: 1;
       width: 105%;
+      height: -webkit-calc(100%);
+      height: -moz-calc(100%);
+      height: calc(100%);
+      min-height: -webkit-calc(100%);
+      min-height: -moz-calc(100%);
+      min-height: calc(100%);
+      max-height: -webkit-calc(100%);
+      max-height: -moz-calc(100%);
+      max-height: calc(100%);
 
       .column-header-container {
         font-size: 20px;
@@ -132,6 +145,9 @@ $addJobButtonAnimationZoomInScale: 1.03;
         flex-direction: column;
         justify-content: space-between;
         position: relative;
+        height: -webkit-calc(100% - #{$column_header_height});
+        height: -moz-calc(100% - #{$column_header_height});
+        height: calc(100% - #{$column_header_height});
         min-height: -webkit-calc(100% - #{$column_header_height});
         min-height: -moz-calc(100% - #{$column_header_height});
         min-height: calc(100% - #{$column_header_height});
@@ -150,6 +166,9 @@ $addJobButtonAnimationZoomInScale: 1.03;
           }
 
           &.--short {
+            height: -webkit-calc(100% - #{$column_header_height_add_job});
+            height: -moz-calc(100% - #{$column_header_height_add_job});
+            height: calc(100% - #{$column_header_height_add_job});
             min-height: -webkit-calc(100% - #{$column_header_height_add_job});
             min-height: -moz-calc(100% - #{$column_header_height_add_job});
             min-height: calc(100% - #{$column_header_height_add_job});

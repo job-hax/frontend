@@ -846,10 +846,11 @@ class Dashboard extends Component {
       <div>
         <div
           style={{
-            position: "absolute",
+            position: "fixed",
             margin: "-45px 0 0 80px",
             display: "flex",
             justifyContent: "space-between",
+            zIndex: 52,
             width: this.state.selectedJobApplications.length > 0 ? 718 : 440
           }}
         >
