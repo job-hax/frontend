@@ -18,7 +18,8 @@ class CompanyCards extends React.Component {
       isReviewsShowing: false,
       imageLoadError: true,
       positionsList: [],
-      reviewsList: []
+      reviewsList: [],
+      companyLogoError: false
     };
 
     this.toggleReviewsDisplay = this.toggleReviewsDisplay.bind(this);
@@ -82,10 +83,14 @@ class CompanyCards extends React.Component {
         <div className="company-card-initial">
           <div className="company-card-left">
             <div className="company-logo">
-              {company.cb_company_logo == null ? (
+              {company.cb_company_logo == null ||
+              this.state.companyLogoError ? (
                 <img src={company.company_logo || defaultLogo} />
               ) : (
-                <img src={company.cb_company_logo} />
+                <img
+                  onError={() => this.setState({ companyLogoError: true })}
+                  src={company.cb_company_logo}
+                />
               )}
             </div>
           </div>
