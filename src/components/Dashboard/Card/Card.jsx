@@ -165,7 +165,11 @@ class Card extends PureComponent {
     });
 
     return (
-      <div>
+      <div
+        className={cardClass}
+        onMouseEnter={() => this.setState({ showSelect: true })}
+        onMouseLeave={() => this.setState({ showSelect: false })}
+      >
         {showModal && (
           <CardModal
             handleTokenExpiration={handleTokenExpiration}
@@ -182,38 +186,32 @@ class Card extends PureComponent {
             {...this.props}
           />
         )}
-        <div
-          className={cardClass}
-          onMouseEnter={() => this.setState({ showSelect: true })}
-          onMouseLeave={() => this.setState({ showSelect: false })}
-        >
-          <div className="card-company-icon" onClick={this.toggleModal}>
-            {company_object.cb_company_logo === null ? (
-              <img src={company_object.company_logo || defaultLogo} />
-            ) : (
-              <img src={company_object.cb_company_logo} />
-            )}
+        <div className="card-company-icon" onClick={this.toggleModal}>
+          {company_object.cb_company_logo === null ? (
+            <img src={company_object.company_logo || defaultLogo} />
+          ) : (
+            <img src={company_object.cb_company_logo} />
+          )}
+        </div>
+        <div className="card-company-info" onClick={this.toggleModal}>
+          <div id="company" className="card-company-name">
+            {company_object.company}
           </div>
-          <div className="card-company-info" onClick={this.toggleModal}>
-            <div id="company" className="card-company-name">
-              {company_object.company}
+          {position && (
+            <div id="jobTitle" className="card-job-position">
+              {position.job_title}
             </div>
-            {position && (
-              <div id="jobTitle" className="card-job-position">
-                {position.job_title}
-              </div>
-            )}
-          </div>
-          <div className="card-job-details">
-            {(this.state.showSelect || this.state.isSelected) && (
-              <Checkbox
-                checked={this.state.isSelected}
-                onChange={this.onSelectChange}
-              />
-            )
-            /*this.sourceLogoSelector(app_source)*/
-            }
-          </div>
+          )}
+        </div>
+        <div className="card-job-details">
+          {(this.state.showSelect || this.state.isSelected) && (
+            <Checkbox
+              checked={this.state.isSelected}
+              onChange={this.onSelectChange}
+            />
+          )
+          /*this.sourceLogoSelector(app_source)*/
+          }
         </div>
       </div>
     );
