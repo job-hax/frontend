@@ -51,14 +51,16 @@ class MoveOptions extends React.Component {
       status_id: card.application_status.id,
       rejected: is_rejected
     };
+    moveToRejected(columnName, card, is_rejected);
+    this.props.toggleModal();
     let config = { method: "PUT" };
     config.body = body;
     axiosCaptcha(JOB_APPS, config).then(response => {
       IS_CONSOLE_LOG_OPEN &&
         console.log("update to rejected request response\n", response, card);
       if (response.statusText === "OK") {
-        if (response.data.success) {
-          moveToRejected(columnName, card, is_rejected);
+        if (!response.data.success) {
+          window.location = "/dashboard";
         }
       }
     });

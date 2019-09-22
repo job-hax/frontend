@@ -57,7 +57,6 @@ class Card extends PureComponent {
     this.toggleModal = this.toggleModal.bind(this);
     this.updateCompany = this.updateCompany.bind(this);
     this.updateCard = this.updateCard.bind(this);
-    this.toggleSelect = this.toggleSelect.bind(this);
     this.onSelectChange = this.onSelectChange.bind(this);
   }
 
@@ -81,16 +80,10 @@ class Card extends PureComponent {
   }
 
   toggleModal() {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-      showSelect: false
-    }));
-  }
-
-  toggleSelect() {
-    this.setState(({ showSelect }) => ({
-      showSelect: !showSelect
-    }));
+    this.setState({
+      showModal: !this.state.showModal,
+      showSelect: !this.state.showSelect
+    });
   }
 
   onSelectChange(event) {
@@ -191,8 +184,8 @@ class Card extends PureComponent {
         )}
         <div
           className={cardClass}
-          onMouseEnter={this.toggleSelect}
-          onMouseLeave={this.toggleSelect}
+          onMouseEnter={() => this.setState({ showSelect: true })}
+          onMouseLeave={() => this.setState({ showSelect: false })}
         >
           <div className="card-company-icon" onClick={this.toggleModal}>
             {company_object.cb_company_logo === null ? (

@@ -215,8 +215,8 @@ class Column extends Component {
 
     const ongoingsContainerClass = classNames({
       "column-ongoings-container": true,
-      "--single": !showRejectedCards,
-      "--double": showRejectedCards,
+      "--single": !showRejectedCards || rejectedsAmount == 0,
+      "--double": showRejectedCards && rejectedsAmount,
       "--column-dropable": canDropCardInColumn && !isCardOverColumn,
       "--column-active": canDropCardInColumn && isCardOverColumn
     });
