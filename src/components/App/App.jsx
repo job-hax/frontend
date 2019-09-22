@@ -92,6 +92,9 @@ class App extends Component {
     this.showAlert = this.showAlert.bind(this);
     this.cookie = this.cookie.bind(this);
     this.handleTokenExpiration = this.handleTokenExpiration.bind(this);
+    this.tokenExpirationNoRenewHandle = this.tokenExpirationNoRenewHandle.bind(
+      this
+    );
     this.passStatesFromHeader = this.passStatesFromHeader.bind(this);
 
     this.pages = [
@@ -211,11 +214,11 @@ class App extends Component {
     );
     let remember_me = this.props.cookies.get("remember_me");
     if (jobhax_access_token === null) {
-      this.handleSignOut();
+      this.tokenExpirationNoRenewHandle();
       this.showAlert(5000, "info", "Your session time is over!");
     } else {
       if (jobhax_access_token_expiration === null) {
-        this.handleSignOut();
+        this.tokenExpirationNoRenewHandle();
         this.showAlert(5000, "info", "Your session time is over!");
       }
       let expiresIn = jobhax_access_token_expiration - parseFloat(now);
@@ -234,7 +237,7 @@ class App extends Component {
           await this.refreshJobhaxToken();
         } else {
           this.cookie("remove_all");
-          this.handleSignOut();
+          this.tokenExpirationNoRenewHandle();
           this.showAlert(5000, "info", "Your session time is over!");
         }
       } else {
@@ -324,6 +327,19 @@ class App extends Component {
     } else {
       IS_CONSOLE_LOG_OPEN && console.log("google is also okay!");
     }
+  }
+
+  tokenExpirationNoRenewHandle() {
+    this.cookie("remove_all");
+    window.gapi.auth2.getAuthInstance().signOut();
+    this.setState({
+      token: "",
+      active: false,
+      pollData: [],
+      notificationsList: [],
+      profileData: [],
+      logout: false
+    });
   }
 
   toggleIsPollShowing() {
