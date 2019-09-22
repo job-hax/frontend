@@ -74,7 +74,8 @@ class App extends Component {
       notificationsList: [],
       syncResponseTimestamp: null,
       user: {},
-      page: window.location.pathname.split("?")[0]
+      page: window.location.pathname.split("?")[0],
+      logout: false
     };
     this.notificationsList = [];
     this.handleSignOut = this.handleSignOut.bind(this);
@@ -335,8 +336,9 @@ class App extends Component {
     });
   }
 
-  passStatesFromHeader(timestamp) {
-    this.setState({ syncResponseTimestamp: timestamp });
+  passStatesFromHeader(type, value) {
+    console.log("header state update", type, value);
+    this.setState({ [type]: value });
   }
 
   setIsUserLoggedIn(isUserLoggedIn) {
@@ -390,12 +392,8 @@ class App extends Component {
 
   handleSignOut() {
     IS_CONSOLE_LOG_OPEN && console.log("handle signout first");
+    this.setState({ isUserLoggedIn: false });
     this.cookie("remove_all");
-    this.setState({
-      isUserLoggedIn: false,
-      page: "/home"
-    });
-    event && event.preventDefault();
     let config = { method: "POST" };
     config["body"] = {
       client_id: jobHaxClientId,
@@ -412,7 +410,8 @@ class App extends Component {
             active: false,
             pollData: [],
             notificationsList: [],
-            profileData: []
+            profileData: [],
+            logout: false
           });
           IS_CONSOLE_LOG_OPEN &&
             console.log(
@@ -470,13 +469,15 @@ class App extends Component {
   }
 
   render() {
-    const { isUserLoggedIn, page, token, active } = this.state;
+    const { isUserLoggedIn, page, token, active, logout } = this.state;
     IS_CONSOLE_LOG_OPEN &&
       console.log(
         "page",
         page,
         "\nisUserLoggedIn",
         isUserLoggedIn,
+        "\nlogout",
+        logout,
         "\n--token",
         token,
         "\n--active?",
@@ -490,6 +491,8 @@ class App extends Component {
       return <Spinner message="Reaching your account..." />;
     else if (!this.pages.includes(page))
       return <Spinner message="Page not found!" />;
+    else if (logout && page == "/home")
+      return <Spinner message="Logging out..." />;
     else if (isUserLoggedIn && this.state.active)
       return (
         <Router>
@@ -563,8 +566,10 @@ class App extends Component {
               exact
               path="/signin"
               render={() =>
-                window.location.search.split("=")[1] ===
-                "reCapthcaCouldNotPassed" ? (
+                logout ? (
+                  <Spinner message="Logging out..." />
+                ) : window.location.search.split("=")[1] ===
+                  "reCapthcaCouldNotPassed" ? (
                   <Spinner message="checking reCaptcha..." />
                 ) : (
                   <Redirect to="/dashboard" />
@@ -573,14 +578,14 @@ class App extends Component {
             />
             <Route
               exact
-              path="/signup"
-              render={() => <Redirect to="/dashboard" />}
-            />
-            <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
-            <Route
-              exact
-              path="/home"
-              render={() => <Redirect to="/dashboard" />}
+              path={["/signup", "/", "/home"]}
+              render={() =>
+                !logout ? (
+                  <Redirect to="/dashboard" />
+                ) : (
+                  <Spinner message="Logging out..." />
+                )
+              }
             />
             <Route
               exact
@@ -684,6 +689,7 @@ class App extends Component {
       if (!allowed.includes(page)) {
         let redirect_path = "/signin";
         window.location.href = redirect_path;
+        return <Spinner message="Redirecting..." />;
       } else
         return (
           <Router>

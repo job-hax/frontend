@@ -69,6 +69,7 @@ class CardModal extends PureComponent {
                 updateApplications={this.props.updateApplications}
                 handleTokenExpiration={this.props.handleTokenExpiration}
                 updateHeader={this.state.updateHeader}
+                toggleModal={this.props.toggleModal}
               />
             </div>
             <div className="modal-body">

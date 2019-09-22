@@ -23,13 +23,23 @@ class Header extends Component {
           : window.location.search != "?edit=true"
           ? window.location.pathname
           : window.location.pathname + window.location.search,
-      request: false
+      request: false,
+      redirect: false
     };
 
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleSyncUserEmail = this.handleSyncUserEmail.bind(this);
     this.handleMenuClick = this.handleMenuClick.bind(this);
+  }
+
+  componentDidUpdate() {
+    if (this.state.current != window.location.pathname && this.state.request) {
+      this.setState({ request: false, redirect: true });
+    }
+    if (this.state.current == window.location.pathname && this.state.redirect) {
+      this.setState({ redirect: false });
+    }
   }
 
   componentWillMount() {
@@ -71,17 +81,27 @@ class Header extends Component {
       axiosCaptcha(USERS("syncUserEmails"), config).then(response => {
         if (response.statusText === "OK") {
           if (response.data.success) {
-            this.props.passStatesFromHeader(new Date().getTime());
+            this.props.passStatesFromHeader(
+              "syncResponseTimestamp",
+              new Date().getTime()
+            );
           }
         }
       });
     }
   }
 
-  handleMenuClick(event) {
+  async handleMenuClick(event) {
+    const setStateAsync = state => {
+      return new Promise(resolve => {
+        this.setState(state, resolve);
+      });
+    };
     this.setState({ request: true });
     let page = event.key;
     if (page == "/logout") {
+      this.props.passStatesFromHeader("logout", true);
+      await setStateAsync({ current: "/home" });
       this.props.handleSignOut();
     } else if (page == "/events") {
       if (window.location.pathname.substring(0, 6) == "/event") {
@@ -257,27 +277,12 @@ class Header extends Component {
 
   render() {
     let header = "";
+    if (this.state.redirect) {
+      return <Redirect to={this.state.current} />;
+    }
     if (this.props.isUserLoggedIn) {
-      if (
-        this.state.current &&
-        this.state.current != "logout" &&
-        this.state.current != "/" &&
-        this.state.request == true
-      ) {
-        if (this.state.current != window.location.pathname) {
-          this.setState({ request: false });
-          return <Redirect to={this.state.current} />;
-        }
-      }
       header = this.generateLoggedInHeader();
     } else {
-      if (
-        this.state.current != window.location.pathname &&
-        this.state.request
-      ) {
-        this.setState({ request: false });
-        return <Redirect to={this.state.current} />;
-      }
       header = this.generateNonLoggedInHeader();
     }
     return (

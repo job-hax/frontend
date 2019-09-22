@@ -7,7 +7,7 @@ import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api.js";
 import { REVIEWS } from "../../../../../../../utils/constants/endpoints.js";
 import { Button } from "antd";
 
-class PositonReviews extends React.Component {
+class JobReviews extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,7 +49,7 @@ class PositonReviews extends React.Component {
   async componentDidUpdate() {
     if (this.state.isReviewChanged === true) {
       IS_CONSOLE_LOG_OPEN && console.log("reviews componentDidUpdate");
-      await this.getPositionsReviews();
+      this.getPositionsReviews();
       this.setState({ isReviewChanged: false });
     }
   }
@@ -92,7 +92,7 @@ class PositonReviews extends React.Component {
 
   render() {
     IS_CONSOLE_LOG_OPEN &&
-      console.log("reviews render", this.state.reviewsList);
+      console.log("jobreviews render", this.state.reviewsList);
     const { card } = this.props;
     return (
       <div style={{ height: "520px", overflow: "hidden" }}>
@@ -112,13 +112,13 @@ class PositonReviews extends React.Component {
               </div>
               <div>
                 {this.state.reviewsList.length == 0 && (
-                  <div className="no-data" style={{ marginTop: 80 }}>
+                  <div className="no-data" style={{ paddingTop: 80 }}>
                     No reviews entered for {card.position.job_title} position at{" "}
                     {card.company_object.company}
                   </div>
                 )}
                 {this.state.isReviewsDisplaying === true && (
-                  <div style={{ marginTop: 40 }}>
+                  <div style={{ paddingTop: 40 }}>
                     <Reviews
                       reviewsList={this.state.reviewsList}
                       positionsList={[]}
@@ -130,8 +130,8 @@ class PositonReviews extends React.Component {
               </div>
             </div>
           )}
-          <div className="review-entry-container">
-            {this.state.isEnteringReview && (
+          {this.state.isEnteringReview && (
+            <div className="review-entry-container">
               <div className="modal-reviews-container">
                 <ReviewInput
                   toggleReview={this.toggleReviewEdit}
@@ -144,12 +144,12 @@ class PositonReviews extends React.Component {
                   handleTokenExpiration={this.props.handleTokenExpiration}
                 />
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     );
   }
 }
 
-export default PositonReviews;
+export default JobReviews;

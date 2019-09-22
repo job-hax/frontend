@@ -64,6 +64,7 @@ class ModalHeader extends React.Component {
             columnName={this.props.columnName}
             deleteJobFromList={this.props.deleteJobFromList}
             moveToRejected={this.props.moveToRejected}
+            toggleModal={this.props.toggleModal}
             updateApplications={this.props.updateApplications}
             handleTokenExpiration={this.props.handleTokenExpiration}
           />

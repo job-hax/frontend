@@ -407,7 +407,7 @@ class Dashboard extends Component {
       return job.id !== card.id;
     });
     let insertedItemColumn = this.state[listToAdd].slice();
-    updatedCard = card;
+    let updatedCard = card;
     updatedCard.is_changed = "added";
     insertedItemColumn.unshift(updatedCard);
     this.setState(() => ({

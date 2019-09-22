@@ -217,7 +217,7 @@ class Home extends Component {
           "Application process is visualized like no spreadsheet can do."
         )}
         {this.generateInteriorItem(
-          "src/assets/images/hiw-predictions.jpg",
+          "src/assets/images/metrics.png",
           "Leverage data to step up your job search game",
           "Hiring trends, skill analysis, interview success rate to help you hunt like a pro."
         )}
