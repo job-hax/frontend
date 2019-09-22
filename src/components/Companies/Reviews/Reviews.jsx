@@ -9,17 +9,14 @@ import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
 
-const descDifficulty = ["too easy", "easy", "normal", "hard", "too hard"];
 const desc = ["terrible", "bad", "normal", "good", "perfect"];
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 
 class Reviews extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      reviewsList: [],
+      reviewsList: this.props.reviewsList,
       displaying: "All Positions"
     };
 
@@ -28,8 +25,10 @@ class Reviews extends React.Component {
     );
   }
 
-  componentDidMount() {
-    this.setState({ reviewsList: this.props.reviewsList });
+  componentDidUpdate() {
+    if (this.state.reviewsList != this.props.reviewsList) {
+      this.setState({ reviewsList: this.props.reviewsList });
+    }
   }
 
   async handlePositionFilterChange(event) {
@@ -65,6 +64,29 @@ class Reviews extends React.Component {
         }
       });
     }
+  }
+
+  generateInterviewDifficulty(value, max = 5) {
+    let level = value == null ? 0 : value;
+    const circles = [...Array(max + 1).keys()].map(
+      no =>
+        no != 0 && (
+          <div key={no} className="circle-container">
+            {no != 1 && <div className="dash"></div>}
+            <div
+              className="circle"
+              style={no == level ? { backgroundColor: "black" } : {}}
+            ></div>
+          </div>
+        )
+    );
+    return (
+      <div className="difficulty-rating-container">
+        <div className="first-label">Easy</div>
+        {circles}
+        <div className="last-label">Difficult</div>
+      </div>
+    );
   }
 
   mapReviews() {
@@ -131,29 +153,23 @@ class Reviews extends React.Component {
                         style={{ fontSize: 20, marginTop: "-5px" }}
                         type="like"
                         theme={
-                          review.overall_interview_experience &&
-                          review.overall_interview_experience == 0 &&
-                          "filled"
+                          review.overall_interview_experience == 0 && "filled"
                         }
                       />
                       <Icon
                         type="dislike"
                         style={{ margin: "2px 0px 0px 5px", fontSize: 20 }}
                         theme={
-                          review.overall_interview_experience &&
-                          review.overall_interview_experience == 1 &&
-                          "filled"
+                          review.overall_interview_experience == 1 && "filled"
                         }
                       />
                     </div>
                   </div>
-                  <div>
+                  <div className="difficulty-container">
                     <label>Interview difficulty:</label>
-                    <Rate
-                      tooltips={descDifficulty}
-                      disabled
-                      value={review.interview_difficulty}
-                    />
+                    {this.generateInterviewDifficulty(
+                      review.interview_difficulty
+                    )}
                   </div>
                 </div>
                 {review.interview_notes != null &&

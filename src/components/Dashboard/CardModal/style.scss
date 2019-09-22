@@ -203,7 +203,6 @@
             cursor: pointer;
 
             &:hover {
-              box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
               width: 158px;
               padding-left: 2px;
             }
@@ -244,7 +243,7 @@
             padding-top: 6px;
             font-size: 90%;
             height: 26px;
-            border-bottom: 0.5px solid rgba(132, 100, 239, 0.6);
+            border-bottom: 0.5px solid $highlight_color;
             font-weight: 500;
 
           }
@@ -285,6 +284,10 @@
           background-color: $selection_color;
           font-weight: 450;
           color: white;
+        }
+
+        &.--selected:hover {
+          color: $selection_color;
         }
       }
 
@@ -343,7 +346,6 @@
 
         .company-stats-container {
           margin-left: 60px;
-
         }
 
       }
@@ -359,12 +361,13 @@
           margin-left: 20px;
           width: 536px;
           min-width: 536px;
+          height: 100%;
 
           .review-button {
             width: 100%;
             min-width: 100%;
             display: flex;
-            justify-content: end;
+            justify-content: flex-end;
             margin: 10px 0px 0px 5px;
           }
 

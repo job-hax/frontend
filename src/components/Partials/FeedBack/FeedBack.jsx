@@ -1,5 +1,5 @@
 import React from "react";
-import { Rate, Modal } from "antd";
+import { Rate, Modal, Button } from "antd";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
@@ -109,13 +109,14 @@ class FeedBack extends React.Component {
       color: "black"
     };
     const textBoxStyle = {
-      border: "1px solid rgba(132, 100, 239, 1)",
+      border: "1px solid rgb(239, 239, 239)",
       borderRadius: "4px",
       height: "140px",
       width: "100%",
       marginTop: "8px",
       maxHeight: "140px",
-      minHeight: "140px"
+      minHeight: "140px",
+      padding: 4
     };
     const quesitonContainerStyle = {
       marginTop: "12px"
@@ -130,14 +131,8 @@ class FeedBack extends React.Component {
       width: "300px"
     };
     const buttonStyle = {
-      backgroundColor: "rgb(92, 39, 195)",
-      height: "32px",
-      width: "70px",
-      textAlign: "center",
       paddingTop: "0px",
-      marginRight: "16px",
-      color: "white",
-      cursor: "pointer"
+      marginRight: "16px"
     };
 
     const feedbackButtonStyle =
@@ -197,9 +192,9 @@ class FeedBack extends React.Component {
             </div>
             <div style={buttonsContainerStyle} className="buttons-container">
               <div key="submit" type="primary" onClick={this.handleOk}>
-                <button style={buttonStyle} className="button" type="submit">
+                <Button style={buttonStyle} type="primary" htmlType="submit">
                   Submit
-                </button>
+                </Button>
               </div>
             </div>
           </form>

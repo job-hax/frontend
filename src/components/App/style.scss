@@ -6,10 +6,10 @@
 $text_color: black;
 $base_color: rgba(0, 0, 0, 0.5);
 $border_color: rgba(0, 0, 0, 1);
-$highlight_color: rgba(63, 124, 216, 0.1);
-$selection_color: rgba(63, 124, 216, 0.6);
-$hover_color: rgba(63, 129, 216, 0.7);
-$active_color: rgba(63, 129, 216, 0.8);
+$highlight_color: rgba(0, 71, 186, 0.1);
+$selection_color: rgba(0, 71, 186, 0.7);
+$hover_color: rgba(0, 71, 186, 0.4);
+$active_color: rgba(0, 71, 186, 0.8);
 $primary_button_color: #0048BA;
 $spinner_background_color: rgba(0, 0, 0, 0.2);
 $line_color: rgb(239, 239, 239);
@@ -78,4 +78,28 @@ html {
   border-radius: 4px;
   margin: 2px 0 0 0;
   max-height: 180px;
+}
+
+.ant-btn {
+  color: $primary_button_color;
+  border-color: $primary_button_color;
+}
+
+.ant-btn-primary {
+  color: #fff !important;
+  background-color: $primary_button_color;
+  border: $primary_button_color !important;
+
+}
+
+.ant-btn:hover {
+  color: rgb(64, 169, 255) !important;
+  border-color: rgb(64, 169, 255) !important;
+}
+
+.ant-btn-primary:hover {
+  color: #fff !important;
+  background-color: rgb(64, 169, 255) !important;
+  border: rgb(64, 169, 255) !important;
+
 }
