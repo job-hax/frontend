@@ -52,7 +52,8 @@ class Card extends PureComponent {
       imageLoadError: true,
       showSelect: false,
       isSelected: this.props.isSelected,
-      animate: false
+      animate: false,
+      companyLogoError: false
     };
     this.toggleModal = this.toggleModal.bind(this);
     this.updateCompany = this.updateCompany.bind(this);
@@ -187,10 +188,14 @@ class Card extends PureComponent {
           />
         )}
         <div className="card-company-icon" onClick={this.toggleModal}>
-          {company_object.cb_company_logo === null ? (
+          {company_object.cb_company_logo === null ||
+          this.state.companyLogoError ? (
             <img src={company_object.company_logo || defaultLogo} />
           ) : (
-            <img src={company_object.cb_company_logo} />
+            <img
+              onError={() => this.setState({ companyLogoError: true })}
+              src={company_object.cb_company_logo}
+            />
           )}
         </div>
         <div className="card-company-info" onClick={this.toggleModal}>
