@@ -5,7 +5,7 @@ import Reviews from "../../../../../../Companies/Reviews/Reviews.jsx";
 import ReviewInput from "./ReviewInput/ReviewInput.jsx";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api.js";
 import { REVIEWS } from "../../../../../../../utils/constants/endpoints.js";
-import { Button } from "antd";
+import { Button, Icon } from "antd";
 
 class JobReviews extends React.Component {
   constructor(props) {
@@ -94,20 +94,19 @@ class JobReviews extends React.Component {
     IS_CONSOLE_LOG_OPEN &&
       console.log("jobreviews render", this.state.reviewsList);
     const { card } = this.props;
+    const buttonText = this.props.card.company_object.review_id
+      ? "Update Your Review"
+      : "Add a Review";
+    const iconType = this.props.card.company_object.review_id ? "edit" : "plus";
     return (
       <div style={{ height: "520px", overflow: "hidden" }}>
         <div className="modal-review-big-container">
           {!this.state.isEnteringReview && (
             <div className="review-entry-container">
               <div className="review-button">
-                <Button
-                  type="primary"
-                  style={{ position: "absolute", borderRadius: 0 }}
-                  onClick={this.toggleReviewEdit}
-                >
-                  {this.props.card.company_object.review_id
-                    ? "Update Your Review"
-                    : "Add a Review"}
+                <Button type="primary" onClick={this.toggleReviewEdit}>
+                  <Icon type={iconType} />
+                  {buttonText}
                 </Button>
               </div>
               <div>

@@ -6,6 +6,7 @@ import {
 } from "../../../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../../../utils/api/fetch_api";
 import { JOB_APPS } from "../../../../../utils/constants/endpoints.js";
+import { Button, Icon } from "antd";
 
 class MoveOptions extends React.Component {
   constructor(props) {
@@ -16,12 +17,32 @@ class MoveOptions extends React.Component {
     };
 
     this.toggleOptions = this.toggleOptions.bind(this);
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+  }
+
+  componentWillMount() {
+    document.addEventListener("mousedown", this.handleClickOutside, false);
+  }
+
+  componentWillUnmount() {
+    document.addEventListener("mousedown", this.handleClickOutside, false);
+  }
+
+  setWrapperRef(node) {
+    this.wrapperRef = node;
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.setState({ showOptions: false });
+    }
   }
 
   toggleOptions() {
-    this.setState(state => ({
-      showOptions: !state.showOptions
-    }));
+    this.setState({
+      showOptions: !this.state.showOptions
+    });
   }
 
   async deleteJobFunction() {
@@ -138,20 +159,20 @@ class MoveOptions extends React.Component {
   }
 
   render() {
+    const iconType = this.state.showOptions ? "up" : "down";
     return (
-      <div
-        className="modal-header options"
-        onMouseEnter={this.toggleOptions}
-        onMouseLeave={this.toggleOptions}
-      >
-        <div className="current-status">
-          <img
-            src={this.props.icon.toString().split("@")[0] + "White@1x.png"}
-          />
+      <div className="modal-header options" ref={this.setWrapperRef}>
+        <Button
+          className="current-status"
+          onClick={this.toggleOptions}
+          style={{ justifyContent: "space-between" }}
+        >
+          {/*<img src={this.props.icon.toString().split("@")[0] + "@1x.png"} />*/}
           <p>
             {APPLICATION_STATUSES_IN_ORDER[parseInt(this.props.id) - 1]["name"]}
           </p>
-        </div>
+          <Icon type={iconType} style={{ margin: "3px 0px 0px 4px" }} />
+        </Button>
         {this.moveToOptionsGenerator()}
       </div>
     );

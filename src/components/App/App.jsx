@@ -702,9 +702,9 @@ class App extends Component {
         "/action",
         "/action-linkedin-oauth"
       ];
-      if (!allowed.includes(page)) {
+      if (!allowed.includes(page) && !logout) {
         let redirect_path = "/signin";
-        window.location.href = redirect_path;
+        window.location = redirect_path;
         return <Spinner message="Redirecting..." />;
       } else
         return (

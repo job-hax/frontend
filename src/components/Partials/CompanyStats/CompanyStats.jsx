@@ -72,10 +72,12 @@ class CompanyStats extends React.Component {
   generateCompanyStatistics() {
     return (
       <div>
-        {this.generateCompanyRatings()}
-        <div className="statistics-container">
-          {this.generateEmploymentAuthStats()}
-        </div>
+        {this.props.ratings && this.generateCompanyRatings()}
+        {this.props.stats && (
+          <div className="statistics-container">
+            {this.generateEmploymentAuthStats()}
+          </div>
+        )}
       </div>
     );
   }
