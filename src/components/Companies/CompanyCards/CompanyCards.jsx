@@ -99,7 +99,7 @@ class CompanyCards extends React.Component {
             <CompanyStats
               company={this.props.company}
               stats={true}
-              rating={true}
+              ratings={true}
             />
           </div>
         </div>
