@@ -337,6 +337,7 @@ class Alumni extends React.Component {
           className="ant-dropdown-link"
           style={{
             color: "rgba(100, 100, 100, 0.9)",
+            borderColor: "rgb(217, 217, 217)",
             width: 200,
             overflow: "hidden"
           }}

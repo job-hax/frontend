@@ -882,6 +882,7 @@ class Dashboard extends Component {
                   style={{
                     margin: "0px 0px 0px 16px",
                     color: "rgba(0, 0, 0, 0.4)",
+                    borderColor: "rgb(217, 217, 217)",
                     width: "140px",
                     height: "32px"
                   }}
