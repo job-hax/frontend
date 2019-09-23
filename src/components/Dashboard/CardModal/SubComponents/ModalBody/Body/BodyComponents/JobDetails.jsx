@@ -12,6 +12,7 @@ import {
   GET_SOURCES,
   AUTOCOMPLETE
 } from "../../../../../../../utils/constants/endpoints.js";
+import CompanyStats from "../../../../../../Partials/CompanyStats/CompanyStats.jsx";
 
 class JobDetails extends React.Component {
   constructor(props) {
@@ -51,6 +52,8 @@ class JobDetails extends React.Component {
     );
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
+
+    this.inputStyle = { width: "400px", marginTop: "4px" };
   }
 
   componentDidMount() {
@@ -188,12 +191,11 @@ class JobDetails extends React.Component {
       <div className="modal-body main data info">
         <label>
           <div>{"Company"}</div>
-          <div>{" : "}</div>
         </label>
         {isCompanyEditing == true ? (
           <AutoComplete
             dataSource={autoCompleteCompanyData}
-            style={{ width: "200px", marginTop: "4px" }}
+            style={this.inputStyle}
             onSearch={this.handleCompanySearch}
             placeholder="Company Name"
             value={companyName && companyName}
@@ -252,12 +254,11 @@ class JobDetails extends React.Component {
       <div className="modal-body main data info">
         <label>
           <div>{"Position"}</div>
-          <div>{" : "}</div>
         </label>
         {isPositionsEditing == true ? (
           <AutoComplete
             dataSource={autoCompletePositionsData}
-            style={{ width: "200px", marginTop: "4px" }}
+            style={this.inputStyle}
             onSearch={this.handlePositionsSearch}
             placeholder="Job Title"
             value={jobTitle && jobTitle}
@@ -299,8 +300,7 @@ class JobDetails extends React.Component {
     return (
       <div className="modal-body main data info">
         <label>
-          <div>{"Applied On"}</div>
-          <div>{" : "}</div>
+          <div>{"Applied on"}</div>
         </label>
         {isApplyDateEditing == true ? (
           <DatePicker
@@ -310,7 +310,7 @@ class JobDetails extends React.Component {
               dateFormat
             )}
             format={dateFormat}
-            style={{ width: "200px", marginTop: "4px" }}
+            style={this.inputStyle}
           />
         ) : this.props.card.editable == true ? (
           <div className={infoClass} onClick={this.toggleApplyDateEdit}>
@@ -359,14 +359,13 @@ class JobDetails extends React.Component {
       <div className="modal-body main data info">
         <label>
           <div>{"Source"}</div>
-          <div>{" : "}</div>
         </label>
         {isApplicationSourcesEditing == true ? (
           <Select
             name="source"
             value={source}
             onChange={() => this.handleApplicationSources(event)}
-            style={{ width: "200px", marginTop: "4px" }}
+            style={this.inputStyle}
           >
             {sourcesList.map(each => (
               <Option
@@ -395,12 +394,35 @@ class JobDetails extends React.Component {
   }
 
   generateAllInfo() {
+    let ratingTotal = 0;
+    let countTotal = 0;
+    this.props.card.company_object.ratings.forEach(
+      rating => (
+        (ratingTotal += Number(rating.id) * Number(rating.count)),
+        (countTotal += Number(rating.count))
+      )
+    );
+    const averageRating =
+      ratingTotal == 0 ? 0 : Math.round((ratingTotal / countTotal) * 10) / 10;
     return (
       <div>
         {this.generateCompanyInfo()}
         {this.generatePositionsInfo()}
         {this.generateApplyDateInfo()}
         {this.generateApplicationSourcesInfo()}
+        <div className="modal-body main data info">
+          <label> Ratings </label>
+          <div style={{ margin: "10px 4px 0px 0px" }}>
+            <CompanyStats
+              stats={false}
+              ratings={true}
+              company={this.props.card.company_object}
+            />
+          </div>
+          <div style={{ fontSize: "20px", marginTop: 6 }}>
+            {countTotal != 0 && averageRating}
+          </div>
+        </div>
       </div>
     );
   }

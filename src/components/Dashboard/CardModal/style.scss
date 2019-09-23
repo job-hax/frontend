@@ -6,7 +6,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(39, 39, 39, 0.7);
+  background: rgba(39, 39, 39, 0.2);
   z-index: 105;
 
   .modal-main {
@@ -17,17 +17,16 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 4px;
+    border-radius: 16px;
+    box-shadow: 1px 1px 20px 4px opacify($highlight_color, 0.05);
   }
 
   .modal-header-container {
-    margin-left: 24px;
-    margin-right: 24px;
 
     .modal-header {
-      border-bottom: 1px solid $highlight_color;
+      border-bottom: 1px solid $line_color;
+      padding: 0px 24px;
       height: 100px;
-      color: black;
       display: flex;
       justify-content: space-between;
       overflow: hidden;
@@ -72,6 +71,7 @@
             max-height: 20px;
             border: none;
             overflow: hidden;
+            color: $gray_text_color;
           }
         }
       }
@@ -93,8 +93,9 @@
           height: 28px;
           display: flex;
           justify-content: center;
-          color: white;
-          background-color: $primary_button_color;
+          color: $soft_button_color;
+          border: 1px solid $soft_button_color;
+          border-radius: 4px;
           text-align: center;
           margin-top: 28px;
           padding-top: 4px;
@@ -109,7 +110,7 @@
           }
 
           p {
-            margin-top: 0px;
+            margin-top: -2px;
           }
         }
 
@@ -260,39 +261,36 @@
     overflow-x: hidden;
 
     &.navigation {
-      width: 78px;
+      width: 100px;
       height: 530px;
-      padding-top: 8px;
-      margin-left: 14px;
+      padding-top: 24px;
       display: table;
-      text-align: right;
-      border-right: 1px solid $highlight_color;
+      text-align: left;
+      border-right: 1px solid $line_color;
 
       &.subheaders {
         border: none;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        font-size: 90%;
-        font-weight: 400;
+        font-size: 14px;
+        font-weight: normal;
         height: auto;
         margin-top: 0px;
-        margin-left: 14px;
-        padding-right: 8px;
+        padding: 10px 16px 10px 14px;
         cursor: pointer;
 
         &.--selected {
-          background-color: $selection_color;
-          font-weight: 450;
+          background-color: $hover_color;
+          font-weight: normal;
           color: white;
         }
 
         &.--selected:hover {
-          color: $selection_color;
+          color: $selection-color;
         }
       }
 
       &.subheaders:hover {
         background-color: $highlight_color;
+        color: $hover_color;
       }
     }
 
@@ -312,29 +310,28 @@
         justify-content: space-between;
         height: fit-content;
         height: -moz-fit-content;
-        width: 292px;
 
         &.info {
           display: flex;
           justify-content: start;
           margin-top: 0px;
-          height: auto;
-          width: 272px;
+          font-size: 14px;
 
           label {
             display: flex;
             justify-content: space-between;
+            font-weight: 300;
             padding: 10px 4px 10px 0;
-            width: 68px;
+            width: 100px;
           }
 
           .text {
-            width: 200px;
+            width: 400px;
             padding: 10px 0 10px 0;
           }
 
           .text-editable {
-            width: 200px;
+            width: 400px;
             padding: 10px 0 10px 0;
           }
 
@@ -342,10 +339,6 @@
             background-color: $highlight_color;
             cursor: text;
           }
-        }
-
-        .company-stats-container {
-          margin-left: 60px;
         }
 
       }
@@ -357,18 +350,37 @@
         height: 520px;
 
         .review-entry-container {
-          margin-top: 10px;
           margin-left: 20px;
           width: 536px;
           min-width: 536px;
           height: 100%;
 
           .review-button {
-            width: 100%;
-            min-width: 100%;
+            width: 77%;
+            min-width: 77%;
             display: flex;
             justify-content: flex-end;
-            margin: 10px 0px 0px 5px;
+            margin: 0px;
+            height: 40px;
+            min-height: 40px;
+            position: absolute;
+            background-color: white;
+            z-index: 1;
+
+            .ant-btn {
+              position: absolute;
+              max-height: 28px;
+              border-radius: 30px;
+              font-size: 12px;
+            }
+
+            .ant-btn-primary {
+              background-color: $soft_button_color;
+            }
+
+            .anticon {
+              font-size: 12px;
+            }
           }
 
 

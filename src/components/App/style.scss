@@ -5,11 +5,12 @@
 $text_color: black;
 $base_color: rgba(0, 0, 0, 0.5);
 $border_color: rgba(0, 0, 0, 1);
-$highlight_color: rgba(0, 71, 186, 0.1);
-$selection_color: rgba(0, 71, 186, 0.7);
-$hover_color: rgba(0, 71, 186, 0.4);
-$active_color: rgba(0, 71, 186, 0.8);
-$primary_button_color: #0048BA;
+$soft_button_color: rgb(11, 106, 255);
+$primary_button_color: $soft_button_color;
+$active_color: transparentize($soft_button_color, 0.2);
+$selection_color: transparentize($soft_button_color, 0.3);
+$hover_color: transparentize($soft_button_color, 0.6);
+$highlight_color: transparentize($soft_button_color, 0.9);
 $spinner_background_color: rgba(0, 0, 0, 0.2);
 $line_color: rgb(239, 239, 239);
 $gray_text_color: #aaaaaa;

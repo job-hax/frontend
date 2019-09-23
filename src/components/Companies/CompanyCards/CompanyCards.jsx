@@ -96,7 +96,11 @@ class CompanyCards extends React.Component {
           </div>
           <div className="company-card-right">
             <div className="company-name">{company.company}</div>
-            <CompanyStats company={this.props.company} />
+            <CompanyStats
+              company={this.props.company}
+              stats={true}
+              ratings={true}
+            />
           </div>
         </div>
         {this.props.company.review_count != 0 &&

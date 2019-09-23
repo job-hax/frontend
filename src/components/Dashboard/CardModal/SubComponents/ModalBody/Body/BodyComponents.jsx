@@ -12,7 +12,7 @@ class BodyComponents extends React.Component {
 
   displaySelector() {
     switch (this.props.displaying) {
-      case "Job Details":
+      case "Overview":
         return (
           <JobDetails
             card={this.props.card}
