@@ -40,9 +40,9 @@ class CompanyStats extends React.Component {
         <div
           style={
             stat.id == 1
-              ? { fontWeight: "450", marginRight: "5px" }
+              ? { fontWeight: "normal", marginRight: "5px" }
               : {
-                  fontWeight: "450",
+                  fontWeight: "normal",
                   marginRight: 5,
                   paddingLeft: 10,
                   borderLeft: "1px solid rgb(239, 239, 239)"

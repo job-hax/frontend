@@ -19,13 +19,14 @@
             h2 {
                 font-size: 36px;
                 margin-bottom: 0;
+                font-weight: bold;
             }
         }
 
         .company-cards-container {
             width: 100%;
 
-            .companies-search {
+            .companies-search-before-click {
 
                 .ant-input {
                     text-align: center !important;
@@ -37,19 +38,51 @@
                 }
 
                 .ant-input-affix-wrapper .ant-input-suffix {
-                    right: 12px !important;
+                    right: calc(50% + 34px) !important;
                     color: $gray_text_color !important;
                     top: 20px !important;
+                    font-size: 120%;
                 }
 
                 .ant-input-search-icon {
                     color: $gray_text_color;
+                    max-height: 14px;
+                    max-width: 14px;
+                    border-radius: 2px;
+                    overflow: hidden;
                 }
 
-                .ant-input:focus {
+                .ant-input::placeholder {
+                    color: $gray_text_color;
+                }
+            }
+
+            .companies-search {
+
+                .ant-input {
+                    border: none !important;
+                    background-color: $line_color !important;
+                    border-radius: 20px !important;
+                    height: 40px !important;
+                    margin-bottom: 15px !important;
                     box-shadow: 0 0 2px 1px #aaaaaa6b;
-                    //text-align: left !important;
+                    text-align: left !important;
                     color: $text_color !important;
+                }
+
+                .ant-input-affix-wrapper .ant-input-suffix {
+                    right: 12px !important;
+                    color: $gray_text_color !important;
+                    top: 20px !important;
+                    font-size: 120%;
+                }
+
+                .ant-input-search-icon {
+                    color: $gray_text_color;
+                    max-height: 14px;
+                    max-width: 14px;
+                    border-radius: 2px;
+                    overflow: hidden;
                 }
 
                 .ant-input::placeholder {

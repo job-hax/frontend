@@ -26,11 +26,14 @@ class Companies extends React.Component {
       pageSize: 10,
       q: "",
       hasReview: false,
-      mine: true
+      mine: true,
+      searchClicked: false
     };
 
     this.handlePageChange = this.handlePageChange.bind(this);
     this.urlBuilder = this.urlBuilder.bind(this);
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
   async componentDidMount() {
@@ -66,6 +69,26 @@ class Companies extends React.Component {
       if (this.state.isQueryRequested === true) {
         this.getData("queryRequest");
         this.setState({ isQueryRequested: false });
+      }
+    }
+  }
+
+  componentWillMount() {
+    document.addEventListener("mousedown", this.handleClickOutside, false);
+  }
+
+  componentWillUnmount() {
+    document.addEventListener("mousedown", this.handleClickOutside, false);
+  }
+
+  setWrapperRef(node) {
+    this.wrapperRef = node;
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      if (this.state.q == ("" || null || false)) {
+        this.setState({ searchClicked: false });
       }
     }
   }
@@ -169,18 +192,30 @@ class Companies extends React.Component {
             <div className="companies-container">
               {this.generateFeatureArea()}
               <div className="company-cards-container">
-                <div className="companies-search">
-                  <Search
-                    placeholder="search"
-                    onSearch={value =>
-                      this.setState({
-                        q: value,
-                        isQueryRequested: true,
-                        pageNo: 1
-                      })
-                    }
-                  />
-                </div>
+                {!this.state.searchClicked ? (
+                  <div
+                    className="companies-search-before-click"
+                    onClick={() => this.setState({ searchClicked: true })}
+                  >
+                    <Search placeholder="search" />
+                  </div>
+                ) : (
+                  <div className="companies-search" ref={this.setWrapperRef}>
+                    <Search
+                      placeholder="search"
+                      onChange={event =>
+                        this.setState({ q: event.target.value })
+                      }
+                      onSearch={value =>
+                        this.setState({
+                          q: value,
+                          isQueryRequested: true,
+                          pageNo: 1
+                        })
+                      }
+                    />
+                  </div>
+                )}
                 <div className="checkbox-container">
                   <div style={{ marginRight: 25 }}>
                     <Checkbox
