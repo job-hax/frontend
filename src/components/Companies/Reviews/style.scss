@@ -18,6 +18,7 @@
             padding: 20px;
             border-radius: 4px;
             border: 1px solid $line_color;
+            font-weight: normal;
 
             .review-header {
                 padding-bottom: 15px;
@@ -25,7 +26,6 @@
 
                 .reviewer-name {
                     font-size: 120%;
-                    font-weight: 500;
                 }
 
                 .header-bottom {
