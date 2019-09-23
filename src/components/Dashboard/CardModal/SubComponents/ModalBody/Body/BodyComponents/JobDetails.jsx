@@ -403,7 +403,7 @@ class JobDetails extends React.Component {
       )
     );
     const averageRating =
-      ratingTotal == 0 ? 0 : Math.round(ratingTotal / countTotal);
+      ratingTotal == 0 ? 0 : Math.round((ratingTotal / countTotal) * 10) / 10;
     return (
       <div>
         {this.generateCompanyInfo()}
