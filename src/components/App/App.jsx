@@ -525,6 +525,7 @@ class App extends Component {
               handleTokenExpiration={this.handleTokenExpiration}
               passStatesFromHeader={this.passStatesFromHeader}
               isUserLoggedIn={true}
+              isAdmin={this.state.user.is_admin}
             />
             <FeedBack
               alert={this.showAlert}

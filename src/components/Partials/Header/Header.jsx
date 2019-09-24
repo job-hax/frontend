@@ -34,10 +34,19 @@ class Header extends Component {
   }
 
   componentDidUpdate() {
-    if (this.state.current != window.location.pathname && this.state.request) {
+    if (
+      this.state.current != window.location.pathname &&
+      this.state.current != window.location.pathname + window.location.search &&
+      this.state.request
+    ) {
       this.setState({ request: false, redirect: true });
     }
-    if (this.state.current == window.location.pathname && this.state.redirect) {
+    if (
+      (this.state.current == window.location.pathname ||
+        this.state.current ==
+          window.location.pathname + window.location.search) &&
+      this.state.redirect
+    ) {
       this.setState({ redirect: false });
     }
   }
@@ -233,7 +242,11 @@ class Header extends Component {
               }
             >
               <Menu.Item key="/profile">Profile</Menu.Item>
-              <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
+              {(this.state.user_type == 3 ||
+                this.state.user_type == 4 ||
+                this.props.isAdmin) && (
+                <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
+              )}
               <Menu.Item key="/logout">
                 <Icon type="logout" />
                 Logout
