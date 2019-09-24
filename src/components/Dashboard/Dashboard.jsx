@@ -142,6 +142,8 @@ class Dashboard extends Component {
               this.waitAndTriggerComponentDidUpdate(3);
             } else {
               this.setState({ isSycnhingJobApps: false });
+              this.props.passStatesFromDashboard("isSynchingGmail", false);
+              this.props.alert(3000, "success", "Sync completed!");
             }
           }
         }

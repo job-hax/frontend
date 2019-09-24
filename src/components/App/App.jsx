@@ -75,7 +75,8 @@ class App extends Component {
       syncResponseTimestamp: null,
       user: {},
       page: window.location.pathname.split("?")[0],
-      logout: false
+      logout: false,
+      isSynchingGmail: false
     };
     this.notificationsList = [];
     this.handleSignOut = this.handleSignOut.bind(this);
@@ -95,7 +96,7 @@ class App extends Component {
     this.tokenExpirationNoRenewHandle = this.tokenExpirationNoRenewHandle.bind(
       this
     );
-    this.passStatesFromHeader = this.passStatesFromHeader.bind(this);
+    this.passStatesFromChild = this.passStatesFromChild.bind(this);
 
     this.pages = [
       "/",
@@ -352,8 +353,7 @@ class App extends Component {
     });
   }
 
-  passStatesFromHeader(type, value) {
-    console.log("header state update", type, value);
+  passStatesFromChild(type, value) {
     this.setState({ [type]: value });
   }
 
@@ -523,9 +523,10 @@ class App extends Component {
               profilePhotoUrl={this.state.profilePhotoUrl}
               cookie={this.cookie}
               handleTokenExpiration={this.handleTokenExpiration}
-              passStatesFromHeader={this.passStatesFromHeader}
+              passStatesFromHeader={this.passStatesFromChild}
               isUserLoggedIn={true}
               isAdmin={this.state.user.is_admin}
+              isSynchingGmail={this.state.isSynchingGmail}
             />
             <FeedBack
               alert={this.showAlert}
@@ -576,6 +577,7 @@ class App extends Component {
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
                   syncResponseTimestamp={this.state.syncResponseTimestamp}
+                  passStatesFromDashboard={this.passStatesFromChild}
                 />
               )}
             />
