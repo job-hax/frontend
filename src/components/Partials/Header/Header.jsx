@@ -281,14 +281,14 @@ class Header extends Component {
             className="option"
             onClick={() => this.setState({ current: "/signin", request: true })}
           >
-            Log In
+            Log in
           </div>
           <div>/</div>
           <div
             className="option"
             onClick={() => this.setState({ current: "/signup", request: true })}
           >
-            Sign Up
+            Sign up
           </div>
         </div>
       </div>

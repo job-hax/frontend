@@ -116,7 +116,8 @@ class App extends Component {
       "/useragreement",
       "/faqs",
       "/privacypolicy",
-      "/aboutus"
+      "/aboutus",
+      "/mentors"
     ];
   }
 

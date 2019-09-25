@@ -6,7 +6,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(39, 39, 39, 0.2);
+  background: rgba(39, 39, 39, 0.4);
   z-index: 105;
 
   .modal-main {
@@ -18,7 +18,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 16px;
-    box-shadow: 1px 1px 20px 4px opacify($highlight_color, 0.05);
+    box-shadow: 1px 1px 20px 4px opacify(rgba(83, 83, 83, 0.4), 0.00);
   }
 
   .modal-header-container {
@@ -81,6 +81,7 @@
         font-size: 90%;
         margin-top: 24px;
         border: none;
+        padding: 0px;
 
         img {
           min-height: 12px;
@@ -119,10 +120,10 @@
           width: 162px;
           height: 228px;
           position: absolute;
-          font-family: exo;
           padding-left: 16px;
           background-color: white;
-          border: 1px solid $highlight_color;
+          border: 1px solid $line_color;
+          border-radius: 4px;
           z-index: 100;
 
           .options {
@@ -139,7 +140,7 @@
             p {
               margin-left: 10px;
               padding-top: 10px;
-              border-top: 0.5px solid $highlight_color;
+              border-top: 0.5px solid $line_color;
               margin-top: -28px;
             }
 
@@ -199,7 +200,7 @@
             margin-top: -4px;
             margin-left: -16px;
             width: 160px;
-            border-top: 0.5px solid $highlight_color;
+            border-top: 0.5px solid $line_color;
             padding-top: 12px;
             cursor: pointer;
 
@@ -244,7 +245,7 @@
             padding-top: 6px;
             font-size: 90%;
             height: 26px;
-            border-bottom: 0.5px solid $highlight_color;
+            border-bottom: 0.5px solid $line_color;
             font-weight: 500;
 
           }
@@ -258,10 +259,9 @@
     display: flex;
     justify-content: flex-start;
     color: $text-color;
-    overflow-x: hidden;
 
     &.navigation {
-      width: 100px;
+      width: 120px;
       height: 530px;
       padding-top: 24px;
       display: table;
@@ -274,7 +274,7 @@
         font-weight: normal;
         height: auto;
         margin-top: 0px;
-        padding: 10px 16px 10px 14px;
+        padding: 10px 16px 10px 24px;
         cursor: pointer;
 
         &.--selected {
@@ -294,243 +294,248 @@
       }
     }
 
-    &.main {
-      font-size: 95%;
-      width: 550px;
-      margin-top: 10px;
-      margin-left: 8px;
-      height: fit-content;
-      height: -moz-fit-content;
-      display: table;
-      text-align: start;
+    &.main-container {
+      overflow-x: hidden;
+      height: 540px;
 
-
-      &.data {
-        display: flex;
-        justify-content: space-between;
+      .main {
+        font-size: 95%;
+        width: 550px;
+        margin-top: 24px;
+        margin-left: 24px;
         height: fit-content;
         height: -moz-fit-content;
-
-        &.info {
-          display: flex;
-          justify-content: start;
-          margin-top: 0px;
-          font-size: 14px;
-
-          label {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 300;
-            padding: 10px 4px 10px 0;
-            width: 100px;
-          }
-
-          .text {
-            width: 400px;
-            padding: 10px 0 10px 0;
-          }
-
-          .text-editable {
-            width: 400px;
-            padding: 10px 0 10px 0;
-          }
-
-          .text-editable:hover {
-            background-color: $highlight_color;
-            cursor: text;
-          }
-        }
-
-      }
-
-      .modal-review-big-container {
-        width: 105%;
-        max-width: 600px;
-        overflow-x: hidden;
-        height: 520px;
-
-        .review-entry-container {
-          margin-left: 20px;
-          width: 536px;
-          min-width: 536px;
-          height: 100%;
-
-          .review-button {
-            width: 77%;
-            min-width: 77%;
-            display: flex;
-            justify-content: flex-end;
-            margin: 0px;
-            height: 40px;
-            min-height: 40px;
-            position: absolute;
-            background-color: white;
-            z-index: 1;
-
-            .ant-btn {
-              position: absolute;
-              max-height: 28px;
-              border-radius: 30px;
-              font-size: 12px;
-            }
-
-            .ant-btn-primary {
-              background-color: $soft_button_color;
-            }
-
-            .anticon {
-              font-size: 12px;
-            }
-          }
-
-
-          .modal-reviews-container {
-            max-height: 60vh;
-            padding: 0px 0px 0px 0px;
-            display: block;
-
-            &.hidden {
-              display: none;
-            }
-          }
-        }
-      }
-
-
-      &.notes {
-        width: 520px;
-        margin-top: 20px 0 0 20px;
-        height: fit-content;
-        height: -moz-fit-content;
-        max-height: 500px;
         display: table;
         text-align: start;
 
-        .notes-showing {
+
+        .data {
+          display: flex;
+          justify-content: space-between;
           height: fit-content;
           height: -moz-fit-content;
-          max-height: 475px;
-          overflow-x: hidden;
-          width: 520px;
 
-          &.--short {
-            max-height: 420px;
-          }
-
-          .note-container {
+          .info {
             display: flex;
             justify-content: start;
-            height: auto;
-            border-bottom: 1px solid rgba(32, 32, 32, 0.1);
+            margin-top: 0px;
+            font-size: 14px;
 
-            .text-container {
-              width: 480px;
-
-              .date {
-                text-align: end;
-                margin-top: 0px;
-                margin-right: 8px;
-                font-size: 90%;
-                color: rgba(0, 0, 0, 0.4);
-              }
-
-              .note {
-                margin-top: 8px;
-                width: 470px;
-                margin-bottom: 0px;
-              }
-            }
-
-            .button-container-parent {
+            label {
               display: flex;
-              align-items: center;
+              justify-content: space-between;
+              font-weight: 300;
+              padding: 10px 4px 10px 0;
+              width: 100px;
+            }
 
-              .button-container-child {
-                width: 12px;
-                margin-top: 4px;
-                height: auto;
-                background: transparent;
+            .text {
+              width: 400px;
+              padding: 10px 0 10px 0;
+            }
 
-                button {
-                  background: transparent;
-                  border: none;
-                  cursor: pointer;
-                }
+            .text-editable {
+              width: 400px;
+              padding: 10px 0 10px 0;
+            }
 
-                img {
-                  width: auto;
-                  height: 12px;
-                  margin: 0px;
-                  padding: 0px;
-                  background: transparent;
-                }
+            .text-editable:hover {
+              background-color: $highlight_color;
+              cursor: text;
+            }
+          }
+
+        }
+
+        .modal-review-big-container {
+          width: 105%;
+          max-width: 600px;
+          overflow-x: hidden;
+          height: 510px;
+
+          .review-entry-container {
+            margin-left: 0px;
+            width: 530px;
+            min-width: 530px;
+            height: 100%;
+
+            .review-button {
+              width: 76%;
+              min-width: 76%;
+              display: flex;
+              justify-content: flex-end;
+              margin: 0px;
+              height: 40px;
+              min-height: 40px;
+              position: absolute;
+              background-color: white;
+              z-index: 1;
+
+              .ant-btn {
+                position: absolute;
+                max-height: 28px;
+                border-radius: 30px;
+                font-size: 12px;
+              }
+
+              .ant-btn-primary {
+                background-color: $soft_button_color;
+              }
+
+              .anticon {
+                font-size: 12px;
+              }
+            }
+
+
+            .modal-reviews-container {
+              max-height: 60vh;
+              padding: 0px 0px 0px 0px;
+              display: block;
+
+              &.hidden {
+                display: none;
               }
             }
           }
         }
 
-        .add-note-area {
-          width: 486px;
-          margin-bottom: 2px;
 
-          textarea {
-            font-family: exo;
-            font-size: 90%;
-            height: 60px;
-            max-width: 486px;
-            max-height: 400px;
-            min-width: 486px;
-            min-height: 40px;
-            border: 1px solid $border_color;
-            border-radius: 4px;
-            padding: 4px 4px 2px 8px;
+        .notes {
+          width: 520px;
+          margin-top: 20px 0 0 20px;
+          height: fit-content;
+          height: -moz-fit-content;
+          max-height: 500px;
+          display: table;
+          text-align: start;
 
+          .notes-showing {
+            height: fit-content;
+            height: -moz-fit-content;
+            max-height: 475px;
+            overflow-x: hidden;
+            width: 520px;
 
-            &.--height-min {
-              height: 28px;
-              min-height: 28px;
-              max-height: 28px;
+            &.--short {
+              max-height: 420px;
+            }
+
+            .note-container {
+              display: flex;
+              justify-content: start;
+              height: auto;
+              border-bottom: 1px solid rgba(32, 32, 32, 0.1);
+
+              .text-container {
+                width: 480px;
+
+                .date {
+                  text-align: end;
+                  margin-top: 0px;
+                  margin-right: 8px;
+                  font-size: 90%;
+                  color: rgba(0, 0, 0, 0.4);
+                }
+
+                .note {
+                  margin-top: 8px;
+                  width: 470px;
+                  margin-bottom: 0px;
+                }
+              }
+
+              .button-container-parent {
+                display: flex;
+                align-items: center;
+
+                .button-container-child {
+                  width: 12px;
+                  margin-top: 4px;
+                  height: auto;
+                  background: transparent;
+
+                  button {
+                    background: transparent;
+                    border: none;
+                    cursor: pointer;
+                  }
+
+                  img {
+                    width: auto;
+                    height: 12px;
+                    margin: 0px;
+                    padding: 0px;
+                    background: transparent;
+                  }
+                }
+              }
             }
           }
 
-          .notepad-buttons {
-            display: flex;
-            justify-content: flex-end;
+          .add-note-area {
             width: 486px;
-            height: 28px;
+            margin-bottom: 2px;
 
-            button {
+            textarea {
               font-family: exo;
-              color: white;
-              width: auto;
-              height: 24px;
-              margin-top: 2px;
-              border: none;
+              font-size: 90%;
+              height: 60px;
+              max-width: 486px;
+              max-height: 400px;
+              min-width: 486px;
+              min-height: 40px;
+              border: 1px solid $border_color;
               border-radius: 4px;
-              margin-left: 4px;
-              cursor: pointer;
+              padding: 4px 4px 2px 8px;
+
+
+              &.--height-min {
+                height: 28px;
+                min-height: 28px;
+                max-height: 28px;
+              }
             }
 
-            &.save {
-              position: relative;
-              margin-left: 8px;
-              background-color: $primary_button_color;
-              font-weight: lighter;
-            }
+            .notepad-buttons {
+              display: flex;
+              justify-content: flex-end;
+              width: 486px;
+              height: 28px;
 
-            &.cancel {
-              padding: 4px 8px;
-              margin-left: -32px;
-              position: relative;
-              color: $selection-color;
-              font-weight: bold;
-              font-size: 110%;
-              background: transparent;
+              button {
+                font-family: exo;
+                color: white;
+                width: auto;
+                height: 24px;
+                margin-top: 2px;
+                border: none;
+                border-radius: 4px;
+                margin-left: 4px;
+                cursor: pointer;
+              }
+
+              &.save {
+                position: relative;
+                margin-left: 8px;
+                background-color: $primary_button_color;
+                font-weight: lighter;
+              }
+
+              &.cancel {
+                padding: 4px 8px;
+                margin-left: -32px;
+                position: relative;
+                color: $selection-color;
+                font-weight: bold;
+                font-size: 110%;
+                background: transparent;
+              }
             }
           }
         }
-      }
 
+      }
     }
   }
 }
@@ -543,8 +548,8 @@
 }
 
 .contacts {
-  height: 520px;
-  width: 600px;
+  height: 500px;
+  width: 550px;
   overflow-x: hidden;
   padding: 12px 24px 12px 12px;
 
