@@ -99,15 +99,15 @@ class Reviews extends React.Component {
                 {review.anonymous === false ? review.username : "Anonymous"}
               </div>
               <div className="header-bottom">
-                <div>
+                <div className="date">
+                  {makeTimeBeautiful(review.update_date, "dateandtime")}
+                </div>
+                <div style={{ marginTop: "-16px" }}>
                   <Rate
                     tooltips={desc}
                     disabled
                     value={review.overall_company_experience}
                   />
-                </div>
-                <div className="date">
-                  {makeTimeBeautiful(review.update_date, "dateandtime")}
                 </div>
               </div>
             </div>
@@ -115,14 +115,12 @@ class Reviews extends React.Component {
               <div className="review-body-company">
                 <div className="body-company-sub-container">
                   <div className="body-company-data">
-                    <div className="employment-status">
-                      <label>Employment type:</label>
-                      {review.emp_status === null ? (
-                        <div className="not-specified">"Not specified"</div>
-                      ) : (
+                    {review.emp_status != null && (
+                      <div className="employment-status">
+                        <label>Employment type:</label>
                         <div className="info">{review.emp_status.value}</div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                     <div className="company-review-text-container">
                       {review.pros != null && review.pros != "" && (
                         <div>
@@ -135,7 +133,10 @@ class Reviews extends React.Component {
                       {review.cons != null && review.cons != "" && (
                         <div>
                           <label>Cons:</label>
-                          <div className="company-review-text">
+                          <div
+                            className="company-review-text"
+                            style={{ marginBottom: 8 }}
+                          >
                             {review.cons}
                           </div>
                         </div>
@@ -146,31 +147,36 @@ class Reviews extends React.Component {
               </div>
               <div className="review-body-interview">
                 <div className="interview-ratings">
-                  <div className="overall-experience-container">
-                    <label>Interview overall:</label>
-                    <div className="overall-experience">
-                      <Icon
-                        style={{ fontSize: 20, marginTop: "-5px" }}
-                        type="like"
-                        theme={
-                          review.overall_interview_experience == 0 && "filled"
-                        }
-                      />
-                      <Icon
-                        type="dislike"
-                        style={{ margin: "2px 0px 0px 5px", fontSize: 20 }}
-                        theme={
-                          review.overall_interview_experience == 1 && "filled"
-                        }
-                      />
+                  {(review.overall_interview_experience == 1 ||
+                    review.overall_interview_experience == 0) && (
+                    <div className="overall-experience-container">
+                      <label>Interview overall:</label>
+                      <div className="overall-experience">
+                        {review.overall_interview_experience == 0 && (
+                          <Icon
+                            style={{ fontSize: 20, marginTop: "-5px" }}
+                            type="like"
+                            theme={"filled"}
+                          />
+                        )}
+                        {review.overall_interview_experience == 1 && (
+                          <Icon
+                            type="dislike"
+                            style={{ margin: "2px 0px 0px 5px", fontSize: 20 }}
+                            theme={"filled"}
+                          />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="difficulty-container">
-                    <label>Interview difficulty:</label>
-                    {this.generateInterviewDifficulty(
-                      review.interview_difficulty
-                    )}
-                  </div>
+                  )}
+                  {review.interview_difficulty && (
+                    <div className="difficulty-container">
+                      <label>Interview difficulty:</label>
+                      {this.generateInterviewDifficulty(
+                        review.interview_difficulty
+                      )}
+                    </div>
+                  )}
                 </div>
                 {review.interview_notes != null &&
                   review.interview_notes != "" && (

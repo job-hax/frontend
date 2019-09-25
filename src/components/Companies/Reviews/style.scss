@@ -35,7 +35,7 @@
                     max-height: 20px;
 
                     .date {
-                        font-size: 16px;
+                        font-size: 12px;
                         color: $gray_text_color;
                         text-align: end;
                     }
@@ -60,7 +60,6 @@
                             }
 
                             .company-review-text-container {
-                                margin-top: 15px;
 
                                 .company-review-text {}
                             }
@@ -75,7 +74,6 @@
                         .overall-experience-container {
                             display: flex;
                             justify-content: flex-start;
-                            margin-top: 15px;
 
                             .overall-experience {
                                 display: flex;

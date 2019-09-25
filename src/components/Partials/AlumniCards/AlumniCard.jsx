@@ -22,7 +22,7 @@ class AlumniCard extends React.Component {
 
   generateCard() {
     const { alumni, displayingAt } = this.props;
-    const width = displayingAt == "contacts" ? "420px" : "300px";
+    const width = displayingAt == "contacts" ? "380px" : "300px";
     const margin = displayingAt == "contacts" ? "-24px 0 0 0" : "0 0 0 0";
     return (
       <div className="header">

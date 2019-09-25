@@ -1,5 +1,5 @@
 import React from "react";
-import { AutoComplete, DatePicker, Select } from "antd";
+import { AutoComplete, DatePicker, Select, Timeline } from "antd";
 import moment from "moment";
 
 import {
@@ -188,7 +188,7 @@ class JobDetails extends React.Component {
     const infoClass =
       this.props.card.editable == true ? "text-editable" : "text";
     return (
-      <div className="modal-body main data info">
+      <div className="info">
         <label>
           <div>{"Company"}</div>
         </label>
@@ -251,7 +251,7 @@ class JobDetails extends React.Component {
     const infoClass =
       this.props.card.editable == true ? "text-editable" : "text";
     return (
-      <div className="modal-body main data info">
+      <div className="info">
         <label>
           <div>{"Position"}</div>
         </label>
@@ -298,7 +298,7 @@ class JobDetails extends React.Component {
     const infoClass =
       this.props.card.editable == true ? "text-editable" : "text";
     return (
-      <div className="modal-body main data info">
+      <div className="info">
         <label>
           <div>{"Applied on"}</div>
         </label>
@@ -356,7 +356,7 @@ class JobDetails extends React.Component {
     const infoClass =
       this.props.card.editable == true ? "text-editable" : "text";
     return (
-      <div className="modal-body main data info">
+      <div className="info">
         <label>
           <div>{"Source"}</div>
         </label>
@@ -393,7 +393,7 @@ class JobDetails extends React.Component {
     );
   }
 
-  generateAllInfo() {
+  generateRatings() {
     let ratingTotal = 0;
     let countTotal = 0;
     this.props.card.company_object.ratings.forEach(
@@ -405,31 +405,48 @@ class JobDetails extends React.Component {
     const averageRating =
       ratingTotal == 0 ? 0 : Math.round((ratingTotal / countTotal) * 10) / 10;
     return (
+      <div className="info">
+        <label> Ratings </label>
+        <div style={{ margin: "10px 4px 0px 0px" }}>
+          <CompanyStats
+            stats={false}
+            ratings={true}
+            company={this.props.card.company_object}
+          />
+        </div>
+        <div style={{ fontSize: "20px", marginTop: 6 }}>
+          {countTotal != 0 && averageRating}
+        </div>
+      </div>
+    );
+  }
+
+  generateTimeline() {
+    const points = this.props.card.timeline.map(point => (
+      <Timeline.Item key={point.id}>
+        {point.name} {makeTimeBeautiful(point.time, "dateandtime")}
+      </Timeline.Item>
+    ));
+
+    return <Timeline mode="alternate">{points}</Timeline>;
+  }
+
+  generateAllInfo() {
+    return (
       <div>
         {this.generateCompanyInfo()}
         {this.generatePositionsInfo()}
         {this.generateApplyDateInfo()}
         {this.generateApplicationSourcesInfo()}
-        <div className="modal-body main data info">
-          <label> Ratings </label>
-          <div style={{ margin: "10px 4px 0px 0px" }}>
-            <CompanyStats
-              stats={false}
-              ratings={true}
-              company={this.props.card.company_object}
-            />
-          </div>
-          <div style={{ fontSize: "20px", marginTop: 6 }}>
-            {countTotal != 0 && averageRating}
-          </div>
-        </div>
+        {this.generateRatings()}
+        {/*this.generateTimeline()*/}
       </div>
     );
   }
 
   render() {
     return (
-      <div ref={this.setWrapperRef} className="modal-body main data">
+      <div ref={this.setWrapperRef} className="data">
         <div>{this.generateAllInfo()}</div>
       </div>
     );

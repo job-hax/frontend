@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { Menu, Icon } from "antd";
+import { Menu, Icon, Spin, Tooltip } from "antd";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { USERS } from "../../../utils/constants/endpoints";
@@ -84,7 +84,6 @@ class Header extends Component {
         "Automatic sync is available for users who logged in with Gmail account.\n If you have never logged in with your Gmail, you can link your account with Google account on profile page."
       );
     } else {
-      this.props.alert(3000, "info", "Syncing with your email...");
       let config = { method: "GET" };
       await this.props.handleTokenExpiration("header handleSyncUserEmail");
       axiosCaptcha(USERS("syncUserEmails"), config).then(response => {
@@ -94,6 +93,7 @@ class Header extends Component {
               "syncResponseTimestamp",
               new Date().getTime()
             );
+            this.props.passStatesFromHeader("isSynchingGmail", true);
           }
         }
       });
@@ -144,6 +144,9 @@ class Header extends Component {
     const fixed = { position: "fixed" };
     const normal = { margin: 0 };
     const style = window.location.pathname === "/mentors" ? fixed : normal;
+    const spinIcon = (
+      <Icon type="loading" style={{ fontSize: 24, color: "black" }} spin />
+    );
     return (
       <div className="header-container" style={style}>
         <div className="left-container">
@@ -157,16 +160,22 @@ class Header extends Component {
           </div>
         </div>
         <div className="right-container">
-          {window.location.pathname == "/dashboard" && (
-            <div className="header-icon general tooltips">
-              <img
-                onClick={this.handleSyncUserEmail}
-                style={{ height: 16 }}
-                src="../../../src/assets/icons/SyncIcon@3x.png"
-              />
-              <span>Refresh</span>
-            </div>
-          )}
+          {window.location.pathname == "/dashboard" &&
+            (!this.props.isSynchingGmail ? (
+              <div className="header-icon general">
+                <Tooltip placement="bottom" title="sync">
+                  <img
+                    onClick={this.handleSyncUserEmail}
+                    style={{ height: 16 }}
+                    src="../../../src/assets/icons/SyncIcon@3x.png"
+                  />
+                </Tooltip>
+              </div>
+            ) : (
+              <div className="header-icon general">
+                <Spin indicator={spinIcon} />
+              </div>
+            ))}
           <Menu
             onClick={event => this.handleMenuClick(event)}
             selectedKeys={[this.state.current, isDashboardOpenedByDefault]}
@@ -200,25 +209,23 @@ class Header extends Component {
           </Menu>
           {!this.props.isNotificationsShowing ? (
             <div
-              className="header-icon general tooltips"
+              className="header-icon general"
               onClick={() => this.handleNotifications()}
             >
-              <img
-                src="../../../src/assets/icons/beta_flag_2.png"
-                style={{
-                  position: "absolute",
-                  height: "24px",
-                  margin: "0px 0px 0 -2px"
-                }}
-              />
-              <img src="../../../src/assets/icons/NotifIcon@3x.png" />
-              <span>Notifications</span>
+              <Tooltip placement="bottom" title="notifications">
+                <img
+                  src="../../../src/assets/icons/beta_flag_2.png"
+                  style={{
+                    position: "absolute",
+                    height: "24px",
+                    margin: "0px 0px 0 -2px"
+                  }}
+                />
+                <img src="../../../src/assets/icons/NotifIcon@3x.png" />
+              </Tooltip>
             </div>
           ) : (
-            <div
-              className="header-icon general tooltips"
-              ref={this.setWrapperRef}
-            >
+            <div className="header-icon general" ref={this.setWrapperRef}>
               <img
                 src="../../../src/assets/icons/NotifIcon@3x.png"
                 onClick={() => this.props.toggleNotifications(false)}
@@ -274,14 +281,14 @@ class Header extends Component {
             className="option"
             onClick={() => this.setState({ current: "/signin", request: true })}
           >
-            Log In
+            Log in
           </div>
           <div>/</div>
           <div
             className="option"
             onClick={() => this.setState({ current: "/signup", request: true })}
           >
-            Sign Up
+            Sign up
           </div>
         </div>
       </div>

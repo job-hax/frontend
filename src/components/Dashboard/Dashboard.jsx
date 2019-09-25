@@ -142,6 +142,8 @@ class Dashboard extends Component {
               this.waitAndTriggerComponentDidUpdate(3);
             } else {
               this.setState({ isSycnhingJobApps: false });
+              this.props.passStatesFromDashboard("isSynchingGmail", false);
+              this.props.alert(3000, "success", "Sync completed!");
             }
           }
         }
@@ -177,7 +179,19 @@ class Dashboard extends Component {
         if (response.statusText === "OK") {
           if (response.data.success == true) {
             let updatedData = response.data.data;
-            updatedData.forEach(jobApp => (jobApp.isSelected = false));
+            updatedData.forEach(
+              jobApp => (
+                (jobApp.isSelected = false),
+                (jobApp.timeline = [
+                  { id: 1, name: "applied", time: jobApp.apply_date },
+                  {
+                    id: 2,
+                    name: "interview",
+                    time: "2019-09-24T00:05:00-07:00"
+                  }
+                ])
+              )
+            );
             this.setState({
               isInitialRequest: false,
               allApplications: updatedData,

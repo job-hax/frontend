@@ -99,7 +99,7 @@ class JobReviews extends React.Component {
       : "Add a Review";
     const iconType = this.props.card.company_object.review_id ? "edit" : "plus";
     return (
-      <div style={{ height: "520px", overflow: "hidden" }}>
+      <div style={{ height: "510px", overflow: "hidden" }}>
         <div className="modal-review-big-container">
           {!this.state.isEnteringReview && (
             <div className="review-entry-container">

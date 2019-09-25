@@ -40,7 +40,7 @@ class BodyComponents extends React.Component {
         );
       case "Notes":
         return (
-          <div className="modal-body main notes">
+          <div className="notes">
             <Notes
               card={this.props.card}
               handleTokenExpiration={this.props.handleTokenExpiration}
@@ -51,7 +51,7 @@ class BodyComponents extends React.Component {
   }
 
   render() {
-    return <div className="modal-body main">{this.displaySelector()}</div>;
+    return <div className="main">{this.displaySelector()}</div>;
   }
 }
 

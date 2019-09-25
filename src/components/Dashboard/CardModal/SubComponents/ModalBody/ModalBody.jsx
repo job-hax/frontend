@@ -26,15 +26,17 @@ class ModalBody extends React.Component {
           setDisplaying={this.setDisplaying}
           displaying={this.state.displaying}
         />
-        <BodyComponents
-          displaying={this.state.displaying}
-          card={this.props.card}
-          handleTokenExpiration={this.props.handleTokenExpiration}
-          alert={this.props.alert}
-          setCompany={this.props.setCompany}
-          updateCard={this.props.updateCard}
-          updateHeader={this.props.updateHeader}
-        />
+        <div className="modal-body main-container">
+          <BodyComponents
+            displaying={this.state.displaying}
+            card={this.props.card}
+            handleTokenExpiration={this.props.handleTokenExpiration}
+            alert={this.props.alert}
+            setCompany={this.props.setCompany}
+            updateCard={this.props.updateCard}
+            updateHeader={this.props.updateHeader}
+          />
+        </div>
       </div>
     );
   }

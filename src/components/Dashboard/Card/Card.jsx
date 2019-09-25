@@ -53,7 +53,8 @@ class Card extends PureComponent {
       showSelect: false,
       isSelected: this.props.isSelected,
       animate: false,
-      companyLogoError: false
+      companyLogoError: false,
+      clickbox: false
     };
     this.toggleModal = this.toggleModal.bind(this);
     this.updateCompany = this.updateCompany.bind(this);
@@ -81,16 +82,18 @@ class Card extends PureComponent {
   }
 
   toggleModal() {
-    this.setState({
-      showModal: !this.state.showModal,
-      showSelect: false
-    });
+    this.state.clickbox && this.setState({ clickbox: false });
+    !this.state.clickbox &&
+      this.setState({
+        showModal: !this.state.showModal,
+        showSelect: false
+      });
   }
 
   onSelectChange(event) {
     let isSelected = event.target.checked;
     IS_CONSOLE_LOG_OPEN && console.log(`checked = `, isSelected);
-    this.setState({ isSelected: isSelected });
+    this.setState({ isSelected: isSelected, clickbox: true });
     if (isSelected === true) {
       this.props.addToSelectedJobApplicationsList("add", this.props.card);
     }
@@ -156,7 +159,7 @@ class Card extends PureComponent {
       isDragging
     } = this.props;
 
-    const { showModal, animate } = this.state;
+    const { showModal, animate, clickbox } = this.state;
 
     const cardClass = classNames({
       "card-container": true,
@@ -170,8 +173,9 @@ class Card extends PureComponent {
         className={cardClass}
         onMouseEnter={() => this.setState({ showSelect: true })}
         onMouseLeave={() => this.setState({ showSelect: false })}
+        onClick={this.toggleModal}
       >
-        {showModal && (
+        {showModal && !clickbox && (
           <CardModal
             handleTokenExpiration={handleTokenExpiration}
             columnName={columnName}
@@ -187,7 +191,7 @@ class Card extends PureComponent {
             {...this.props}
           />
         )}
-        <div className="card-company-icon" onClick={this.toggleModal}>
+        <div className="card-company-icon">
           {company_object.cb_company_logo === null ||
           this.state.companyLogoError ? (
             <img src={company_object.company_logo || defaultLogo} />
@@ -198,7 +202,7 @@ class Card extends PureComponent {
             />
           )}
         </div>
-        <div className="card-company-info" onClick={this.toggleModal}>
+        <div className="card-company-info">
           <div id="company" className="card-company-name">
             {company_object.company}
           </div>
