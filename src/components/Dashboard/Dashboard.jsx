@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { DragDropContext } from "react-dnd";
+import classNames from "classnames";
 import HTML5Backend from "react-dnd-html5-backend";
 import {
   Input,
@@ -49,7 +50,8 @@ class Dashboard extends Component {
       isInitialRequest: "beforeRequest",
       selectedJobApplications: [],
       displayingList: [],
-      isSycnhingJobApps: false
+      isSycnhingJobApps: false,
+      multipleOperationsContainerAnimate: false
     };
 
     this.toApply = [];
@@ -148,6 +150,11 @@ class Dashboard extends Component {
           }
         }
       });
+    }
+    if (this.state.multipleOperationsContainerAnimate) {
+      setTimeout(() => {
+        this.setState({ multipleOperationsContainerAnimate: false });
+      }, 100);
     }
   }
 
@@ -274,6 +281,9 @@ class Dashboard extends Component {
 
   addToSelectedJobApplicationsList(command, card) {
     if (command === "add") {
+      if (this.selectedJobApplications.length === 0) {
+        this.setState({ multipleOperationsContainerAnimate: true });
+      }
       this.selectedJobApplications.push({
         jobApp_id: card.id,
         application_status: card.application_status
@@ -767,6 +777,37 @@ class Dashboard extends Component {
   }
 
   render() {
+    const { multipleOperationsContainerAnimate } = this.state;
+    const multipleOperationsContainerClass = classNames({
+      "multiple-operation-container": true,
+      " --animation-from-zoom": multipleOperationsContainerAnimate
+    });
+
+    const moveSelectedStyle = multipleOperationsContainerAnimate
+      ? {
+          margin: "0px 0px 0px 16px",
+          width: "140px",
+          height: "32px"
+        }
+      : {
+          margin: "0px 0px 0px 16px",
+          color: "rgba(0, 0, 0, 0.4)",
+          borderColor: "rgb(217, 217, 217)",
+          width: "140px",
+          height: "32px",
+          top: "-1px",
+        };
+
+    const selectAllStyle = {
+      padding: "6px 0px 0px 6px",
+      color: "rgba(0, 0, 0, 0.4)",
+      boxShadow: "inset 0px 0px 1px rgba(0,0,0,0.5)",
+      backgroundColor: "white",
+      borderRadius: 4,
+      width: "102px",
+      height: "32px"
+    };
+
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <SubMenu title="Rejected">
@@ -875,32 +916,16 @@ class Dashboard extends Component {
           />
           <RangePicker onChange={this.onDateQuery} style={{ width: 220 }} />
           {this.state.selectedJobApplications.length > 0 && (
-            <div>
+            <div className={multipleOperationsContainerClass}>
               <Checkbox
-                style={{
-                  padding: "6px 0px 0px 6px",
-                  color: "rgba(0, 0, 0, 0.4)",
-                  boxShadow: "inset 0px 0px 1px rgba(0,0,0,0.5)",
-                  backgroundColor: "white",
-                  borderRadius: 3,
-                  width: "102px",
-                  height: "32px"
-                }}
+                style={selectAllStyle}
                 onChange={this.onSelectAll}
+                checked={multipleOperationsContainerAnimate}
               >
                 Select All
               </Checkbox>
               <Dropdown overlay={menu}>
-                <Button
-                  className="ant-dropdown-link"
-                  style={{
-                    margin: "0px 0px 0px 16px",
-                    color: "rgba(0, 0, 0, 0.4)",
-                    borderColor: "rgb(217, 217, 217)",
-                    width: "140px",
-                    height: "32px"
-                  }}
-                >
+                <Button className="ant-dropdown-link" style={moveSelectedStyle}>
                   Move Selected <Icon type="down" />
                 </Button>
               </Dropdown>
