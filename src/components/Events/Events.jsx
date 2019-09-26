@@ -6,10 +6,10 @@ import { USERS, EVENTS } from "../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import Footer from "../Partials/Footer/Footer.jsx";
 import EventDetails from "./EventDetails.jsx";
+import EventEditable from "./EventEditable.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 
 import "./style.scss";
-import EventEditable from "./EventEditable.jsx";
 
 class Events extends React.Component {
   constructor(props) {

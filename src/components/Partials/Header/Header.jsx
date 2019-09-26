@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { Menu, Icon, Spin, Tooltip } from "antd";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";

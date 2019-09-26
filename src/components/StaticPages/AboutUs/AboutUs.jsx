@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Footer from "../../Partials/Footer/Footer.jsx";
-import { Link } from "react-router-dom";
 
 import "./style.scss";
 

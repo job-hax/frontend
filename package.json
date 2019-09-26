@@ -16,6 +16,7 @@
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
+    "babel-polyfill": "^6.26.0",
     "css-loader": "^2.1.1",
     "file-loader": "^3.0.1",
     "html-loader": "^0.5.5",
@@ -32,28 +33,22 @@
   "dependencies": {
     "antd": "^3.16.6",
     "axios": "^0.18.0",
-    "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.6",
     "draft-js": "^0.11.0",
     "draftjs-to-html": "^0.8.4",
     "echarts": "^4.1.0",
     "echarts-for-react": "^2.0.14",
-    "faker": "^4.1.0",
     "html-react-parser": "^0.7.0",
     "html-to-draftjs": "^1.4.0",
-    "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react-cookie": "^4.0.0",
-    "react-datepicker": "^2.5.0",
     "react-dnd": "^7.3.1",
     "react-dnd-html5-backend": "^7.2.0",
     "react-draft-wysiwyg": "^1.13.2",
     "react-geosuggest": "^2.12.0",
     "react-google-maps": "^9.4.5",
-    "react-redux": "^6.0.1",
     "react-router-dom": "^4.3.1",
     "react-telephone-input": "^4.73.4",
-    "recompose": "^0.30.0",
-    "semantic-ui-react": "^0.86.0"
+    "recompose": "^0.30.0"
   }
 }

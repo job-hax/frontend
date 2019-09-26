@@ -2,8 +2,9 @@ import React from "react";
 import { Modal } from "antd";
 
 import AlumniCardDetailed from "./AlumniCardDetailed.jsx";
-import "./style.scss";
 import { apiRoot } from "../../../utils/constants/endpoints.js";
+
+import "./style.scss";
 
 class AlumniCard extends React.Component {
   constructor(props) {
