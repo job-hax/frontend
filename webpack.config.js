@@ -9,8 +9,8 @@ const path = require("path");
 module.exports = {
   entry: ["babel-polyfill", "./src/index.js"],
   output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js"
   },
   module: {
     rules: [
@@ -112,13 +112,12 @@ module.exports = {
     }
   },
   devServer: {
-    historyApiFallback: true,
-    headers: { "Access-Control-Allow-Origin": "*" }
+    host: "localhost",
+    allowedHosts: [".jobhax.com", "backend.jobhax.com"],
+    compress: true,
+    historyApiFallback: true
+    //headers: { "content-encoding": "br" }
+    //contentBase: [path.join(__dirname, "dist")]
     //     inline: false,
-    //     host: '0.0.0.0',
-    // allowedHosts: [
-    //       '.jobhax.com',
-    //       'backend.jobhax.com'
-    //     ]
   }
 };
