@@ -89,7 +89,7 @@ class Home extends Component {
         size="large"
         onClick={() => this.setState({ redirect: "/signup" })}
       >
-        Sign up
+        Sign up for free
       </Button>
     );
   }
@@ -176,15 +176,12 @@ class Home extends Component {
         <div className="content-big-container">
           <div className="content-container">
             <h4>Simplify your job hunt!</h4>
-            <p className="small-text">Stay connected to ITU Alumni.</p>
+            <p className="small-text">
+              Track your application progress in a seamless and intuitive way.
+            </p>
             <div className="buttons-container">
               <Button onClick={this.handleDemo} size="large">
-                {" "}
-                Events{" "}
-              </Button>
-              <Button onClick={this.handleDemo} size="large">
-                {" "}
-                Blogs{" "}
+                Try it out!
               </Button>
               {this.generateSignupButton()}
             </div>
@@ -211,14 +208,14 @@ class Home extends Component {
       <div className="homepage-first-item">
         <div className="content-big-container">
           <div className="content-container">
-            <h4>Alumni Home Page</h4>
+            <h4>Job hunt is easier for ITU Alumni!</h4>
             <p className="small-text">
-              Track your application progress in a seamless and intuitive way.
+              Stay connected to ITU community get help for your job application
+              journey!
             </p>
             <div className="buttons-container">
               <Button onClick={this.handleDemo} size="large">
-                {" "}
-                Alumni News{" "}
+                Try it out!
               </Button>
               {this.generateSignupButton()}
             </div>
