@@ -1,6 +1,6 @@
 import React from "react";
-import ReactEcharts from "echarts-for-react";
-import echarts from "echarts";
+import ReactEchartsCore from "echarts-for-react/lib/core";
+import echarts from "echarts/dist/echarts.min.js";
 
 class Radar extends React.Component {
   constructor(props) {
@@ -106,7 +106,10 @@ class Radar extends React.Component {
             />
           </div>
           <div>
-            <ReactEcharts
+            <ReactEchartsCore
+              echarts={echarts}
+              notMerge={true}
+              lazyUpdate={true}
               option={this.buildRadar()}
               style={this.props.style}
               theme="radar"

@@ -1,4 +1,9 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const webpack = require("webpack");
 const path = require("path");
 
 module.exports = {
@@ -25,7 +30,11 @@ module.exports = {
         ]
       },
       {
-        test: /\.(scss|css|less)$/,
+        test: /\.(sa|sc|c)ss$/,
+        use: ["style-loader", "css-loader", "sass-loader"]
+      },
+      {
+        test: /\.less$/,
         use: [
           {
             loader: "style-loader"
@@ -34,7 +43,8 @@ module.exports = {
             loader: "css-loader"
           },
           {
-            loader: "sass-loader"
+            loader: "less-loader",
+            options: { javascriptEnabled: true }
           }
         ]
       },
@@ -55,10 +65,55 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: "./src/index.html",
       filename: "./index.html"
+    }),
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify("production")
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
+    new BundleAnalyzerPlugin(),
+    new CompressionPlugin({
+      filename: "[path].br[query]",
+      algorithm: "brotliCompress",
+      test: /\.(js|css|html|svg)$/,
+      compressionOptions: { level: 11 },
+      threshold: 10240,
+      minRatio: 0.8,
+      deleteOriginalAssets: false
     })
   ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          output: {
+            comments: false
+          }
+        }
+      })
+    ],
+    concatenateModules: true,
+    mangleWasmImports: true,
+    removeAvailableModules: true,
+    removeEmptyChunks: false,
+    flagIncludedChunks: true,
+    occurrenceOrder: false,
+    usedExports: true,
+    noEmitOnErrors: true,
+    namedModules: false,
+    namedChunks: false,
+    sideEffects: true,
+    splitChunks: {
+      hidePathInfo: true,
+      minSize: 30000,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3
+    }
+  },
   devServer: {
-    historyApiFallback: true
+    historyApiFallback: true,
+    headers: { "Access-Control-Allow-Origin": "*" }
     //     inline: false,
     //     host: '0.0.0.0',
     // allowedHosts: [
