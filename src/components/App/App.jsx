@@ -116,6 +116,7 @@ class App extends Component {
       "/companies",
       "/profile",
       "/alumni",
+      "/alumni-search",
       "/action",
       "/action-linkedin-oauth2",
       "/underconstruction",
@@ -676,7 +677,7 @@ class App extends Component {
             />
             <Route
               exact
-              path="/alumni"
+              path="/alumni-search"
               render={() => (
                 <Alumni
                   alert={this.showAlert}
@@ -753,6 +754,7 @@ class App extends Component {
       let allowed = [
         "/",
         "/home",
+        "/alumni",
         "/signin",
         "/signup",
         "/privacypolicy",
@@ -790,6 +792,21 @@ class App extends Component {
               <Route
                 exact
                 path="/home"
+                render={() => (
+                  <Home
+                    isUserLoggedIn={false}
+                    setIsUserLoggedIn={this.setIsUserLoggedIn}
+                    setIsAuthenticationChecking={
+                      this.setIsAuthenticationChecking
+                    }
+                    alert={this.showAlert}
+                    cookie={this.cookie}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path="/alumni"
                 render={() => (
                   <Home
                     isUserLoggedIn={false}

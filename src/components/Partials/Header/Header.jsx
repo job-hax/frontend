@@ -201,7 +201,7 @@ class Header extends Component {
               }
             >
               {(this.state.user_type == 2 || this.state.user_type == 3) && (
-                <Menu.Item key="/alumni">Alumni</Menu.Item>
+                <Menu.Item key="/alumni-search">Alumni</Menu.Item>
               )}
               <Menu.Item key="/blogs">Blog</Menu.Item>
               <Menu.Item key="/events">Events</Menu.Item>
