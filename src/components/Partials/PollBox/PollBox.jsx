@@ -1,9 +1,9 @@
 import React from "react";
 
 import PollCard from "./PollCard.jsx";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
-import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 class PollBox extends React.Component {
   constructor(props) {

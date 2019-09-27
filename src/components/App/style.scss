@@ -1,4 +1,4 @@
-@import '~antd/dist/antd.css';
+@import '~antd/dist/antd.min.css';
 @import '~react-telephone-input/css/default.css';
 
 
@@ -18,7 +18,7 @@ $gray_text_color: #aaaaaa;
 $banner_image: url('https://jobhax.com/src/assets/images/homebanner.jpg');
 
 $primary_font_type: "Helvetica Neue",
-sans-serif;
+helvetica !important;
 
 body {
   font-family: $primary_font_type;

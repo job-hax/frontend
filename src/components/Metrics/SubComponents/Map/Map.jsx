@@ -32,11 +32,13 @@ const MapComponent = compose(
     zoom={10}
     center={props.defaultCenter}
   >
-    <MarkerClusterer>
-      {props.positions.map((location, i) => (
-        <Marker key={i} position={location} />
-      ))}
-    </MarkerClusterer>
+    {props.isMarkerShown && (
+      <MarkerClusterer>
+        {props.positions.map((location, i) => (
+          <Marker key={i} position={location} />
+        ))}
+      </MarkerClusterer>
+    )}
   </GoogleMap>
 ));
 
@@ -58,7 +60,7 @@ class Map extends React.PureComponent {
 
   delayedShowMarker() {
     setTimeout(() => {
-      this.setState({ isMarkerShown: true });
+      this.setState({ isMarkerShown: false });
     }, 3000);
   }
 

@@ -55,6 +55,9 @@
                     .ant-btn {
                         color: $primary_button_color;
                         border: 2px solid $primary_button_color;
+                        animation-duration: 1.5s;
+                        animation-iteration-count: 1;
+                        transform-origin: bottom;
                     }
 
                     .ant-btn-primary {
@@ -67,6 +70,38 @@
                     .ant-btn:hover {
                         color: rgb(64, 169, 255) !important;
                         border-color: rgb(64, 169, 255) !important;
+                        animation-name: bounce;
+                        animation-timing-function: ease;
+                    }
+
+                    @keyframes bounce {
+                        0% {
+                            transform: scale(1, 1) translateY(0);
+                        }
+
+                        15% {
+                            transform: scale(1.1, .9) translateY(0);
+                        }
+
+                        40% {
+                            transform: scale(.9, 1.1) translateY(-12px);
+                        }
+
+                        60% {
+                            transform: scale(1, 1) translateY(0);
+                        }
+
+                        70% {
+                            transform: scale(1, 1) translateY(-5px);
+                        }
+
+                        74% {
+                            transform: scale(1, 1) translateY(0);
+                        }
+
+                        100% {
+                            transform: scale(1, 1) translateY(0);
+                        }
                     }
 
                     .ant-btn-primary:hover {

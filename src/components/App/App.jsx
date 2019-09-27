@@ -76,7 +76,11 @@ class App extends Component {
       user: {},
       page: window.location.pathname.split("?")[0],
       logout: false,
-      isSynchingGmail: false
+      isSynchingGmail: false,
+      feedbackEmphasis: false,
+      exitIntent: false,
+      exitIntentCount: 0,
+      isMouseIn: true
     };
     this.notificationsList = [];
     this.handleSignOut = this.handleSignOut.bind(this);
@@ -97,6 +101,8 @@ class App extends Component {
       this
     );
     this.passStatesFromChild = this.passStatesFromChild.bind(this);
+    this.handleExit = this.handleExit.bind(this);
+    this.handleIn = this.handleIn.bind(this);
 
     this.pages = [
       "/",
@@ -122,6 +128,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+    document.addEventListener("mouseout", this.handleExit);
+    document.addEventListener("mouseover", this.handleIn);
     IS_CONSOLE_LOG_OPEN && console.log("loading gapi");
     window.gapi.load("client:auth2", () => {
       window.gapi.client.init({
@@ -144,6 +152,43 @@ class App extends Component {
         }
       });
     });
+  }
+
+  handleIn(e) {
+    e = e ? e : window.event;
+    var vpWidth = Math.max(
+      document.documentElement.clientWidth,
+      window.innerWidth || 0
+    );
+
+    if (e.clientX >= vpWidth - 50) return;
+    if (e.clientY >= 50) return;
+
+    var from = e.relatedTarget || e.toElement;
+    if (from && !this.state.isUserLoggedIn) {
+      this.setState({
+        isMouseIn: true
+      });
+    }
+  }
+
+  handleExit(e) {
+    e = e ? e : window.event;
+    var vpWidth = Math.max(
+      document.documentElement.clientWidth,
+      window.innerWidth || 0
+    );
+
+    if (e.clientX >= vpWidth - 50) return;
+    if (e.clientY >= 50) return;
+
+    var from = e.relatedTarget || e.toElement;
+    if (!from && !this.state.isUserLoggedIn) {
+      this.setState({
+        exitIntent: true,
+        isMouseIn: false
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -198,6 +243,19 @@ class App extends Component {
     if (window.location.pathname.split("?")[0] != this.state.page) {
       console.log("page", this.state.page);
       this.setState({ page: window.location.pathname.split("?")[0] });
+    }
+    if (this.state.exitIntent) {
+      const count = this.state.exitIntentCount;
+      setTimeout(() => {
+        if (!this.state.isMouseIn && this.state.exitIntentCount < 1) {
+          console.log(this.state.isMouseIn, this.state.exitIntentCount);
+          this.setState({
+            exitIntent: false,
+            feedbackEmphasis: true,
+            exitIntentCount: count + 1
+          });
+        }
+      }, 200);
     }
   }
 
@@ -532,6 +590,8 @@ class App extends Component {
             <FeedBack
               alert={this.showAlert}
               handleTokenExpiration={this.handleTokenExpiration}
+              feedbackEmphasis={this.state.feedbackEmphasis}
+              passStatesFromFeedback={this.passStatesFromChild}
             />
             {this.state.isPollShowing && (
               <PollBox
@@ -720,6 +780,15 @@ class App extends Component {
                 cookie={this.cookie}
               />
               {this.state.isAlertShowing && <div>{this.generateAlert()}</div>}
+              {this.state.feedbackEmphasis && (
+                <FeedBack
+                  alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  feedbackEmphasis={this.state.feedbackEmphasis}
+                  visible={true}
+                  passStatesFromFeedback={this.passStatesFromChild}
+                />
+              )}
               <Route exact path="/" render={() => <Redirect to="/home" />} />
               <Route
                 exact

@@ -1,5 +1,6 @@
 import React from "react";
 import { Rate, Modal, Button } from "antd";
+import classNames from "classnames";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
@@ -16,7 +17,7 @@ class FeedBack extends React.Component {
     this.state = {
       textValue: "",
       value: null,
-      visible: false
+      visible: this.props.visible || false
     };
 
     this.body = {};
@@ -89,6 +90,8 @@ class FeedBack extends React.Component {
 
   handleCancel() {
     this.setState({ visible: false });
+    this.props.passStatesFromFeedback("feedbackEmphasis", false);
+    this.props.passStatesFromFeedback("exitIntent", false);
   }
 
   handleChange(value) {
@@ -140,10 +143,15 @@ class FeedBack extends React.Component {
         ? { display: "none" }
         : { bottom: "86px" };
 
+    const feedbackButtonClass = classNames({
+      "feedback-open-button": true,
+      shake: this.props.feedbackEmphasis
+    });
+
     return (
       <div>
         <div
-          className="feedback-open-button"
+          className={feedbackButtonClass}
           style={feedbackButtonStyle}
           type="primary"
           onClick={this.showModal}

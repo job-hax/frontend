@@ -1,6 +1,6 @@
 import React from "react";
-import ReactEcharts from "echarts-for-react";
-import echarts from "echarts";
+import ReactEchartsCore from "echarts-for-react/lib/core";
+import echarts from "echarts/dist/echarts.min.js";
 
 class BarGraph extends React.Component {
   constructor(props) {
@@ -99,7 +99,10 @@ class BarGraph extends React.Component {
     return (
       <div id="monthlyapplication">
         <div>
-          <ReactEcharts
+          <ReactEchartsCore
+            echarts={echarts}
+            notMerge={true}
+            lazyUpdate={true}
             option={this.buildBarGraph()}
             style={this.props.style}
             theme="bar"

@@ -1,5 +1,8 @@
 @import "../App/style.scss";
 
+$multipleContainerAnimationTransitionDuration: .5s;
+$multipleContainerAnimationFromZeroScale: 1.6;
+
 .dashboard-container {
   height: 92vh;
   width: 100%;
@@ -15,4 +18,20 @@
   max-width: auto;
   padding: 0 8px 0 0;
   cursor: pointer;
+}
+
+.multiple-operation-container {
+  transition: transform $multipleContainerAnimationTransitionDuration;
+  -webkit-transition: transform $multipleContainerAnimationTransitionDuration;
+  -moz-transition: transform $multipleContainerAnimationTransitionDuration;
+  -o-transition: transform $multipleContainerAnimationTransitionDuration;
+  -ms-transition: transform $multipleContainerAnimationTransitionDuration;
+
+  &.--animation-from-zoom {
+    transform: scale($multipleContainerAnimationFromZeroScale);
+    -webkit-transform: scale($multipleContainerAnimationFromZeroScale);
+    -moz-transform: scale($multipleContainerAnimationFromZeroScale);
+    -o-transform: scale($multipleContainerAnimationFromZeroScale);
+    -ms-transform: scale($multipleContainerAnimationFromZeroScale);
+  }
 }

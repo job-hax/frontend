@@ -19,11 +19,7 @@ import {
   jobHaxClientId,
   jobHaxClientSecret
 } from "../../../config/config.js";
-import {
-  apiRoot,
-  USERS,
-  AUTOCOMPLETE
-} from "../../../utils/constants/endpoints.js";
+import { USERS, AUTOCOMPLETE } from "../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   IS_CONSOLE_LOG_OPEN,

@@ -1,8 +1,9 @@
 import React from "react";
-import { Icon, Modal } from "antd";
+import { Icon } from "antd";
+
+import { apiRoot } from "../../../utils/constants/endpoints";
 
 import "./style.scss";
-import { apiRoot } from "../../../utils/constants/endpoints";
 
 class AlumniCardDetailed extends React.Component {
   constructor(props) {

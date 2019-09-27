@@ -1,9 +1,10 @@
 import React from "react";
 import { Icon } from "antd";
 
-import "./style.scss";
 import { makeTimeBeautiful } from "../../utils/constants/constants";
 import { apiRoot } from "../../utils/constants/endpoints";
+
+import "./style.scss";
 
 class Event extends React.Component {
   constructor(props) {

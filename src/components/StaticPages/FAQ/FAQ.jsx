@@ -1,7 +1,6 @@
 import React from "react";
 import { Collapse } from "antd";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 import { FAQS } from "../../../utils/constants/endpoints.js";
 import Footer from "../../Partials/Footer/Footer.jsx";

@@ -1,13 +1,8 @@
 import React from "react";
 import { Icon } from "antd";
-import parse from "html-react-parser";
 
-import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { apiRoot } from "../../utils/constants/endpoints";
-import {
-  IS_CONSOLE_LOG_OPEN,
-  makeTimeBeautiful
-} from "../../utils/constants/constants.js";
+import { makeTimeBeautiful } from "../../utils/constants/constants.js";
 
 import "./style.scss";
 

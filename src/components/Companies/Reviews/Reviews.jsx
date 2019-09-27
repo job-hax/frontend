@@ -1,7 +1,6 @@
 import React from "react";
-import { Rate, Radio, Select, Menu, Dropdown, Button, Icon } from "antd";
+import { Rate, Menu, Dropdown, Button, Icon } from "antd";
 
-import CompanyRating from "./CompanyRating/CompanyRating.jsx";
 import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { REVIEWS } from "../../../utils/constants/endpoints.js";

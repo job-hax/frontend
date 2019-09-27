@@ -1,6 +1,6 @@
 import React from "react";
-import ReactEcharts from "echarts-for-react";
-import echarts from "echarts";
+import ReactEchartsCore from "echarts-for-react/lib/core";
+import echarts from "echarts/dist/echarts.min.js";
 
 class PieChart extends React.Component {
   constructor(props) {
@@ -77,7 +77,10 @@ class PieChart extends React.Component {
       <div>
         <div id="pie">
           <div>
-            <ReactEcharts
+            <ReactEchartsCore
+              echarts={echarts}
+              notMerge={true}
+              lazyUpdate={true}
               option={this.buildPieChart()}
               style={this.props.style}
               theme="pie"

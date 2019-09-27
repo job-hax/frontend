@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import Footer from "../../Partials/Footer/Footer.jsx";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
-import "./style.scss";
 import { apiRoot } from "../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import { jobHaxClientId, jobHaxClientSecret } from "../../../config/config.js";
 import { Button } from "antd";
+
+import "./style.scss";
 
 class Home extends Component {
   constructor(props) {

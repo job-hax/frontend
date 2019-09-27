@@ -1,7 +1,6 @@
 import React from "react";
-import ReactEcharts from "echarts-for-react";
-import echarts from "echarts";
-
+import ReactEchartsCore from "echarts-for-react/lib/core";
+import echarts from "echarts/dist/echarts.min.js";
 class LineGraph extends React.Component {
   constructor(props) {
     super(props);
@@ -93,7 +92,10 @@ class LineGraph extends React.Component {
     return (
       <div id="applicationtrend">
         <div>
-          <ReactEcharts
+          <ReactEchartsCore
+            echarts={echarts}
+            notMerge={true}
+            lazyUpdate={true}
             option={this.buildLineGraph()}
             style={this.props.style}
             theme="line"
