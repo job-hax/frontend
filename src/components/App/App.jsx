@@ -587,6 +587,7 @@ class App extends Component {
               handleTokenExpiration={this.handleTokenExpiration}
               feedbackEmphasis={this.state.feedbackEmphasis}
               passStatesFromFeedback={this.passStatesFromChild}
+              isUserLoggedIn={isUserLoggedIn}
             />
             {this.state.isPollShowing && (
               <PollBox
@@ -782,6 +783,7 @@ class App extends Component {
                   feedbackEmphasis={this.state.feedbackEmphasis}
                   visible={true}
                   passStatesFromFeedback={this.passStatesFromChild}
+                  isUserLoggedIn={isUserLoggedIn}
                 />
               )}
               <Route exact path="/" render={() => <Redirect to="/home" />} />

@@ -51,7 +51,9 @@ export const VOTE_POLL = pollId => `${apiRoot}/api/polls/${pollId}/vote/`;
 //NOTIFICATIONS REQUESTS//
 export const NOTIFICATIONS = `${apiRoot}/api/notifications/`;
 
-//DOCUMENTS PAGES REQUESTS//
+//TOKENLESS REQUESTS//
 export const FAQS = `${apiRoot}/api/faqs/`;
 
 export const AGREEMENTS = `${apiRoot}/api/agreements/`;
+
+export const FEEDBACKS = `${apiRoot}/api/feedbacks/`;

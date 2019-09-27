@@ -1,14 +1,15 @@
 import React from "react";
-import { Rate, Modal, Button } from "antd";
+import { Rate, Modal, Button, Dropdown, Menu, Icon, Input } from "antd";
 import classNames from "classnames";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
-import { USERS } from "../../../utils/constants/endpoints.js";
+import { USERS, FEEDBACKS } from "../../../utils/constants/endpoints.js";
 
 import "./style.scss";
 
 const desc = ["terrible", "bad", "normal", "good", "wonderful"];
+const { TextArea } = Input;
 
 class FeedBack extends React.Component {
   constructor(props) {
@@ -17,7 +18,10 @@ class FeedBack extends React.Component {
     this.state = {
       textValue: "",
       value: null,
-      visible: this.props.visible || false
+      visible: this.props.visible || false,
+      feedbackData: {},
+      selectedFeedback: { value: "Please Select", id: 0, custom_input: false },
+      loading: false
     };
 
     this.body = {};
@@ -26,6 +30,19 @@ class FeedBack extends React.Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
+    this.handleMenuClick = this.handleMenuClick.bind(this);
+  }
+
+  componentDidMount() {
+    let config = { method: "GET" };
+    axiosCaptcha(FEEDBACKS, config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success) {
+          let feedbackData = response.data.data;
+          this.setState({ feedbackData: feedbackData });
+        }
+      }
+    });
   }
 
   showModal() {
@@ -36,37 +53,46 @@ class FeedBack extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.submit(event.target[0].value);
+    this.submit();
   }
 
-  async submit(feedback) {
+  async submit() {
     await this.props.handleTokenExpiration("feedback submit");
-    if (feedback.trim() != (null || "")) {
-      this.body["text"] = this.state.textValue.trim();
+    let url = this.props.isUserLoggedIn
+      ? USERS("feedback")
+      : FEEDBACKS + this.state.feedbackData.id + "/answer/";
+    if (this.state.textValue.trim() !== ("" || null)) {
+      this.props.isUserLoggedIn
+        ? (this.body["text"] = this.state.textValue.trim())
+        : (this.body["user_input"] = this.state.textValue.trim());
     }
     let config = { method: "POST" };
     config.body = this.body;
-    const response = await axiosCaptcha(USERS("feedback"), config, "feedback");
+    const response = await axiosCaptcha(url, config, false);
     if (response.statusText === "OK") {
       if (response.data.success === true) {
-        this.setState({ textValue: "" });
-        this.props.alert(
-          2000,
-          "success",
-          "Your feedback has been submitted successfully!"
-        );
+        this.setState({ textValue: "", loading: false, visible: false });
+        this.props.passStatesFromFeedback("feedbackEmphasis", false);
+        this.props.passStatesFromFeedback("exitIntent", false);
+        if (!this.body.item_id === 0 || this.props.isUserLoggedIn) {
+          this.props.alert(
+            2000,
+            "success",
+            "Your feedback has been submitted successfully!"
+          );
+        }
       } else {
-        this.setState({ isUpdating: false });
         IS_CONSOLE_LOG_OPEN &&
           console.log(response, response.data.error_message);
-        this.props.alert(
-          5000,
-          "error",
-          "Error: " + response.data.error_message
-        );
+        if (!this.body.item_id === 0 || this.props.isUserLoggedIn) {
+          this.props.alert(
+            5000,
+            "error",
+            "Error: " + response.data.error_message
+          );
+        }
       }
     } else {
-      this.setState({ isUpdating: false });
       if (response.data === 500) {
         this.props.alert(
           5000,
@@ -83,13 +109,14 @@ class FeedBack extends React.Component {
 
   handleOk() {
     this.setState({ loading: true });
-    setTimeout(() => {
-      this.setState({ loading: false, visible: false });
-    }, 1000);
+    this.submit();
+    setTimeout(() => {}, 1000);
   }
 
   handleCancel() {
-    this.setState({ visible: false });
+    this.setState({ visible: false, textValue: "" });
+    this.body["item_id"] = 0;
+    this.submit();
     this.props.passStatesFromFeedback("feedbackEmphasis", false);
     this.props.passStatesFromFeedback("exitIntent", false);
   }
@@ -101,6 +128,67 @@ class FeedBack extends React.Component {
 
   handleTextChange(event) {
     this.setState({ textValue: event.target.value });
+  }
+
+  handleMenuClick(event) {
+    let custom = event.item.props.custom;
+    let value = event.item.props.value;
+    let id = event.key;
+    this.body["item_id"] = id;
+    this.setState({
+      selectedFeedback: { value: value, id: id, custom_input: custom },
+      textValue: ""
+    });
+  }
+
+  generateFeedbackTypeOne() {
+    const { visible } = this.state;
+
+    const menuItems = this.state.feedbackData.items.map(question => (
+      <Menu.Item
+        key={question.id}
+        value={question.value}
+        custom={question.custom_input}
+      >
+        {question.value}
+      </Menu.Item>
+    ));
+
+    const menu = <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
+
+    return (
+      <Modal
+        visible={visible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
+        centered
+        confirmLoading={this.state.loading}
+        title="We’ve created JobHax for you!"
+      >
+        <h4>Please share your feedback with us.</h4>
+        <div>{this.state.feedbackData.title}</div>
+        <Dropdown overlay={menu}>
+          <Button
+            className="ant-dropdown-link"
+            style={{
+              margin: "12px 0px 16px 0px",
+              color: "rgb(34, 34, 34)",
+              borderColor: "rgb(217, 217, 217)"
+            }}
+          >
+            {this.state.selectedFeedback.value} <Icon type="down" />
+          </Button>
+        </Dropdown>
+        {this.state.selectedFeedback.custom_input && (
+          <TextArea
+            value={this.state.textValue}
+            onChange={this.handleTextChange}
+            placeholder="Please enter"
+            autosize={{ minRows: 3, maxRows: 8 }}
+          />
+        )}
+      </Modal>
+    );
   }
 
   generateModal() {
@@ -148,6 +236,56 @@ class FeedBack extends React.Component {
       shake: this.props.feedbackEmphasis
     });
 
+    const feedback_two = (
+      <Modal
+        visible={visible}
+        title="Feedback"
+        width="340px"
+        style={modalBoxStyle}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
+        footer={null}
+      >
+        <h4 style={{ color: "black" }}>Your feedback is important for us</h4>
+        <form onSubmit={this.handleSubmit}>
+          <div style={quesitonContainerStyle} className="question">
+            <label style={quesitonLabelStyle} className="question-label">
+              How do you like our platform?
+            </label>
+            <Rate
+              tooltips={desc}
+              onChange={value => this.handleChange(value)}
+              value={value}
+            />
+            {value ? (
+              <span className="ant-rate-text">{desc[value - 1]}</span>
+            ) : (
+              ""
+            )}
+          </div>
+          <div style={quesitonContainerStyle} className="question">
+            <label style={quesitonLabelStyle} className="question-label">
+              Would you like to give us a feedback?
+            </label>
+            <textarea
+              style={textBoxStyle}
+              className="text-box"
+              placeholder="+add feedback"
+              value={this.state.textValue}
+              onChange={this.handleTextChange}
+            />
+          </div>
+          <div style={buttonsContainerStyle} className="buttons-container">
+            <div key="submit" type="primary" onClick={this.handleOk}>
+              <Button style={buttonStyle} type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </div>
+          </div>
+        </form>
+      </Modal>
+    );
+
     return (
       <div>
         <div
@@ -160,53 +298,9 @@ class FeedBack extends React.Component {
             <img src="../../../../src/assets/icons/feedback_icon.png" />
           </div>
         </div>
-        <Modal
-          visible={visible}
-          title="Feedback"
-          width="340px"
-          style={modalBoxStyle}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          footer={null}
-        >
-          <h4 style={{ color: "black" }}>Your feedback is important for us</h4>
-          <form onSubmit={this.handleSubmit}>
-            <div style={quesitonContainerStyle} className="question">
-              <label style={quesitonLabelStyle} className="question-label">
-                How do you like our platform?
-              </label>
-              <Rate
-                tooltips={desc}
-                onChange={value => this.handleChange(value)}
-                value={value}
-              />
-              {value ? (
-                <span className="ant-rate-text">{desc[value - 1]}</span>
-              ) : (
-                ""
-              )}
-            </div>
-            <div style={quesitonContainerStyle} className="question">
-              <label style={quesitonLabelStyle} className="question-label">
-                Would you like to give us a feedback?
-              </label>
-              <textarea
-                style={textBoxStyle}
-                className="text-box"
-                placeholder="+add feedback"
-                value={this.state.textValue}
-                onChange={this.handleTextChange}
-              />
-            </div>
-            <div style={buttonsContainerStyle} className="buttons-container">
-              <div key="submit" type="primary" onClick={this.handleOk}>
-                <Button style={buttonStyle} type="primary" htmlType="submit">
-                  Submit
-                </Button>
-              </div>
-            </div>
-          </form>
-        </Modal>
+        {this.props.isUserLoggedIn
+          ? feedback_two
+          : this.state.feedbackData.items && this.generateFeedbackTypeOne()}
       </div>
     );
   }
