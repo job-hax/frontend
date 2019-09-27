@@ -89,7 +89,7 @@ class Home extends Component {
         size="large"
         onClick={() => this.setState({ redirect: "/signup" })}
       >
-        Sign up for free
+        Sign up
       </Button>
     );
   }
@@ -176,13 +176,15 @@ class Home extends Component {
         <div className="content-big-container">
           <div className="content-container">
             <h4>Simplify your job hunt!</h4>
-            <p className="small-text">
-              Track your application progress in a seamless and intuitive way.
-            </p>
+            <p className="small-text">Stay connected to ITU Alumni.</p>
             <div className="buttons-container">
               <Button onClick={this.handleDemo} size="large">
                 {" "}
-                Try it out!{" "}
+                Events{" "}
+              </Button>
+              <Button onClick={this.handleDemo} size="large">
+                {" "}
+                Blogs{" "}
               </Button>
               {this.generateSignupButton()}
             </div>
@@ -200,6 +202,62 @@ class Home extends Component {
             ></img>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  generateAlumniHomePageFirstItem() {
+    return (
+      <div className="homepage-first-item">
+        <div className="content-big-container">
+          <div className="content-container">
+            <h4>Alumni Home Page</h4>
+            <p className="small-text">
+              Track your application progress in a seamless and intuitive way.
+            </p>
+            <div className="buttons-container">
+              <Button onClick={this.handleDemo} size="large">
+                {" "}
+                Alumni News{" "}
+              </Button>
+              {this.generateSignupButton()}
+            </div>
+          </div>
+        </div>
+        <div className="image-big-container">
+          <div className="image-container">
+            <img
+              className="envelopes"
+              src={"src/assets/images/gmail_envelopes.png"}
+            ></img>
+            <img
+              className="dashboard-main"
+              src={"src/assets/images/dashboard_main.png"}
+            ></img>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  generateAlumniHowItWorksArea() {
+    return (
+      <div className="how_it_works_area" id="howitworks">
+        {this.generateInteriorItem(
+          "src/assets/images/mail_parse.png",
+          "Create a card for each application",
+          "Apply anywhere - get it tracked in one place. Automatically."
+        )}
+        {this.generateInteriorItemFlipLR(
+          "src/assets/images/move.png",
+          "Organize your job hunting progress",
+          "Application process is visualized like no spreadsheet can do."
+        )}
+        {this.generateInteriorItem(
+          "src/assets/images/metrics.png",
+          "Leverage data to step up your job search game",
+          "Hiring trends, skill analysis, interview success rate to help you hunt like a pro."
+        )}
       </div>
     );
   }
@@ -230,7 +288,13 @@ class Home extends Component {
     if (this.state.redirect != null) {
       return <Redirect to={this.state.redirect} />;
     }
-    return (
+    return window.location.pathname === "/alumni" ? (
+      <div className="home-container">
+        {this.generateAlumniHomePageFirstItem()}
+        {this.generateAlumniHowItWorksArea()}
+        <Footer />
+      </div>
+    ) : (
       <div className="home-container">
         {this.generateHomePageFirstItem()}
         {this.generateHowItWorksArea()}
