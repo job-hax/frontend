@@ -154,21 +154,9 @@ class App extends Component {
     });
   }
 
-  handleIn(e) {
-    e = e ? e : window.event;
-    var vpWidth = Math.max(
-      document.documentElement.clientWidth,
-      window.innerWidth || 0
-    );
-
-    if (e.clientX >= vpWidth - 50) return;
-    if (e.clientY >= 50) return;
-
-    var from = e.relatedTarget || e.toElement;
-    if (from && !this.state.isUserLoggedIn) {
-      this.setState({
-        isMouseIn: true
-      });
+  handleIn() {
+    if (!this.state.isUserLoggedIn) {
+      this.setState({ isMouseIn: true });
     }
   }
 
@@ -544,15 +532,22 @@ class App extends Component {
   }
 
   render() {
-    const { isUserLoggedIn, page, token, active, logout } = this.state;
+    const {
+      isUserLoggedIn,
+      page,
+      token,
+      active,
+      logout,
+      isMouseIn
+    } = this.state;
     IS_CONSOLE_LOG_OPEN &&
       console.log(
         "page",
         page,
         "\nisUserLoggedIn",
         isUserLoggedIn,
-        "\nlogout",
-        logout,
+        "\nmouseIn",
+        isMouseIn,
         "\n--token",
         token,
         "\n--active?",
