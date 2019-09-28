@@ -66,6 +66,8 @@ function removeAllCookies() {
     "remember_me=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   document.cookie =
     "user_type=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "is_demo_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 
 export async function axiosCaptcha(url, config, action) {

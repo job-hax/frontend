@@ -202,8 +202,8 @@ class SignInPage extends Component {
             if (response.data.data.user_type === 0) {
               window.location = "/signup?=intro";
             } else {
-              this.props.setIsUserLoggedIn(true);
-              this.props.setIsAuthenticationChecking(false);
+              this.props.passStatesToApp("isUserLoggedIn", true);
+              this.props.passStatesToApp("isAuthenticationChecking", false);
             }
           }
         } else {
@@ -311,8 +311,11 @@ class SignInPage extends Component {
                         if (response.data.data.user_type === 0) {
                           window.location = "/signup?=intro";
                         } else {
-                          this.props.setIsUserLoggedIn(true);
-                          this.props.setIsAuthenticationChecking(false);
+                          this.props.passStatesToApp("isUserLoggedIn", true);
+                          this.props.passStatesToApp(
+                            "isAuthenticationChecking",
+                            false
+                          );
                         }
                       }
                     }

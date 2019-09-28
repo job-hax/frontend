@@ -23,6 +23,11 @@ class Home extends Component {
   }
 
   handleDemo() {
+    const setStateAsync = state => {
+      return new Promise(resolve => {
+        this.setState(state, resolve);
+      });
+    };
     IS_CONSOLE_LOG_OPEN && console.log("handle demo first");
     let rememberMe = false;
     let config = { method: "POST" };
@@ -67,8 +72,10 @@ class Home extends Component {
             this.refresh_token,
             "/"
           );
-          this.props.setIsUserLoggedIn(true);
-          this.props.setIsAuthenticationChecking(false);
+          this.props.cookie("set", "is_demo_user", true, "/");
+          setStateAsync({ redirect: "/" });
+          this.props.passStatesToApp("isUserLoggedIn", true);
+          this.props.passStatesToApp("isAuthenticationChecking", false);
         } else {
           this.props.alert(
             5000,

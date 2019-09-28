@@ -37,6 +37,10 @@ class Dashboard extends Component {
     super(props);
 
     this.state = {
+      is_demo_user:
+        this.props.cookie("get", "is_demo_user") != ("" || null)
+          ? this.props.cookie("get", "is_demo_user")
+          : false,
       allApplications: [],
       toApply: [],
       applied: [],
@@ -144,7 +148,7 @@ class Dashboard extends Component {
               this.waitAndTriggerComponentDidUpdate(3);
             } else {
               this.setState({ isSycnhingJobApps: false });
-              this.props.passStatesFromDashboard("isSynchingGmail", false);
+              this.props.passStatesToApp("isSynchingGmail", false);
               this.props.alert(3000, "success", "Sync completed!");
             }
           }
@@ -783,6 +787,11 @@ class Dashboard extends Component {
       " --animation-from-zoom": multipleOperationsContainerAnimate
     });
 
+    const dashboardContainerClass = classNames({
+      "dashboard-container": true,
+      " --demo-height": this.state.is_demo_user
+    });
+
     const moveSelectedStyle = multipleOperationsContainerAnimate
       ? {
           margin: "0px 0px 0px 16px",
@@ -795,7 +804,7 @@ class Dashboard extends Component {
           borderColor: "rgb(217, 217, 217)",
           width: "140px",
           height: "32px",
-          top: "-1px",
+          top: "-1px"
         };
 
     const selectAllStyle = {
@@ -932,7 +941,7 @@ class Dashboard extends Component {
             </div>
           )}
         </div>
-        <div className="dashboard-container">
+        <div className={dashboardContainerClass}>
           <Column
             name="toApply"
             id="2"

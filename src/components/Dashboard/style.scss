@@ -4,11 +4,15 @@ $multipleContainerAnimationTransitionDuration: .5s;
 $multipleContainerAnimationFromZeroScale: 1.6;
 
 .dashboard-container {
-  height: 92vh;
+  height: calc(100vh - 60px);
   width: 100%;
   padding-left: 8px;
   display: flex;
   overflow-y: hidden;
+
+  &.--demo-height {
+    height: calc(100vh - 110px);
+  }
 }
 
 .icon {

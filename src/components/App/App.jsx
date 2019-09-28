@@ -89,10 +89,7 @@ class App extends Component {
     this.toggleNotificationsDisplay = this.toggleNotificationsDisplay.bind(
       this
     );
-    this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this);
-    this.setIsAuthenticationChecking = this.setIsAuthenticationChecking.bind(
-      this
-    );
+    this.passStatesToApp = this.passStatesToApp.bind(this);
     this.reRunComponentDidUpdate = this.reRunComponentDidUpdate.bind(this);
     this.showAlert = this.showAlert.bind(this);
     this.cookie = this.cookie.bind(this);
@@ -100,7 +97,6 @@ class App extends Component {
     this.tokenExpirationNoRenewHandle = this.tokenExpirationNoRenewHandle.bind(
       this
     );
-    this.passStatesFromChild = this.passStatesFromChild.bind(this);
     this.handleExit = this.handleExit.bind(this);
     this.handleIn = this.handleIn.bind(this);
 
@@ -401,20 +397,12 @@ class App extends Component {
     });
   }
 
-  passStatesFromChild(type, value) {
+  passStatesToApp(type, value) {
     this.setState({ [type]: value });
-  }
-
-  setIsUserLoggedIn(isUserLoggedIn) {
-    this.reRunComponentDidUpdate();
-    this.setState({
-      isUserLoggedIn: isUserLoggedIn,
-      token: this.cookie("get", "jobhax_access_token")
-    });
-  }
-
-  setIsAuthenticationChecking(isAuthenticationChecking) {
-    this.setState({ isAuthenticationChecking: isAuthenticationChecking });
+    if (type === "isUserLoggedIn") {
+      this.reRunComponentDidUpdate();
+      this.setState({ token: this.cookie("get", "jobhax_access_token") });
+    }
   }
 
   cookie(method, name, data, path, expires) {
@@ -432,6 +420,7 @@ class App extends Component {
       cookies.remove("jobhax_access_token_expiration", { path: "/" });
       cookies.remove("remember_me", { path: "/" });
       cookies.remove("user_type", { path: "/" });
+      cookies.remove("is_demo_user", { path: "/" });
     } else if (method === "remove") {
       IS_CONSOLE_LOG_OPEN && console.log("cookies removing");
       cookies.remove(name, { path: "/" });
@@ -539,7 +528,7 @@ class App extends Component {
       token,
       active,
       logout,
-      isMouseIn
+      isInitialRequest
     } = this.state;
     IS_CONSOLE_LOG_OPEN &&
       console.log(
@@ -547,8 +536,8 @@ class App extends Component {
         page,
         "\nisUserLoggedIn",
         isUserLoggedIn,
-        "\nmouseIn",
-        isMouseIn,
+        "\nisInitialRequest",
+        isInitialRequest,
         "\n--token",
         token,
         "\n--active?",
@@ -578,7 +567,7 @@ class App extends Component {
               profilePhotoUrl={this.state.profilePhotoUrl}
               cookie={this.cookie}
               handleTokenExpiration={this.handleTokenExpiration}
-              passStatesFromHeader={this.passStatesFromChild}
+              passStatesToApp={this.passStatesToApp}
               isUserLoggedIn={true}
               isAdmin={this.state.user.is_admin}
               isSynchingGmail={this.state.isSynchingGmail}
@@ -587,7 +576,7 @@ class App extends Component {
               alert={this.showAlert}
               handleTokenExpiration={this.handleTokenExpiration}
               feedbackEmphasis={this.state.feedbackEmphasis}
-              passStatesFromFeedback={this.passStatesFromChild}
+              passStatesToApp={this.passStatesToApp}
               isUserLoggedIn={isUserLoggedIn}
             />
             {this.state.isPollShowing && (
@@ -635,7 +624,7 @@ class App extends Component {
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
                   syncResponseTimestamp={this.state.syncResponseTimestamp}
-                  passStatesFromDashboard={this.passStatesFromChild}
+                  passStatesToApp={this.passStatesToApp}
                 />
               )}
             />
@@ -784,7 +773,7 @@ class App extends Component {
                   handleTokenExpiration={this.handleTokenExpiration}
                   feedbackEmphasis={this.state.feedbackEmphasis}
                   visible={true}
-                  passStatesFromFeedback={this.passStatesFromChild}
+                  passStatesToApp={this.passStatesToApp}
                   isUserLoggedIn={isUserLoggedIn}
                 />
               )}
@@ -795,10 +784,7 @@ class App extends Component {
                 render={() => (
                   <Home
                     isUserLoggedIn={false}
-                    setIsUserLoggedIn={this.setIsUserLoggedIn}
-                    setIsAuthenticationChecking={
-                      this.setIsAuthenticationChecking
-                    }
+                    passStatesToApp={this.passStatesToApp}
                     alert={this.showAlert}
                     cookie={this.cookie}
                   />
@@ -810,10 +796,7 @@ class App extends Component {
                 render={() => (
                   <Home
                     isUserLoggedIn={false}
-                    setIsUserLoggedIn={this.setIsUserLoggedIn}
-                    setIsAuthenticationChecking={
-                      this.setIsAuthenticationChecking
-                    }
+                    passStatesToApp={this.passStatesToApp}
                     alert={this.showAlert}
                     cookie={this.cookie}
                   />
@@ -837,10 +820,7 @@ class App extends Component {
                 render={() => (
                   <SignIn
                     googleAuth={this.googleAuth}
-                    setIsUserLoggedIn={this.setIsUserLoggedIn}
-                    setIsAuthenticationChecking={
-                      this.setIsAuthenticationChecking
-                    }
+                    passStatesToApp={this.passStatesToApp}
                     alert={this.showAlert}
                     cookie={this.cookie}
                   />
@@ -853,10 +833,7 @@ class App extends Component {
                   <SignUp
                     googleAuth={this.googleAuth}
                     alert={this.showAlert}
-                    setIsAuthenticationChecking={
-                      this.setIsAuthenticationChecking
-                    }
-                    setIsUserLoggedIn={this.setIsUserLoggedIn}
+                    passStatesToApp={this.passStatesToApp}
                     cookie={this.cookie}
                   />
                 )}
