@@ -22,7 +22,6 @@
 
             .review-header {
                 padding-bottom: 15px;
-                border-bottom: 1px solid $line_color;
 
                 .reviewer-name {
                     font-size: 120%;
@@ -44,6 +43,7 @@
 
             .review-body {
                 padding: 15px 0px 20px 0px;
+                border-top: 1px solid $line_color;
 
                 .review-body-company {
 

@@ -1,5 +1,5 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const CompressionPlugin = require("compression-webpack-plugin");
+//const CompressionPlugin = require("compression-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
@@ -71,16 +71,7 @@ module.exports = {
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new BundleAnalyzerPlugin(),
-    new CompressionPlugin({
-      filename: "[path].br[query]",
-      algorithm: "brotliCompress",
-      test: /\.(js|css|html|svg)$/,
-      compressionOptions: { level: 11 },
-      threshold: 10240,
-      minRatio: 0.8,
-      deleteOriginalAssets: false
-    })
+    new BundleAnalyzerPlugin()
   ],
   optimization: {
     minimize: true,
@@ -121,3 +112,15 @@ module.exports = {
     //     inline: false,
   }
 };
+
+{
+  /*new CompressionPlugin({
+  filename: "[path].br[query]",
+  algorithm: "brotliCompress",
+  test: /\.(js|css|html|svg)$/,
+  compressionOptions: { level: 11 },
+  threshold: 10240,
+  minRatio: 0.8,
+  deleteOriginalAssets: false
+})*/
+}

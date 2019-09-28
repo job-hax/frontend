@@ -72,8 +72,8 @@ class FeedBack extends React.Component {
     if (response.statusText === "OK") {
       if (response.data.success === true) {
         this.setState({ textValue: "", loading: false, visible: false });
-        this.props.passStatesFromFeedback("feedbackEmphasis", false);
-        this.props.passStatesFromFeedback("exitIntent", false);
+        this.props.passStatesToApp("feedbackEmphasis", false);
+        this.props.passStatesToApp("exitIntent", false);
         if (!this.body.item_id === 0 || this.props.isUserLoggedIn) {
           this.props.alert(
             2000,
@@ -117,8 +117,8 @@ class FeedBack extends React.Component {
     this.setState({ visible: false, textValue: "" });
     this.body["item_id"] = 0;
     this.submit();
-    this.props.passStatesFromFeedback("feedbackEmphasis", false);
-    this.props.passStatesFromFeedback("exitIntent", false);
+    this.props.passStatesToApp("feedbackEmphasis", false);
+    this.props.passStatesToApp("exitIntent", false);
   }
 
   handleChange(value) {

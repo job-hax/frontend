@@ -110,86 +110,97 @@ class Reviews extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="review-body">
-              <div className="review-body-company">
-                <div className="body-company-sub-container">
-                  <div className="body-company-data">
-                    {review.emp_status != null && (
-                      <div className="employment-status">
-                        <label>Employment type:</label>
-                        <div className="info">{review.emp_status.value}</div>
+            {(review.cons ||
+              review.pros ||
+              review.emp_status ||
+              review.interview_difficulty ||
+              review.interview_notes ||
+              review.overall_interview_experience ||
+              review.source_type) && (
+              <div className="review-body">
+                <div className="review-body-company">
+                  <div className="body-company-sub-container">
+                    <div className="body-company-data">
+                      {review.emp_status != null && (
+                        <div className="employment-status">
+                          <label>Employment type:</label>
+                          <div className="info">{review.emp_status.value}</div>
+                        </div>
+                      )}
+                      <div className="company-review-text-container">
+                        {review.pros != null && review.pros != "" && (
+                          <div>
+                            <label>Pros:</label>
+                            <div className="company-review-text">
+                              {review.pros}
+                            </div>
+                          </div>
+                        )}
+                        {review.cons != null && review.cons != "" && (
+                          <div>
+                            <label>Cons:</label>
+                            <div
+                              className="company-review-text"
+                              style={{ marginBottom: 8 }}
+                            >
+                              {review.cons}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                    <div className="company-review-text-container">
-                      {review.pros != null && review.pros != "" && (
-                        <div>
-                          <label>Pros:</label>
-                          <div className="company-review-text">
-                            {review.pros}
-                          </div>
-                        </div>
-                      )}
-                      {review.cons != null && review.cons != "" && (
-                        <div>
-                          <label>Cons:</label>
-                          <div
-                            className="company-review-text"
-                            style={{ marginBottom: 8 }}
-                          >
-                            {review.cons}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="review-body-interview">
-                <div className="interview-ratings">
-                  {(review.overall_interview_experience == 1 ||
-                    review.overall_interview_experience == 0) && (
-                    <div className="overall-experience-container">
-                      <label>Interview overall:</label>
-                      <div className="overall-experience">
-                        {review.overall_interview_experience == 0 && (
-                          <Icon
-                            style={{ fontSize: 20, marginTop: "-5px" }}
-                            type="like"
-                            theme={"filled"}
-                          />
-                        )}
-                        {review.overall_interview_experience == 1 && (
-                          <Icon
-                            type="dislike"
-                            style={{ margin: "2px 0px 0px 5px", fontSize: 20 }}
-                            theme={"filled"}
-                          />
+                <div className="review-body-interview">
+                  <div className="interview-ratings">
+                    {(review.overall_interview_experience == 1 ||
+                      review.overall_interview_experience == 0) && (
+                      <div className="overall-experience-container">
+                        <label>Interview overall:</label>
+                        <div className="overall-experience">
+                          {review.overall_interview_experience == 0 && (
+                            <Icon
+                              style={{ fontSize: 20, marginTop: "-5px" }}
+                              type="like"
+                              theme={"filled"}
+                            />
+                          )}
+                          {review.overall_interview_experience == 1 && (
+                            <Icon
+                              type="dislike"
+                              style={{
+                                margin: "2px 0px 0px 5px",
+                                fontSize: 20
+                              }}
+                              theme={"filled"}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {review.interview_difficulty && (
+                      <div className="difficulty-container">
+                        <label>Interview difficulty:</label>
+                        {this.generateInterviewDifficulty(
+                          review.interview_difficulty
                         )}
                       </div>
-                    </div>
-                  )}
-                  {review.interview_difficulty && (
-                    <div className="difficulty-container">
-                      <label>Interview difficulty:</label>
-                      {this.generateInterviewDifficulty(
-                        review.interview_difficulty
-                      )}
-                    </div>
-                  )}
+                    )}
+                  </div>
+                  {review.interview_notes != null &&
+                    review.interview_notes != "" && (
+                      <div className="interview-experience">
+                        <label style={{ margin: "10px 4px 6px 0px" }}>
+                          Interview experience:
+                        </label>
+                        <div className="interview-notes">
+                          {review.interview_notes}
+                        </div>
+                      </div>
+                    )}
                 </div>
-                {review.interview_notes != null &&
-                  review.interview_notes != "" && (
-                    <div className="interview-experience">
-                      <label style={{ margin: "10px 4px 6px 0px" }}>
-                        Interview experience:
-                      </label>
-                      <div className="interview-notes">
-                        {review.interview_notes}
-                      </div>
-                    </div>
-                  )}
               </div>
-            </div>
+            )}
           </div>
         )
     );

@@ -210,7 +210,7 @@ class SignUpPage extends Component {
                         this.setState({ level: "intro" });
                       } else {
                         this.props.cookie("set", "remember_me", true, "/");
-                        this.props.setIsUserLoggedIn(true);
+                        this.props.passStatesToApp("isUserLoggedIn", true);
                       }
                       this.postGoogleProfilePhoto(photoUrl);
                     }
@@ -324,7 +324,7 @@ class SignUpPage extends Component {
               if (response.data.data.user_type === 0) {
                 this.setState({ level: "intro" });
               } else {
-                this.props.setIsUserLoggedIn(true);
+                this.props.passStatesToApp("isUserLoggedIn", true);
               }
               IS_CONSOLE_LOG_OPEN && console.log(this.token);
               this.refresh_token = response.data.data.refresh_token;
@@ -1341,7 +1341,7 @@ class SignUpPage extends Component {
   }
 
   async generateLevelFinal() {
-    await this.props.setIsUserLoggedIn(true);
+    await this.props.passStatesToApp("isUserLoggedIn", true);
     return <Redirect to="dashboard" />;
   }
 

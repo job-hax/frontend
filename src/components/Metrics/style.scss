@@ -98,7 +98,7 @@
             }
 
             .metric-summary-container:hover {
-                z-index: 51;
+                z-index: 20;
                 transform: scale(1.1);
                 -webkit-transform: scale(1.1);
                 -moz-transform: scale(1.1);
@@ -143,7 +143,7 @@
             }
 
             .metric-detailed-container:hover {
-                z-index: 51;
+                z-index: 20;
                 transform: scale(1.1);
                 -webkit-transform: scale(1.1);
                 -moz-transform: scale(1.1);
@@ -174,75 +174,5 @@
                 background-color: black;
             }
         }
-    }
-}
-
-
-
-.graph-container-light-background {
-    height: 700px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    background: white;
-    overflow-y: hidden;
-
-    .graph-dark {
-        margin-top: 100px;
-        height: 500px;
-        width: 800px;
-        background-color: rgb(92, 39, 195);
-        border-radius: 20px;
-    }
-}
-
-.positions-stages-graph-xAxis-name-container {
-    display: flex;
-    justify-content: center;
-
-    .positions-stages-graph-xAxis-name {
-        margin-top: -44px;
-        position: absolute;
-        font-size: 90%;
-    }
-}
-
-.selection-menu-container {
-    margin-top: 40px;
-    margin-bottom: 20px;
-    padding-top: 30px;
-    display: flex;
-    justify-content: center;
-    height: 40px;
-    max-height: 60px;
-
-    .selection-menu {
-        display: flex;
-        justify-content: center;
-        position: absolute;
-        width: fit-content;
-        color: black;
-        height: 50px;
-
-        .dropdown-menu {
-            margin: 4px;
-            padding: 8px;
-            background-color: white;
-            cursor: pointer;
-
-            img {
-                background-color: transparent;
-                margin-left: 4px;
-                margin-top: 8px;
-                height: 4px;
-                width: auto;
-            }
-        }
-    }
-
-    .filter-indicator {
-        color: white;
-        font-weight: 500;
-        margin: 12px;
     }
 }

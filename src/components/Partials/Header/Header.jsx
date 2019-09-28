@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import { Menu, Icon, Spin, Tooltip } from "antd";
+import { Menu, Icon, Spin, Tooltip, Button } from "antd";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { USERS } from "../../../utils/constants/endpoints";
@@ -17,6 +17,10 @@ class Header extends Component {
         this.props.cookie("get", "user_type") != ("" || null)
           ? this.props.cookie("get", "user_type")
           : 0,
+      is_demo_user:
+        this.props.cookie("get", "is_demo_user") != ("" || null)
+          ? this.props.cookie("get", "is_demo_user")
+          : false,
       current:
         window.location.pathname != "/blogs"
           ? window.location.pathname
@@ -48,6 +52,9 @@ class Header extends Component {
       this.state.redirect
     ) {
       this.setState({ redirect: false });
+    }
+    if (this.state.is_demo_user != this.props.cookie("get", "is_demo_user")) {
+      this.setState({ is_demo_user: this.props.cookie("get", "is_demo_user") });
     }
   }
 
@@ -89,11 +96,11 @@ class Header extends Component {
       axiosCaptcha(USERS("syncUserEmails"), config).then(response => {
         if (response.statusText === "OK") {
           if (response.data.success) {
-            this.props.passStatesFromHeader(
+            this.props.passStatesToApp(
               "syncResponseTimestamp",
               new Date().getTime()
             );
-            this.props.passStatesFromHeader("isSynchingGmail", true);
+            this.props.passStatesToApp("isSynchingGmail", true);
           }
         }
       });
@@ -108,23 +115,28 @@ class Header extends Component {
     };
     this.setState({ request: true });
     let page = event.key;
-    if (page == "/logout") {
-      this.props.passStatesFromHeader("logout", true);
+    console.log("header menu click", event, "page to", page);
+    if (page === "/logout") {
+      this.props.passStatesToApp("logout", true);
       await setStateAsync({ current: "/home" });
       this.props.handleSignOut();
-    } else if (page == "/events") {
+    } else if (page === "/signup") {
+      this.props.passStatesToApp("logout", true);
+      await setStateAsync({ current: "/signup" });
+      this.props.handleSignOut();
+    } else if (page === "/events") {
       if (window.location.pathname.substring(0, 6) == "/event") {
         this.setState({ current: "action?type=redirect&/events" });
       } else {
         this.setState({ current: page });
       }
-    } else if (page == "/blogs?edit=true") {
+    } else if (page === "/blogs?edit=true") {
       if (window.location.pathname.substring(0, 5) == "/blog") {
         this.setState({ current: "action?type=redirect&/blogs?edit=true" });
       } else {
         this.setState({ current: page });
       }
-    } else if (page == "/blogs") {
+    } else if (page === "/blogs") {
       if (window.location.pathname.substring(0, 5) == "/blog") {
         this.setState({ current: "action?type=redirect&/blogs" });
       } else {
@@ -141,9 +153,9 @@ class Header extends Component {
     const profilePhotoUrl = this.props.profilePhotoUrl
       ? this.props.profilePhotoUrl
       : "../../../src/assets/icons/SeyfoIcon@3x.png";
-    const fixed = { position: "fixed" };
-    const normal = { margin: 0 };
-    const style = window.location.pathname === "/mentors" ? fixed : normal;
+    const style = this.state.is_demo_user
+      ? { height: "11Ox" }
+      : { height: "60x" };
     const spinIcon = (
       <Icon type="loading" style={{ fontSize: 24, color: "black" }} spin />
     );
@@ -295,8 +307,31 @@ class Header extends Component {
     );
   }
 
+  generateDemoBanner() {
+    return (
+      <div className="demo-banner">
+        Demo mode
+        <div className="buttons-container">
+          <Button onClick={() => this.handleMenuClick({ key: "/logout" })}>
+            Exit demo
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => this.handleMenuClick({ key: "/signup" })}
+          >
+            Sign up
+          </Button>
+        </div>
+        <div className="demo-banner-height"></div>
+      </div>
+    );
+  }
+
   render() {
     let header = "";
+    const headerHeight = this.state.is_demo_user
+      ? { height: 110 }
+      : { height: 60 };
     if (this.state.redirect) {
       return <Redirect to={this.state.current} />;
     }
@@ -307,8 +342,11 @@ class Header extends Component {
     }
     return (
       <div>
-        {header}
-        <div className="header-height"></div>
+        <div className="header-big-container">
+          {this.state.is_demo_user && this.generateDemoBanner()}
+          {header}
+        </div>
+        <div style={headerHeight}></div>
       </div>
     );
   }
