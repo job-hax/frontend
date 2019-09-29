@@ -8,7 +8,9 @@ import {
   Input,
   Dropdown,
   Menu,
-  Radio
+  Radio,
+  Checkbox,
+  Tooltip
 } from "antd";
 import ReactTelInput from "react-telephone-input";
 import moment from "moment";
@@ -17,7 +19,8 @@ import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
 import {
   makeTimeBeautiful,
-  IS_CONSOLE_LOG_OPEN
+  IS_CONSOLE_LOG_OPEN,
+  USER_TYPES
 } from "../../utils/constants/constants.js";
 import { linkedInOAuth } from "../../utils/helpers/oAuthHelperFunctions.js";
 import { apiRoot, USERS } from "../../utils/constants/endpoints.js";
@@ -50,6 +53,7 @@ class ProfilePage extends React.Component {
       data: null,
       employmentStatus: null,
       gender: null,
+      isEmailPublic: true,
       body: {},
       isInitialRequest: "beforeRequest"
     };
@@ -69,6 +73,9 @@ class ProfilePage extends React.Component {
     this.handleProfilePhotoUpdate = this.handleProfilePhotoUpdate.bind(this);
     this.handleGoogleOAuth = this.handleGoogleOAuth.bind(this);
     this.handleLinkedInOAuth = this.handleLinkedInOAuth.bind(this);
+    this.handlePrivacyEmailCheckbox = this.handlePrivacyEmailCheckbox.bind(
+      this
+    );
   }
 
   async componentDidMount() {
@@ -112,6 +119,7 @@ class ProfilePage extends React.Component {
                 gender: this.data.gender
               });
             }
+            this.setState({ isEmailPublic: this.data.is_email_public });
           }
         }
       });
@@ -410,6 +418,11 @@ class ProfilePage extends React.Component {
     }
   }
 
+  handlePrivacyEmailCheckbox(event) {
+    this.body["is_email_public"] = event.target.checked;
+    this.setState({ isEmailPublic: event.target.checked });
+  }
+
   generateNonEditableProfileMainArea() {
     const props = {
       name: "file",
@@ -604,6 +617,28 @@ class ProfilePage extends React.Component {
                   </div>
                 </div>
                 <div className="info-content-body-item">
+                  <Tooltip
+                    placement="bottom"
+                    title="Share my email with Alumni, Students and Career Services of my University."
+                  >
+                    <div className="info-content-body-item-label">
+                      Connect school:{" "}
+                      <Icon
+                        type="question-circle"
+                        style={{ margin: "0px 0px 0px 4px" }}
+                      />
+                    </div>
+                  </Tooltip>
+                  <div className="info-content-body-item-text">
+                    {this.state.data != null && (
+                      <Checkbox
+                        checked={this.state.isEmailPublic}
+                        disabled
+                      ></Checkbox>
+                    )}
+                  </div>
+                </div>
+                <div className="info-content-body-item">
                   <div className="info-content-body-item-label">Phone:</div>
                   <div className="info-content-body-item-text">
                     {this.state.data != null && this.state.data.phone_number ? (
@@ -622,8 +657,8 @@ class ProfilePage extends React.Component {
               <div className="info-content-body">
                 {this.state.data != null &&
                   this.state.data.college != (null || "") &&
-                  (this.state.data.user_type == 2 ||
-                    this.state.data.user_type == 3) && (
+                  (this.state.data.user_type === USER_TYPES["student"] ||
+                    this.state.data.user_type === USER_TYPES["alumni"]) && (
                     <div>
                       <div className="info-content-body-item">
                         <div className="info-content-body-item-label">
@@ -643,7 +678,7 @@ class ProfilePage extends React.Component {
                       </div>{" "}
                       <div className="info-content-body-item">
                         <div className="info-content-body-item-label">
-                          {this.state.data.user_type == 2
+                          {this.state.data.user_type === USER_TYPES["student"]
                             ? "Expected Graduation:"
                             : "Graduation Year:"}
                         </div>
@@ -701,7 +736,11 @@ class ProfilePage extends React.Component {
       <Dropdown overlay={menu()} placement="bottomCenter">
         <Button
           className="ant-dropdown-link"
-          style={{ color: "rgba(100, 100, 100, 0.9)" }}
+          style={{
+            margin: "-8px 0px 0px 0px",
+            color: "rgba(0, 0, 0, 0.4)",
+            borderColor: "rgb(217, 217, 217)"
+          }}
         >
           {this.state.employmentStatus
             ? this.state.employmentStatus
@@ -865,6 +904,29 @@ class ProfilePage extends React.Component {
                             : "email"
                         }
                       />
+                    </div>
+                  </div>
+                  <div className="info-content-body-item">
+                    <Tooltip
+                      placement="bottom"
+                      title="Share my email with Alumni, Students and Career Services of my University."
+                    >
+                      <div className="info-content-body-item-label">
+                        Connect school:{" "}
+                        <Icon
+                          type="question-circle"
+                          style={{ margin: "0px 0px 0px 4px" }}
+                        />
+                      </div>
+                    </Tooltip>
+                    <div className="info-content-body-item-text">
+                      {this.state.data != null && (
+                        <Checkbox
+                          style={{ margin: "-6px 0px 4px 5px" }}
+                          checked={this.state.isEmailPublic}
+                          onChange={this.handlePrivacyEmailCheckbox}
+                        ></Checkbox>
+                      )}
                     </div>
                   </div>
                   <div className="info-content-body-item">

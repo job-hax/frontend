@@ -61,7 +61,6 @@ class EventEditable extends React.Component {
       event_type: this.props.event.event_type,
       header_image: this.props.event.header_image,
       is_publish: false,
-      is_public: this.props.event.is_public,
       title: this.props.event.title,
       location_address: this.props.event.location_address,
       location_title: this.props.event.location_title,
@@ -82,7 +81,6 @@ class EventEditable extends React.Component {
 
     this.toggleEditable = this.toggleEditable.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.handlePublicCheckbox = this.handlePublicCheckbox.bind(this);
     this.handlePhotoUpdate = this.handlePhotoUpdate.bind(this);
     this.onEditorStateChange = this.onEditorStateChange.bind(this);
     this.onDateOk = this.onDateOk.bind(this);
@@ -116,7 +114,6 @@ class EventEditable extends React.Component {
       "short_description",
       "details",
       "is_publish",
-      "is_public",
       "event_date_start",
       "event_date_end",
       "location_address",
@@ -171,10 +168,6 @@ class EventEditable extends React.Component {
     let type = event.target.id;
     let value = event.target.value;
     this.setState({ [type]: value, is_publish: false });
-  }
-
-  handlePublicCheckbox(e) {
-    this.setState({ is_public: !e.target.checked, is_publish: false });
   }
 
   onEditorStateChange(editorState) {
@@ -509,8 +502,7 @@ class EventEditable extends React.Component {
       header_image,
       updated_at,
       event_date_start,
-      event_date_end,
-      is_public
+      event_date_end
     } = this.state;
     const { event } = this.props;
     const isAnytingEdited =
@@ -519,8 +511,7 @@ class EventEditable extends React.Component {
       short_description != event.short_description ||
       header_image != event.header_image ||
       event_date_start != event.event_date_start ||
-      event_date_end != event.event_date_end ||
-      is_public != event.is_public;
+      event_date_end != event.event_date_end
     const isRequiredFieldsFilled =
       details &&
       title &&
@@ -552,19 +543,6 @@ class EventEditable extends React.Component {
             </Button>
           )}
         </div>
-        {isRequiredFieldsFilled && (
-          <div
-            className="fixed-button"
-            style={{ boxShadow: "none", margin: "48px 0 0 0" }}
-          >
-            <Checkbox
-              checked={!this.state.is_public}
-              onChange={e => this.handlePublicCheckbox(e)}
-            >
-              Share only with school
-            </Checkbox>
-          </div>
-        )}
         {updated_at && (
           <div
             className="no-data"

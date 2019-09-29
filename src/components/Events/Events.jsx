@@ -51,7 +51,7 @@ class Events extends React.Component {
               .split("=")[0] == "edit"
           ? window.location.search.split("&")[0].split("=")[1]
           : null,
-      user_type: this.props.cookie("get", "user_type"),
+      user_type: parseInt(this.props.cookie("get", "user_type")),
       editable_event: {
         attended: true,
         attendee_count: 0,

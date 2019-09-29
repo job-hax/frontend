@@ -50,7 +50,6 @@ class BlogEditable extends React.Component {
       is_publish: this.props.blog.is_publish,
       is_approved: this.props.blog.is_approved,
       is_publish: this.props.blog.is_publish,
-      is_public: this.props.blog.is_public,
       title: this.props.blog.title,
       upvote: this.props.blog.upvote,
       view_count: this.props.blog.view_count,
@@ -70,7 +69,6 @@ class BlogEditable extends React.Component {
     this.handlePhotoUpdate = this.handlePhotoUpdate.bind(this);
     this.saveBlogData = this.saveBlogData.bind(this);
     this.postBlogData = this.postBlogData.bind(this);
-    this.handlePublicCheckbox = this.handlePublicCheckbox.bind(this);
     this.onChange = this.onChange.bind(this);
   }
 
@@ -93,21 +91,12 @@ class BlogEditable extends React.Component {
   }
 
   async saveBlogData() {
-    const {
-      id,
-      fromData,
-      title,
-      snippet,
-      content,
-      is_publish,
-      is_public
-    } = this.state;
+    const { id, fromData, title, snippet, content, is_publish } = this.state;
     let config = id == null ? { method: "POST" } : { method: "PUT" };
     fromData.append("title", title);
     fromData.append("snippet", snippet);
     fromData.append("content", content);
     fromData.append("is_publish", is_publish);
-    fromData.append("is_public", is_public);
     if (config.method == "PUT") {
       fromData.append("blog_id", id);
     }
@@ -145,10 +134,6 @@ class BlogEditable extends React.Component {
     this.setState({
       [type]: !this.state[type]
     });
-  }
-
-  handlePublicCheckbox(e) {
-    this.setState({ is_public: !e.target.checked, is_publish: false });
   }
 
   onChange(event) {
@@ -438,21 +423,13 @@ class BlogEditable extends React.Component {
   }
 
   generateFixedButtons() {
-    const {
-      content,
-      title,
-      snippet,
-      header_image,
-      updated_at,
-      is_public
-    } = this.state;
+    const { content, title, snippet, header_image, updated_at } = this.state;
     const { blog } = this.props;
     const isAnytingEdited =
       content != blog.content ||
       title != blog.title ||
       snippet != blog.snippet ||
-      header_image != blog.header_image ||
-      is_public != blog.is_public;
+      header_image != blog.header_image;
     const isRequiredFieldsFilled = content && title && snippet && header_image;
     return (
       <div className="fixed-button" style={{ boxShadow: "none" }}>
@@ -478,19 +455,6 @@ class BlogEditable extends React.Component {
             </Button>
           )}
         </div>
-        {isRequiredFieldsFilled && (
-          <div
-            className="fixed-button"
-            style={{ boxShadow: "none", margin: "48px 0 0 0" }}
-          >
-            <Checkbox
-              checked={!this.state.is_public}
-              onChange={e => this.handlePublicCheckbox(e)}
-            >
-              Share only with school
-            </Checkbox>
-          </div>
-        )}
         {updated_at && (
           <div
             className="no-data"

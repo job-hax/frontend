@@ -54,7 +54,7 @@ class Blog extends React.Component {
           ? window.location.search.split("=")[1]
           : null,
       detail_blog: {},
-      user_type: this.props.cookie("get", "user_type"),
+      user_type: parseInt(this.props.cookie("get", "user_type")),
       editable_blog: {
         content: "",
         created_at: new Date().toISOString(),

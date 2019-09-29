@@ -104,6 +104,7 @@ class App extends Component {
       "/",
       "/home",
       "/signup",
+      "/alumni-signup",
       "/signin",
       "/dashboard",
       "/metrics",
@@ -744,6 +745,7 @@ class App extends Component {
         "/",
         "/home",
         "/alumni",
+        "/alumni-signup",
         "/signin",
         "/signup",
         "/privacypolicy",
@@ -835,6 +837,20 @@ class App extends Component {
                     alert={this.showAlert}
                     passStatesToApp={this.passStatesToApp}
                     cookie={this.cookie}
+                    signupType={"general"}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path="/alumni-signup"
+                render={() => (
+                  <SignUp
+                    googleAuth={this.googleAuth}
+                    alert={this.showAlert}
+                    passStatesToApp={this.passStatesToApp}
+                    cookie={this.cookie}
+                    signupType={"alumni"}
                   />
                 )}
               />

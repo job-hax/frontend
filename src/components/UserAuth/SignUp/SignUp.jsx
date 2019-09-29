@@ -34,6 +34,7 @@ class SignUpPage extends Component {
     super(props);
 
     this.state = {
+      redirect: null,
       companyAutoCompleteData: [],
       positionAutoCompleteData: [],
       collegeAutoCompleteData: [],
@@ -50,7 +51,7 @@ class SignUpPage extends Component {
           : window.location.search.split("=")[1] == "intro"
           ? "intro"
           : "undefined",
-      user_type: null,
+      user_type: this.props.signupType === "alumni" ? 3 : null,
       first_name: "",
       last_name: "",
       college_id: null,
@@ -194,6 +195,9 @@ class SignUpPage extends Component {
                 provider: "google-oauth2"
               };
               config.body.token = googleAccessToken;
+              if (this.state.user_type != null) {
+                config.body.user_type = this.state.user_type;
+              }
               axiosCaptcha(USERS("authSocialUser"), config, "signin")
                 .then(response => {
                   if (response.statusText === "OK") {
@@ -206,7 +210,7 @@ class SignUpPage extends Component {
                 .then(response => {
                   if (response.statusText === "OK") {
                     if (response.data.success == true) {
-                      if (response.data.data.user_type === 0) {
+                      if (response.data.data.user_type === USER_TYPES["undefined"]) {
                         this.setState({ level: "intro" });
                       } else {
                         this.props.cookie("set", "remember_me", true, "/");
@@ -314,6 +318,9 @@ class SignUpPage extends Component {
         config.body.password2 = event.target[4].value;
         config.body.client_id = jobHaxClientId;
         config.body.client_secret = jobHaxClientSecret;
+        if (this.state.user_type != null) {
+          config.body.user_type = this.state.user_type;
+        }
         axiosCaptcha(USERS("register"), config, "signup").then(response => {
           if (response.statusText === "OK") {
             IS_CONSOLE_LOG_OPEN && console.log(response.data);
@@ -321,7 +328,7 @@ class SignUpPage extends Component {
               this.token = `${
                 response.data.data.token_type
               } ${response.data.data.access_token.trim()}`;
-              if (response.data.data.user_type === 0) {
+              if (response.data.data.user_type === USER_TYPES["undefined"]) {
                 this.setState({ level: "intro" });
               } else {
                 this.props.passStatesToApp("isUserLoggedIn", true);
@@ -719,7 +726,7 @@ class SignUpPage extends Component {
               type="primary"
               onClick={() =>
                 this.setState({
-                  level: "university"
+                  level: "student"
                 })
               }
               style={this.nextButtonStyle}
@@ -854,7 +861,7 @@ class SignUpPage extends Component {
             Next
           </Button>
         </div>
-        <div>{this.generateBackButton("university")}</div>
+        <div>{this.generateBackButton("user_type")}</div>
       </div>
     );
   }
@@ -882,6 +889,8 @@ class SignUpPage extends Component {
   }
 
   generateLevelBasicInfo() {
+    const nextLevel =
+      this.props.signupType === "alumni" ? "alumni" : "user_type";
     IS_CONSOLE_LOG_OPEN &&
       console.log("stateList", this.state.stateOrProvinceList);
     const mustInputsList =
@@ -999,7 +1008,7 @@ class SignUpPage extends Component {
         <div style={{ marginTop: 8 }}>
           <Button
             type="primary"
-            onClick={() => this.checkMustInputs(mustInputsList, "user_type")}
+            onClick={() => this.checkMustInputs(mustInputsList, nextLevel)}
             style={this.nextButtonStyle}
           >
             Next
@@ -1271,7 +1280,7 @@ class SignUpPage extends Component {
             Next
           </Button>
         </div>
-        <div>{this.generateBackButton("university")}</div>
+        <div>{this.generateBackButton("basicInfo")}</div>
       </div>
     );
   }
@@ -1341,8 +1350,8 @@ class SignUpPage extends Component {
   }
 
   async generateLevelFinal() {
+    this.setState({ redirect: "/dashboard" });
     await this.props.passStatesToApp("isUserLoggedIn", true);
-    return <Redirect to="dashboard" />;
   }
 
   generateAdditionalInfoForms() {
@@ -1369,6 +1378,9 @@ class SignUpPage extends Component {
   }
 
   render() {
+    if (this.state.redirect != null) {
+      return <Redirect to={this.state.redirect} />;
+    }
     IS_CONSOLE_LOG_OPEN && console.log("level", this.state.level);
     history.pushState(null, null, location.href);
     window.onpopstate = function() {
