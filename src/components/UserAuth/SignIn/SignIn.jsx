@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import { Modal, Form, Input, Icon, Button, Checkbox, Alert } from "antd";
 
 import Footer from "../../Partials/Footer/Footer.jsx";
-import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
+import {
+  IS_CONSOLE_LOG_OPEN,
+  USER_TYPES
+} from "../../../utils/constants/constants.js";
 import {
   googleClientId,
   jobHaxClientId,
@@ -199,7 +202,7 @@ class SignInPage extends Component {
           ) {
             window.location = "/signin";
           } else {
-            if (response.data.data.user_type === 0) {
+            if (response.data.data.user_type === USER_TYPES["undefined"]) {
               window.location = "/signup?=intro";
             } else {
               this.props.passStatesToApp("isUserLoggedIn", true);
@@ -298,7 +301,9 @@ class SignInPage extends Component {
                       this.postGoogleProfilePhoto(photoUrl);
                       IS_CONSOLE_LOG_OPEN &&
                         console.log(this.token, "profile updated?");
-                      if (response.data.data.user_type === 0) {
+                      if (
+                        response.data.data.user_type === USER_TYPES["undefined"]
+                      ) {
                         window.location = "/signup?=intro";
                       }
                       //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn -> true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
@@ -308,7 +313,10 @@ class SignInPage extends Component {
                       ) {
                         window.location = "/signin";
                       } else {
-                        if (response.data.data.user_type === 0) {
+                        if (
+                          response.data.data.user_type ===
+                          USER_TYPES["undefined"]
+                        ) {
                           window.location = "/signup?=intro";
                         } else {
                           this.props.passStatesToApp("isUserLoggedIn", true);

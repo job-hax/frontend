@@ -3,7 +3,11 @@ import React, { PureComponent } from "react";
 import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { USERS } from "../../utils/constants/endpoints.js";
-import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import {
+  IS_CONSOLE_LOG_OPEN,
+  USER_TYPES,
+  USER_TYPE_NAMES
+} from "../../utils/constants/constants.js";
 import Map from "./SubComponents/Map/Map.jsx";
 import IndividualMetrics from "./SubComponents/IndividualMetrics/IndividualMetrics.jsx";
 import UniversityMetrics from "./SubComponents/UniversityMetrics/UniversityMetrics.jsx";
@@ -13,6 +17,13 @@ import "./style.scss";
 class Metrics extends PureComponent {
   constructor(props) {
     super(props);
+
+    this.state = {
+      user_type:
+        this.props.cookie("get", "user_type") != ("" || null)
+          ? parseInt(this.props.cookie("get", "user_type"))
+          : 0
+    };
   }
 
   async componentDidMount() {
@@ -39,6 +50,12 @@ class Metrics extends PureComponent {
   }
 
   render() {
+    const exclusiveName =
+      this.state.user_type === USER_TYPES["student"] ||
+      this.state.user_type === USER_TYPES["alumni"]
+        ? USER_TYPE_NAMES[this.state.user_type]["header"] + " Job Metrics"
+        : "";
+
     return (
       <div>
         <div style={{ margin: "0 0 0px 0", height: 400 }}>
@@ -55,14 +72,21 @@ class Metrics extends PureComponent {
         <div className="metrics-big-group-container">
           <div>
             <div className="metric-big-group">
+              <div className="university-metrics-header-container">
+                <div className="header-line" />
+                <div className="university-metrics-header">
+                  Individual Metrics
+                </div>
+                <div className="header-line" />
+              </div>
               <IndividualMetrics cookie={this.props.cookie} />
             </div>
-            {this.props.cookie("get", "user_type") > 1 && (
+            {exclusiveName !== "" && (
               <div className="metric-big-group">
                 <div className="university-metrics-header-container">
                   <div className="header-line" />
                   <div className="university-metrics-header">
-                    University Job Metrics
+                    {exclusiveName}
                   </div>
                   <div className="header-line" />
                 </div>

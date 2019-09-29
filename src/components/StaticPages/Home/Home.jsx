@@ -90,60 +90,16 @@ class Home extends Component {
   }
 
   generateSignupButton() {
+    let redirect =
+      window.location.pathname === "/alumni" ? "alumni-signup" : "/signup";
     return (
       <Button
         type="primary"
         size="large"
-        onClick={() => this.setState({ redirect: "/signup" })}
+        onClick={() => this.setState({ redirect: redirect })}
       >
         Sign up for free
       </Button>
-    );
-  }
-
-  generateFeatureInfo(imageLink, header, body) {
-    return (
-      <div className="feature">
-        <img src={imageLink} alt="" />
-        <h4>{header}</h4>
-        <p className="small-text">{body}</p>
-      </div>
-    );
-  }
-
-  generateFeatureArea() {
-    return (
-      <section className="feature_area" id="feature">
-        <div className="title">
-          <h2>Unique Features</h2>
-          <p className="small-text">
-            No more messy spreadsheets or digging through emails to see the
-            status of your job applications!
-          </p>
-        </div>
-        <div className="features">
-          {this.generateFeatureInfo(
-            "src/assets/icons/featureEmail.png",
-            "Email Tracking",
-            "Too many job app emails to dig through? We can identify & automatically track those jobs on our dashboard!"
-          )}
-          {this.generateFeatureInfo(
-            "src/assets/icons/featureMetrics.png",
-            "Metrics",
-            "'We can only improve what we measure', that's why we analyze your data & give you insightful metrics to analyze."
-          )}
-          {this.generateFeatureInfo(
-            "src/assets/icons/featureSharing.png",
-            "Upcoming: Sharing",
-            "This upcoming feature will allow you to share your job search progress & seek advice with someone like your career advisor."
-          )}
-          {this.generateFeatureInfo(
-            "src/assets/icons/featurePredictions.png",
-            "Upcoming: Predictions & Notifications",
-            "We can do things like remind you of upcoming interviews & suggest jobs!"
-          )}
-        </div>
-      </section>
     );
   }
 
@@ -210,6 +166,28 @@ class Home extends Component {
     );
   }
 
+  generateHowItWorksArea() {
+    return (
+      <div className="how_it_works_area" id="howitworks">
+        {this.generateInteriorItem(
+          "src/assets/images/mail_parse.png",
+          "Create a card for each application",
+          "Apply anywhere - get it tracked in one place. Automatically."
+        )}
+        {this.generateInteriorItemFlipLR(
+          "src/assets/images/move.png",
+          "Organize your job hunting progress",
+          "Application process is visualized like no spreadsheet can do."
+        )}
+        {this.generateInteriorItem(
+          "src/assets/images/metrics.png",
+          "Leverage data to step up your job search game",
+          "Hiring trends, skill analysis, interview success rate to help you hunt like a pro."
+        )}
+      </div>
+    );
+  }
+
   generateAlumniHomePageFirstItem() {
     return (
       <div className="homepage-first-item">
@@ -245,28 +223,6 @@ class Home extends Component {
   }
 
   generateAlumniHowItWorksArea() {
-    return (
-      <div className="how_it_works_area" id="howitworks">
-        {this.generateInteriorItem(
-          "src/assets/images/mail_parse.png",
-          "Create a card for each application",
-          "Apply anywhere - get it tracked in one place. Automatically."
-        )}
-        {this.generateInteriorItemFlipLR(
-          "src/assets/images/move.png",
-          "Organize your job hunting progress",
-          "Application process is visualized like no spreadsheet can do."
-        )}
-        {this.generateInteriorItem(
-          "src/assets/images/metrics.png",
-          "Leverage data to step up your job search game",
-          "Hiring trends, skill analysis, interview success rate to help you hunt like a pro."
-        )}
-      </div>
-    );
-  }
-
-  generateHowItWorksArea() {
     return (
       <div className="how_it_works_area" id="howitworks">
         {this.generateInteriorItem(

@@ -6,6 +6,10 @@ import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { USERS } from "../../../utils/constants/endpoints";
 import NotificationsBox from "../NotificationsBox/NotificationsBox.jsx";
 import "./style.scss";
+import {
+  USER_TYPES,
+  USER_TYPE_NAMES
+} from "../../../utils/constants/constants";
 
 const { SubMenu } = Menu;
 
@@ -15,7 +19,7 @@ class Header extends Component {
     this.state = {
       user_type:
         this.props.cookie("get", "user_type") != ("" || null)
-          ? this.props.cookie("get", "user_type")
+          ? parseInt(this.props.cookie("get", "user_type"))
           : 0,
       is_demo_user:
         this.props.cookie("get", "is_demo_user") != ("" || null)
@@ -120,7 +124,7 @@ class Header extends Component {
       this.props.passStatesToApp("logout", true);
       await setStateAsync({ current: "/home" });
       this.props.handleSignOut();
-    } else if (page === "/signup") {
+    } else if (page === "/demoToSignup") {
       this.props.passStatesToApp("logout", true);
       await setStateAsync({ current: "/signup" });
       this.props.handleSignOut();
@@ -148,6 +152,11 @@ class Header extends Component {
   }
 
   generateLoggedInHeader() {
+    const exclusiveHeaderName =
+      this.state.user_type === USER_TYPES["student"] ||
+      this.state.user_type === USER_TYPES["alumni"]
+        ? USER_TYPE_NAMES[this.state.user_type]["header"] + " "
+        : "";
     const isDashboardOpenedByDefault =
       window.location.pathname == "/" ? "/dashboard" : "";
     const profilePhotoUrl = this.props.profilePhotoUrl
@@ -212,11 +221,13 @@ class Header extends Component {
                 </div>
               }
             >
-              {(this.state.user_type == 2 || this.state.user_type == 3) && (
-                <Menu.Item key="/alumni-search">Alumni</Menu.Item>
+              {this.state.user_type === USER_TYPES["alumni"] && (
+                <Menu.Item key="/alumni-search">Alumni Search</Menu.Item>
               )}
-              <Menu.Item key="/blogs">Blog</Menu.Item>
-              <Menu.Item key="/events">Events</Menu.Item>
+              <Menu.Item key="/blogs">{exclusiveHeaderName + "Blog"}</Menu.Item>
+              <Menu.Item key="/events">
+                {exclusiveHeaderName + "Events"}
+              </Menu.Item>
             </SubMenu>
           </Menu>
           {!this.props.isNotificationsShowing ? (
@@ -261,8 +272,8 @@ class Header extends Component {
               }
             >
               <Menu.Item key="/profile">Profile</Menu.Item>
-              {(this.state.user_type == 3 ||
-                this.state.user_type == 4 ||
+              {(this.state.user_type === USER_TYPES["alumni"] ||
+                this.state.user_type === USER_TYPES["career_services"] ||
                 this.props.isAdmin) && (
                 <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
               )}
@@ -278,6 +289,8 @@ class Header extends Component {
   }
 
   generateNonLoggedInHeader() {
+    let signupRedirect =
+      this.state.current === "/alumni" ? "/alumni-signup" : "/signup";
     return (
       <div className="header-container">
         <div className="left-container">
@@ -298,7 +311,9 @@ class Header extends Component {
           <div>/</div>
           <div
             className="option"
-            onClick={() => this.setState({ current: "/signup", request: true })}
+            onClick={() =>
+              this.setState({ current: signupRedirect, request: true })
+            }
           >
             Sign up
           </div>
@@ -317,7 +332,7 @@ class Header extends Component {
           </Button>
           <Button
             type="primary"
-            onClick={() => this.handleMenuClick({ key: "/signup" })}
+            onClick={() => this.handleMenuClick({ key: "/demoToSignup" })}
           >
             Sign up
           </Button>
