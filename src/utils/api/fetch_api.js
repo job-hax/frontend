@@ -67,6 +67,10 @@ function removeAllCookies() {
   document.cookie =
     "user_type=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   document.cookie =
+    "signup_flow_completed=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "signup_complete_required=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
     "is_demo_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 

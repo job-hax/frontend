@@ -55,6 +55,12 @@ class Home extends Component {
           );
           this.props.cookie(
             "set",
+            "signup_flow_completed",
+            response.data.data.signup_flow_completed,
+            "/"
+          );
+          this.props.cookie(
+            "set",
             "jobhax_access_token",
             this.token,
             "/",

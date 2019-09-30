@@ -20,7 +20,6 @@ import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx"
 import {
   makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN,
-  USER_TYPES
 } from "../../utils/constants/constants.js";
 import { linkedInOAuth } from "../../utils/helpers/oAuthHelperFunctions.js";
 import { apiRoot, USERS } from "../../utils/constants/endpoints.js";
@@ -657,8 +656,8 @@ class ProfilePage extends React.Component {
               <div className="info-content-body">
                 {this.state.data != null &&
                   this.state.data.college != (null || "") &&
-                  (this.state.data.user_type === USER_TYPES["student"] ||
-                    this.state.data.user_type === USER_TYPES["alumni"]) && (
+                  (this.state.data.user_type.name === "Student" ||
+                    this.state.data.user_type.name === "Alumni") && (
                     <div>
                       <div className="info-content-body-item">
                         <div className="info-content-body-item-label">
@@ -678,7 +677,7 @@ class ProfilePage extends React.Component {
                       </div>{" "}
                       <div className="info-content-body-item">
                         <div className="info-content-body-item-label">
-                          {this.state.data.user_type === USER_TYPES["student"]
+                          {this.state.data.user_type.name === "Student"
                             ? "Expected Graduation:"
                             : "Graduation Year:"}
                         </div>

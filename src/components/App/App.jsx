@@ -33,7 +33,10 @@ import {
   jobHaxClientId,
   jobHaxClientSecret
 } from "../../config/config.js";
-import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import {
+  IS_CONSOLE_LOG_OPEN,
+  USER_TYPES
+} from "../../utils/constants/constants.js";
 import {
   apiRoot,
   USERS,
@@ -51,12 +54,6 @@ class App extends Component {
       active: false,
       isUserLoggedIn:
         this.cookie("get", "jobhax_access_token") == ("" || null)
-          ? false
-          : this.cookie("get", "user_type") == "0"
-          ? "signup?=intro"
-          : this.cookie("get", "user_type") == null
-          ? "signup?=intro"
-          : this.cookie("get", "user_type") == "signup?=intro"
           ? false
           : true,
       isAuthenticationChecking: true,
@@ -142,11 +139,10 @@ class App extends Component {
           isAuthenticationChecking: false
         });
         if (
-          this.state.isUserLoggedIn == "signup?=intro" &&
-          this.cookie("get", "user_type") != "signup?=intro"
+          this.cookie("get", "signup_flow_completed") === "false" &&
+          this.cookie("get", "signup_complete_required") != "false"
         ) {
-          this.props.cookies.set("user_type", "signup?=intro", { path: "/" });
-          window.location = "/signup?=intro";
+          this.cookie("set", "signup_complete_required", true, "/");
         }
       });
     });
@@ -242,6 +238,19 @@ class App extends Component {
           });
         }
       }, 200);
+    }
+    if (this.cookie("get", "signup_complete_required") === "true") {
+      this.cookie("set", "signup_complete_required", false, "/");
+      let userType = this.props.cookies.get("user_type");
+      if (userType.id === USER_TYPES["alumni"]) {
+        window.location = "/alumni-signup?=intro";
+      } else {
+        window.location = "/signup?=intro";
+      }
+    }
+    if (this.cookie("get", "signup_flow_completed") === "true") {
+      this.cookie("remove", "signup_complete_required");
+      this.cookie("remove", "signup_flow_completed");
     }
   }
 
@@ -421,6 +430,8 @@ class App extends Component {
       cookies.remove("jobhax_access_token_expiration", { path: "/" });
       cookies.remove("remember_me", { path: "/" });
       cookies.remove("user_type", { path: "/" });
+      cookies.remove("signup_flow_completed", { path: "/" });
+      cookies.remove("signup_complete_required", { path: "/" });
       cookies.remove("is_demo_user", { path: "/" });
     } else if (method === "remove") {
       IS_CONSOLE_LOG_OPEN && console.log("cookies removing");
@@ -531,7 +542,9 @@ class App extends Component {
       logout,
       isInitialRequest
     } = this.state;
+    const appRenderConsole = false;
     IS_CONSOLE_LOG_OPEN &&
+      appRenderConsole &&
       console.log(
         "page",
         page,
@@ -554,7 +567,9 @@ class App extends Component {
       return <Spinner message="Page not found!" />;
     else if (logout && page == "/home")
       return <Spinner message="Logging out..." />;
-    else if (isUserLoggedIn && this.state.active)
+    else if (isUserLoggedIn && this.state.active) {
+      let signup_completed =
+        this.cookie("get", "signup_flow_completed") === "true" ? true : false;
       return (
         <Router>
           <div className="main-container">
@@ -645,7 +660,41 @@ class App extends Component {
             />
             <Route
               exact
-              path={["/signup", "/", "/home"]}
+              path="/signup"
+              render={() =>
+                signup_completed ? (
+                  <Redirect to="/dashboard" />
+                ) : (
+                  <SignUp
+                    googleAuth={this.googleAuth}
+                    alert={this.showAlert}
+                    passStatesToApp={this.passStatesToApp}
+                    cookie={this.cookie}
+                    signupType={"general"}
+                  />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/alumni-signup"
+              render={() =>
+                signup_completed ? (
+                  <Redirect to="/dashboard" />
+                ) : (
+                  <SignUp
+                    googleAuth={this.googleAuth}
+                    alert={this.showAlert}
+                    passStatesToApp={this.passStatesToApp}
+                    cookie={this.cookie}
+                    signupType={"alumni"}
+                  />
+                )
+              }
+            />
+            <Route
+              exact
+              path={["/", "/home", "/alumni"]}
               render={() =>
                 !logout ? (
                   <Redirect to="/dashboard" />
@@ -740,7 +789,7 @@ class App extends Component {
           </div>
         </Router>
       );
-    else {
+    } else {
       let allowed = [
         "/",
         "/home",
