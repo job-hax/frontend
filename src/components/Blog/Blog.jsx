@@ -54,7 +54,7 @@ class Blog extends React.Component {
           ? window.location.search.split("=")[1]
           : null,
       detail_blog: {},
-      user_type: parseInt(this.props.cookie("get", "user_type")),
+      user_type: this.props.cookie("get", "user_type"),
       editable_blog: {
         content: "",
         created_at: new Date().toISOString(),
@@ -306,8 +306,7 @@ class Blog extends React.Component {
       );
     } else if (
       this.state.edit == true &&
-      (this.props.user.user_type != (3 || 4) &&
-        this.props.user.is_admin != true)
+      !this.state.user_type.blog_creation_enabled
     ) {
       return <Redirect to={"action?type=redirect&/blogs"} />;
     }
@@ -318,8 +317,12 @@ class Blog extends React.Component {
             <div>
               {this.state.detail_blog_id == null ? (
                 <div className="blog-page-main-container">
-                  <div>{this.generateFeaturedBlog()}</div>
-                  <div>{this.generateBlogsList()}</div>
+                  {this.state.blogList.length >= 1 && (
+                    <div>{this.generateFeaturedBlog()}</div>
+                  )}
+                  {this.state.blogList.length > 1 && (
+                    <div>{this.generateBlogsList()}</div>
+                  )}
                 </div>
               ) : (
                 <BlogDetails

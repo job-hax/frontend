@@ -19,10 +19,7 @@ class Metrics extends PureComponent {
     super(props);
 
     this.state = {
-      user_type:
-        this.props.cookie("get", "user_type") != ("" || null)
-          ? parseInt(this.props.cookie("get", "user_type"))
-          : 0
+      user_type: this.props.cookie("get", "user_type")
     };
   }
 
@@ -50,11 +47,9 @@ class Metrics extends PureComponent {
   }
 
   render() {
-    const exclusiveName =
-      this.state.user_type === USER_TYPES["student"] ||
-      this.state.user_type === USER_TYPES["alumni"]
-        ? USER_TYPE_NAMES[this.state.user_type]["header"] + " Job Metrics"
-        : "";
+    const exclusiveName = this.state.user_type.college_specific_metrics_enabled
+      ? USER_TYPE_NAMES[this.state.user_type.id]["header"] + " Job Metrics"
+      : "";
 
     return (
       <div>

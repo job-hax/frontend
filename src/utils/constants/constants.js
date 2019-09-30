@@ -148,19 +148,19 @@ export const VISIBILITY_FILTERS = {
 };
 
 export const USER_TYPES = {
-  undefined: 0,
-  public: 1,
-  student: 2,
-  alumni: 3,
-  career_services: 4
+  undefined: 1,
+  public: 2,
+  student: 3,
+  alumni: 4,
+  career_services: 5
 };
 
 export const USER_TYPE_NAMES = {
-  0: { name: "Undefined", header: "Undefined" },
-  1: { name: "Public", header: "Public" },
-  2: { name: "Student", header: "School" },
-  3: { name: "Alumni", header: "Alumni" },
-  4: { name: "Career Services", header: "Career Services" }
+  1: { name: "Undefined", header: "Undefined" },
+  2: { name: "Public", header: "Public" },
+  3: { name: "Student", header: "School" },
+  4: { name: "Alumni", header: "Alumni" },
+  5: { name: "Career Services", header: "Career Services" }
 };
 
 export function makeTimeBeautiful(time, type = "date") {

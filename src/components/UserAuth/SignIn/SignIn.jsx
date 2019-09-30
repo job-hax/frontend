@@ -179,6 +179,12 @@ class SignInPage extends Component {
           );
           this.props.cookie(
             "set",
+            "signup_flow_completed",
+            response.data.data.signup_flow_completed,
+            "/"
+          );
+          this.props.cookie(
+            "set",
             "jobhax_access_token",
             this.token,
             "/",
@@ -202,8 +208,15 @@ class SignInPage extends Component {
           ) {
             window.location = "/signin";
           } else {
-            if (response.data.data.user_type === USER_TYPES["undefined"]) {
-              window.location = "/signup?=intro";
+            if (!response.data.data.signup_flow_completed) {
+              if (
+                this.cookie("get", "user_type") &&
+                this.cookie("get", "user_type").id === USER_TYPES["alumni"]
+              ) {
+                window.location = "/alumni-signup?=intro";
+              } else {
+                window.location = "/signup?=intro";
+              }
             } else {
               this.props.passStatesToApp("isUserLoggedIn", true);
               this.props.passStatesToApp("isAuthenticationChecking", false);
@@ -239,6 +252,12 @@ class SignInPage extends Component {
     let date = new Date();
     date.setSeconds(date.getSeconds() + response.data.data.expires_in);
     this.props.cookie("set", "user_type", response.data.data.user_type, "/");
+    this.props.cookie(
+      "set",
+      "signup_flow_completed",
+      response.data.data.signup_flow_completed,
+      "/"
+    );
     this.props.cookie(
       "set",
       "google_access_token_expiration",
@@ -301,10 +320,16 @@ class SignInPage extends Component {
                       this.postGoogleProfilePhoto(photoUrl);
                       IS_CONSOLE_LOG_OPEN &&
                         console.log(this.token, "profile updated?");
-                      if (
-                        response.data.data.user_type === USER_TYPES["undefined"]
-                      ) {
-                        window.location = "/signup?=intro";
+                      if (!response.data.data.signup_flow_completed) {
+                        if (
+                          this.cookie("get", "user_type") &&
+                          this.cookie("get", "user_type").id ===
+                            USER_TYPES["alumni"]
+                        ) {
+                          window.location = "/alumni-signup?=intro";
+                        } else {
+                          window.location = "/signup?=intro";
+                        }
                       }
                       //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn -> true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
                       if (
@@ -313,11 +338,16 @@ class SignInPage extends Component {
                       ) {
                         window.location = "/signin";
                       } else {
-                        if (
-                          response.data.data.user_type ===
-                          USER_TYPES["undefined"]
-                        ) {
-                          window.location = "/signup?=intro";
+                        if (!response.data.data.signup_flow_completed) {
+                          if (
+                            this.cookie("get", "user_type") &&
+                            this.cookie("get", "user_type").id ===
+                              USER_TYPES["alumni"]
+                          ) {
+                            window.location = "/alumni-signup?=intro";
+                          } else {
+                            window.location = "/signup?=intro";
+                          }
                         } else {
                           this.props.passStatesToApp("isUserLoggedIn", true);
                           this.props.passStatesToApp(

@@ -51,7 +51,8 @@ class SignUpPage extends Component {
           : window.location.search.split("=")[1] == "intro"
           ? "intro"
           : "undefined",
-      user_type: this.props.signupType === "alumni" ? 3 : null,
+      user_type:
+        this.props.signupType === "alumni" ? USER_TYPES["alumni"] : null,
       first_name: "",
       last_name: "",
       college_id: null,
@@ -103,6 +104,19 @@ class SignUpPage extends Component {
     this.setCountryOrStateList = this.setCountryOrStateList.bind(this);
     this.generateUrlForGetData = this.generateUrlForGetData.bind(this);
     this.setCookies = this.setCookies.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.cookie("remove", "signup_complete_required");
+  }
+
+  componentDidUpdate() {
+    if (
+      this.props.signupType === "alumni" &&
+      this.state.user_type != USER_TYPES["alumni"]
+    ) {
+      this.setState({ user_type: USER_TYPES["alumni"] });
+    }
   }
 
   currentStyle(state, condition) {
@@ -164,6 +178,12 @@ class SignUpPage extends Component {
     );
     this.props.cookie("set", "jobhax_refresh_token", this.refresh_token, "/");
     this.props.cookie("set", "user_type", response.data.data.user_type, "/");
+    this.props.cookie(
+      "set",
+      "signup_flow_completed",
+      response.data.data.signup_flow_completed,
+      "/"
+    );
   }
 
   handleGoogleSignUp() {
@@ -210,7 +230,7 @@ class SignUpPage extends Component {
                 .then(response => {
                   if (response.statusText === "OK") {
                     if (response.data.success == true) {
-                      if (response.data.data.user_type === USER_TYPES["undefined"]) {
+                      if (!response.data.data.signup_flow_completed) {
                         this.setState({ level: "intro" });
                       } else {
                         this.props.cookie("set", "remember_me", true, "/");
@@ -280,6 +300,7 @@ class SignUpPage extends Component {
             response.data.data.user_type,
             "/"
           );
+          this.props.cookie("set", "signup_flow_completed", true, "/");
           this.generateLevelFinal();
           this.props.alert(
             5000,
@@ -301,6 +322,12 @@ class SignUpPage extends Component {
 
   handleSignUpFormNext(event) {
     event.preventDefault();
+    console.log(
+      "signuppp",
+      this.state.user_type,
+      "table result",
+      USER_TYPES["alumni"]
+    );
     let config = { method: "POST" };
     config.body = {};
     if (
@@ -328,7 +355,7 @@ class SignUpPage extends Component {
               this.token = `${
                 response.data.data.token_type
               } ${response.data.data.access_token.trim()}`;
-              if (response.data.data.user_type === USER_TYPES["undefined"]) {
+              if (!response.data.data.signup_flow_completed) {
                 this.setState({ level: "intro" });
               } else {
                 this.props.passStatesToApp("isUserLoggedIn", true);
@@ -345,6 +372,18 @@ class SignUpPage extends Component {
                 this.token,
                 "/",
                 date
+              );
+              this.props.cookie(
+                "set",
+                "user_type",
+                response.data.data.user_type,
+                "/"
+              );
+              this.props.cookie(
+                "set",
+                "signup_flow_completed",
+                response.data.data.signup_flow_completed,
+                "/"
               );
               this.props.cookie(
                 "set",
@@ -726,7 +765,8 @@ class SignUpPage extends Component {
               type="primary"
               onClick={() =>
                 this.setState({
-                  level: "student"
+                  level: "student",
+                  user_type: USER_TYPES["student"]
                 })
               }
               style={this.nextButtonStyle}

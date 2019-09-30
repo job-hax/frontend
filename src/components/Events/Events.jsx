@@ -20,6 +20,7 @@ class Events extends React.Component {
       isWaitingResponse: false,
       isInitialRequest: "beforeRequest",
       isNewPageRequested: false,
+      user_type: this.props.cookie("get", "user_type"),
       pagination: {},
       pageNo: 1,
       pageSize: 9,
@@ -51,7 +52,6 @@ class Events extends React.Component {
               .split("=")[0] == "edit"
           ? window.location.search.split("&")[0].split("=")[1]
           : null,
-      user_type: parseInt(this.props.cookie("get", "user_type")),
       editable_event: {
         attended: true,
         attendee_count: 0,
@@ -235,8 +235,7 @@ class Events extends React.Component {
       );
     } else if (
       this.state.edit == true &&
-      (this.props.user.user_type != (3 || 4) &&
-        this.props.user.is_admin != true)
+      !this.state.user_type.blog_creation_enabled
     ) {
       return <Redirect to={"action?type=redirect&/events"} />;
     }

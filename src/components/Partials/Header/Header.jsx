@@ -17,10 +17,7 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user_type:
-        this.props.cookie("get", "user_type") != ("" || null)
-          ? parseInt(this.props.cookie("get", "user_type"))
-          : 0,
+      user_type: this.props.cookie("get", "user_type"),
       is_demo_user:
         this.props.cookie("get", "is_demo_user") != ("" || null)
           ? this.props.cookie("get", "is_demo_user")
@@ -50,8 +47,8 @@ class Header extends Component {
       this.setState({ request: false, redirect: true });
     }
     if (
-      (this.state.current == window.location.pathname ||
-        this.state.current ==
+      (this.state.current === window.location.pathname ||
+        this.state.current ===
           window.location.pathname + window.location.search) &&
       this.state.redirect
     ) {
@@ -130,19 +127,19 @@ class Header extends Component {
       this.props.handleSignOut();
     } else if (page === "/events") {
       if (window.location.pathname.substring(0, 6) == "/event") {
-        this.setState({ current: "action?type=redirect&/events" });
+        this.setState({ current: "/action?type=redirect&/events" });
       } else {
         this.setState({ current: page });
       }
     } else if (page === "/blogs?edit=true") {
       if (window.location.pathname.substring(0, 5) == "/blog") {
-        this.setState({ current: "action?type=redirect&/blogs?edit=true" });
+        this.setState({ current: "/action?type=redirect&/blogs?edit=true" });
       } else {
         this.setState({ current: page });
       }
     } else if (page === "/blogs") {
       if (window.location.pathname.substring(0, 5) == "/blog") {
-        this.setState({ current: "action?type=redirect&/blogs" });
+        this.setState({ current: "/action?type=redirect&/blogs" });
       } else {
         this.setState({ current: page });
       }
@@ -153,9 +150,9 @@ class Header extends Component {
 
   generateLoggedInHeader() {
     const exclusiveHeaderName =
-      this.state.user_type === USER_TYPES["student"] ||
-      this.state.user_type === USER_TYPES["alumni"]
-        ? USER_TYPE_NAMES[this.state.user_type]["header"] + " "
+      this.state.user_type.name === "Student" ||
+      this.state.user_type.name === "Alumni"
+        ? USER_TYPE_NAMES[this.state.user_type.id]["header"] + " "
         : "";
     const isDashboardOpenedByDefault =
       window.location.pathname == "/" ? "/dashboard" : "";
@@ -221,7 +218,7 @@ class Header extends Component {
                 </div>
               }
             >
-              {this.state.user_type === USER_TYPES["alumni"] && (
+              {this.state.user_type.alumni_listing_enabled && (
                 <Menu.Item key="/alumni-search">Alumni Search</Menu.Item>
               )}
               <Menu.Item key="/blogs">{exclusiveHeaderName + "Blog"}</Menu.Item>
@@ -272,9 +269,7 @@ class Header extends Component {
               }
             >
               <Menu.Item key="/profile">Profile</Menu.Item>
-              {(this.state.user_type === USER_TYPES["alumni"] ||
-                this.state.user_type === USER_TYPES["career_services"] ||
-                this.props.isAdmin) && (
+              {this.state.user_type.blog_creation_enabled && (
                 <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
               )}
               <Menu.Item key="/logout">
@@ -291,20 +286,27 @@ class Header extends Component {
   generateNonLoggedInHeader() {
     let signupRedirect =
       this.state.current === "/alumni" ? "/alumni-signup" : "/signup";
+    let functional = !(
+      this.props.cookie("get", "signup_flow_completed") === "false"
+    );
     return (
       <div className="header-container">
         <div className="left-container">
           <div className="jobhax-logo-container">
             <div
               className="jobhax-logo"
-              onClick={() => this.setState({ current: "/home", request: true })}
+              onClick={() =>
+                functional && this.setState({ current: "/home", request: true })
+              }
             />
           </div>
         </div>
         <div className="right-container out">
           <div
             className="option"
-            onClick={() => this.setState({ current: "/signin", request: true })}
+            onClick={() =>
+              functional && this.setState({ current: "/signin", request: true })
+            }
           >
             Log in
           </div>
@@ -312,6 +314,7 @@ class Header extends Component {
           <div
             className="option"
             onClick={() =>
+              functional &&
               this.setState({ current: signupRedirect, request: true })
             }
           >
@@ -350,7 +353,10 @@ class Header extends Component {
     if (this.state.redirect) {
       return <Redirect to={this.state.current} />;
     }
-    if (this.props.isUserLoggedIn) {
+    if (
+      this.props.isUserLoggedIn &&
+      this.props.cookie("get", "signup_flow_completed") != "false"
+    ) {
       header = this.generateLoggedInHeader();
     } else {
       header = this.generateNonLoggedInHeader();
