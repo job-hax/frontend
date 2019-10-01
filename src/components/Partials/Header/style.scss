@@ -75,6 +75,10 @@
         margin: 20px 80px;
         font-size: 18px;
         font-weight: lighter;
+
+        @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+          margin: 20px;
+        }
       }
 
       .option {
@@ -142,6 +146,10 @@
           top: -100%;
           bottom: -100%;
           border-radius: 18px;
+        }
+
+        @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+          margin-right: 20px;
         }
       }
 

@@ -180,11 +180,17 @@ class Home extends Component {
           "Create a card for each application",
           "Apply anywhere - get it tracked in one place. Automatically."
         )}
-        {this.generateInteriorItemFlipLR(
-          "src/assets/images/move.png",
-          "Organize your job hunting progress",
-          "Application process is visualized like no spreadsheet can do."
-        )}
+        {window.innerWidth > 800
+          ? this.generateInteriorItemFlipLR(
+              "src/assets/images/move.png",
+              "Organize your job hunting progress",
+              "Application process is visualized like no spreadsheet can do."
+            )
+          : this.generateInteriorItem(
+              "src/assets/images/move.png",
+              "Organize your job hunting progress",
+              "Application process is visualized like no spreadsheet can do."
+            )}
         {this.generateInteriorItem(
           "src/assets/images/metrics.png",
           "Leverage data to step up your job search game",
@@ -236,11 +242,17 @@ class Home extends Component {
           "Create a card for each application",
           "Apply anywhere - get it tracked in one place. Automatically."
         )}
-        {this.generateInteriorItemFlipLR(
-          "src/assets/images/move.png",
-          "Organize your job hunting progress",
-          "Application process is visualized like no spreadsheet can do."
-        )}
+        {window.innerWidth > 800
+          ? this.generateInteriorItemFlipLR(
+              "src/assets/images/move.png",
+              "Organize your job hunting progress",
+              "Application process is visualized like no spreadsheet can do."
+            )
+          : this.generateInteriorItem(
+              "src/assets/images/move.png",
+              "Organize your job hunting progress",
+              "Application process is visualized like no spreadsheet can do."
+            )}
         {this.generateInteriorItem(
           "src/assets/images/metrics.png",
           "Leverage data to step up your job search game",
@@ -254,16 +266,19 @@ class Home extends Component {
     if (this.state.redirect != null) {
       return <Redirect to={this.state.redirect} />;
     }
-    return window.location.pathname === "/alumni" ? (
-      <div className="home-container">
-        {this.generateAlumniHomePageFirstItem()}
-        {this.generateAlumniHowItWorksArea()}
-        <Footer />
-      </div>
-    ) : (
-      <div className="home-container">
-        {this.generateHomePageFirstItem()}
-        {this.generateHowItWorksArea()}
+    return (
+      <div>
+        {window.location.pathname === "/alumni" ? (
+          <div className="home-container">
+            {this.generateAlumniHomePageFirstItem()}
+            {this.generateAlumniHowItWorksArea()}
+          </div>
+        ) : (
+          <div className="home-container">
+            {this.generateHomePageFirstItem()}
+            {this.generateHowItWorksArea()}
+          </div>
+        )}
         <Footer />
       </div>
     );

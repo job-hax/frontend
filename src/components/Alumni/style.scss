@@ -54,6 +54,23 @@
         .filter-area-container:hover {
             box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
         }
+
+
+        @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+            .alumni-cards-container {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .filter-area-container {
+                height: fit-content;
+                margin: 12px calc((100vw - 320px) / 2);
+
+                .title {
+                    padding: 0px;
+                }
+            }
+        }
     }
 
 
@@ -65,4 +82,9 @@
     position: fixed;
     bottom: 0%;
     width: 100%;
+}
+
+.footer-margin {
+    width: 100%;
+    margin-top: 80px;
 }

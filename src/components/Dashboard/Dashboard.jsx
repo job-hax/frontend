@@ -817,6 +817,10 @@ class Dashboard extends Component {
       height: "32px"
     };
 
+    const dashboardBigContainerHeight = this.state.is_demo_user
+      ? window.innerHeight - 110
+      : window.innerHeight - 60;
+
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <SubMenu title="Rejected">
@@ -907,40 +911,45 @@ class Dashboard extends Component {
     if (this.state.isInitialRequest && !IS_MOCKING)
       return <Spinner message="Preparing your dashboard..." />;
     return (
-      <div>
-        <div
-          style={{
-            position: "fixed",
-            margin: "-45px 0 0 80px",
-            display: "flex",
-            justifyContent: "space-between",
-            zIndex: 52,
-            width: this.state.selectedJobApplications.length > 0 ? 718 : 440
-          }}
-        >
-          <Search
-            placeholder=""
-            onChange={event => this.onSearch(event)}
-            style={{ width: 200 }}
-          />
-          <RangePicker onChange={this.onDateQuery} style={{ width: 220 }} />
-          {this.state.selectedJobApplications.length > 0 && (
-            <div className={multipleOperationsContainerClass}>
-              <Checkbox
-                style={selectAllStyle}
-                onChange={this.onSelectAll}
-                checked={multipleOperationsContainerAnimate}
-              >
-                Select All
-              </Checkbox>
-              <Dropdown overlay={menu}>
-                <Button className="ant-dropdown-link" style={moveSelectedStyle}>
-                  Move Selected <Icon type="down" />
-                </Button>
-              </Dropdown>
-            </div>
-          )}
-        </div>
+      <div style={{ height: dashboardBigContainerHeight }}>
+        {window.innerWidth > 980 && (
+          <div
+            style={{
+              position: "fixed",
+              margin: "-45px 0 0 80px",
+              display: "flex",
+              justifyContent: "space-between",
+              zIndex: 52,
+              width: this.state.selectedJobApplications.length > 0 ? 718 : 440
+            }}
+          >
+            <Search
+              placeholder=""
+              onChange={event => this.onSearch(event)}
+              style={{ width: 200 }}
+            />
+            <RangePicker onChange={this.onDateQuery} style={{ width: 220 }} />
+            {this.state.selectedJobApplications.length > 0 && (
+              <div className={multipleOperationsContainerClass}>
+                <Checkbox
+                  style={selectAllStyle}
+                  onChange={this.onSelectAll}
+                  checked={multipleOperationsContainerAnimate}
+                >
+                  Select All
+                </Checkbox>
+                <Dropdown overlay={menu}>
+                  <Button
+                    className="ant-dropdown-link"
+                    style={moveSelectedStyle}
+                  >
+                    Move Selected <Icon type="down" />
+                  </Button>
+                </Dropdown>
+              </div>
+            )}
+          </div>
+        )}
         <div className={dashboardContainerClass}>
           <Column
             name="toApply"

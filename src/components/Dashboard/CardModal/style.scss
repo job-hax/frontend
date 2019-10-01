@@ -19,6 +19,16 @@
     transform: translate(-50%, -50%);
     border-radius: 16px;
     box-shadow: 1px 1px 20px 4px opacify(rgba(83, 83, 83, 0.4), 0.00);
+
+    @media only screen and (max-device-width : 360px) and (-webkit-min-device-pixel-ratio : 2) {
+      transform: translate(-50%, -50%) scale(0.4) !important;
+    }
+
+    @media only screen and (max-device-width : 750px) and (-webkit-min-device-pixel-ratio : 2) {
+      transform: translate(-50%, -50%) scale(0.5);
+      top: 50%;
+      left: 50%;
+    }
   }
 
   .modal-header-container {

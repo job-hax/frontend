@@ -63,7 +63,10 @@ class ContactCard extends React.Component {
             visible={this.state.isDetailedModalShowing}
             footer={null}
             closable={false}
-            bodyStyle={{ padding: 0, margin: 0 }}
+            bodyStyle={{
+              padding: 0,
+              margin: 0
+            }}
           >
             <ContactCardDetailed
               contact={this.props.contact}

@@ -61,15 +61,15 @@
 
 .metrics-big-group-container {
     width: 100%;
-    overflow-y: hidden;
     padding: 0 0 80px 0;
+    overflow: hidden;
 
     .metric-big-group {
-        min-width: 1240px;
         min-height: 700px;
         max-height: 800px;
         padding: 8px 110px 20px 110px;
         margin: 12px 0 0 0;
+
 
         .metric-group {
             display: flex;
@@ -99,11 +99,11 @@
 
             .metric-summary-container:hover {
                 z-index: 20;
-                transform: scale(1.1);
-                -webkit-transform: scale(1.1);
-                -moz-transform: scale(1.1);
-                -o-transform: scale(1.1);
-                -ms-transform: scale(1.1);
+                transform: scale(1.05);
+                -webkit-transform: scale(1.05);
+                -moz-transform: scale(1.05);
+                -o-transform: scale(1.05);
+                -ms-transform: scale(1.05);
                 box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.1);
             }
 
@@ -144,11 +144,11 @@
 
             .metric-detailed-container:hover {
                 z-index: 20;
-                transform: scale(1.1);
-                -webkit-transform: scale(1.1);
-                -moz-transform: scale(1.1);
-                -o-transform: scale(1.1);
-                -ms-transform: scale(1.1);
+                transform: scale(1.05);
+                -webkit-transform: scale(1.05);
+                -moz-transform: scale(1.05);
+                -o-transform: scale(1.05);
+                -ms-transform: scale(1.05);
                 box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.1);
             }
 
@@ -173,6 +173,23 @@
                 height: 1px;
                 background-color: black;
             }
+
+            @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+                .header-line {
+                    width: 80px;
+                }
+            }
+        }
+    }
+
+    @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+
+        .metric-big-group {
+            padding: 8px 0px 20px 20px;
+            min-height: 540px;
+            max-height: 540px;
+            transform: scale(0.67) translate(-24%, -24%);
+            min-width: 140%;
         }
     }
 }

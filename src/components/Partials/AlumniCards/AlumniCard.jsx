@@ -23,7 +23,7 @@ class AlumniCard extends React.Component {
 
   generateCard() {
     const { alumni, displayingAt } = this.props;
-    const width = displayingAt == "contacts" ? "380px" : "300px";
+    const width = displayingAt == "contacts" ? "380px" : "100%";
     const margin = displayingAt == "contacts" ? "-24px 0 0 0" : "0 0 0 0";
     return (
       <div className="header">
@@ -35,7 +35,7 @@ class AlumniCard extends React.Component {
               <img src="../../../src/assets/icons/User@3x.png" />
             )}
           </div>
-          <div>
+          <div style={{ width: "100%" }}>
             <div className="name">
               {alumni.first_name + " " + alumni.last_name}
             </div>

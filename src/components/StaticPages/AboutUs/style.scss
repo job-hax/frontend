@@ -3,7 +3,7 @@
 
 .about_us-container {
     background-color: white;
-    height: 96vh;
+    height: fit-content;
     color: $text_color;
 
     .team-diagram {
@@ -14,10 +14,10 @@
     }
 
     .header_area {
-        background-color: rgb(42, 123, 190);
-        background-size: cover;
+        background-image: $banner_image;
+        background-size: 100% 100%;
         color: white;
-        height: 46vh;
+        height: 40vh;
         padding-top: 120px;
         padding-bottom: 80px;
     }
@@ -33,6 +33,12 @@
             width: 900px;
             margin: auto;
             margin-top: 3vh;
+
+            @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+                font-size: 150%;
+                height: 60px;
+                width: 90%;
+            }
         }
 
         .content__container__list {
@@ -47,6 +53,11 @@
 
         .content__container__list__item {
             line-height: 60px;
+
+            @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+                line-height: unset;
+                padding: 20px 0px;
+            }
         }
 
         @-webkit-keyframes opacity {
@@ -166,11 +177,4 @@
             margin-top: 20px;
         }
     }
-}
-
-.footer-bottom {
-    position: absolute;
-    z-index: 0;
-    width: 100%;
-    bottom: 0%;
 }

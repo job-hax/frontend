@@ -267,6 +267,44 @@
                 box-shadow: 1px 1px 10px 4px rgba(0, 0, 0, 0.2);
             }
         }
+
+        @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+            flex-direction: column;
+            min-width: 100%;
+            padding: 0 10px;
+
+            .featured-blog {
+                width: 100%;
+                height: fit-content;
+
+                .header-photo {
+                    width: 100%;
+                }
+
+                .blog-card-left {
+                    width: 100%;
+                }
+            }
+
+            .blog-container {
+                margin: 24px 0px;
+
+                .blog-card-container {
+                    min-height: fit-content;
+                    height: fit-content;
+                    max-height: fit-content;
+                    width: 100%;
+
+                    .blog-card-initial {
+                        .blog-card-left {
+                            margin: 0px;
+                            height: fit-content;
+                            width: 60%;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     .blog-details {
@@ -499,6 +537,42 @@
                 }
             }
         }
+
+        @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+            width: 100%;
+            overflow: hidden;
+
+            .blog-header {
+                .blog-datebox {
+                    display: none;
+                }
+
+                .blog-info {
+                    width: 100%;
+                }
+            }
+
+            .blog-body {
+                overflow: unset;
+
+                .blog-data {
+                    width: 100%;
+
+                    .blog-photo {
+                        width: 100vw;
+                        margin: 0 0 0 -28px;
+                        overflow-y: hidden;
+                    }
+                }
+
+                .engagement {
+                    .share-container {
+                        width: 30% !important;
+                    }
+                }
+            }
+        }
+
     }
 
     .fixed-button {
