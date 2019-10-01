@@ -147,11 +147,11 @@
     }
 
     .event-details {
-        min-width: 1200px;
+        //min-width: 1200px;
 
         .event-header {
             height: 212px;
-            padding: 28px;
+            padding: 28px calc((100vw - 1198px) / 2);
             display: flex;
             justify-content: center;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -184,6 +184,7 @@
 
             .event-info {
                 width: 688px;
+                min-width: 668px;
 
                 .event-date {
                     color: gray;
@@ -307,9 +308,8 @@
                     }
 
                     .attendee-list {
-
                         display: grid;
-                        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                        grid-template-columns: repeat(auto-fill, minmax(100px, 100px));
                         grid-gap: 12px;
                         grid-auto-rows: min-content;
                         grid-auto-columns: min-content;
@@ -369,8 +369,10 @@
         }
 
         .location-container {
-            width: 350px;
+            min-width: 350px;
+            max-width: 668px;
             height: 360px;
+            margin: 24px 0px;
             border-radius: 8px;
             box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
             overflow: hidden;
@@ -379,7 +381,7 @@
             .location {
                 border-radius: 8px;
                 overflow: hidden;
-                width: 350px;
+                width: 100%;
                 height: 360px;
                 box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
 
@@ -400,52 +402,68 @@
 
                 .map {
                     height: 240px;
-                    width: 350px;
+                    width: 100%;
                 }
             }
 
         }
 
-        .attendance {
-            margin: 0 0 0 28px;
-            width: 350px;
+        .attendance-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
 
-            .question-container {
-                display: flex;
-                justify-content: flex-start;
-                margin: 0 0 16px 0;
+            .attendance {
+                width: 100%;
+                min-width: 350px;
+                max-width: 668px;
 
-                .question {
-                    color: $text_color;
-                    font-size: 120%;
-                    font-weight: 600;
-                    margin: 0 8px 0 0;
-                }
-
-                .attendee-amount {
-                    color: gray;
+                .question-container {
                     display: flex;
-                    height: 24px;
-                    align-items: center;
+                    justify-content: flex-start;
+                    margin: 0 0 16px 0;
+
+                    .question {
+                        color: $text_color;
+                        font-size: 120%;
+                        font-weight: 600;
+                        margin: 0 8px 0 0;
+                    }
+
+                    .attendee-amount {
+                        color: gray;
+                        display: flex;
+                        height: 24px;
+                        align-items: center;
+                    }
+                }
+
+                .answer-container {
+                    display: flex;
+                    justify-content: flex-end;
+                    margin: 24px 0 16px 0;
+                }
+
+                .share-container {
+                    padding: 16px 0 16px 0;
+                    border-top: 1px solid rgba(0, 0, 0, 0.1);
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
                 }
             }
-
-            .answer-container {
-                display: flex;
-                justify-content: space-between;
-                margin: 24px 0 16px 0;
-            }
-
-            .share-container {
-                padding: 16px 0 16px 0;
-                border-top: 1px solid rgba(0, 0, 0, 0.1);
-                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            }
         }
+
 
         @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
             min-width: 100vw;
             width: 100vw;
+
+            .event-header {
+                padding: 20px;
+
+                .event-info {
+                    min-width: unset;
+                }
+            }
 
             .event-body {
                 padding: 28px 0px;
@@ -469,26 +487,33 @@
             }
 
             .location-container {
-                margin: calc((100vw - 350px)/ 2)
+                margin: 5vw;
+                width: 90vw;
+                max-width: 668px;
+                min-width: unset;
+
             }
 
-            .attendance {
-                margin: 0px;
-                width: 100%;
+            .attendance-container {
+                .attendance {
+                    margin: 24px 0;
+                    width: 100%;
+                    max-width: 668px;
+                    min-width: unset;
 
-                .question-container {
-                    margin: 0 0 16px 12px;
-                }
+                    .question-container {
+                        margin: 0 0 16px 12px;
+                    }
 
-                .answer-container {
-                    margin: 24px 32px;
-                }
+                    .answer-container {
+                        margin: 24px 32px;
+                    }
 
-                .share-container {
-                    padding: 16px 32px;
+                    .share-container {
+                        padding: 16px 32px;
+                    }
                 }
             }
-
         }
 
     }

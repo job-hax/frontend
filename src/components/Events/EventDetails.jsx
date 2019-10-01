@@ -43,49 +43,51 @@ class EventDetails extends React.Component {
   generateAttendance() {
     const { event } = this.props;
     return (
-      <div className="attendance">
-        <div className="question-container">
-          <div className="question">Are you going?</div>
-          <div className="attendee-amount">
-            {this.state.attendance == true
-              ? "You are going!"
-              : event.attendee_count == 0
-              ? "Be the first attendant!"
-              : event.attendee_count + " people going"}
+      <div className="attendance-container">
+        <div className="attendance">
+          <div className="question-container">
+            <div className="question">Are you going?</div>
+            <div className="attendee-amount">
+              {this.state.attendance == true
+                ? "You are going!"
+                : event.attendee_count == 0
+                ? "Be the first attendant!"
+                : event.attendee_count + " people going"}
+            </div>
           </div>
-        </div>
-        <div className="answer-container">
-          <Button
-            type="primary"
-            disabled={this.state.attendance}
-            style={{ width: 160, marginRight: 12 }}
-            onClick={() => this.postAttendeeRequest("attend")}
+          <div className="answer-container">
+            <Button
+              type="primary"
+              disabled={this.state.attendance}
+              style={{ width: 160, marginRight: 12 }}
+              onClick={() => this.postAttendeeRequest("attend")}
+            >
+              <Icon type="check" />
+            </Button>
+            <Button
+              type="primary"
+              disabled={!this.state.attendance}
+              style={{ width: 160 }}
+              onClick={() => this.postAttendeeRequest("leave")}
+            >
+              <Icon type="close" />
+            </Button>
+          </div>
+          <div
+            className="share-container"
+            onMouseEnter={() => this.setState({ isLinkDisplaying: true })}
+            onMouseLeave={() => this.setState({ isLinkDisplaying: false })}
           >
-            <Icon type="check" />
-          </Button>
-          <Button
-            type="primary"
-            disabled={!this.state.attendance}
-            style={{ width: 160 }}
-            onClick={() => this.postAttendeeRequest("leave")}
-          >
-            <Icon type="close" />
-          </Button>
-        </div>
-        <div
-          className="share-container"
-          onMouseEnter={() => this.setState({ isLinkDisplaying: true })}
-          onMouseLeave={() => this.setState({ isLinkDisplaying: false })}
-        >
-          {this.state.isLinkDisplaying == false
-            ? "Share Link"
-            : window.location.port
-            ? window.location.hostname +
-              ":" +
-              window.location.port +
-              "/events?id=" +
-              event.id
-            : window.location.hostname + "/events?id=" + event.id}
+            {this.state.isLinkDisplaying == false
+              ? "Share Link"
+              : window.location.port
+              ? window.location.hostname +
+                ":" +
+                window.location.port +
+                "/events?id=" +
+                event.id
+              : window.location.hostname + "/events?id=" + event.id}
+          </div>
         </div>
       </div>
     );
