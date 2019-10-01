@@ -102,7 +102,7 @@
       cursor: pointer;
 
       &.general {
-        margin: 20px;
+        margin: 20px 10px;
       }
 
       &.menu-icon {
@@ -222,7 +222,5 @@
 
 .ant-menu-item,
 .ant-menu-submenu-title {
-  @media only screen and (max-device-width : 400px) and (-webkit-min-device-pixel-ratio : 2) {
-    padding: 0px 10px !important;
-  }
+  padding: 0px 10px !important;
 }
