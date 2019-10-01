@@ -102,7 +102,7 @@
       cursor: pointer;
 
       &.general {
-        margin: 20px;
+        margin: 20px 10px;
       }
 
       &.menu-icon {
@@ -157,6 +157,18 @@
         height: 20px;
         width: auto;
       }
+
+      @media only screen and (max-device-width : 400px) and (-webkit-min-device-pixel-ratio : 2) {
+        width: 20px;
+
+        img {
+          width: 16px;
+        }
+
+        &.general {
+          margin: 20px 10px;
+        }
+      }
     }
 
 
@@ -206,4 +218,9 @@
 
 .ant-menu-horizontal>.ant-menu-submenu-selected {
   max-height: 52px;
+}
+
+.ant-menu-item,
+.ant-menu-submenu-title {
+  padding: 0px 10px !important;
 }
