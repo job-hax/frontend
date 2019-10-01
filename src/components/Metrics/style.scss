@@ -126,6 +126,12 @@
                     height: 500px;
                     width: 260px;
 
+                    .echarts-for-react {
+                        div {
+                            z-index: 0;
+                        }
+                    }
+
                     .list-container {
                         overflow: hidden;
                         width: 260px;
