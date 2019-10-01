@@ -12,6 +12,12 @@
         margin: 8px;
         padding: 12px;
 
+        .name {
+            font-size: 120%;
+            font-weight: 500;
+            padding: 8px 8px 0px 0px;
+        }
+
         .header-left {
             display: flex;
             justify-content: flex-start;

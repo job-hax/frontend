@@ -27,7 +27,8 @@ class ContactCardOnEdit extends React.Component {
       autoCompleteCompanyData: [],
       autoCompletePositionsData: [],
       isClickOutsideActive: true,
-      inputWidth: window.innerWidth > 800 ? 224 : 168
+      inputWidth:
+        window.innerWidth > 800 ? 224 : window.innerWidth > 400 ? 168 : 128
     };
 
     this.onChange = this.onChange.bind(this);
@@ -167,19 +168,26 @@ class ContactCardOnEdit extends React.Component {
   }
 
   generateHeader() {
+    const margin =
+      window.innerWidth < 400 ? "0px 12px 0px 0px" : "0px 26px 0px 0px";
     return (
       <div className="header" style={{ display: "table" }}>
-        <div className="name" style={{ margin: "0 0 12px 0" }}>
+        <div className="name" style={{ margin: "0px 0px 12px 0px" }}>
           Name
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-start"
+          }}
+        >
           <div>
             <Input
               name="firstName"
               value={this.state.firstName}
               onChange={this.onChange}
               placeholder="First Name"
-              style={{ width: this.state.inputWidth, margin: "0 26px 0 0" }}
+              style={{ width: this.state.inputWidth, margin: margin }}
             />
           </div>
           <div>

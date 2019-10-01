@@ -322,6 +322,8 @@
 
 
                 .content-container {
+                    width: 100%;
+                    min-width: 100%;
 
                     h4 {
                         min-width: 90%;
@@ -329,6 +331,21 @@
 
                     p {
                         min-width: 100%;
+                    }
+
+                    .buttons-container {
+                        width: 100%;
+                        max-width: 330px;
+
+                        @media only screen and (max-device-width : 360px) and (-webkit-min-device-pixel-ratio : 2) {
+
+                            .ant-btn-lg {
+                                height: 48px;
+                                padding: 0px 18px;
+                                font-size: 17px;
+                                border-radius: 26px;
+                            }
+                        }
                     }
                 }
             }
