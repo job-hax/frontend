@@ -303,4 +303,60 @@
 
         }
     }
+
+    @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+        width: 100%;
+        overflow: unset;
+
+        .profile-page-medium-container {
+            display: flex;
+            justify-content: center;
+            min-width: 100%;
+
+            .profile-page-container {
+                width: 100%;
+                flex-direction: column;
+                height: fit-content;
+                height: -moz-fit-content;
+
+                .profile-page-left {
+                    flex-direction: column;
+                    width: 100%;
+
+                    .profile-page-left-first {
+                        width: 100%;
+                        display: flex;
+                        justify-content: center;
+
+                        .profile-page-left-first-inside {
+                            width: 280px;
+                            height: fit-content;
+                            height: -moz-fit-content;
+                            margin: 0px;
+                        }
+                    }
+
+                    .profile-page-main {
+                        margin: 0px;
+                        width: 100%;
+                        padding: 12px;
+
+                        .profile-info .info-content-container .info-content-body .info-content-body-item .info-content-body-item-label {
+                            min-width: 140px !important;
+                        }
+                    }
+                }
+
+                .profile-page-right {
+                    width: 100%;
+                }
+
+                .save-button-container {
+                    display: flex;
+                    justify-content: flex-start;
+                    margin: 16px 0px -45px 24px;
+                }
+            }
+        }
+    }
 }

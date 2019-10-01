@@ -59,9 +59,8 @@ class AboutUs extends Component {
             "Our Team",
             "Team of passioned engineers with same core values, driving for impact everyday"
           )}
-          <img className="team-diagram" style={{ display: "none" }} />
         </div>
-        <div className="footer-bottom">
+        <div style={{ marginTop: 100 }}>
           <Footer />
         </div>
       </div>

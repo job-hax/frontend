@@ -182,8 +182,12 @@ class Alumni extends React.Component {
   }
 
   generateAlumniCards() {
+    const alumniCardWidth = window.innerWidth > 800 ? "412px" : "100vw";
     return this.state.alumniList.map(alumni => (
-      <div key={alumni.id} style={{ width: 412, backgroundColor: "white" }}>
+      <div
+        key={alumni.id}
+        style={{ width: alumniCardWidth, backgroundColor: "white" }}
+      >
         <AlumniCard
           alumni={alumni}
           handleTokenExpiration={this.props.handleTokenExpiration}
@@ -197,7 +201,7 @@ class Alumni extends React.Component {
   generateSearchBox() {
     return (
       <div className="filter-container">
-        <div style={{ margin: "4px 0 0 0" }}>Name:</div>
+        <div style={{ margin: "4px 0px 0px 0px" }}>Name:</div>
         <Search
           placeholder="search"
           onSearch={value =>
@@ -427,7 +431,11 @@ class Alumni extends React.Component {
               </div>
             </div>
           </div>
-          <div className="bottom-fixed-footer">
+          <div
+            className={
+              window.innerWidth > 800 ? "bottom-fixed-footer" : "footer-margin"
+            }
+          >
             <Footer />
           </div>
         </div>

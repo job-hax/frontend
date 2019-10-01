@@ -269,9 +269,10 @@ class Header extends Component {
               }
             >
               <Menu.Item key="/profile">Profile</Menu.Item>
-              {this.state.user_type.blog_creation_enabled && (
-                <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
-              )}
+              {this.state.user_type.blog_creation_enabled &&
+                window.innerWidth > 800 && (
+                  <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
+                )}
               <Menu.Item key="/logout">
                 <Icon type="logout" />
                 Logout

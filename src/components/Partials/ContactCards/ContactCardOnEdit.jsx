@@ -26,7 +26,8 @@ class ContactCardOnEdit extends React.Component {
       contactId: this.props.contact && this.props.contact.id,
       autoCompleteCompanyData: [],
       autoCompletePositionsData: [],
-      isClickOutsideActive: true
+      isClickOutsideActive: true,
+      inputWidth: window.innerWidth > 800 ? 224 : 168
     };
 
     this.onChange = this.onChange.bind(this);
@@ -178,7 +179,7 @@ class ContactCardOnEdit extends React.Component {
               value={this.state.firstName}
               onChange={this.onChange}
               placeholder="First Name"
-              style={{ width: "224px", margin: "0 26px 0 0" }}
+              style={{ width: this.state.inputWidth, margin: "0 26px 0 0" }}
             />
           </div>
           <div>
@@ -187,7 +188,7 @@ class ContactCardOnEdit extends React.Component {
               value={this.state.lastName}
               onChange={this.onChange}
               placeholder="Last Name"
-              style={{ width: "224px" }}
+              style={{ width: this.state.inputWidth }}
             />
           </div>
         </div>
@@ -210,13 +211,13 @@ class ContactCardOnEdit extends React.Component {
                 value={this.state.email}
                 onChange={this.onChange}
                 placeholder="E-mail"
-                style={{ width: "224px" }}
+                style={{ width: this.state.inputWidth }}
               />
             </div>
             <div
               style={{
                 padding: "8px 8px 0px 24px",
-                width: "256px",
+                width: this.state.inputWidth + 32,
                 height: "40px"
               }}
             >
@@ -241,7 +242,7 @@ class ContactCardOnEdit extends React.Component {
                 value={this.state.linkedinUrl}
                 onChange={this.onChange}
                 placeholder="LinkedIn URL"
-                style={{ width: "224px" }}
+                style={{ width: this.state.inputWidth }}
               />
             </div>
           </div>
@@ -251,7 +252,7 @@ class ContactCardOnEdit extends React.Component {
               <AutoComplete
                 name="company"
                 dataSource={this.state.autoCompleteCompanyData}
-                style={{ width: "224px" }}
+                style={{ width: this.state.inputWidth }}
                 onSearch={this.handleCompanySearch}
                 placeholder="Company"
                 value={this.state.company}
@@ -262,7 +263,7 @@ class ContactCardOnEdit extends React.Component {
               <AutoComplete
                 name="position"
                 dataSource={this.state.autoCompletePositionsData}
-                style={{ width: "224px" }}
+                style={{ width: this.state.inputWidth }}
                 onSearch={this.handlePositionsSearch}
                 placeholder="Job Title"
                 value={this.state.position}

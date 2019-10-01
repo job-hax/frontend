@@ -40,6 +40,57 @@ class EventDetails extends React.Component {
     });
   }
 
+  generateAttendance() {
+    const { event } = this.props;
+    return (
+      <div className="attendance">
+        <div className="question-container">
+          <div className="question">Are you going?</div>
+          <div className="attendee-amount">
+            {this.state.attendance == true
+              ? "You are going!"
+              : event.attendee_count == 0
+              ? "Be the first attendant!"
+              : event.attendee_count + " people going"}
+          </div>
+        </div>
+        <div className="answer-container">
+          <Button
+            type="primary"
+            disabled={this.state.attendance}
+            style={{ width: 160, marginRight: 12 }}
+            onClick={() => this.postAttendeeRequest("attend")}
+          >
+            <Icon type="check" />
+          </Button>
+          <Button
+            type="primary"
+            disabled={!this.state.attendance}
+            style={{ width: 160 }}
+            onClick={() => this.postAttendeeRequest("leave")}
+          >
+            <Icon type="close" />
+          </Button>
+        </div>
+        <div
+          className="share-container"
+          onMouseEnter={() => this.setState({ isLinkDisplaying: true })}
+          onMouseLeave={() => this.setState({ isLinkDisplaying: false })}
+        >
+          {this.state.isLinkDisplaying == false
+            ? "Share Link"
+            : window.location.port
+            ? window.location.hostname +
+              ":" +
+              window.location.port +
+              "/events?id=" +
+              event.id
+            : window.location.hostname + "/events?id=" + event.id}
+        </div>
+      </div>
+    );
+  }
+
   generateEventHeader() {
     const { event } = this.props;
     let photoUrl =
@@ -69,51 +120,9 @@ class EventDetails extends React.Component {
             </div>
           </div>
         </div>
-        <div className="attendance">
-          <div className="question-container">
-            <div className="question">Are you going?</div>
-            <div className="attendee-amount">
-              {this.state.attendance == true
-                ? "You are going!"
-                : event.attendee_count == 0
-                ? "Be the first attendant!"
-                : event.attendee_count + " people going"}
-            </div>
-          </div>
-          <div className="answer-container">
-            <Button
-              type="primary"
-              disabled={this.state.attendance}
-              style={{ width: 160, marginRight: 12 }}
-              onClick={() => this.postAttendeeRequest("attend")}
-            >
-              <Icon type="check" />
-            </Button>
-            <Button
-              type="primary"
-              disabled={!this.state.attendance}
-              style={{ width: 160 }}
-              onClick={() => this.postAttendeeRequest("leave")}
-            >
-              <Icon type="close" />
-            </Button>
-          </div>
-          <div
-            className="share-container"
-            onMouseEnter={() => this.setState({ isLinkDisplaying: true })}
-            onMouseLeave={() => this.setState({ isLinkDisplaying: false })}
-          >
-            {this.state.isLinkDisplaying == false
-              ? "Share Link"
-              : window.location.port
-              ? window.location.hostname +
-                ":" +
-                window.location.port +
-                "/events?id=" +
-                event.id
-              : window.location.hostname + "/events?id=" + event.id}
-          </div>
-        </div>
+        {window.innerWidth > 1200 &&
+          window.innerHeight > 600 &&
+          this.generateAttendance()}
       </div>
     );
   }
@@ -198,6 +207,14 @@ class EventDetails extends React.Component {
             <div className="title">Details</div>
             <div className="details">{parse(`${event.details}`)}</div>
           </div>
+          {(window.innerWidth <= 1200 || window.innerHeight <= 600) && (
+            <div>
+              <div className="location-container">
+                <div className="location"> {this.generateLocationArea()} </div>
+              </div>
+              {this.generateAttendance()}
+            </div>
+          )}
           <div className="attendees">
             <div className="title">Attendees ({event.attendee_count})</div>
             {event.attendee_count == 0 ? (
@@ -207,11 +224,13 @@ class EventDetails extends React.Component {
             )}
           </div>
         </div>
-        <Affix offsetTop={120}>
-          <div className="location-container">
-            <div className="location"> {this.generateLocationArea()} </div>
-          </div>
-        </Affix>
+        {window.innerWidth > 1200 && window.innerHeight > 600 && (
+          <Affix offsetTop={120}>
+            <div className="location-container">
+              <div className="location"> {this.generateLocationArea()} </div>
+            </div>
+          </Affix>
+        )}
       </div>
     );
   }

@@ -4,6 +4,8 @@ $column_header_height: 50px;
 $column_header_height_add_job: 162px;
 $rejected_button_height: 48px;
 $column_parts_margin: 8px;
+$column_max_width: 400px;
+$column_min_width: 240px;
 $amountChangeAnimationTransitionDuration: .3s;
 $amountChangeAnimationZoomInScale: 1.2;
 $amountChangeAnimationZoomOutScale: 0.8;
@@ -15,8 +17,8 @@ $addJobButtonAnimationZoomInScale: 1.03;
 .column-big-container {
   margin: 0 auto;
   width: 100%;
-  max-width: 4000px;
-  min-width: 240px;
+  max-width: $column_max_width;
+  min-width: $column_min_width;
   margin: 4px 8px 4px 0;
   border-radius: 12px;
   overflow: hidden;
@@ -229,12 +231,45 @@ $addJobButtonAnimationZoomInScale: 1.03;
     overflow: hidden;
 
     &.--double {
+      height: -webkit-calc(50% - #{$column_parts_margin});
+      height: -moz-calc(50% - #{$column_parts_margin});
+      height: calc(50% - #{$column_parts_margin});
       min-height: -webkit-calc(50% - #{$column_parts_margin});
       min-height: -moz-calc(50% - #{$column_parts_margin});
       min-height: calc(50% - #{$column_parts_margin});
       max-height: -webkit-calc(50% - #{$column_parts_margin});
       max-height: -moz-calc(50% - #{$column_parts_margin});
       max-height: calc(50% - #{$column_parts_margin});
+    }
+
+    .column-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: -webkit-calc(100% - #{$rejected_button_height});
+      min-height: -moz-calc(100% - #{$rejected_button_height});
+      min-height: calc(100% - #{$rejected_button_height});
+      max-height: -webkit-calc(100% - #{$rejected_button_height});
+      max-height: -moz-calc(100% - #{$rejected_button_height});
+      max-height: calc(100% - #{$rejected_button_height});
+      flex-shrink: 1;
+      width: 105%;
+
+      .column-body-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        max-height: 100%;
+        justify-content: space-between;
+        position: relative;
+
+        .column-card-container {
+          overflow-x: hidden;
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 1;
+        }
+      }
     }
 
     .rejecteds-button {
@@ -287,36 +322,6 @@ $addJobButtonAnimationZoomInScale: 1.03;
         &.--horizontal-flip {
           -webkit-transform: scaleY(-1);
           transform: scaleY(-1);
-        }
-      }
-    }
-
-    .column-container {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      min-height: -webkit-calc(100% - #{$rejected_button_height});
-      min-height: -moz-calc(100% - #{$rejected_button_height});
-      min-height: calc(100% - #{$rejected_button_height});
-      max-height: -webkit-calc(100% - #{$rejected_button_height});
-      max-height: -moz-calc(100% - #{$rejected_button_height});
-      max-height: calc(100% - #{$rejected_button_height});
-      flex-shrink: 1;
-      width: 105%;
-
-      .column-body-container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
-        max-height: 100%;
-        justify-content: space-between;
-        position: relative;
-
-        .column-card-container {
-          overflow-x: hidden;
-          display: flex;
-          flex-direction: column;
-          flex-shrink: 1;
         }
       }
     }

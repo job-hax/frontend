@@ -61,7 +61,7 @@ class UniversityMetrics extends React.Component {
 
   generateDetailedMetricsGroup() {
     return (
-      <div style={{ marginBottom: 80 }}>
+      <div style={{margin:"20px 0px", width: "fit-content" }}>
         <div>
           <SummaryMetricsGroup
             cookie={this.props.cookie}
@@ -79,7 +79,11 @@ class UniversityMetrics extends React.Component {
   }
 
   render() {
-    return <div>{this.generateDetailedMetricsGroup()}</div>;
+    return (
+      <div style={{ width: "100%", overflowY: "hidden" }}>
+        {this.generateDetailedMetricsGroup()}
+      </div>
+    );
   }
 }
 

@@ -19,7 +19,7 @@ import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
 import {
   makeTimeBeautiful,
-  IS_CONSOLE_LOG_OPEN,
+  IS_CONSOLE_LOG_OPEN
 } from "../../utils/constants/constants.js";
 import { linkedInOAuth } from "../../utils/helpers/oAuthHelperFunctions.js";
 import { apiRoot, USERS } from "../../utils/constants/endpoints.js";
@@ -29,6 +29,7 @@ import {
   jobHaxClientId,
   jobHaxClientSecret
 } from "../../config/config.js";
+import Footer from "../Partials/Footer/Footer.jsx";
 
 import "./style.scss";
 
@@ -338,8 +339,7 @@ class ProfilePage extends React.Component {
   }
 
   handleStudentMailChange(event) {
-    this.body["student_email"] =
-      event.target.value.trim() + "@students.itu.edu";
+    this.body["student_email"] = event.target.value.trim();
   }
 
   handleEmailChange(event) {
@@ -529,7 +529,7 @@ class ProfilePage extends React.Component {
               this.state.data.country != ("" || null) && (
                 <div className="location">
                   <Icon type="environment" />
-                  <div style={{ margin: "-2px 0 0 4px" }}>
+                  <div style={{ margin: "-2px 0px 0px 4px" }}>
                     {this.state.data.state.name +
                       ", " +
                       this.state.data.country.name}
@@ -555,7 +555,7 @@ class ProfilePage extends React.Component {
                 this.state.data.is_linkedin_linked != true && (
                   <div
                     className="job-position"
-                    style={{ margin: "0 0 0 20px" }}
+                    style={{ margin: "0px 0px 0px 20px" }}
                     onClick={() => this.handleLinkedInOAuth()}
                   >
                     <Button type="primary">Link With LinkedIn</Button>
@@ -861,15 +861,22 @@ class ProfilePage extends React.Component {
                     <div className="info-content-body-item-label">
                       Birthday:
                     </div>
-                    <div style={{ zIndex: 99 }}>
+                    <div style={{ zIndex: 9 }}>
                       <DatePicker
                         onChange={this.handleDatePickerChange}
                         defaultValue={moment(selectedDateShowing, dateFormat)}
                         format={dateFormat}
-                        style={{
-                          width: "168px",
-                          margin: "-6px 0px 12px 0px"
-                        }}
+                        style={
+                          window.innerWidth > 800
+                            ? {
+                                width: "168px",
+                                margin: "-6px 0px 12px 0px"
+                              }
+                            : {
+                                width: "168px",
+                                margin: "-6px 0px 12px 5px"
+                              }
+                        }
                       />
                     </div>
                   </div>
@@ -943,8 +950,7 @@ class ProfilePage extends React.Component {
                               ? this.state.data.student_email.split("@")[0]
                               : "your student email"
                           }
-                        />{" "}
-                        @students.itu.edu
+                        />
                       </label>
                     </div>
                   </div>
@@ -952,11 +958,19 @@ class ProfilePage extends React.Component {
                     <div className="info-content-body-item-label">Phone:</div>
                     <div
                       className="info-content-body-item-text"
-                      style={{
-                        width: 168,
-                        height: 32,
-                        margin: "-6px 0px 0px 0px"
-                      }}
+                      style={
+                        window.innerWidth > 800
+                          ? {
+                              width: 168,
+                              height: 32,
+                              margin: "-6px 0px 0px 0px"
+                            }
+                          : {
+                              width: 168,
+                              height: 32,
+                              margin: "-6px 0px 0px 5px"
+                            }
+                      }
                     >
                       <ReactTelInput
                         defaultCountry="us"
@@ -997,7 +1011,7 @@ class ProfilePage extends React.Component {
 
     const heightForSettings = this.state.isProfileSettingsOpen
       ? { height: "320px" }
-      : { height: "480px" };
+      : { height: "180px" };
 
     const customNotificationsBoxStyle = {
       boxShadow: "none",
@@ -1017,126 +1031,134 @@ class ProfilePage extends React.Component {
       return <Spinner message="Updating your profile data..." />;
     }
     return (
-      <div className="profile-page-big-container">
-        <div className="profile-page-medium-container">
-          <div className="profile-page-container">
-            {!this.state.isEditing
-              ? this.generateNonEditableProfileMainArea()
-              : this.generateEditableProfileMainArea()}
-            <div className="profile-page-right">
-              <Button
-                type={!this.state.isEditing ? "primary" : ""}
-                style={
-                  !this.state.isEditing
-                    ? { marginLeft: "310px" }
-                    : { marginLeft: "290px" }
-                }
-                onClick={() =>
-                  this.setState({ isEditing: !this.state.isEditing })
-                }
-              >
-                {!this.state.isEditing ? "Edit" : "Cancel"}
-              </Button>
-              <div className="profile-notifications" style={heightForSettings}>
-                <NotificationsBox
-                  notificationsList={this.props.notificationsList}
-                  customBoxStyle={customNotificationsBoxStyle}
-                  itemListHeight={notificationsBoxHeight}
-                />
-              </div>
-              <div className="to-do-list" />
-              {this.state.isProfileSettingsOpen && (
-                <div className="settings-container">
-                  <div className="settings-header">
-                    <div>
-                      <Icon type="setting" />
+      <div>
+        <div className="profile-page-big-container">
+          <div className="profile-page-medium-container">
+            <div className="profile-page-container">
+              {!this.state.isEditing
+                ? this.generateNonEditableProfileMainArea()
+                : this.generateEditableProfileMainArea()}
+              <div className="profile-page-right">
+                <Button
+                  type={!this.state.isEditing ? "primary" : ""}
+                  style={
+                    !this.state.isEditing
+                      ? { marginLeft: "310px" }
+                      : { marginLeft: "290px" }
+                  }
+                  onClick={() =>
+                    this.setState({ isEditing: !this.state.isEditing })
+                  }
+                >
+                  {!this.state.isEditing ? "Edit" : "Cancel"}
+                </Button>
+                <div
+                  className="profile-notifications"
+                  style={heightForSettings}
+                >
+                  <NotificationsBox
+                    notificationsList={this.props.notificationsList}
+                    customBoxStyle={customNotificationsBoxStyle}
+                    itemListHeight={notificationsBoxHeight}
+                  />
+                </div>
+                <div className="to-do-list" />
+                {this.state.isProfileSettingsOpen && (
+                  <div className="settings-container">
+                    <div className="settings-header">
+                      <div>
+                        <Icon type="setting" />
+                      </div>
+                      <div className="settings-title">Profile Settings</div>
                     </div>
-                    <div className="settings-title">Profile Settings</div>
-                  </div>
-                  <form onSubmit={this.handleSettingsSubmit}>
-                    <div className="settings">
-                      <div className="setting">
-                        <label>
-                          User Name:
-                          {this.state.data != null && this.state.data.username
-                            ? " " + this.state.data.username
-                            : " Get one!"}
+                    <form onSubmit={this.handleSettingsSubmit}>
+                      <div className="settings">
+                        <div className="setting">
+                          <label>
+                            User Name:
+                            {this.state.data != null && this.state.data.username
+                              ? " " + this.state.data.username
+                              : " Get one!"}
+                            <Input
+                              prefix={
+                                <Icon
+                                  type="user"
+                                  style={{ color: "rgba(0,0,0,.25)" }}
+                                />
+                              }
+                              placeholder="Username"
+                              style={{ width: "272px" }}
+                            />
+                          </label>
+                        </div>
+                        <div className="setting">
                           <Input
                             prefix={
                               <Icon
-                                type="user"
+                                type="lock"
                                 style={{ color: "rgba(0,0,0,.25)" }}
                               />
                             }
-                            placeholder="Username"
+                            type="password"
+                            placeholder="Password"
                             style={{ width: "272px" }}
                           />
-                        </label>
+                        </div>
+                        <div className="setting">
+                          <Input
+                            prefix={
+                              <Icon
+                                type="lock"
+                                style={{ color: "rgba(0,0,0,.25)" }}
+                              />
+                            }
+                            type="password"
+                            placeholder="Confirm Password"
+                            style={{ width: "272px" }}
+                            onBlur={this.handleConfirmBlur}
+                          />
+                        </div>
                       </div>
-                      <div className="setting">
-                        <Input
-                          prefix={
-                            <Icon
-                              type="lock"
-                              style={{ color: "rgba(0,0,0,.25)" }}
-                            />
+                      <div className="settings-buttons-container">
+                        <div
+                          onClick={() =>
+                            this.setState({ isProfileSettingsOpen: false })
                           }
-                          type="password"
-                          placeholder="Password"
-                          style={{ width: "272px" }}
-                        />
-                      </div>
-                      <div className="setting">
-                        <Input
-                          prefix={
-                            <Icon
-                              type="lock"
-                              style={{ color: "rgba(0,0,0,.25)" }}
-                            />
-                          }
-                          type="password"
-                          placeholder="Confirm Password"
-                          style={{ width: "272px" }}
-                          onBlur={this.handleConfirmBlur}
-                        />
-                      </div>
-                    </div>
-                    <div className="settings-buttons-container">
-                      <div
-                        onClick={() =>
-                          this.setState({ isProfileSettingsOpen: false })
-                        }
-                      >
-                        <Button>Cancel</Button>
-                      </div>
-                      <div>
-                        <Button
-                          type="primary"
-                          style={{ margin: "0 120px 0 12px" }}
-                          htmlType="submit"
                         >
-                          Save
-                        </Button>
+                          <Button>Cancel</Button>
+                        </div>
+                        <div>
+                          <Button
+                            type="primary"
+                            style={{ margin: "0 120px 0 12px" }}
+                            htmlType="submit"
+                          >
+                            Save
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </form>
-                </div>
-              )}
-              {!this.state.isProfileSettingsOpen && (
-                <Button
-                  type="primary"
-                  style={{ marginLeft: "230px" }}
-                  onClick={() =>
-                    this.setState({
-                      isProfileSettingsOpen: !this.state.isProfileSettingsOpen
-                    })
-                  }
-                >
-                  Profile Settings
-                </Button>
-              )}
+                    </form>
+                  </div>
+                )}
+                {!this.state.isProfileSettingsOpen && (
+                  <Button
+                    type="primary"
+                    style={{ marginLeft: "230px" }}
+                    onClick={() =>
+                      this.setState({
+                        isProfileSettingsOpen: !this.state.isProfileSettingsOpen
+                      })
+                    }
+                  >
+                    Profile Settings
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
+        </div>
+        <div style={{ marginTop: 80 }}>
+          <Footer />
         </div>
       </div>
     );

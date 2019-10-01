@@ -4,14 +4,14 @@ $multipleContainerAnimationTransitionDuration: .5s;
 $multipleContainerAnimationFromZeroScale: 1.6;
 
 .dashboard-container {
-  height: calc(100vh - 60px);
+  height: calc(100%);
   width: 100%;
   padding-left: 8px;
   display: flex;
   overflow-y: hidden;
 
   &.--demo-height {
-    height: calc(100vh - 110px);
+    height: calc(100%);
   }
 }
 

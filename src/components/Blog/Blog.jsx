@@ -215,7 +215,7 @@ class Blog extends React.Component {
     return (
       <div>
         <div className="blog-container">
-          <div>{this.mapBlogs()}</div>
+          <div style={{ width: "100%" }}>{this.mapBlogs()}</div>
         </div>
         <div className="pagination-container">
           <Pagination
@@ -236,49 +236,56 @@ class Blog extends React.Component {
       blog.publisher_profile.profile_photo != ("" || null)
         ? apiRoot + blog.publisher_profile.profile_photo
         : "../../../src/assets/icons/User@3x.png";
-    return (
-      <div>
-        <Affix offsetTop={80}>
-          <div className="featured-blog">
-            <div className="header-photo">
-              <img src={apiRoot + blog.header_image} />
-            </div>
-            <div className="blog-card-left">
-              <div className="blog-name">{blog.title}</div>
-              <div className="blog-card-info">{blog.snippet}</div>
-              <div className="blog-card-footer">
-                <div className="blog-author">
-                  <div className="blog-author-avatar">
-                    <img src={photoUrl} />
-                  </div>
-                  <div>
-                    <div className="name">
-                      {blog.publisher_profile.first_name +
-                        " " +
-                        blog.publisher_profile.last_name}
-                    </div>
-                    <div className="info-container">
-                      <div className="info">{longDate.split(",")[1]}</div>
-                      <div className="info">
-                        <Icon type="dashboard" />
-                        {" " + Math.round(blog.word_count / 200, 0) + " min"}
-                      </div>
-                      <div className="info">
-                        <Icon type="read" />
-                        {" " + blog.view_count}
-                      </div>
-                    </div>
-                  </div>
+
+    const featuredBlog = (
+      <div className="featured-blog">
+        <div className="header-photo">
+          <img src={apiRoot + blog.header_image} />
+        </div>
+        <div className="blog-card-left">
+          <div className="blog-name">{blog.title}</div>
+          <div className="blog-card-info">{blog.snippet}</div>
+          <div className="blog-card-footer">
+            <div className="blog-author">
+              <div className="blog-author-avatar">
+                <img src={photoUrl} />
+              </div>
+              <div>
+                <div className="name">
+                  {blog.publisher_profile.first_name +
+                    " " +
+                    blog.publisher_profile.last_name}
                 </div>
-                <div>
-                  <Button onClick={() => this.setBlogDetail(blog.id)}>
-                    Read More
-                  </Button>
+                <div className="info-container">
+                  <div className="info">{longDate.split(",")[1]}</div>
+                  <div className="info">
+                    <Icon type="dashboard" />
+                    {" " + Math.round(blog.word_count / 200, 0) + " min"}
+                  </div>
+                  <div className="info">
+                    <Icon type="read" />
+                    {" " + blog.view_count}
+                  </div>
                 </div>
               </div>
             </div>
+            <div>
+              <Button onClick={() => this.setBlogDetail(blog.id)}>
+                Read More
+              </Button>
+            </div>
           </div>
-        </Affix>
+        </div>
+      </div>
+    );
+
+    return (
+      <div>
+        {window.innerWidth < 800 || window.innerHeight < 600 ? (
+          featuredBlog
+        ) : (
+          <Affix offsetTop={80}>{featuredBlog}</Affix>
+        )}
       </div>
     );
   }

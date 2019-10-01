@@ -79,7 +79,10 @@ class ContactCardDetailed extends React.Component {
                 visible={this.state.isEditContactShowing}
                 footer={null}
                 closable={false}
-                bodyStyle={{ padding: 0, margin: 0 }}
+                bodyStyle={{
+                  padding: 0,
+                  margin: 0
+                }}
               >
                 <ContactCardOnEdit
                   setContactEditDisplay={this.setEditContactDisplay}

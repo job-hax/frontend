@@ -11,6 +11,12 @@
         justify-content: flex-start;
         font-size: calc(100% * 16/14) !important;
         line-height: calc(100% * 18/14) !important;
+
+
+        @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+            flex-direction: column;
+            text-align: center;
+        }
     }
 
 }
