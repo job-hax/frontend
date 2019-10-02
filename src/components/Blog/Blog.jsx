@@ -281,7 +281,7 @@ class Blog extends React.Component {
 
     return (
       <div>
-        {window.screen.availWidth < 800 || window.screen.availHeight < 600 ? (
+        {window.screen.availWidth < 800 || window.innerHeight < 600 ? (
           featuredBlog
         ) : (
           <Affix offsetTop={80}>{featuredBlog}</Affix>

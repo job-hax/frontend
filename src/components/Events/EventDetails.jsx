@@ -123,7 +123,7 @@ class EventDetails extends React.Component {
           </div>
         </div>
         {window.screen.availWidth > 1200 &&
-          window.screen.availHeight > 600 &&
+          window.innerHeight > 600 &&
           this.generateAttendance()}
       </div>
     );
@@ -209,7 +209,7 @@ class EventDetails extends React.Component {
             <div className="title">Details</div>
             <div className="details">{parse(`${event.details}`)}</div>
           </div>
-          {(window.screen.availWidth <= 1200 || window.screen.availHeight <= 600) && (
+          {(window.screen.availWidth <= 1200 || window.innerHeight <= 600) && (
             <div>
               <div className="location-container">
                 <div className="location"> {this.generateLocationArea()} </div>
@@ -226,7 +226,7 @@ class EventDetails extends React.Component {
             )}
           </div>
         </div>
-        {window.screen.availWidth > 1200 && window.screen.availHeight > 600 && (
+        {window.screen.availWidth > 1200 && window.innerHeight > 600 && (
           <Affix offsetTop={120}>
             <div className="location-container">
               <div className="location"> {this.generateLocationArea()} </div>
