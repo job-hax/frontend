@@ -28,7 +28,7 @@ class ContactCardOnEdit extends React.Component {
       autoCompletePositionsData: [],
       isClickOutsideActive: true,
       inputWidth:
-        window.innerWidth > 800 ? 224 : window.innerWidth > 400 ? 168 : 128
+        window.screen.availWidth > 800 ? 224 : window.screen.availWidth > 400 ? 168 : 128
     };
 
     this.onChange = this.onChange.bind(this);
@@ -169,7 +169,7 @@ class ContactCardOnEdit extends React.Component {
 
   generateHeader() {
     const margin =
-      window.innerWidth < 400 ? "0px 12px 0px 0px" : "0px 26px 0px 0px";
+      window.screen.availWidth < 400 ? "0px 12px 0px 0px" : "0px 26px 0px 0px";
     return (
       <div className="header" style={{ display: "table" }}>
         <div className="name" style={{ margin: "0px 0px 12px 0px" }}>

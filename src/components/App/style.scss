@@ -78,6 +78,10 @@ html {
   border-radius: 4px;
   margin: 2px 0 0 0;
   max-height: 180px;
+  max-width: 300px;
+  position: absolute;
+  left: -150px;
+  right: -150px;
 }
 
 .ant-btn {

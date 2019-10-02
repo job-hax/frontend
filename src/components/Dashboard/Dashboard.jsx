@@ -818,8 +818,8 @@ class Dashboard extends Component {
     };
 
     const dashboardBigContainerHeight = this.state.is_demo_user
-      ? window.innerHeight - 110
-      : window.innerHeight - 60;
+      ? window.screen.availHeight - 110
+      : window.screen.availHeight - 60;
 
     const menu = (
       <Menu onClick={this.handleMenuClick}>
@@ -912,7 +912,7 @@ class Dashboard extends Component {
       return <Spinner message="Preparing your dashboard..." />;
     return (
       <div style={{ height: dashboardBigContainerHeight }}>
-        {window.innerWidth > 980 && (
+        {window.screen.availWidth > 980 && (
           <div
             style={{
               position: "fixed",

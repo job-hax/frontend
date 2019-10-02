@@ -180,7 +180,7 @@ class Home extends Component {
           "Create a card for each application",
           "Apply anywhere - get it tracked in one place. Automatically."
         )}
-        {window.innerWidth > 800
+        {window.screen.availWidth > 800
           ? this.generateInteriorItemFlipLR(
               "src/assets/images/move.png",
               "Organize your job hunting progress",
@@ -242,7 +242,7 @@ class Home extends Component {
           "Create a card for each application",
           "Apply anywhere - get it tracked in one place. Automatically."
         )}
-        {window.innerWidth > 800
+        {window.screen.availWidth > 800
           ? this.generateInteriorItemFlipLR(
               "src/assets/images/move.png",
               "Organize your job hunting progress",

@@ -39,7 +39,7 @@ class CompanyStats extends React.Component {
       <div className="authorization-stat-container" key={stat.id}>
         <div
           style={
-            stat.id == 1 || window.innerWidth < 800
+            stat.id == 1 || window.screen.availWidth < 800
               ? { fontWeight: "normal", marginRight: "5px" }
               : {
                   fontWeight: "normal",
