@@ -4,7 +4,7 @@
     background-color: white;
     position: absolute;
     width: 340px;
-    margin-left: -200px;
+    right: 12px;
     margin-top: 20px;
     height: fit-content;
     min-height: 120px;
@@ -15,15 +15,26 @@
     z-index: 1000;
     cursor: default;
 
+    @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+        width: 90vw;
+        max-width: 340px;
+    }
+
 
     .notification-box-header {
         border-bottom: 1px solid black;
         margin: 4px;
         font-weight: 450;
         font-size: 110%;
-        margin-bottom: 12px;
-        padding-top: 12px;
-        padding-left: 12px;
+        padding: 4px 0px;
+        display: flex;
+        justify-content: space-between;
+
+        .beta-flag {
+            height: 24px;
+            width: auto;
+        }
+
     }
 
     .notification-notice {
@@ -34,10 +45,9 @@
     }
 
     .notifications-list {
-        margin: 4px;
+        padding: 4px;
         overflow-x: hidden;
-        min-width: 332px;
-        max-width: 332px;
+        width: 100%;
         min-height: 60px;
         max-height: 380px;
 
@@ -62,8 +72,8 @@
             }
 
             .notification-body {
-                min-width: 268px;
-                max-width: 268px;
+                min-width: calc(100% - 44px);
+                max-width: calc(100% - 44px);
                 min-height: 50px;
                 padding-bottom: 12px;
                 border-bottom: 1px solid #7474749f;
@@ -79,8 +89,8 @@
                     }
 
                     .notification-date {
-                        font-size: 90%;
-                        color: #7474749f;
+                        font-size: 80%;
+                        color: $gray_text_color;
                         text-align: end;
                     }
                 }

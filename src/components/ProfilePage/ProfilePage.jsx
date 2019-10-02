@@ -13,7 +13,7 @@ import {
   Tooltip
 } from "antd";
 import ReactTelInput from "react-telephone-input";
-import moment from "moment";
+import moment, { max } from "moment";
 
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
@@ -760,6 +760,8 @@ class ProfilePage extends React.Component {
     };
     const dateFormat = "MM.DD.YYYY";
     const { selectedDateShowing } = this.state;
+    const inputWidth =
+      window.screen.availWidth < 350 ? window.screen.availWidth - 182 : 168;
 
     return (
       <div className="profile-page-left">
@@ -867,13 +869,13 @@ class ProfilePage extends React.Component {
                         defaultValue={moment(selectedDateShowing, dateFormat)}
                         format={dateFormat}
                         style={
-                          window.innerWidth > 800
+                          window.screen.availWidth > 800
                             ? {
-                                width: "168px",
+                                width: inputWidth,
                                 margin: "-6px 0px 12px 0px"
                               }
                             : {
-                                width: "168px",
+                                width: inputWidth,
                                 margin: "-6px 0px 12px 5px"
                               }
                         }
@@ -902,7 +904,10 @@ class ProfilePage extends React.Component {
                     <div className="info-content-body-item-label">Email:</div>
                     <div className="info-content-body-item-text">
                       <Input
-                        style={{ width: 168, margin: "-6px 0px 4px 5px" }}
+                        style={{
+                          width: inputWidth,
+                          margin: "-6px 0px 4px 5px"
+                        }}
                         onChange={this.handleEmailChange}
                         placeholder={
                           this.state.data != null && this.state.data.email
@@ -942,7 +947,10 @@ class ProfilePage extends React.Component {
                     <div className="info-content-body-item-text">
                       <label>
                         <Input
-                          style={{ width: 168, margin: "-6px 0px 4px 5px" }}
+                          style={{
+                            width: inputWidth,
+                            margin: "-6px 0px 4px 5px"
+                          }}
                           onChange={this.handleStudentMailChange}
                           placeholder={
                             this.state.data != null &&
@@ -959,14 +967,14 @@ class ProfilePage extends React.Component {
                     <div
                       className="info-content-body-item-text"
                       style={
-                        window.innerWidth > 800
+                        window.screen.availWidth > 800
                           ? {
-                              width: 168,
+                              width: inputWidth,
                               height: 32,
                               margin: "-6px 0px 0px 0px"
                             }
                           : {
-                              width: 168,
+                              width: inputWidth,
                               height: 32,
                               margin: "-6px 0px 0px 5px"
                             }
@@ -1006,21 +1014,30 @@ class ProfilePage extends React.Component {
 
   render() {
     const notificationsBoxHeight = this.state.isProfileSettingsOpen
-      ? { height: "200px" }
+      ? { maxHeight: "200px" }
       : { height: "fit-content" };
 
     const heightForSettings = this.state.isProfileSettingsOpen
       ? { height: "320px" }
       : { height: "180px" };
 
+    const vw = window.screen.availWidth / 100;
+    const buttonsLeft = Math.min(90 * vw, 364) + Math.min(vw * 5, 36);
+    const buttonsStyle = {
+      transform: `translateX(calc(${buttonsLeft}px - 100%))`
+    };
+
     const customNotificationsBoxStyle = {
       boxShadow: "none",
       borderRadius: "16px",
       border: "1px solid rgba(126, 126, 126, 0.4)",
-      marginLeft: "36px",
+      marginLeft: Math.min(vw * 5, 36),
       zIndex: 0,
       notificationsBoxHeight,
-      position: "relative"
+      position: "relative",
+      width: "90vw",
+      maxWidth: 364,
+      right: 0
     };
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
@@ -1041,11 +1058,8 @@ class ProfilePage extends React.Component {
               <div className="profile-page-right">
                 <Button
                   type={!this.state.isEditing ? "primary" : ""}
-                  style={
-                    !this.state.isEditing
-                      ? { marginLeft: "310px" }
-                      : { marginLeft: "290px" }
-                  }
+                  className="edit-button"
+                  style={buttonsStyle}
                   onClick={() =>
                     this.setState({ isEditing: !this.state.isEditing })
                   }
@@ -1143,7 +1157,8 @@ class ProfilePage extends React.Component {
                 {!this.state.isProfileSettingsOpen && (
                   <Button
                     type="primary"
-                    style={{ marginLeft: "230px" }}
+                    className="profile-settings-button"
+                    style={buttonsStyle}
                     onClick={() =>
                       this.setState({
                         isProfileSettingsOpen: !this.state.isProfileSettingsOpen

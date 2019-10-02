@@ -217,7 +217,8 @@
                     position: relative;
                     margin-top: 20px;
                     height: 480px;
-                    width: 364px;
+                    width: 90vw;
+                    max-width: 364px;
                     z-index: 10;
                 }
 
@@ -226,7 +227,7 @@
 
                     .settings-header {
                         border-bottom: 1px solid black;
-                        width: 340px;
+                        width: calc(100% - 80px);
                         margin-left: 40px;
                         display: flex;
                         justify-content: flex-start;
@@ -249,8 +250,8 @@
                     }
 
                     .settings {
-                        width: 320px;
-                        margin-left: 80px;
+                        width: 80%;
+                        margin-left: 20%;
 
                         .setting {
                             display: flex;
@@ -285,6 +286,11 @@
                             cursor: pointer;
                         }
                     }
+                }
+
+                .edit-button,
+                .profile-settings-button {
+                    transform: translateX(calc(364px - 100% + 36px))
                 }
             }
 
@@ -349,6 +355,11 @@
 
                 .profile-page-right {
                     width: 100%;
+
+                    .settings-container {
+                        width: 100%;
+                        max-width: 420px;
+                    }
                 }
 
                 .save-button-container {

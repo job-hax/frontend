@@ -158,7 +158,7 @@ class App extends Component {
     e = e ? e : window.event;
     var vpWidth = Math.max(
       document.documentElement.clientWidth,
-      window.innerWidth || 0
+      window.screen.availWidth || 0
     );
 
     if (e.clientX >= vpWidth - 50) return;

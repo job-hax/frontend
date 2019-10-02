@@ -182,7 +182,7 @@ class Alumni extends React.Component {
   }
 
   generateAlumniCards() {
-    const alumniCardWidth = window.innerWidth > 800 ? "412px" : "100vw";
+    const alumniCardWidth = window.screen.availWidth > 800 ? "412px" : "100vw";
     return this.state.alumniList.map(alumni => (
       <div
         key={alumni.id}
@@ -433,7 +433,7 @@ class Alumni extends React.Component {
           </div>
           <div
             className={
-              window.innerWidth > 800 ? "bottom-fixed-footer" : "footer-margin"
+              window.screen.availWidth > 800 ? "bottom-fixed-footer" : "footer-margin"
             }
           >
             <Footer />
