@@ -818,8 +818,8 @@ class Dashboard extends Component {
     };
 
     const dashboardBigContainerHeight = this.state.is_demo_user
-      ? window.screen.availHeight - 110
-      : window.screen.availHeight - 60;
+      ? window.innerHeight - 110
+      : window.innerHeight - 60;
 
     const menu = (
       <Menu onClick={this.handleMenuClick}>

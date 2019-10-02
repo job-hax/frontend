@@ -186,7 +186,11 @@ class Events extends React.Component {
     return (
       <div>
         <div className="page-title">
-          <h2>Events</h2>
+          <h2>
+            {this.state.user_type.name === "Alumni"
+              ? "ITU Alumni Events"
+              : "Events"}
+          </h2>
         </div>
       </div>
     );
