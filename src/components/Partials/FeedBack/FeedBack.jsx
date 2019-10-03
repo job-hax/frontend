@@ -115,10 +115,7 @@ class FeedBack extends React.Component {
 
   handleCancel() {
     this.setState({ visible: false, textValue: "" });
-    if (!this.props.isUserLoggedIn) {
-      this.body["item_id"] = 0;
-      this.submit();
-    }
+    this.body = {};
     this.props.passStatesToApp("feedbackEmphasis", false);
     this.props.passStatesToApp("exitIntent", false);
   }

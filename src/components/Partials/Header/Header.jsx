@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { Menu, Icon, Spin, Tooltip, Button } from "antd";
+import ReactGA from "react-ga";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { USERS } from "../../../utils/constants/endpoints";
@@ -80,6 +81,11 @@ class Header extends Component {
   handleNotifications() {
     this.props.notificationCheck();
     this.props.toggleNotifications(true);
+    ReactGA.event({
+      category: "Notifications",
+      action: "Clicked Notifications Icon",
+      label: "on Header"
+    });
   }
 
   async handleSyncUserEmail() {
@@ -116,7 +122,6 @@ class Header extends Component {
     };
     this.setState({ request: true });
     let page = event.key;
-    console.log("header menu click", event, "page to", page);
     if (page === "/logout") {
       this.props.passStatesToApp("logout", true);
       await setStateAsync({ current: "/home" });

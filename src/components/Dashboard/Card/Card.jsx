@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { DragSource } from "react-dnd";
 import classNames from "classnames";
 import { Checkbox } from "antd";
+import ReactGA from "react-ga";
 
 import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
 import linkedInLogo from "../../../assets/icons/linkedInLogo.png";
@@ -83,11 +84,19 @@ class Card extends PureComponent {
 
   toggleModal() {
     this.state.clickbox && this.setState({ clickbox: false });
-    !this.state.clickbox &&
+    if (!this.state.clickbox) {
+      if (!this.state.showModal) {
+        ReactGA.event({
+          category: "Dashboard",
+          action: "Opened CardModal",
+          label: this.props.card.company_object.company
+        });
+      }
       this.setState({
         showModal: !this.state.showModal,
         showSelect: false
       });
+    }
   }
 
   onSelectChange(event) {
@@ -95,6 +104,10 @@ class Card extends PureComponent {
     IS_CONSOLE_LOG_OPEN && console.log(`checked = `, isSelected);
     this.setState({ isSelected: isSelected, clickbox: true });
     if (isSelected === true) {
+      ReactGA.event({
+        category: "Dashboard",
+        action: "selected job application card"
+      });
       this.props.addToSelectedJobApplicationsList("add", this.props.card);
     }
     if (isSelected === false) {
