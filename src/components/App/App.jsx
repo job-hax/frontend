@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import { withCookies } from "react-cookie";
 import { Alert } from "antd";
+import ReactGA from "react-ga";
 
 import Header from "../Partials/Header/Header.jsx";
 import Blog from "../Blog/Blog.jsx";
@@ -31,7 +32,8 @@ import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   googleClientId,
   jobHaxClientId,
-  jobHaxClientSecret
+  jobHaxClientSecret,
+  googleAnalyticsId
 } from "../../config/config.js";
 import {
   IS_CONSOLE_LOG_OPEN,
@@ -73,6 +75,7 @@ class App extends Component {
       syncResponseTimestamp: null,
       user: {},
       page: window.location.pathname.split("?")[0],
+      location: location.href,
       logout: false,
       isSynchingGmail: false,
       feedbackEmphasis: false,
@@ -121,6 +124,9 @@ class App extends Component {
       "/aboutus",
       "/mentors"
     ];
+
+    ReactGA.initialize(googleAnalyticsId);
+    ReactGA.pageview(window.location.pathname + window.location.search);
   }
 
   componentDidMount() {
@@ -150,6 +156,11 @@ class App extends Component {
   }
 
   handleIn() {
+    if (location.href !== this.state.location) {
+      ReactGA.set({ page: window.location.pathname + window.location.search });
+      ReactGA.pageview(window.location.pathname + window.location.search);
+      this.setState({ location: location.href });
+    }
     if (!this.state.isUserLoggedIn) {
       this.setState({ isMouseIn: true });
     }
@@ -200,6 +211,7 @@ class App extends Component {
         IS_CONSOLE_LOG_OPEN && console.log("photo first");
         if (response.statusText === "OK") {
           if (response.data.success == true) {
+            ReactGA.set({ userId: response.data.data.id });
             this.props.cookies.set("user_type", response.data.data.user_type, {
               path: "/"
             });
@@ -207,15 +219,11 @@ class App extends Component {
               response.data.data.profile_photo != ("" || null)
                 ? apiRoot + response.data.data.profile_photo
                 : "../../../src/assets/icons/User@3x.png";
-            this.setState(
-              {
-                active: true,
-                profilePhotoUrl: profilePhotoUrl,
-                user: response.data.data
-              },
-              IS_CONSOLE_LOG_OPEN &&
-                console.log("profilePhotoUrl", profilePhotoUrl)
-            );
+            this.setState({
+              active: true,
+              profilePhotoUrl: profilePhotoUrl,
+              user: response.data.data
+            });
           }
         }
       });
@@ -223,7 +231,7 @@ class App extends Component {
         isAuthenticationChecking: false
       });
     }
-    if (window.location.pathname.split("?")[0] != this.state.page) {
+    if (window.location.pathname.split("?")[0] !== this.state.page) {
       console.log("page", this.state.page);
       this.setState({ page: window.location.pathname.split("?")[0] });
     }
@@ -544,6 +552,7 @@ class App extends Component {
       isInitialRequest
     } = this.state;
     const appRenderConsole = false;
+
     IS_CONSOLE_LOG_OPEN &&
       appRenderConsole &&
       console.log(

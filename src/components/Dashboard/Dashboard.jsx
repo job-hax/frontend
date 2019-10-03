@@ -348,6 +348,11 @@ class Dashboard extends Component {
       status_id: card.application_status.id,
       rejected: card.is_rejected
     };
+    ReactGA.event({
+      category: "User",
+      action: "Drag&Drop Status Change",
+      label: `from ${dragColumnName} to ${dropColumnName}`
+    });
     axiosCaptcha(JOB_APPS, config).then(response => {
       if (response.data.success != true) {
         window.location.reload(true);
@@ -378,6 +383,11 @@ class Dashboard extends Component {
         value: "OFFER"
       }
     };
+    ReactGA.event({
+      category: "User",
+      action: "Added job application - Manual",
+      label: `into status ${columnName}`
+    });
     await this.props.handleTokenExpiration("dashboard addNewApplication");
     let config = { method: "POST" };
     config.body = {
@@ -434,6 +444,11 @@ class Dashboard extends Component {
     const removedItemColumn = this.state[listToRemove].filter(job => {
       return job.id !== card.id;
     });
+    ReactGA.event({
+      category: "User",
+      action: "Changed to Rejected",
+      label: "Inside CardModal"
+    });
     let insertedItemColumn = this.state[listToAdd].slice();
     let updatedCard = card;
     updatedCard.is_changed = "added";
@@ -450,6 +465,11 @@ class Dashboard extends Component {
     }
     const removedItemColumn = this.state[columnName].filter(job => {
       return job.id !== cardId;
+    });
+    ReactGA.event({
+      category: "User",
+      action: "Deleted job application",
+      label: "Inside CardModal"
     });
     this.setState(() => ({
       [columnName]: removedItemColumn
@@ -496,6 +516,10 @@ class Dashboard extends Component {
         ) {
           filteredList.push(application);
         }
+      });
+      ReactGA.event({
+        category: "User",
+        action: "Used date range filter in dashboard"
       });
       IS_CONSOLE_LOG_OPEN && console.log(filteredList);
       this.sortJobApplications(filteredList);
@@ -547,6 +571,11 @@ class Dashboard extends Component {
   }
 
   moveMultipleOperation(status_id, status_name, requestList) {
+    ReactGA.event({
+      category: "User",
+      action: "Used multiple move operation",
+      label: `to ${status_name}`
+    });
     let newList = this.state.displayingList;
     this.state.selectedJobApplications.forEach(selectedJobApp =>
       newList.forEach(displayingJobApp => {
@@ -586,6 +615,11 @@ class Dashboard extends Component {
   }
 
   moveMultipleToSpecificRejectedOperation(status_id, status_name, requestList) {
+    ReactGA.event({
+      category: "User",
+      action: "Used multiple move operation",
+      label: "to Rejected"
+    });
     let newList = this.state.displayingList;
     this.state.selectedJobApplications.forEach(selectedJobApp =>
       newList.forEach(displayingJobApp => {
