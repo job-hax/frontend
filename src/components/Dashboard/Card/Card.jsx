@@ -87,7 +87,7 @@ class Card extends PureComponent {
     if (!this.state.clickbox) {
       if (!this.state.showModal) {
         ReactGA.event({
-          category: "User",
+          category: "Dashboard",
           action: "Opened CardModal",
           label: this.props.card.company_object.company
         });
@@ -105,7 +105,7 @@ class Card extends PureComponent {
     this.setState({ isSelected: isSelected, clickbox: true });
     if (isSelected === true) {
       ReactGA.event({
-        category: "User",
+        category: "Dashboard",
         action: "selected job application card"
       });
       this.props.addToSelectedJobApplicationsList("add", this.props.card);

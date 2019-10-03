@@ -12,6 +12,7 @@ import {
   Button,
   message
 } from "antd";
+import ReactGA from "react-ga";
 
 import Column from "./Column/Column.jsx";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
@@ -349,7 +350,7 @@ class Dashboard extends Component {
       rejected: card.is_rejected
     };
     ReactGA.event({
-      category: "User",
+      category: "Dashboard",
       action: "Drag&Drop Status Change",
       label: `from ${dragColumnName} to ${dropColumnName}`
     });
@@ -384,7 +385,7 @@ class Dashboard extends Component {
       }
     };
     ReactGA.event({
-      category: "User",
+      category: "Dashboard",
       action: "Added job application - Manual",
       label: `into status ${columnName}`
     });
@@ -445,7 +446,7 @@ class Dashboard extends Component {
       return job.id !== card.id;
     });
     ReactGA.event({
-      category: "User",
+      category: "Dashboard",
       action: "Changed to Rejected",
       label: "Inside CardModal"
     });
@@ -467,7 +468,7 @@ class Dashboard extends Component {
       return job.id !== cardId;
     });
     ReactGA.event({
-      category: "User",
+      category: "Dashboard",
       action: "Deleted job application",
       label: "Inside CardModal"
     });
@@ -518,7 +519,7 @@ class Dashboard extends Component {
         }
       });
       ReactGA.event({
-        category: "User",
+        category: "Dashboard",
         action: "Used date range filter in dashboard"
       });
       IS_CONSOLE_LOG_OPEN && console.log(filteredList);
@@ -572,7 +573,7 @@ class Dashboard extends Component {
 
   moveMultipleOperation(status_id, status_name, requestList) {
     ReactGA.event({
-      category: "User",
+      category: "Dashboard",
       action: "Used multiple move operation",
       label: `to ${status_name}`
     });
@@ -616,7 +617,7 @@ class Dashboard extends Component {
 
   moveMultipleToSpecificRejectedOperation(status_id, status_name, requestList) {
     ReactGA.event({
-      category: "User",
+      category: "Dashboard",
       action: "Used multiple move operation",
       label: "to Rejected"
     });

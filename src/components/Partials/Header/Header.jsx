@@ -82,7 +82,7 @@ class Header extends Component {
     this.props.notificationCheck();
     this.props.toggleNotifications(true);
     ReactGA.event({
-      category: "User",
+      category: "Notifications",
       action: "Clicked Notifications Icon",
       label: "on Header"
     });
