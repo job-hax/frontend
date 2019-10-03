@@ -221,7 +221,7 @@ class SignUpPage extends Component {
               axiosCaptcha(USERS("authSocialUser"), config, "signin")
                 .then(response => {
                   if (response.statusText === "OK") {
-                    if (response.data.success == true) {
+                    if (response.data.success === true) {
                       this.setCookies(response, googleAccessTokenExpiresOn);
                     }
                   }
@@ -229,7 +229,7 @@ class SignUpPage extends Component {
                 })
                 .then(response => {
                   if (response.statusText === "OK") {
-                    if (response.data.success == true) {
+                    if (response.data.success === true) {
                       if (!response.data.data.signup_flow_completed) {
                         this.setState({ level: "intro" });
                       } else {
@@ -301,7 +301,8 @@ class SignUpPage extends Component {
             "/"
           );
           this.props.cookie("set", "signup_flow_completed", true, "/");
-          this.generateLevelFinal();
+          this.setState({ redirect: "/signup?=final" });
+          this.props.passStatesToApp("isUserLoggedIn", true);
           this.props.alert(
             5000,
             "success",
@@ -322,12 +323,6 @@ class SignUpPage extends Component {
 
   handleSignUpFormNext(event) {
     event.preventDefault();
-    console.log(
-      "signuppp",
-      this.state.user_type,
-      "table result",
-      USER_TYPES["alumni"]
-    );
     let config = { method: "POST" };
     config.body = {};
     if (
@@ -350,7 +345,6 @@ class SignUpPage extends Component {
         }
         axiosCaptcha(USERS("register"), config, "signup").then(response => {
           if (response.statusText === "OK") {
-            IS_CONSOLE_LOG_OPEN && console.log(response.data);
             if (response.data.success === true) {
               this.token = `${
                 response.data.data.token_type
@@ -931,8 +925,6 @@ class SignUpPage extends Component {
   generateLevelBasicInfo() {
     const nextLevel =
       this.props.signupType === "alumni" ? "alumni" : "user_type";
-    IS_CONSOLE_LOG_OPEN &&
-      console.log("stateList", this.state.stateOrProvinceList);
     const mustInputsList =
       this.state.stateOrProvinceList.length > 0
         ? [
@@ -1060,7 +1052,6 @@ class SignUpPage extends Component {
   }
 
   checkMustInputs(mustInputs, level) {
-    IS_CONSOLE_LOG_OPEN && console.log(mustInputs);
     let x = mustInputs.length;
     let y = 0;
     for (let i = 0; i < x; i++) {
@@ -1073,16 +1064,12 @@ class SignUpPage extends Component {
     if (x == y) {
       this.setState({ level: level, mustInputEmphasis: false });
     } else {
-      this.setState(
-        { mustInputEmphasis: true },
-        IS_CONSOLE_LOG_OPEN && console.log(this.state.mustInputEmphasis)
-      );
+      this.setState({ mustInputEmphasis: true });
       this.props.alert(3000, "error", "You have to fill out all form!");
     }
   }
 
   onAlumniEmploymentSwitch(checked) {
-    IS_CONSOLE_LOG_OPEN && console.log(`switch to ${checked}`);
     this.setState({ alumniEmployment: checked });
   }
 
@@ -1100,7 +1087,6 @@ class SignUpPage extends Component {
     };
     axiosCaptcha(url, config).then(response => {
       if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log(response);
         let bufferList = [];
         response.data.forEach(company => bufferList.push(company.name));
         this.setState({
@@ -1138,7 +1124,6 @@ class SignUpPage extends Component {
     axiosCaptcha(newUrl, config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success) {
-          IS_CONSOLE_LOG_OPEN && console.log(response.data);
           let bufferList = [];
           if (type === "majors") {
             response.data.data.forEach(element =>
@@ -1163,16 +1148,13 @@ class SignUpPage extends Component {
                 collegeList: collegeList,
                 college_id: collegeList[0].id
               });
-              IS_CONSOLE_LOG_OPEN && console.log("colleges", collegeList);
             }
           } else if (type === "countries") {
             let countriesList = response.data.data;
             this.setState({ countryList: countriesList });
-            IS_CONSOLE_LOG_OPEN && console.log("countriesList", countriesList);
           } else if (type === "stateOrProvince") {
             let statesList = response.data.data;
             this.setState({ stateOrProvinceList: statesList });
-            IS_CONSOLE_LOG_OPEN && console.log("statesList", statesList);
           }
         }
       }
@@ -1387,11 +1369,6 @@ class SignUpPage extends Component {
         <div>{this.generateBackButton("linkedin")}</div>
       </div>
     );
-  }
-
-  async generateLevelFinal() {
-    this.setState({ redirect: "/dashboard" });
-    await this.props.passStatesToApp("isUserLoggedIn", true);
   }
 
   generateAdditionalInfoForms() {

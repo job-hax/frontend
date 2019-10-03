@@ -354,10 +354,7 @@ class Header extends Component {
     if (this.state.redirect) {
       return <Redirect to={this.state.current} />;
     }
-    if (
-      this.props.isUserLoggedIn &&
-      this.props.cookie("get", "signup_flow_completed") != "false"
-    ) {
+    if (this.props.isUserLoggedIn) {
       header = this.generateLoggedInHeader();
     } else {
       header = this.generateNonLoggedInHeader();
