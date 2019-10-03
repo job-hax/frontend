@@ -53,7 +53,8 @@ class App extends Component {
       token: this.cookie("get", "jobhax_access_token"),
       active: false,
       isUserLoggedIn:
-        this.cookie("get", "jobhax_access_token") == ("" || null)
+        this.cookie("get", "jobhax_access_token") == ("" || null) ||
+        this.cookie("get", "signup_flow_completed") == "false"
           ? false
           : true,
       isAuthenticationChecking: true,
@@ -133,19 +134,19 @@ class App extends Component {
         prompt: "select_account"
       });
       IS_CONSOLE_LOG_OPEN && console.log("gapi loaded");
-      this.handleTokenExpiration("app getPollAndProfileData").then(() => {
+      this.handleTokenExpiration("app componentdidmount").then(() => {
         this.setState({
           isInitialRequest: true,
           isAuthenticationChecking: false
         });
-        if (
-          this.cookie("get", "signup_flow_completed") === "false" &&
-          this.cookie("get", "signup_complete_required") != "false"
-        ) {
-          this.cookie("set", "signup_complete_required", true, "/");
-        }
       });
     });
+    if (
+      this.cookie("get", "signup_flow_completed") === "false" &&
+      this.cookie("get", "signup_complete_required") != "false"
+    ) {
+      this.cookie("set", "signup_complete_required", true, "/");
+    }
   }
 
   handleIn() {
@@ -434,7 +435,7 @@ class App extends Component {
       cookies.remove("signup_complete_required", { path: "/" });
       cookies.remove("is_demo_user", { path: "/" });
     } else if (method === "remove") {
-      IS_CONSOLE_LOG_OPEN && console.log("cookies removing");
+      IS_CONSOLE_LOG_OPEN && console.log("cookie removing", name);
       cookies.remove(name, { path: "/" });
     }
   }
@@ -568,8 +569,6 @@ class App extends Component {
     else if (logout && page == "/home")
       return <Spinner message="Logging out..." />;
     else if (isUserLoggedIn && this.state.active) {
-      let signup_completed =
-        this.cookie("get", "signup_flow_completed") === "true" ? true : false;
       return (
         <Router>
           <div className="main-container">
@@ -660,41 +659,7 @@ class App extends Component {
             />
             <Route
               exact
-              path="/signup"
-              render={() =>
-                signup_completed ? (
-                  <Redirect to="/dashboard" />
-                ) : (
-                  <SignUp
-                    googleAuth={this.googleAuth}
-                    alert={this.showAlert}
-                    passStatesToApp={this.passStatesToApp}
-                    cookie={this.cookie}
-                    signupType={"general"}
-                  />
-                )
-              }
-            />
-            <Route
-              exact
-              path="/alumni-signup"
-              render={() =>
-                signup_completed ? (
-                  <Redirect to="/dashboard" />
-                ) : (
-                  <SignUp
-                    googleAuth={this.googleAuth}
-                    alert={this.showAlert}
-                    passStatesToApp={this.passStatesToApp}
-                    cookie={this.cookie}
-                    signupType={"alumni"}
-                  />
-                )
-              }
-            />
-            <Route
-              exact
-              path={["/", "/home", "/alumni"]}
+              path={["/", "/home", "/alumni", "/signup", "alumni-signup"]}
               render={() =>
                 !logout ? (
                   <Redirect to="/dashboard" />

@@ -210,8 +210,9 @@ class SignInPage extends Component {
           } else {
             if (!response.data.data.signup_flow_completed) {
               if (
-                this.cookie("get", "user_type") &&
-                this.cookie("get", "user_type").id === USER_TYPES["alumni"]
+                this.props.cookie("get", "user_type") &&
+                this.props.cookie("get", "user_type").id ===
+                  USER_TYPES["alumni"]
               ) {
                 window.location = "/alumni-signup?=intro";
               } else {
@@ -322,8 +323,8 @@ class SignInPage extends Component {
                         console.log(this.token, "profile updated?");
                       if (!response.data.data.signup_flow_completed) {
                         if (
-                          this.cookie("get", "user_type") &&
-                          this.cookie("get", "user_type").id ===
+                          this.props.cookie("get", "user_type") &&
+                          this.props.cookie("get", "user_type").id ===
                             USER_TYPES["alumni"]
                         ) {
                           window.location = "/alumni-signup?=intro";
@@ -340,8 +341,8 @@ class SignInPage extends Component {
                       } else {
                         if (!response.data.data.signup_flow_completed) {
                           if (
-                            this.cookie("get", "user_type") &&
-                            this.cookie("get", "user_type").id ===
+                            this.props.cookie("get", "user_type") &&
+                            this.props.cookie("get", "user_type").id ===
                               USER_TYPES["alumni"]
                           ) {
                             window.location = "/alumni-signup?=intro";
