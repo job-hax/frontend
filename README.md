@@ -53,6 +53,8 @@
 
     export const linkedInClientSecret = '[TODO]';
 
+    export const nonceCSP = '[TODO]'; // base64 encoded random string
+
     ```
 
 4.  Run:
