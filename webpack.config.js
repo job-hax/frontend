@@ -106,7 +106,8 @@ module.exports = {
     host: "localhost",
     allowedHosts: [".jobhax.com", "backend.jobhax.com"],
     compress: true,
-    historyApiFallback: true
+    historyApiFallback: true,
+    stats: "errors-only"
     //headers: { "content-encoding": "br" }
     //contentBase: [path.join(__dirname, "dist")]
     //     inline: false,

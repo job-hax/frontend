@@ -27,7 +27,8 @@ import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
   googleClientId,
   jobHaxClientId,
-  jobHaxClientSecret
+  jobHaxClientSecret,
+  googleApiKey
 } from "../../config/config.js";
 import Footer from "../Partials/Footer/Footer.jsx";
 
@@ -137,7 +138,7 @@ class ProfilePage extends React.Component {
     window.gapi.load("client:auth2", () => {
       window.gapi.client
         .init({
-          apiKey: "AIzaSyBnF8loY6Vqhs4QWTM_fWCP93Xidbh1kYo",
+          apiKey: googleApiKey,
           clientId: googleClientId,
           scope: "email https://www.googleapis.com/auth/gmail.readonly",
           prompt: "select_account"
