@@ -10,7 +10,8 @@ import {
 import {
   googleClientId,
   jobHaxClientId,
-  jobHaxClientSecret
+  jobHaxClientSecret,
+  googleApiKey
 } from "../../../config/config.js";
 import { USERS } from "../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
@@ -282,7 +283,7 @@ class SignInPage extends Component {
     window.gapi.load("client:auth2", () => {
       window.gapi.client
         .init({
-          apiKey: "AIzaSyBnF8loY6Vqhs4QWTM_fWCP93Xidbh1kYo",
+          apiKey: googleApiKey,
           clientId: googleClientId,
           scope: "email https://www.googleapis.com/auth/gmail.readonly",
           prompt: "select_account"

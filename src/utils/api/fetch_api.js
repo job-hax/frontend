@@ -2,12 +2,16 @@ import axios from "axios";
 
 import {
   reCaptchaV3SiteKey,
-  IS_RECAPTCHA_ENABLED
+  IS_RECAPTCHA_ENABLED,
+  nonceCSP
 } from "../../config/config.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import { apiRoot } from "../constants/endpoints.js";
 
 const script = document.createElement("script");
+script.nonce = nonceCSP;
+script.async = true;
+script.defer = true;
 script.src = `https://www.google.com/recaptcha/api.js?render=${reCaptchaV3SiteKey}`;
 document.body.appendChild(script);
 

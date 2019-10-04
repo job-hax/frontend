@@ -132,19 +132,10 @@ class App extends Component {
   componentDidMount() {
     document.addEventListener("mouseout", this.handleExit);
     document.addEventListener("mouseover", this.handleIn);
-    IS_CONSOLE_LOG_OPEN && console.log("loading gapi");
-    window.gapi.load("client:auth2", () => {
-      window.gapi.client.init({
-        clientId: googleClientId,
-        scope: "email https://www.googleapis.com/auth/gmail.readonly",
-        prompt: "select_account"
-      });
-      IS_CONSOLE_LOG_OPEN && console.log("gapi loaded");
-      this.handleTokenExpiration("app componentdidmount").then(() => {
-        this.setState({
-          isInitialRequest: true,
-          isAuthenticationChecking: false
-        });
+    this.handleTokenExpiration("app componentdidmount").then(() => {
+      this.setState({
+        isInitialRequest: true,
+        isAuthenticationChecking: false
       });
     });
     if (

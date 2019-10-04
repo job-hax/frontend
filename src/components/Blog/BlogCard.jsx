@@ -19,7 +19,6 @@ class BlogCard extends React.Component {
 
   handleBlogCardClick(blog) {
     this.props.setBlogDetail(blog.id);
-    this.postBlogStats("view");
   }
 
   generateBlogCard() {
