@@ -47,6 +47,7 @@ import {
 } from "../../utils/constants/endpoints.js";
 
 import "./style.scss";
+import HandleDemo from "../UserAuth/Action/HandleDemo.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -104,6 +105,7 @@ class App extends Component {
     this.pages = [
       "/",
       "/home",
+      "/demo",
       "/signup",
       "/alumni-signup",
       "/signin",
@@ -659,7 +661,14 @@ class App extends Component {
             />
             <Route
               exact
-              path={["/", "/home", "/alumni", "/signup", "alumni-signup"]}
+              path={[
+                "/",
+                "/home",
+                "/alumni",
+                "/signup",
+                "alumni-signup",
+                "/demo"
+              ]}
               render={() =>
                 !logout ? (
                   <Redirect to="/dashboard" />
@@ -758,6 +767,7 @@ class App extends Component {
       let allowed = [
         "/",
         "/home",
+        "/demo",
         "/alumni",
         "/alumni-signup",
         "/signin",
@@ -796,7 +806,7 @@ class App extends Component {
               <Route exact path="/" render={() => <Redirect to="/home" />} />
               <Route
                 exact
-                path="/home"
+                path={["/home", "/alumni"]}
                 render={() => (
                   <Home
                     isUserLoggedIn={false}
@@ -808,10 +818,9 @@ class App extends Component {
               />
               <Route
                 exact
-                path="/alumni"
+                path="/demo"
                 render={() => (
-                  <Home
-                    isUserLoggedIn={false}
+                  <HandleDemo
                     passStatesToApp={this.passStatesToApp}
                     alert={this.showAlert}
                     cookie={this.cookie}
