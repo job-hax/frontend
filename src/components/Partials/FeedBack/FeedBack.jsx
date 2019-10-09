@@ -1,9 +1,13 @@
 import React from "react";
-import { Rate, Modal, Button, Dropdown, Menu, Icon, Input } from "antd";
+import { Rate, Modal, Button, Dropdown, Menu, Icon, Input, Radio } from "antd";
 import classNames from "classnames";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
+import {
+  IS_CONSOLE_LOG_OPEN,
+  closeIcon,
+  commentDots
+} from "../../../utils/constants/constants.js";
 import { USERS, FEEDBACKS } from "../../../utils/constants/endpoints.js";
 
 import "./style.scss";
@@ -20,7 +24,7 @@ class FeedBack extends React.Component {
       value: null,
       visible: this.props.visible || false,
       feedbackData: {},
-      selectedFeedback: { value: "Please Select", id: 0, custom_input: false },
+      selectedFeedback: { id: 0, custom_input: false },
       loading: false
     };
 
@@ -31,6 +35,29 @@ class FeedBack extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleMenuClick = this.handleMenuClick.bind(this);
+
+    this.modalBoxStyle = {
+      position: "fixed",
+      right: "20px",
+      bottom: "120px",
+      color: "black",
+      width: "250px",
+      maxWidth: "250px",
+      display: "flex",
+      alignItems: "flex-end"
+    };
+
+    this.sendButton = (
+      <Button
+        key="submit"
+        type="primary"
+        loading={this.state.loading}
+        onClick={this.handleOk}
+        style={{ width: "105px" }}
+      >
+        Send
+      </Button>
+    );
   }
 
   componentDidMount() {
@@ -43,6 +70,12 @@ class FeedBack extends React.Component {
         }
       }
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.visible != this.props.visible) {
+      this.setState({ visible: this.props.visible });
+    }
   }
 
   showModal() {
@@ -70,27 +103,25 @@ class FeedBack extends React.Component {
     config.body = this.body;
     const response = await axiosCaptcha(url, config, false);
     if (response.statusText === "OK") {
+      this.setState({ loading: false });
       if (response.data.success === true) {
-        this.setState({ textValue: "", loading: false, visible: false });
+        this.setState({ textValue: "", visible: false });
         this.props.passStatesToApp("feedbackEmphasis", false);
         this.props.passStatesToApp("exitIntent", false);
-        if (!this.body.item_id === 0 || this.props.isUserLoggedIn) {
-          this.props.alert(
-            2000,
-            "success",
-            "Your feedback has been submitted successfully!"
-          );
-        }
+        this.props.passStatesToApp("feedbackType", "normal");
+        this.props.alert(
+          2000,
+          "success",
+          "Your feedback has been submitted successfully!"
+        );
       } else {
         IS_CONSOLE_LOG_OPEN &&
           console.log(response, response.data.error_message);
-        if (!this.body.item_id === 0 || this.props.isUserLoggedIn) {
-          this.props.alert(
-            5000,
-            "error",
-            "Error: " + response.data.error_message
-          );
-        }
+        this.props.alert(
+          5000,
+          "error",
+          "Error: " + response.data.error_message
+        );
       }
     } else {
       if (response.data === 500) {
@@ -110,7 +141,6 @@ class FeedBack extends React.Component {
   handleOk() {
     this.setState({ loading: true });
     this.submit();
-    setTimeout(() => {}, 1000);
   }
 
   handleCancel() {
@@ -118,6 +148,7 @@ class FeedBack extends React.Component {
     this.body = {};
     this.props.passStatesToApp("feedbackEmphasis", false);
     this.props.passStatesToApp("exitIntent", false);
+    this.props.passStatesToApp("feedbackType", "normal");
   }
 
   handleChange(value) {
@@ -130,101 +161,127 @@ class FeedBack extends React.Component {
   }
 
   handleMenuClick(event) {
-    let custom = event.item.props.custom;
-    let value = event.item.props.value;
-    let id = event.key;
+    let custom = event.target.custom;
+    let id = event.target.value;
     this.body["item_id"] = id;
     this.setState({
-      selectedFeedback: { value: value, id: id, custom_input: custom },
-      textValue: ""
+      selectedFeedback: { id: id, custom_input: custom }
     });
   }
 
-  generateFeedbackTypeOne() {
-    const { visible } = this.state;
+  generateFeedbackNonLoggedIn() {
+    const radioItems = this.state.feedbackData.items.map(question =>
+      !question.custom_input ? (
+        <Radio
+          value={question.id}
+          name={question.value}
+          custom={question.custom_input}
+        >
+          {question.value}
+        </Radio>
+      ) : (
+        <TextArea
+          value={this.state.textValue}
+          onChange={this.handleTextChange}
+          placeholder={question.value}
+          autosize={{ minRows: 3, maxRows: 8 }}
+          style={{
+            margin: "7px 0px",
+            padding: 4,
+            resize: "none",
+            lineHeight: "normal"
+          }}
+        />
+      )
+    );
 
-    const menuItems = this.state.feedbackData.items.map(question => (
-      <Menu.Item
-        key={question.id}
-        value={question.value}
-        custom={question.custom_input}
+    const radio = (
+      <Radio.Group
+        onChange={this.handleMenuClick}
+        value={this.state.selectedFeedback.id}
       >
-        {question.value}
-      </Menu.Item>
-    ));
-
-    const menu = <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
+        {radioItems}
+      </Radio.Group>
+    );
 
     return (
-      <Modal
-        visible={visible}
-        onOk={this.handleOk}
-        onCancel={this.handleCancel}
-        centered
-        confirmLoading={this.state.loading}
-        title="We’ve created JobHax for you!"
-      >
-        <h4>Please share your feedback with us.</h4>
-        <div>{this.state.feedbackData.title}</div>
-        <Dropdown overlay={menu}>
-          <Button
-            className="ant-dropdown-link"
-            style={{
-              margin: "12px 0px 16px 0px",
-              color: "rgb(34, 34, 34)",
-              borderColor: "rgb(217, 217, 217)"
-            }}
-          >
-            {this.state.selectedFeedback.value} <Icon type="down" />
-          </Button>
-        </Dropdown>
-        {this.state.selectedFeedback.custom_input && (
-          <TextArea
-            value={this.state.textValue}
-            onChange={this.handleTextChange}
-            placeholder="Please enter"
-            autosize={{ minRows: 3, maxRows: 8 }}
-          />
+      <div>
+        <div style={{ padding: "0px 0px 7px 0px" }}>
+          {this.state.feedbackData.title}
+        </div>
+        {radio}
+      </div>
+    );
+  }
+
+  generateFeedbackLoggedIn() {
+    const textPlaceHolder =
+      this.props.type === "afterSignup"
+        ? "Anything else you'd like us to know?"
+        : "Anything we can add or change to improve your experience?";
+
+    const isDemoUser =
+      this.props.cookie("get", "is_demo_user") != ("" || null)
+        ? this.props.cookie("get", "is_demo_user")
+        : false;
+
+    return (
+      <div>
+        {this.props.type === "normal" && !isDemoUser && (
+          <div style={{ padding: "0px 0px 7px 0px" }}>
+            {"Hey " +
+              this.props.user.first_name +
+              ", we are happy to see you back!"}
+          </div>
         )}
-      </Modal>
+        <div style={{ padding: "0px 0px 7px 0px" }}>
+          How do you like JobHax so far?
+        </div>
+        <Rate
+          tooltips={desc}
+          onChange={value => this.handleChange(value)}
+          value={this.state.value}
+        />
+        <TextArea
+          value={this.state.textValue}
+          onChange={this.handleTextChange}
+          placeholder={textPlaceHolder}
+          autosize={{ minRows: 3, maxRows: 8 }}
+          style={{
+            margin: "7px 0px",
+            padding: 4,
+            resize: "none",
+            lineHeight: "normal"
+          }}
+        />
+      </div>
     );
   }
 
   generateModal() {
-    const { value, visible } = this.state;
-    const modalBoxStyle = {
-      position: "fixed",
-      marginTop: "10%",
-      right: "20px",
-      color: "black"
-    };
-    const textBoxStyle = {
-      border: "1px solid rgb(239, 239, 239)",
-      borderRadius: "4px",
-      height: "140px",
-      width: "100%",
-      marginTop: "8px",
-      maxHeight: "140px",
-      minHeight: "140px",
-      padding: 4
-    };
-    const quesitonContainerStyle = {
-      marginTop: "12px"
-    };
-    const quesitonLabelStyle = {
-      marginTop: "8px"
-    };
-    const buttonsContainerStyle = {
-      display: "flex",
-      justifyContent: "flex-end",
-      marginTop: "16px",
-      width: "300px"
-    };
-    const buttonStyle = {
-      paddingTop: "0px",
-      marginRight: "16px"
-    };
+    const { visible } = this.state;
 
+    const content = this.props.isUserLoggedIn
+      ? this.generateFeedbackLoggedIn()
+      : this.state.feedbackData.items && this.generateFeedbackNonLoggedIn();
+
+    return (
+      <Modal
+        visible={visible && content}
+        style={this.modalBoxStyle}
+        onCancel={this.handleCancel}
+        confirmLoading={this.state.loading}
+        title="Your Feedback"
+        footer={[this.sendButton]}
+        closeIcon={closeIcon}
+        getContainer={false}
+      >
+        {content}
+      </Modal>
+    );
+  }
+
+  render() {
     const feedbackButtonStyle =
       window.location.pathname == "/underconstruction"
         ? { display: "none" }
@@ -232,80 +289,25 @@ class FeedBack extends React.Component {
 
     const feedbackButtonClass = classNames({
       "feedback-open-button": true,
-      shake: this.props.feedbackEmphasis
+      shake: this.props.feedbackEmphasis,
+      "full-visible": this.state.visible
     });
 
-    const feedback_two = (
-      <Modal
-        visible={visible}
-        title="Feedback"
-        width="340px"
-        style={modalBoxStyle}
-        onOk={this.handleOk}
-        onCancel={this.handleCancel}
-        footer={null}
-      >
-        <h4 style={{ color: "black" }}>Your feedback is important for us</h4>
-        <form onSubmit={this.handleSubmit}>
-          <div style={quesitonContainerStyle} className="question">
-            <label style={quesitonLabelStyle} className="question-label">
-              How do you like our platform?
-            </label>
-            <Rate
-              tooltips={desc}
-              onChange={value => this.handleChange(value)}
-              value={value}
-            />
-            {value ? (
-              <span className="ant-rate-text">{desc[value - 1]}</span>
-            ) : (
-              ""
-            )}
-          </div>
-          <div style={quesitonContainerStyle} className="question">
-            <label style={quesitonLabelStyle} className="question-label">
-              Would you like to give us a feedback?
-            </label>
-            <textarea
-              style={textBoxStyle}
-              className="text-box"
-              placeholder="+add feedback"
-              value={this.state.textValue}
-              onChange={this.handleTextChange}
-            />
-          </div>
-          <div style={buttonsContainerStyle} className="buttons-container">
-            <div key="submit" type="primary" onClick={this.handleOk}>
-              <Button style={buttonStyle} type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </div>
-          </div>
-        </form>
-      </Modal>
-    );
-
     return (
-      <div>
-        <div
-          className={feedbackButtonClass}
-          style={feedbackButtonStyle}
-          type="primary"
-          onClick={this.showModal}
-        >
-          <div>
-            <img src="../../../../src/assets/icons/feedback_icon.png" />
-          </div>
+      <div className="feedback-container">
+        <div className={feedbackButtonClass} style={feedbackButtonStyle}>
+          <Button type="primary" onClick={this.showModal}>
+            <div style={{ display: "flex" }}>
+              <div style={{ height: 24, width: 24, marginRight: 10 }}>
+                {commentDots}
+              </div>
+              <div>Send Feedback</div>
+            </div>
+          </Button>
         </div>
-        {this.props.isUserLoggedIn
-          ? feedback_two
-          : this.state.feedbackData.items && this.generateFeedbackTypeOne()}
+        <div className="feedback-modal">{this.generateModal()}</div>
       </div>
     );
-  }
-
-  render() {
-    return <div className="feedback-container">{this.generateModal()}</div>;
   }
 }
 
