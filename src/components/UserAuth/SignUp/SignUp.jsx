@@ -303,6 +303,8 @@ class SignUpPage extends Component {
           );
           this.props.cookie("set", "signup_flow_completed", true, "/");
           this.setState({ redirect: "/signup?=final" });
+          this.props.passStatesToAppForFuture("feedbackType", "afterSignup", 2 * 5);
+          this.props.passStatesToAppForFuture("feedbackVisible", true, 2 * 6);
           this.props.passStatesToApp("isUserLoggedIn", true);
           this.props.alert(
             5000,

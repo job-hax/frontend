@@ -80,6 +80,8 @@ class App extends Component {
       logout: false,
       isSynchingGmail: false,
       feedbackEmphasis: false,
+      feedbackVisible: false,
+      feedbackType: "normal",
       exitIntent: false,
       exitIntentCount: 0,
       isMouseIn: true
@@ -92,6 +94,7 @@ class App extends Component {
       this
     );
     this.passStatesToApp = this.passStatesToApp.bind(this);
+    this.passStatesToAppForFuture = this.passStatesToAppForFuture.bind(this);
     this.reRunComponentDidUpdate = this.reRunComponentDidUpdate.bind(this);
     this.showAlert = this.showAlert.bind(this);
     this.cookie = this.cookie.bind(this);
@@ -417,6 +420,12 @@ class App extends Component {
     }
   }
 
+  passStatesToAppForFuture(type, value, second) {
+    setTimeout(() => {
+      this.setState({ [type]: value });
+    }, second * 1000);
+  }
+
   cookie(method, name, data, path, expires) {
     const { cookies } = this.props;
     if (method.toUpperCase() === "GET") {
@@ -595,6 +604,10 @@ class App extends Component {
               feedbackEmphasis={this.state.feedbackEmphasis}
               passStatesToApp={this.passStatesToApp}
               isUserLoggedIn={isUserLoggedIn}
+              visible={this.state.feedbackVisible}
+              type={this.state.feedbackType}
+              user={this.state.user}
+              cookie={this.cookie}
             />
             {this.state.isPollShowing && (
               <PollBox
@@ -859,6 +872,7 @@ class App extends Component {
                     googleAuth={this.googleAuth}
                     alert={this.showAlert}
                     passStatesToApp={this.passStatesToApp}
+                    passStatesToAppForFuture={this.passStatesToAppForFuture}
                     cookie={this.cookie}
                     signupType={"general"}
                   />
@@ -872,6 +886,7 @@ class App extends Component {
                     googleAuth={this.googleAuth}
                     alert={this.showAlert}
                     passStatesToApp={this.passStatesToApp}
+                    passStatesToAppForFuture={this.passStatesToAppForFuture}
                     cookie={this.cookie}
                     signupType={"alumni"}
                   />

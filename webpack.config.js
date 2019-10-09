@@ -70,8 +70,8 @@ module.exports = {
       "process.env.NODE_ENV": JSON.stringify("production")
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-    new BundleAnalyzerPlugin()
+    new webpack.NoEmitOnErrorsPlugin()
+    //new BundleAnalyzerPlugin()
   ],
   optimization: {
     minimize: true,
