@@ -71,6 +71,14 @@
                 transform: translate(1px, -2px) rotate(-1deg);
             }
         }
+
+        &.full-visible {
+            right: 16px;
+        }
+
+        .ant-btn-primary {
+            height: 40px;
+        }
     }
 
     .feedback-open-button:hover {
@@ -97,81 +105,85 @@
             padding: 8px;
         }
     }
-}
 
-.ant-modal-content {
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.25);
-}
 
-.ant-modal-header {
-    border: none;
-    padding: 20px;
-}
+    .feedback-modal {
 
-.ant-modal-body {
-    padding: 0px 20px;
-    width: 100%;
-}
+        .ant-modal-content {
+            box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.25);
+        }
 
-.ant-modal-footer {
-    border: none;
-    padding: 20px;
-}
+        .ant-modal-header {
+            border: none;
+            padding: 20px;
+        }
 
-.ant-radio-group {
-    width: 100%;
-}
+        .ant-modal-body {
+            padding: 0px 20px;
+            width: 100%;
+        }
 
-.ant-radio-wrapper {
-    display: flex;
-    white-space: unset;
-    line-height: normal;
-    padding: 7px 0px;
-    color: $text_color;
-    align-items: flex-start;
-}
+        .ant-modal-footer {
+            border: none;
+            padding: 7px 20px 20px 20px;
+        }
 
-.ant-radio-inner {
-    background-color: $line_color;
-    border-color: $line_color;
-}
+        .ant-radio-group {
+            width: 100%;
+        }
 
-.ant-radio-checked .ant-radio-inner {
-    border-color: black;
-}
+        .ant-radio-wrapper {
+            display: flex;
+            white-space: unset;
+            line-height: normal;
+            padding: 7px 0px;
+            color: $text_color;
+            align-items: flex-start;
+        }
 
-.ant-radio-inner::after {
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-}
+        .ant-radio-inner {
+            background-color: $line_color;
+            border-color: $line_color;
+        }
 
-.ant-modal-title {
-    color: $text_color;
-    font-weight: 300;
-    font-size: 24px;
-    line-height: 28px;
-}
+        .ant-radio-checked .ant-radio-inner {
+            border-color: black;
+        }
 
-.ant-modal-close-x {
-    width: 10px;
-    height: 10px;
-    font-size: 10px;
-    line-height: 10px;
-    color: $line_color;
-    margin: 4px 5px;
-}
+        .ant-radio-inner::after {
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+        }
 
-.ant-modal-mask {
-    background-color: transparent;
-}
+        .ant-modal-title {
+            color: $text_color;
+            font-weight: 300;
+            font-size: 24px;
+            line-height: 28px;
+        }
 
-.ant-rate {
-    font-size: 33px;
-}
+        .ant-modal-close-x {
+            width: 10px;
+            height: 10px;
+            font-size: 10px;
+            line-height: 10px;
+            color: $line_color;
+            margin: 4px 5px;
+        }
 
-.ant-btn-primary {
-    height: 40px;
+        .ant-modal-mask {
+            background-color: transparent;
+        }
+
+        .ant-rate {
+            font-size: 33px;
+        }
+
+        .ant-btn-primary {
+            height: 30px;
+        }
+    }
 }

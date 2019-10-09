@@ -274,6 +274,7 @@ class FeedBack extends React.Component {
         title="Your Feedback"
         footer={[this.sendButton]}
         closeIcon={closeIcon}
+        getContainer={false}
       >
         {content}
       </Modal>
@@ -288,7 +289,8 @@ class FeedBack extends React.Component {
 
     const feedbackButtonClass = classNames({
       "feedback-open-button": true,
-      shake: this.props.feedbackEmphasis
+      shake: this.props.feedbackEmphasis,
+      "full-visible": this.state.visible
     });
 
     return (
@@ -303,8 +305,7 @@ class FeedBack extends React.Component {
             </div>
           </Button>
         </div>
-
-        {this.generateModal()}
+        <div className="feedback-modal">{this.generateModal()}</div>
       </div>
     );
   }
