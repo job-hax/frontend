@@ -111,7 +111,7 @@ class App extends Component {
       "/home",
       "/demo",
       "/signup",
-      "/alumni-signup",
+      "/alumni/signup",
       "/alumni/home",
       "/signin",
       "/dashboard",
@@ -250,7 +250,7 @@ class App extends Component {
       this.cookie("set", "signup_complete_required", false, "/");
       let userType = this.props.cookies.get("user_type");
       if (userType.id === USER_TYPES["alumni"]) {
-        window.location = "/alumni-signup?=intro";
+        window.location = "/alumni/signup?=intro";
       } else {
         window.location = "/signup?=intro";
       }
@@ -686,7 +686,7 @@ class App extends Component {
                 "/home",
                 "/alumni",
                 "/signup",
-                "alumni-signup",
+                "alumni/signup",
                 "/demo"
               ]}
               render={() =>
@@ -810,7 +810,7 @@ class App extends Component {
         "/home",
         "/demo",
         "/alumni",
-        "/alumni-signup",
+        "/alumni/signup",
         "/signin",
         "/signup",
         "/privacypolicy",
@@ -908,7 +908,7 @@ class App extends Component {
               />
               <Route
                 exact
-                path="/alumni-signup"
+                path="/alumni/signup"
                 render={() => (
                   <SignUp
                     googleAuth={this.googleAuth}

@@ -3,7 +3,10 @@ import { Redirect } from "react-router-dom";
 
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
-import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
+import {
+  IS_CONSOLE_LOG_OPEN,
+  USER_TYPES
+} from "../../../utils/constants/constants";
 import { apiRoot } from "../../../utils/constants/endpoints";
 import { jobHaxClientId, jobHaxClientSecret } from "../../../config/config";
 
@@ -22,12 +25,16 @@ class HandleDemo extends React.Component {
         this.setState(state, resolve);
       });
     };
+    const type = window.location.search.split("=")[1];
+    const type_id = USER_TYPES[type];
+
     IS_CONSOLE_LOG_OPEN && console.log("handle demo first");
     let rememberMe = false;
     let config = { method: "POST" };
     config.body = {
       client_id: jobHaxClientId,
-      client_secret: jobHaxClientSecret
+      client_secret: jobHaxClientSecret,
+      user_type_id: type_id
     };
     axiosCaptcha(apiRoot + "/api/demo/", config).then(response => {
       if (response.statusText === "OK") {

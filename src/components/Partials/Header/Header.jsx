@@ -308,7 +308,7 @@ class Header extends Component {
 
   generateNonLoggedInHeader() {
     let signupRedirect =
-      this.state.current === "/alumni" ? "/alumni-signup" : "/signup";
+      this.state.current === "/alumni" ? "/alumni/signup" : "/signup";
     let functional = !(
       this.props.cookie("get", "signup_flow_completed") === "false"
     );

@@ -30,6 +30,7 @@
                 right: -100%;
                 top: -100%;
                 bottom: -100%;
+                cursor: pointer;
             }
         }
     }
@@ -38,7 +39,7 @@
         display: flex;
         justify-content: center;
         width: 100%;
-        padding: 0px;
+        padding: 12px;
         overflow-y: hidden;
         height: fit-content;
         height: -moz-fit-content;
@@ -72,9 +73,17 @@
                     right: -100%;
                     top: -100%;
                     bottom: -100%;
+                    cursor: pointer;
                 }
             }
         }
+    }
+
+    .ant-carousel .slick-dots li button {
+        width: 32px;
+        height: 10px;
+        margin-top: -8px;
+        border-radius: 5px;
     }
 }
 
