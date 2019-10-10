@@ -9,7 +9,8 @@ import NotificationsBox from "../NotificationsBox/NotificationsBox.jsx";
 import "./style.scss";
 import {
   USER_TYPES,
-  USER_TYPE_NAMES
+  USER_TYPE_NAMES,
+  gradIcon
 } from "../../../utils/constants/constants";
 
 const { SubMenu } = Menu;
@@ -155,8 +156,7 @@ class Header extends Component {
 
   generateLoggedInHeader() {
     const exclusiveHeaderName =
-      this.state.user_type.name === "Student" ||
-      this.state.user_type.name === "Alumni"
+      this.state.user_type.name === "Student"
         ? USER_TYPE_NAMES[this.state.user_type.id]["header"] + " "
         : "";
     const isDashboardOpenedByDefault =
@@ -170,6 +170,43 @@ class Header extends Component {
     const spinIcon = (
       <Icon type="loading" style={{ fontSize: 24, color: "black" }} spin />
     );
+
+    const jobMenu = (
+      <SubMenu
+        title={
+          <div className="header-icon menu-icon">
+            <img src="../../../src/assets/icons/BusinessIcon.png" />
+          </div>
+        }
+      >
+        <Menu.Item key="/dashboard">Dashboard</Menu.Item>
+        <Menu.Item key="/metrics">Metrics</Menu.Item>
+        <Menu.Item key="/companies">Companies</Menu.Item>
+      </SubMenu>
+    );
+
+    const communityMenu = (
+      <SubMenu
+        title={
+          <div className="header-icon menu-icon">
+            <img src="../../../src/assets/icons/SchoolIcon.png" />
+          </div>
+        }
+      >
+        <Menu.Item key="/blogs">{exclusiveHeaderName + "Blog"}</Menu.Item>
+        <Menu.Item key="/events">{exclusiveHeaderName + "Events"}</Menu.Item>
+      </SubMenu>
+    );
+
+    const alumniMenu = (
+      <SubMenu title={<div className="header-icon menu-icon">{gradIcon}</div>}>
+        <Menu.Item key="/alumni-home">Home</Menu.Item>
+        <Menu.Item key="/alumni-network">Network</Menu.Item>
+        <Menu.Item key="/blogs">Blog</Menu.Item>
+        <Menu.Item key="/events">Events</Menu.Item>
+      </SubMenu>
+    );
+
     return (
       <div className="header-container" style={style}>
         <div className="left-container">
@@ -205,32 +242,9 @@ class Header extends Component {
             mode="horizontal"
             style={{ backgroundColor: "transparent", border: "none" }}
           >
-            <SubMenu
-              title={
-                <div className="header-icon menu-icon">
-                  <img src="../../../src/assets/icons/BusinessIcon.png" />
-                </div>
-              }
-            >
-              <Menu.Item key="/dashboard">Dashboard</Menu.Item>
-              <Menu.Item key="/metrics">Metrics</Menu.Item>
-              <Menu.Item key="/companies">Companies</Menu.Item>
-            </SubMenu>
-            <SubMenu
-              title={
-                <div className="header-icon menu-icon">
-                  <img src="../../../src/assets/icons/SchoolIcon.png" />
-                </div>
-              }
-            >
-              {this.state.user_type.alumni_listing_enabled && (
-                <Menu.Item key="/alumni-search">Alumni Search</Menu.Item>
-              )}
-              <Menu.Item key="/blogs">{exclusiveHeaderName + "Blog"}</Menu.Item>
-              <Menu.Item key="/events">
-                {exclusiveHeaderName + "Events"}
-              </Menu.Item>
-            </SubMenu>
+            {this.state.user_type.name === "Alumni" && alumniMenu}
+            {jobMenu}
+            {this.state.user_type.name !== "Alumni" && communityMenu}
           </Menu>
           {!this.props.isNotificationsShowing ? (
             <div

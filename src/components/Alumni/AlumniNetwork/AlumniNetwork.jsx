@@ -1,18 +1,18 @@
 import React from "react";
 import { Pagination, Input, Menu, Dropdown, Icon, Button } from "antd";
 
-import Spinner from "../Partials/Spinner/Spinner.jsx";
-import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { ALUMNI, AUTOCOMPLETE } from "../../utils/constants/endpoints.js";
-import AlumniCard from "../Partials/AlumniCards/AlumniCard.jsx";
-import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
-import Footer from "../Partials/Footer/Footer.jsx";
+import Spinner from "../../Partials/Spinner/Spinner.jsx";
+import { axiosCaptcha } from "../../../utils/api/fetch_api";
+import { ALUMNI, AUTOCOMPLETE } from "../../../utils/constants/endpoints.js";
+import AlumniCard from "../../Partials/AlumniCards/AlumniCard.jsx";
+import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
+import Footer from "../../Partials/Footer/Footer.jsx";
 
 import "./style.scss";
 
 const Search = Input.Search;
 
-class Alumni extends React.Component {
+class AlumniNetwork extends React.Component {
   constructor(props) {
     super(props);
 
@@ -433,7 +433,9 @@ class Alumni extends React.Component {
           </div>
           <div
             className={
-              window.screen.availWidth > 800 ? "bottom-fixed-footer" : "footer-margin"
+              window.screen.availWidth > 800
+                ? "bottom-fixed-footer"
+                : "footer-margin"
             }
           >
             <Footer />
@@ -444,4 +446,4 @@ class Alumni extends React.Component {
   }
 }
 
-export default Alumni;
+export default AlumniNetwork;

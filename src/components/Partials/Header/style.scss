@@ -99,6 +99,7 @@
     .header-icon {
       width: 30px;
       opacity: 1;
+      color: black;
       cursor: pointer;
 
       &.general {
@@ -114,6 +115,8 @@
         min-height: 36px;
         max-width: 24px;
         max-height: 36px;
+        display: flex;
+        align-items: flex-end;
 
         img {
           height: 20px;
@@ -205,6 +208,8 @@
 
 .ant-menu-horizontal>.ant-menu-submenu-selected {
   border-bottom: 2px solid $base_color;
+  color: black;
+  max-height: 52px;
 }
 
 .ant-menu-horizontal>.ant-menu-submenu:hover {
@@ -213,10 +218,6 @@
 
 .ant-menu-horizontal>.ant-menu-submenu {
   vertical-align: top;
-  max-height: 52px;
-}
-
-.ant-menu-horizontal>.ant-menu-submenu-selected {
   max-height: 52px;
 }
 

@@ -23,108 +23,6 @@
                 grid-gap: 0 20px;
                 grid-auto-rows: 400px;
                 grid-auto-columns: 400px;
-
-                .event-card-container {
-                    width: 252px;
-                    height: 328px;
-                    background-color: white;
-                    border-radius: 8px;
-                    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
-                    cursor: pointer;
-
-                    .image {
-                        width: 252px;
-                        height: 140px;
-                        border-radius: 8px 8px 0 0;
-                        overflow: hidden;
-                        position: relative;
-
-                        img {
-                            position: absolute;
-                            margin: auto;
-                            max-width: 252px;
-                            min-width: 252px;
-                            min-height: 140px;
-                            max-height: auto;
-                            left: -100%;
-                            right: -100%;
-                            top: -100%;
-                            bottom: -100%;
-                        }
-                    }
-
-                    .date-box {
-                        height: 48px;
-                        width: 60px;
-                        padding: 4px;
-                        margin: -24px 0 -24px 192px;
-                        border-radius: 4px 0 0 4px;
-                        box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.1);
-                        background-color: white;
-                        position: relative;
-                        overflow: hidden;
-                        text-align: center;
-
-                        .month {
-                            color: red;
-                            font-weight: lighter;
-                            font-size: 90%;
-                        }
-
-                        .day {
-                            color: black;
-                            font-size: 120%;
-                        }
-                    }
-
-                    .body-container {
-                        height: 188px;
-                        width: 252px;
-                        padding: 20px;
-
-                        .body {
-                            height: 138px;
-
-                            .type {
-                                font-weight: 500;
-                                color: gray;
-                            }
-
-                            .title {
-                                font-weight: 600;
-                                color: black;
-                                font-size: 120%;
-                                margin: 4px 0 0 0;
-                                display: -webkit-box;
-                                -webkit-line-clamp: 1;
-                                -webkit-box-orient: vertical;
-                                overflow: hidden;
-                            }
-
-                            .snippet {
-                                font-weight: 400;
-                                font-size: 90%;
-                                margin: 4px 0 0 0;
-                                display: -webkit-box;
-                                -webkit-line-clamp: 3;
-                                -webkit-box-orient: vertical;
-                                overflow: hidden;
-                            }
-                        }
-
-                        .footer {
-                            font-size: 90%;
-                            font-weight: 300;
-                            color: rgba(0, 0, 0, 0.4);
-                            text-align: end
-                        }
-                    }
-
-                }
-
-                .event-card-container:hover {
-                    box-shadow: 1px 1px 20px 4px rgba(0, 0, 0, 0.2);
-                }
             }
         }
 
@@ -145,6 +43,8 @@
         }
 
     }
+
+
 
     .event-details {
         //min-width: 1200px;
@@ -528,4 +428,106 @@
         z-index: 201;
         box-shadow: 1px 1px 4px 4px rgba(0, 0, 0, 0.2);
     }
+}
+
+.event-card-container {
+    width: 252px;
+    height: 328px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+
+    .image {
+        width: 252px;
+        height: 140px;
+        border-radius: 8px 8px 0 0;
+        overflow: hidden;
+        position: relative;
+
+        img {
+            position: absolute;
+            margin: auto;
+            max-width: 252px;
+            min-width: 252px;
+            min-height: 140px;
+            max-height: auto;
+            left: -100%;
+            right: -100%;
+            top: -100%;
+            bottom: -100%;
+        }
+    }
+
+    .date-box {
+        height: 48px;
+        width: 60px;
+        padding: 4px;
+        margin: -24px 0 -24px 192px;
+        border-radius: 4px 0 0 4px;
+        box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+
+        .month {
+            color: red;
+            font-weight: lighter;
+            font-size: 90%;
+        }
+
+        .day {
+            color: black;
+            font-size: 120%;
+        }
+    }
+
+    .body-container {
+        height: 188px;
+        width: 252px;
+        padding: 20px;
+
+        .body {
+            height: 138px;
+
+            .type {
+                font-weight: 500;
+                color: gray;
+            }
+
+            .title {
+                font-weight: 600;
+                color: black;
+                font-size: 120%;
+                margin: 4px 0 0 0;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .snippet {
+                font-weight: 400;
+                font-size: 90%;
+                margin: 4px 0 0 0;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+        }
+
+        .footer {
+            font-size: 90%;
+            font-weight: 300;
+            color: rgba(0, 0, 0, 0.4);
+            text-align: end
+        }
+    }
+
+}
+
+.event-card-container:hover {
+    box-shadow: 1px 1px 20px 4px rgba(0, 0, 0, 0.2);
 }

@@ -25,7 +25,8 @@ import Action from "../UserAuth/Action/Action.jsx";
 import LinkedInOAuthAction from "../UserAuth/Action/LinkedInOAuthAction.jsx";
 import ProfilePage from "../ProfilePage/ProfilePage.jsx";
 import Mentors from "../Mentors/Mentors.jsx";
-import Alumni from "../Alumni/Alumni.jsx";
+import AlumniNetwork from "../Alumni/AlumniNetwork/AlumniNetwork.jsx";
+import AlumniHome from "../Alumni/AlumniHome/AlumniHome.jsx";
 import Events from "../Events/Events.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 
@@ -111,6 +112,7 @@ class App extends Component {
       "/demo",
       "/signup",
       "/alumni-signup",
+      "/alumni-home",
       "/signin",
       "/dashboard",
       "/metrics",
@@ -119,7 +121,7 @@ class App extends Component {
       "/companies",
       "/profile",
       "/alumni",
-      "/alumni-search",
+      "/alumni-network",
       "/action",
       "/action-linkedin-oauth2",
       "/underconstruction",
@@ -667,6 +669,8 @@ class App extends Component {
                 ) : window.location.search.split("=")[1] ===
                   "reCapthcaCouldNotPassed" ? (
                   <Spinner message="checking reCaptcha..." />
+                ) : this.props.cookies.get("user_type").name === "Alumni" ? (
+                  <Redirect to="/alumni-home" />
                 ) : (
                   <Redirect to="/dashboard" />
                 )
@@ -683,10 +687,12 @@ class App extends Component {
                 "/demo"
               ]}
               render={() =>
-                !logout ? (
-                  <Redirect to="/dashboard" />
-                ) : (
+                logout ? (
                   <Spinner message="Logging out..." />
+                ) : this.props.cookies.get("user_type").name === "Alumni" ? (
+                  <Redirect to="/alumni-home" />
+                ) : (
+                  <Redirect to="/dashboard" />
                 )
               }
             />
@@ -703,9 +709,20 @@ class App extends Component {
             />
             <Route
               exact
-              path="/alumni-search"
+              path="/alumni-network"
               render={() => (
-                <Alumni
+                <AlumniNetwork
+                  alert={this.showAlert}
+                  handleTokenExpiration={this.handleTokenExpiration}
+                  cookie={this.cookie}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/alumni-home"
+              render={() => (
+                <AlumniHome
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
