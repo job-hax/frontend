@@ -38,7 +38,7 @@ class AlumniHome extends React.Component {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       this.setState({ isInitialRequest: true });
       this.getData("alumnihome", false);
-      this.getData("events", 10);
+      this.getData("events", 4);
       this.getData("blogs", 3);
     }
   }
@@ -51,18 +51,27 @@ class AlumniHome extends React.Component {
         ? this.state.roots[requestType] + "?page=1&page_size=" + pageSize
         : this.state.roots[requestType];
     await this.props.handleTokenExpiration("alumnihome getData");
-    axiosCaptcha(newUrl, config).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success) {
-          let received = response.data.data;
-          this.setState({
-            [requestType]: received,
-            isWaitingResponse: false,
-            isInitialRequest: false
-          });
+    axiosCaptcha(newUrl, config)
+      .then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success) {
+            let received = response.data.data;
+            this.setState({
+              [requestType]: received,
+              isWaitingResponse: false
+            });
+          }
         }
-      }
-    });
+      })
+      .then(() => {
+        if (
+          this.state.alumnihome !== {} &&
+          this.state.blogs !== [] &&
+          this.state.events !== []
+        ) {
+          this.setState({ isInitialRequest: false });
+        }
+      });
   }
 
   generateCarouselArea(banners, type) {
