@@ -20,9 +20,9 @@ class AlumniHome extends React.Component {
       isWaitingResponse: false,
       isInitialRequest: "beforeRequest",
       redirect: "",
-      events: [],
-      blogs: [],
-      alumnihome: {},
+      events: null,
+      blogs: null,
+      alumnihome: null,
       roots: {
         events: EVENTS,
         blogs: BLOGS,
@@ -64,14 +64,24 @@ class AlumniHome extends React.Component {
         }
       })
       .then(() => {
-        if (
-          this.state.alumnihome !== {} &&
-          this.state.blogs !== [] &&
-          this.state.events !== []
-        ) {
+        if (this.state.alumnihome && this.state.blogs && this.state.events) {
           this.setState({ isInitialRequest: false });
         }
       });
+  }
+
+  generateSocialButtons() {
+    const socials = this.state.alumnihome.social_media_accounts;
+    const social_buttons = socials.map(social => {
+      return (
+        <img
+          className="social-button"
+          src={social.icon}
+          onClick={() => window.open(social.link)}
+        />
+      );
+    });
+    return <div className="social-buttons-container">{social_buttons}</div>;
   }
 
   generateCarouselArea(banners, type) {
@@ -100,7 +110,12 @@ class AlumniHome extends React.Component {
         {media}
       </Carousel>
     );
-    return <div className={containerClass}>{carousel}</div>;
+    return (
+      <div className={containerClass}>
+        {carousel}
+        {type === "header" && this.generateSocialButtons()}
+      </div>
+    );
   }
 
   handleEventCardClick(id) {

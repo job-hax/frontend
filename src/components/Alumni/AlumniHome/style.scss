@@ -11,8 +11,32 @@
         text-align: center;
     }
 
+    .social-buttons-container {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 50vh;
+        height: 30vw;
+
+        .social-button {
+            max-width: 24px;
+            max-height: 24px;
+            margin: 12px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .social-button:hover {
+            transform: scale(1.1);
+            -moz-transform: scale(1.1);
+        }
+    }
+
     .carousel-container {
         width: 100%;
+        display: flex;
+        flex-direction: column;
 
         .carousel-image {
             width: 100%;
@@ -84,6 +108,12 @@
         height: 10px;
         margin-top: -8px;
         border-radius: 5px;
+    }
+
+    @media only screen and (max-device-width : 1150px) and (-webkit-min-device-pixel-ratio : 2) {
+        .events-container {
+            justify-content: flex-start;
+        }
     }
 
     @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
