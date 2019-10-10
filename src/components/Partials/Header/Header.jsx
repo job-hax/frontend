@@ -238,7 +238,10 @@ class Header extends Component {
             ))}
           <Menu
             onClick={event => this.handleMenuClick(event)}
-            selectedKeys={[this.state.current, isDashboardOpenedByDefault]}
+            selectedKeys={[
+              window.location.pathname,
+              isDashboardOpenedByDefault
+            ]}
             mode="horizontal"
             style={{ backgroundColor: "transparent", border: "none" }}
           >
