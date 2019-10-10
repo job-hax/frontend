@@ -23,7 +23,7 @@ class Home extends Component {
 
   generateSignupButton() {
     let redirect =
-      window.location.pathname === "/alumni" ? "alumni-signup" : "/signup";
+      window.location.pathname === "/alumni" ? "alumni/signup" : "/signup";
     return (
       <Button
         type="primary"
@@ -76,7 +76,9 @@ class Home extends Component {
             </p>
             <div className="buttons-container">
               <Button
-                onClick={() => this.setState({ redirect: "/demo" })}
+                onClick={() =>
+                  this.setState({ redirect: "/demo?type=student" })
+                }
                 size="large"
               >
                 Try it out!
@@ -141,7 +143,7 @@ class Home extends Component {
             </p>
             <div className="buttons-container">
               <Button
-                onClick={() => this.setState({ redirect: "/demo" })}
+                onClick={() => this.setState({ redirect: "/demo?type=alumni" })}
                 size="large"
               >
                 Try it out!

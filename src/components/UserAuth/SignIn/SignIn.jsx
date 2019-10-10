@@ -215,7 +215,7 @@ class SignInPage extends Component {
                 this.props.cookie("get", "user_type").id ===
                   USER_TYPES["alumni"]
               ) {
-                window.location = "/alumni-signup?=intro";
+                window.location = "/alumni/signup?=intro";
               } else {
                 window.location = "/signup?=intro";
               }
@@ -328,7 +328,7 @@ class SignInPage extends Component {
                           this.props.cookie("get", "user_type").id ===
                             USER_TYPES["alumni"]
                         ) {
-                          window.location = "/alumni-signup?=intro";
+                          window.location = "/alumni/signup?=intro";
                         } else {
                           window.location = "/signup?=intro";
                         }
@@ -346,7 +346,7 @@ class SignInPage extends Component {
                             this.props.cookie("get", "user_type").id ===
                               USER_TYPES["alumni"]
                           ) {
-                            window.location = "/alumni-signup?=intro";
+                            window.location = "/alumni/signup?=intro";
                           } else {
                             window.location = "/signup?=intro";
                           }

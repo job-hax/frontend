@@ -25,7 +25,8 @@ import Action from "../UserAuth/Action/Action.jsx";
 import LinkedInOAuthAction from "../UserAuth/Action/LinkedInOAuthAction.jsx";
 import ProfilePage from "../ProfilePage/ProfilePage.jsx";
 import Mentors from "../Mentors/Mentors.jsx";
-import Alumni from "../Alumni/Alumni.jsx";
+import AlumniNetwork from "../Alumni/AlumniNetwork/AlumniNetwork.jsx";
+import AlumniHome from "../Alumni/AlumniHome/AlumniHome.jsx";
 import Events from "../Events/Events.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 
@@ -110,7 +111,8 @@ class App extends Component {
       "/home",
       "/demo",
       "/signup",
-      "/alumni-signup",
+      "/alumni/signup",
+      "/alumni/home",
       "/signin",
       "/dashboard",
       "/metrics",
@@ -119,7 +121,7 @@ class App extends Component {
       "/companies",
       "/profile",
       "/alumni",
-      "/alumni-search",
+      "/alumni/network",
       "/action",
       "/action-linkedin-oauth2",
       "/underconstruction",
@@ -248,7 +250,7 @@ class App extends Component {
       this.cookie("set", "signup_complete_required", false, "/");
       let userType = this.props.cookies.get("user_type");
       if (userType.id === USER_TYPES["alumni"]) {
-        window.location = "/alumni-signup?=intro";
+        window.location = "/alumni/signup?=intro";
       } else {
         window.location = "/signup?=intro";
       }
@@ -555,6 +557,9 @@ class App extends Component {
     } = this.state;
     const appRenderConsole = false;
 
+    const isAlumni =
+      isUserLoggedIn && this.props.cookies.get("user_type").name === "Alumni";
+
     IS_CONSOLE_LOG_OPEN &&
       appRenderConsole &&
       console.log(
@@ -667,6 +672,8 @@ class App extends Component {
                 ) : window.location.search.split("=")[1] ===
                   "reCapthcaCouldNotPassed" ? (
                   <Spinner message="checking reCaptcha..." />
+                ) : isAlumni ? (
+                  <Redirect to="/alumni/home" />
                 ) : (
                   <Redirect to="/dashboard" />
                 )
@@ -679,14 +686,16 @@ class App extends Component {
                 "/home",
                 "/alumni",
                 "/signup",
-                "alumni-signup",
+                "alumni/signup",
                 "/demo"
               ]}
               render={() =>
-                !logout ? (
-                  <Redirect to="/dashboard" />
-                ) : (
+                logout ? (
                   <Spinner message="Logging out..." />
+                ) : this.props.cookies.get("user_type").name === "Alumni" ? (
+                  <Redirect to="/alumni/home" />
+                ) : (
+                  <Redirect to="/dashboard" />
                 )
               }
             />
@@ -703,14 +712,33 @@ class App extends Component {
             />
             <Route
               exact
-              path="/alumni-search"
-              render={() => (
-                <Alumni
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
-                />
-              )}
+              path="/alumni/network"
+              render={() =>
+                isAlumni ? (
+                  <AlumniNetwork
+                    alert={this.showAlert}
+                    handleTokenExpiration={this.handleTokenExpiration}
+                    cookie={this.cookie}
+                  />
+                ) : (
+                  <Redirect to="/dashboard" />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/alumni/home"
+              render={() =>
+                isAlumni ? (
+                  <AlumniHome
+                    alert={this.showAlert}
+                    handleTokenExpiration={this.handleTokenExpiration}
+                    cookie={this.cookie}
+                  />
+                ) : (
+                  <Redirect to="/dashboard" />
+                )
+              }
             />
             <Route
               exact
@@ -782,7 +810,7 @@ class App extends Component {
         "/home",
         "/demo",
         "/alumni",
-        "/alumni-signup",
+        "/alumni/signup",
         "/signin",
         "/signup",
         "/privacypolicy",
@@ -880,7 +908,7 @@ class App extends Component {
               />
               <Route
                 exact
-                path="/alumni-signup"
+                path="/alumni/signup"
                 render={() => (
                   <SignUp
                     googleAuth={this.googleAuth}
