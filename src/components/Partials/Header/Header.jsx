@@ -125,11 +125,15 @@ class Header extends Component {
     let page = event.key;
     if (page === "/logout") {
       this.props.passStatesToApp("logout", true);
-      await setStateAsync({ current: "/home" });
+      let redirectPage =
+        this.state.user_type.name == "Alumni" ? "/alumni" : "/home";
+      await setStateAsync({ current: redirectPage });
       this.props.handleSignOut();
     } else if (page === "/demoToSignup") {
+      let redirectPage =
+        this.state.user_type.name == "Alumni" ? "/alumni/signup" : "/signup";
       this.props.passStatesToApp("logout", true);
-      await setStateAsync({ current: "/signup" });
+      await setStateAsync({ current: redirectPage });
       this.props.handleSignOut();
     } else if (page === "/events") {
       if (window.location.pathname.substring(0, 6) == "/event") {
