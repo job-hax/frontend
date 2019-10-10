@@ -112,7 +112,7 @@ class App extends Component {
       "/demo",
       "/signup",
       "/alumni-signup",
-      "/alumni-home",
+      "/alumni/home",
       "/signin",
       "/dashboard",
       "/metrics",
@@ -121,7 +121,7 @@ class App extends Component {
       "/companies",
       "/profile",
       "/alumni",
-      "/alumni-network",
+      "/alumni/network",
       "/action",
       "/action-linkedin-oauth2",
       "/underconstruction",
@@ -557,6 +557,9 @@ class App extends Component {
     } = this.state;
     const appRenderConsole = false;
 
+    const isAlumni =
+      isUserLoggedIn && this.props.cookies.get("user_type").name === "Alumni";
+
     IS_CONSOLE_LOG_OPEN &&
       appRenderConsole &&
       console.log(
@@ -669,8 +672,8 @@ class App extends Component {
                 ) : window.location.search.split("=")[1] ===
                   "reCapthcaCouldNotPassed" ? (
                   <Spinner message="checking reCaptcha..." />
-                ) : this.props.cookies.get("user_type").name === "Alumni" ? (
-                  <Redirect to="/alumni-home" />
+                ) : isAlumni ? (
+                  <Redirect to="/alumni/home" />
                 ) : (
                   <Redirect to="/dashboard" />
                 )
@@ -690,7 +693,7 @@ class App extends Component {
                 logout ? (
                   <Spinner message="Logging out..." />
                 ) : this.props.cookies.get("user_type").name === "Alumni" ? (
-                  <Redirect to="/alumni-home" />
+                  <Redirect to="/alumni/home" />
                 ) : (
                   <Redirect to="/dashboard" />
                 )
@@ -709,25 +712,33 @@ class App extends Component {
             />
             <Route
               exact
-              path="/alumni-network"
-              render={() => (
-                <AlumniNetwork
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
-                />
-              )}
+              path="/alumni/network"
+              render={() =>
+                isAlumni ? (
+                  <AlumniNetwork
+                    alert={this.showAlert}
+                    handleTokenExpiration={this.handleTokenExpiration}
+                    cookie={this.cookie}
+                  />
+                ) : (
+                  <Redirect to="/dashboard" />
+                )
+              }
             />
             <Route
               exact
-              path="/alumni-home"
-              render={() => (
-                <AlumniHome
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
-                />
-              )}
+              path="/alumni/home"
+              render={() =>
+                isAlumni ? (
+                  <AlumniHome
+                    alert={this.showAlert}
+                    handleTokenExpiration={this.handleTokenExpiration}
+                    cookie={this.cookie}
+                  />
+                ) : (
+                  <Redirect to="/dashboard" />
+                )
+              }
             />
             <Route
               exact

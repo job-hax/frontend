@@ -200,8 +200,8 @@ class Header extends Component {
 
     const alumniMenu = (
       <SubMenu title={<div className="header-icon menu-icon">{gradIcon}</div>}>
-        <Menu.Item key="/alumni-home">Home</Menu.Item>
-        <Menu.Item key="/alumni-network">Network</Menu.Item>
+        <Menu.Item key="/alumni/home">Home</Menu.Item>
+        <Menu.Item key="/alumni/network">Network</Menu.Item>
         <Menu.Item key="/blogs">Blog</Menu.Item>
         <Menu.Item key="/events">Events</Menu.Item>
       </SubMenu>
