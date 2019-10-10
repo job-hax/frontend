@@ -85,6 +85,20 @@
         margin-top: -8px;
         border-radius: 5px;
     }
+
+    @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
+        .blogs-container {
+            flex-direction: column;
+
+            .side-carousel-container {
+                width: 100vw;
+            }
+        }
+
+        .events-container {
+            justify-content: flex-start;
+        }
+    }
 }
 
 .footer-margin {

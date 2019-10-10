@@ -393,7 +393,6 @@ class AlumniNetwork extends React.Component {
   }
 
   render() {
-    IS_CONSOLE_LOG_OPEN && console.log("alumnilist", this.state.alumniList);
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
@@ -433,7 +432,7 @@ class AlumniNetwork extends React.Component {
           </div>
           <div
             className={
-              window.screen.availWidth > 800
+              window.screen.availHeight > 870
                 ? "bottom-fixed-footer"
                 : "footer-margin"
             }
