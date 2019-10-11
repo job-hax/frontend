@@ -81,7 +81,11 @@ class AlumniHome extends React.Component {
         />
       );
     });
-    return <div className="social-buttons-container">{social_buttons}</div>;
+    return (
+      <div className="social-buttons-container">
+        <div className="social-buttons-small-container">{social_buttons}</div>
+      </div>
+    );
   }
 
   generateCarouselArea(banners, type) {
