@@ -16,8 +16,6 @@ class BlogDetails extends React.Component {
     this.state = {
       isLinkDisplaying: false,
       viewCount: null,
-      isDetailRequested: false,
-      isDetailsShowing: false,
       upVote: null,
       downVote: null,
       voted: null

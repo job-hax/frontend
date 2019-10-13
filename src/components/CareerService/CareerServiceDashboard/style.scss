@@ -1,6 +1,6 @@
 @import "../../App/style.scss";
 
-.alumni-home-container {
+.career-service-dashboard-container {
     color: $text_color;
     height: 100%;
 
@@ -67,7 +67,7 @@
 
     .events-container {
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         width: 100%;
         padding: 12px;
         overflow-y: hidden;
@@ -84,13 +84,29 @@
         justify-content: center;
         padding: 0px;
 
+    }
+
+    .coach-area {
+        display: flex;
+        justify-content: center;
+
+        .add-new-button {
+            height: 544px;
+            width: 30vw;
+        }
+
+        .add-new-button:hover {
+            cursor: pointer;
+            box-shadow: 1px 1px 10px 4px rgba(0, 0, 0, 0.2) !important;
+        }
+
         .side-carousel-container {
             height: 100%;
             width: 30vw;
+            margin: 0px 20px;
 
             .side-carousel-image {
                 height: 544px;
-                margin: 20px 0px 0px 0px;
                 overflow: hidden;
                 position: relative;
 
@@ -114,36 +130,6 @@
         height: 10px;
         margin-top: -8px;
         border-radius: 5px;
-    }
-
-    @media only screen and (max-device-width : 1150px) and (-webkit-min-device-pixel-ratio : 2) {
-        .events-container {
-            justify-content: flex-start;
-        }
-    }
-
-    @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
-        .blogs-container {
-            flex-direction: column;
-
-            .side-carousel-container {
-                width: 100vw;
-            }
-        }
-
-        .events-container {
-            justify-content: flex-start;
-        }
-
-        .social-buttons-container {
-            height: 50vw;
-        }
-
-        .carousel-container {
-            .carousel-image {
-                height: 50vw;
-            }
-        }
     }
 }
 

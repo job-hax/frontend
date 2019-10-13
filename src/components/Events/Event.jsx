@@ -46,8 +46,26 @@ class Event extends React.Component {
     );
   }
 
+  generateAddNewEventCard(style, content) {
+    return (
+      <div
+        className="event-card-container"
+        onClick={() => this.props.setEventDetail("add_new")}
+        style={style}
+      >
+        {content}
+      </div>
+    );
+  }
+
   render() {
-    return <div>{this.generateEventCard()}</div>;
+    return (
+      <div>
+        {this.props.event === "add_new"
+          ? this.generateAddNewEventCard(this.props.style, this.props.content)
+          : this.generateEventCard()}
+      </div>
+    );
   }
 }
 

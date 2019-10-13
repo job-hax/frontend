@@ -1,25 +1,32 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { Carousel } from "antd";
+import { Carousel, Modal, Button } from "antd";
 
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { EVENTS, BLOGS, COLLEGES, apiRoot } from "../../../utils/constants/endpoints.js";
+import {
+  EVENTS,
+  BLOGS,
+  COLLEGES,
+  apiRoot
+} from "../../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import Event from "../../Events/Event.jsx";
 import BlogCard from "../../Blog/BlogCard.jsx";
-import CoachSummary from "../../CareerService/CoachModal/CoachSummary.jsx";
 import Footer from "../../Partials/Footer/Footer.jsx";
+import CoachSummary from "../CoachModal/CoachSummary.jsx";
+import AddCoachModal from "../AddCoachModal/AddCoachModal.jsx";
 
 import "./style.scss";
 
-class AlumniHome extends React.Component {
+class CareerServiceDashboard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isWaitingResponse: false,
       isInitialRequest: "beforeRequest",
+      addCoachVisible: false,
       redirect: "",
       events: null,
       blogs: null,
@@ -33,13 +40,25 @@ class AlumniHome extends React.Component {
 
     this.handleBlogCardClick = this.handleBlogCardClick.bind(this);
     this.handleEventCardClick = this.handleEventCardClick.bind(this);
+    this.closeAddCoachModal = this.closeAddCoachModal.bind(this);
+
+    this.add_new_style = {
+      backgroundColor: "#efefef",
+      border: "2px dashed #aaaaaa",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      color: "#aaaaaa",
+      fontSize: "50px",
+      boxShadow: "none"
+    };
   }
 
   componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       this.setState({ isInitialRequest: true });
       this.getData("alumnihome", false);
-      this.getData("events", 4);
+      this.getData("events", 3);
       this.getData("blogs", 3);
     }
   }
@@ -71,13 +90,17 @@ class AlumniHome extends React.Component {
       });
   }
 
+  closeAddCoachModal() {
+    this.setState({ addCoachVisible: false });
+  }
+
   generateSocialButtons() {
     const socials = this.state.alumnihome.social_media_accounts;
     const social_buttons = socials.map(social => {
       return (
         <img
           className="social-button"
-          src={apiRoot + social.icon}
+          src={social.icon}
           onClick={() => window.open(social.link)}
         />
       );
@@ -116,6 +139,7 @@ class AlumniHome extends React.Component {
     });
 
     const media = type === "header" ? header_media : coach_media;
+
     const carousel = (
       <Carousel autoplay={!isSingle} dots={!isSingle}>
         {media}
@@ -130,12 +154,12 @@ class AlumniHome extends React.Component {
   }
 
   handleEventCardClick(id) {
-    let redirect = "/events?id=" + id;
+    let redirect = id === "add_new" ? "/events?edit=true" : "/events?id=" + id;
     this.setState({ redirect: redirect });
   }
 
   handleBlogCardClick(id) {
-    let redirect = "/blogs?id=" + id;
+    let redirect = id === "add_new" ? "/blogs?edit=true" : "/blogs?id=" + id;
     this.setState({ redirect: redirect });
   }
 
@@ -151,28 +175,77 @@ class AlumniHome extends React.Component {
         </div>
       );
     });
-    return <div className="events-container">{events}</div>;
+    const add_new = (
+      <div className="event">
+        <Event
+          event="add_new"
+          setEventDetail={this.handleEventCardClick}
+          content="+"
+          style={this.add_new_style}
+        />
+      </div>
+    );
+    return (
+      <div className="events-container">
+        {add_new}
+        {events}
+      </div>
+    );
   }
 
   generateBlogsArea() {
     const blogs = this.state.blogs.map(blog => (
       <div key={blog.id}>
-        <BlogCard
-          blog={blog}
-          setBlogDetail={this.handleBlogCardClick}
-          alert={this.props.alert}
-          handleTokenExpiration={this.props.handleTokenExpiration}
-        />
+        <BlogCard blog={blog} setBlogDetail={this.handleBlogCardClick} />
       </div>
     ));
 
+    const add_new = (
+      <BlogCard
+        blog={{ id: "add_new" }}
+        setBlogDetail={this.handleBlogCardClick}
+        content="+"
+        style={this.add_new_style}
+      />
+    );
+
     return (
       <div className="blogs-container">
-        <div>{blogs}</div>
-        {this.generateCarouselArea(
-          this.state.alumnihome.additional_banners,
-          "side"
-        )}
+        <div>
+          {add_new}
+          {blogs}
+        </div>
+      </div>
+    );
+  }
+
+  generateCoachArea() {
+    const coach_caruosel = this.generateCarouselArea(
+      this.state.alumnihome.additional_banners,
+      "side"
+    );
+
+    const add_new = (
+      <div>
+        <div
+          className="add-new-button"
+          style={this.add_new_style}
+          onClick={() => this.setState({ addCoachVisible: true })}
+        >
+          +
+        </div>
+        <AddCoachModal
+          visible={this.state.addCoachVisible}
+          handleCancel={this.closeAddCoachModal}
+          alert={this.props.alert}
+        />
+      </div>
+    );
+
+    return (
+      <div className="coach-area" id="coach-area">
+        {add_new}
+        {coach_caruosel}
       </div>
     );
   }
@@ -184,19 +257,17 @@ class AlumniHome extends React.Component {
     } else if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
-      return <Spinner message="Preparing alumni home page..." />;
+      return <Spinner message="Preparing admin dashboard..." />;
     if (this.state.isInitialRequest === false) {
       return (
         <div>
-          <div className="alumni-home-container">
-            {this.generateCarouselArea(
-              this.state.alumnihome.header_banners,
-              "header"
-            )}
-            {header("Upcoming Events")}
+          <div className="career-service-dashboard-container">
+            {header("Recent Events")}
             {this.generateEventsArea()}
             {header("Recent Blogs")}
             {this.generateBlogsArea()}
+            {header("Coaches")}
+            {this.generateCoachArea()}
           </div>
           <div className="footer-margin">
             <Footer />
@@ -207,4 +278,4 @@ class AlumniHome extends React.Component {
   }
 }
 
-export default AlumniHome;
+export default CareerServiceDashboard;

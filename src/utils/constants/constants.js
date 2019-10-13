@@ -154,15 +154,19 @@ export const USER_TYPES = {
   public: 2,
   student: 3,
   alumni: 4,
-  career_services: 5
+  career_services: 11
 };
 
 export const USER_TYPE_NAMES = {
-  1: { name: "Undefined", header: "Undefined" },
-  2: { name: "Public", header: "Public" },
-  3: { name: "Student", header: "School" },
-  4: { name: "Alumni", header: "Alumni" },
-  5: { name: "Career Services", header: "Career Services" }
+  1: { type: "undefined", name: "Undefined", header: "Undefined" },
+  2: { type: "public", name: "Public", header: "Public" },
+  3: { type: "student", name: "Student", header: "School" },
+  4: { type: "alumni", name: "Alumni", header: "Alumni" },
+  11: {
+    type: "career_services",
+    name: "Career Services",
+    header: "Career Services"
+  }
 };
 
 export function makeTimeBeautiful(time, type = "date") {

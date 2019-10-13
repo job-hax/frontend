@@ -61,7 +61,7 @@ class BlogEditable extends React.Component {
       downVoted: false,
       editorState: EditorState.createEmpty(),
       loading: false,
-      fromData: new FormData()
+      formData: new FormData()
     };
 
     this.toggleEditable = this.toggleEditable.bind(this);
@@ -91,16 +91,16 @@ class BlogEditable extends React.Component {
   }
 
   async saveBlogData() {
-    const { id, fromData, title, snippet, content, is_publish } = this.state;
+    const { id, formData, title, snippet, content, is_publish } = this.state;
     let config = id == null ? { method: "POST" } : { method: "PUT" };
-    fromData.append("title", title);
-    fromData.append("snippet", snippet);
-    fromData.append("content", content);
-    fromData.append("is_publish", is_publish);
+    formData.append("title", title);
+    formData.append("snippet", snippet);
+    formData.append("content", content);
+    formData.append("is_publish", is_publish);
     if (config.method == "PUT") {
-      fromData.append("blog_id", id);
+      formData.append("blog_id", id);
     }
-    config.body = fromData;
+    config.body = formData;
     config.headers = {};
     config.headers["Content-Type"] = "multipart/form-data";
     let response = await axiosCaptcha(BLOGS, config);
@@ -146,7 +146,7 @@ class BlogEditable extends React.Component {
   handlePhotoUpdate(file) {
     let bodyFormData = new FormData();
     bodyFormData.append("header_image", file);
-    this.setState({ fromData: bodyFormData });
+    this.setState({ formData: bodyFormData });
     getBase64(file, imageUrl =>
       this.setState({
         header_image: imageUrl,

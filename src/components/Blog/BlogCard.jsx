@@ -69,8 +69,26 @@ class BlogCard extends React.Component {
     );
   }
 
+  generateAddNewBlogCard(style, content) {
+    return (
+      <div
+        className="blog-card-container"
+        onClick={() => this.props.setBlogDetail("add_new")}
+        style={style}
+      >
+        {content}
+      </div>
+    );
+  }
+
   render() {
-    return <div>{this.generateBlogCard()}</div>;
+    return (
+      <div>
+        {this.props.blog.id === "add_new"
+          ? this.generateAddNewBlogCard(this.props.style, this.props.content)
+          : this.generateBlogCard()}
+      </div>
+    );
   }
 }
 

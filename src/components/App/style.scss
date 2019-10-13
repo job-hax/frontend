@@ -33,10 +33,72 @@ html {
   background-color: white;
 }
 
-.main-container {
+.main-big-container {
+  display: flex;
+  justify-content: flex-start;
   height: 100%;
   width: 100%;
+
+  .main-container {
+    height: 100%;
+    width: 100%;
+
+    .coach-modal-header {
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+
+      .coach-head-photo {
+        min-width: 80px;
+        min-height: 80px;
+        max-width: 80px;
+        max-height: 80px;
+        border-radius: 40px;
+        overflow: hidden;
+        position: relative;
+        margin: 4px 24px 0 0;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+
+        img {
+          position: absolute;
+          margin: auto;
+          min-width: 80px;
+          min-height: 80px;
+          max-width: 90px;
+          max-height: 90px;
+          left: -100%;
+          right: -100%;
+          top: -100%;
+          bottom: -100%;
+          border-radius: 40px;
+        }
+      }
+
+      .coach-header-info {
+        font-size: 14px;
+        font-weight: normal;
+
+        .coach-name {
+          font-size: 16px;
+        }
+
+        .connection-buttons-container {
+          margin: 12px 0px;
+          display: flex;
+          justify-content: space-around;
+
+          .ant-btn {
+            margin-right: 12px;
+          }
+        }
+      }
+    }
+
+    .coach-modal-body {}
+
+  }
 }
+
 
 .react-tel-input {
   position: relative;

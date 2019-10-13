@@ -21,6 +21,25 @@ class Metrics extends PureComponent {
     this.state = {
       user_type: this.props.cookie("get", "user_type")
     };
+
+    this.metricMap = {
+      public: [
+        { header: "Jobhax Aggregated Metrics", public: true, student: null }
+      ],
+      student: [
+        { header: "Student Aggregated Metrics", public: false, student: null },
+        { header: "Jobhax Aggregated Metrics", public: true, student: null }
+      ],
+      alumni: [
+        { header: "Alumni Aggregated Metrics", public: false, student: null },
+        { header: "Jobhax Aggregated Metrics", public: true, student: null }
+      ],
+      career_services: [
+        { header: "Alumni Aggregated Metrics", public: false, student: false },
+        { header: "Student Aggregated Metrics", public: false, student: true },
+        { header: "University Aggregated Metrics", public: true, student: null }
+      ]
+    };
   }
 
   async componentDidMount() {
@@ -47,9 +66,41 @@ class Metrics extends PureComponent {
   }
 
   render() {
-    const exclusiveName = this.state.user_type.college_specific_metrics_enabled
-      ? USER_TYPE_NAMES[this.state.user_type.id]["header"] + " Job Metrics"
-      : "";
+    const user_type = type =>
+      this.state.user_type.id === USER_TYPES[type] ? true : false;
+    const individualMetrics = (
+      <div className="metric-big-group">
+        <div className="university-metrics-header-container">
+          <div className="header-line" />
+          <div className="university-metrics-header">Individual Metrics</div>
+          <div className="header-line" />
+        </div>
+        <IndividualMetrics cookie={this.props.cookie} />
+      </div>
+    );
+
+    const universityMetrics = (header, isPublic, isStudent) => (
+      <div className="metric-big-group">
+        <div className="university-metrics-header-container">
+          <div className="header-line" />
+          <div className="university-metrics-header">{header}</div>
+          <div className="header-line" />
+        </div>
+        <div>
+          <UniversityMetrics
+            cookie={this.props.cookie}
+            isPublic={isPublic}
+            isStudent={isStudent}
+          />
+        </div>
+      </div>
+    );
+
+    const aggregatedMetrics = this.metricMap[
+      USER_TYPE_NAMES[this.state.user_type.id].type
+    ].map(metric => {
+      return universityMetrics(metric.header, metric.public, metric.student);
+    });
 
     return (
       <div>
@@ -66,45 +117,8 @@ class Metrics extends PureComponent {
         </div>
         <div className="metrics-big-group-container">
           <div>
-            <div className="metric-big-group">
-              <div className="university-metrics-header-container">
-                <div className="header-line" />
-                <div className="university-metrics-header">
-                  Individual Metrics
-                </div>
-                <div className="header-line" />
-              </div>
-              <IndividualMetrics cookie={this.props.cookie} />
-            </div>
-            {exclusiveName !== "" && (
-              <div className="metric-big-group">
-                <div className="university-metrics-header-container">
-                  <div className="header-line" />
-                  <div className="university-metrics-header">
-                    {exclusiveName}
-                  </div>
-                  <div className="header-line" />
-                </div>
-                <div>
-                  <UniversityMetrics
-                    cookie={this.props.cookie}
-                    isPublic={false}
-                  />
-                </div>
-              </div>
-            )}
-            <div className="metric-big-group">
-              <div className="university-metrics-header-container">
-                <div className="header-line" />
-                <div className="university-metrics-header">
-                  Jobhax Aggregated Metrics
-                </div>
-                <div className="header-line" />
-              </div>
-              <div>
-                <UniversityMetrics cookie={this.props.cookie} isPublic={true} />
-              </div>
-            </div>
+            {!user_type("career_services") && individualMetrics}
+            {aggregatedMetrics}
           </div>
         </div>
         <div>

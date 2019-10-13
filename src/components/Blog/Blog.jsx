@@ -222,6 +222,7 @@ class Blog extends React.Component {
             onChange={this.handlePageChange}
             defaultCurrent={this.state.pagination.current_page}
             current={this.state.pagination.current_page}
+            pageSize={this.state.pageSize}
             total={this.state.pagination.total_count}
           />
         </div>

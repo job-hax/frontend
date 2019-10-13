@@ -1,0 +1,14 @@
+@import "../../App/style.scss";
+
+.drawer-container {
+  position: fixed;
+  width: 180px;
+  z-index: 200;
+
+  .ant-menu-dark.ant-menu-inline,
+  .ant-menu-dark.ant-menu-vertical,
+  .ant-menu-dark.ant-menu-vertical-left,
+  .ant-menu-dark.ant-menu-vertical-right {
+    height: 100vh;
+  }
+}

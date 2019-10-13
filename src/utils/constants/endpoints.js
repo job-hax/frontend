@@ -57,3 +57,7 @@ export const FAQS = `${apiRoot}/api/faqs/`;
 export const AGREEMENTS = `${apiRoot}/api/agreements/`;
 
 export const FEEDBACKS = `${apiRoot}/api/feedbacks/`;
+
+//COLLEGE REQUESTS//
+
+export const COLLEGES = type => `${apiRoot}/api/colleges/${type}/`;

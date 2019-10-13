@@ -249,9 +249,13 @@ class Header extends Component {
             mode="horizontal"
             style={{ backgroundColor: "transparent", border: "none" }}
           >
-            {this.state.user_type.name === "Alumni" && alumniMenu}
-            {jobMenu}
-            {this.state.user_type.name !== "Alumni" && communityMenu}
+            {this.state.user_type.name === "Alumni" &&
+              this.state.user_type.name !== "Career Service" &&
+              alumniMenu}
+            {this.state.user_type.name !== "Career Service" && jobMenu}
+            {this.state.user_type.name !== "Alumni" &&
+              this.state.user_type.name !== "Career Service" &&
+              communityMenu}
           </Menu>
           {!this.props.isNotificationsShowing ? (
             <div
@@ -296,6 +300,7 @@ class Header extends Component {
             >
               <Menu.Item key="/profile">Profile</Menu.Item>
               {this.state.user_type.blog_creation_enabled &&
+                this.state.user_type.name !== "Career Service" &&
                 window.screen.availWidth > 800 && (
                   <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
                 )}

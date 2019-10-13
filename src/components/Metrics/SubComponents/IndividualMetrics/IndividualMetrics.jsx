@@ -55,7 +55,7 @@ class IndividualMetrics extends React.Component {
 
   generateDetailedMetricsGroup() {
     return (
-      <div style={{ margin: "20px 0px", width: "fit-content" }}>
+      <div style={{ margin: "20px 0px", minWidth: "fit-content" }}>
         <div>
           <SummaryMetricsGroup
             cookie={this.props.cookie}

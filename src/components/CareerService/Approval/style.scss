@@ -1,0 +1,28 @@
+@import "../../App/style.scss";
+
+.approval-list-container {
+
+    .ant-pagination {
+        margin: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .ant-modal-body {
+        padding: 24px 0px;
+        overflow-y: hidden;
+
+    }
+
+    .event-details .event-header {
+        height: 212px;
+        min-width: 100%;
+        width: min-content;
+        padding: 28px calc((80vw - 1198px) / 2);
+    }
+
+    .blog-details {
+        min-width: 100%;
+        width: min-content;
+    }
+}
