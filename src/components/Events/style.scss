@@ -136,10 +136,9 @@
                     img {
                         position: absolute;
                         margin: auto;
-                        max-width: 60px;
-                        min-width: 48px;
-                        min-height: 48px;
-                        max-height: auto;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
                         left: -100%;
                         right: -100%;
                         top: -100%;
@@ -183,10 +182,9 @@
                 img {
                     position: absolute;
                     margin: auto;
-                    max-width: 800px;
-                    min-width: 668px;
-                    min-height: 340px;
-                    max-height: auto;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
                     left: -100%;
                     right: -100%;
                     top: -100%;
@@ -251,10 +249,9 @@
                                 img {
                                     position: absolute;
                                     margin: auto;
-                                    max-width: 66px;
-                                    min-width: 60px;
-                                    min-height: 60px;
-                                    max-height: auto;
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
                                     left: -100%;
                                     right: -100%;
                                     top: -100%;
@@ -447,14 +444,13 @@
         img {
             position: absolute;
             margin: auto;
-            max-width: 252px;
-            min-width: 252px;
-            min-height: 140px;
-            max-height: auto;
             left: -100%;
             right: -100%;
             top: -100%;
             bottom: -100%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     }
 
