@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import {
   Icon,
   Button,
@@ -19,7 +20,8 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import {
   makeTimeBeautiful,
-  IS_CONSOLE_LOG_OPEN
+  IS_CONSOLE_LOG_OPEN,
+  USER_TYPES
 } from "../../utils/constants/constants";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { apiRoot, EVENTS } from "../../utils/constants/endpoints";
@@ -52,6 +54,14 @@ class EventEditable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirect: null,
+      user_type: this.props.cookie("get", "user_type"),
+      shareStudents: this.props.event.user_types
+        .map(userType => userType.id)
+        .includes(USER_TYPES["student"]),
+      shareAlumni: this.props.event.user_types
+        .map(userType => userType.id)
+        .includes(USER_TYPES["alumni"]),
       isLinkDisplaying: false,
       created_at: this.props.event.created_at,
       details: this.props.event.details,
@@ -72,7 +82,7 @@ class EventEditable extends React.Component {
       updated_at: this.props.event.updated_at,
 
       loading: false,
-      fromData: new FormData(),
+      formData: new FormData(),
       isEditingContent: false,
       isEditingDate: false,
       isEditingLocation: false,
@@ -87,6 +97,9 @@ class EventEditable extends React.Component {
     this.saveEventData = this.saveEventData.bind(this);
     this.postEventData = this.postEventData.bind(this);
     this.onLocationSelect = this.onLocationSelect.bind(this);
+
+    this.isCareerService =
+      this.state.user_type.id === USER_TYPES["career_services"];
   }
 
   componentDidMount() {
@@ -104,11 +117,19 @@ class EventEditable extends React.Component {
 
   async postEventData() {
     await this.setState({ is_publish: true });
-    this.saveBlogData();
+    this.saveEventData();
   }
 
   async saveEventData() {
-    const { id, fromData, is_publish } = this.state;
+    const { id, formData, is_publish, shareAlumni, shareStudents } = this.state;
+    let user_types = [];
+    if (shareAlumni) {
+      user_types.push(USER_TYPES["alumni"]);
+    }
+    if (shareStudents) {
+      user_types.push(USER_TYPES["student"]);
+    }
+    console.log(user_types);
     let toAdd = [
       "title",
       "short_description",
@@ -124,11 +145,12 @@ class EventEditable extends React.Component {
       "event_type"
     ];
     let config = id == null ? { method: "POST" } : { method: "PUT" };
-    toAdd.forEach(enrty => fromData.append(enrty, this.state[enrty]));
+    toAdd.forEach(enrty => formData.append(enrty, this.state[enrty]));
+    this.isCareerService && formData.append("user_types", user_types);
     if (config.method == "PUT") {
-      fromData.append("event_id", id);
+      formData.append("event_id", id);
     }
-    config.body = fromData;
+    config.body = formData;
     config.headers = {};
     config.headers["Content-Type"] = "multipart/form-data";
     let response = await axiosCaptcha(EVENTS, config);
@@ -182,7 +204,7 @@ class EventEditable extends React.Component {
   handlePhotoUpdate(file) {
     let bodyFormData = new FormData();
     bodyFormData.append("header_image", file);
-    this.setState({ fromData: bodyFormData });
+    this.setState({ formData: bodyFormData });
     getBase64(file, imageUrl =>
       this.setState({
         header_image: imageUrl,
@@ -213,9 +235,9 @@ class EventEditable extends React.Component {
     } = this.state;
     const { event } = this.props;
     let photoUrl =
-      host_user.profile_photo != ("" || null)
-        ? apiRoot + host_user.profile_photo
-        : "../../../src/assets/icons/User@3x.png";
+      host_user.profile_photo === ("" || null)
+        ? "../../../src/assets/icons/User@3x.png"
+        : apiRoot + host_user.profile_photo;
     let time = makeTimeBeautiful(event_date_start, "dateandtime");
     let longDate = makeTimeBeautiful(event_date_start, "longDate");
     return (
@@ -291,9 +313,9 @@ class EventEditable extends React.Component {
 
   generateAttendeeCard(attendee) {
     let photoUrl =
-      attendee.user.profile_photo != ("" || null)
-        ? apiRoot + attendee.user.profile_photo
-        : "../../../src/assets/icons/User@3x.png";
+      attendee.user.profile_photo === ("" || null)
+        ? "../../../src/assets/icons/User@3x.png"
+        : apiRoot + attendee.user.profile_photo;
     return (
       <div className="attendee-card-container" key={attendee.id}>
         <div>
@@ -407,7 +429,7 @@ class EventEditable extends React.Component {
       </div>
     );
     const image =
-      header_image.substring(0, 4) == "data"
+      header_image !== null && header_image.substring(0, 4) == "data"
         ? header_image
         : apiRoot + header_image;
     const attendees =
@@ -502,7 +524,9 @@ class EventEditable extends React.Component {
       header_image,
       updated_at,
       event_date_start,
-      event_date_end
+      event_date_end,
+      shareAlumni,
+      shareStudents
     } = this.state;
     const { event } = this.props;
     const isAnytingEdited =
@@ -511,7 +535,15 @@ class EventEditable extends React.Component {
       short_description != event.short_description ||
       header_image != event.header_image ||
       event_date_start != event.event_date_start ||
-      event_date_end != event.event_date_end
+      event_date_end != event.event_date_end ||
+      shareStudents !=
+        event.user_types
+          .map(userType => userType.id)
+          .includes(USER_TYPES["student"]) ||
+      shareAlumni !=
+        event.user_types
+          .map(userType => userType.id)
+          .includes(USER_TYPES["alumni"]);
     const isRequiredFieldsFilled =
       details &&
       title &&
@@ -519,37 +551,56 @@ class EventEditable extends React.Component {
       header_image &&
       event_date_start &&
       event_date_end;
+    const publishButtonText = this.isCareerService
+      ? "Publish"
+      : "Send for Approval";
     return (
-      <div className="fixed-button" style={{ boxShadow: "none" }}>
-        <div className="fixed-button" style={{ boxShadow: "none" }}>
-          {isAnytingEdited && (
-            <Button
-              type="primary"
-              shape="circle"
-              size="large"
-              onClick={() => this.saveEventData()}
-            >
-              <Icon type="save" />
-            </Button>
-          )}
-
-          {isAnytingEdited && isRequiredFieldsFilled && (
-            <Button
-              type="primary"
-              style={{ margin: "0 0 0 8px" }}
-              onClick={() => this.postEventData()}
-            >
-              Send for Approval
-            </Button>
-          )}
+      <div className="fixed-buttons-container">
+        {this.isCareerService && (
+          <div className="share-with-checkbox-area">
+            <div>Share with</div>
+            <div className="checkbox-container">
+              <Checkbox
+                checked={shareStudents}
+                onChange={event =>
+                  this.setState({ shareStudents: event.target.checked })
+                }
+              >
+                Students
+              </Checkbox>
+              <Checkbox
+                checked={shareAlumni}
+                onChange={event =>
+                  this.setState({ shareAlumni: event.target.checked })
+                }
+              >
+                Alumni
+              </Checkbox>
+            </div>
+          </div>
+        )}
+        <div className="save-buttons-container">
+          <Button
+            type="primary"
+            shape="circle"
+            size="large"
+            disabled={!isAnytingEdited}
+            onClick={() => this.saveEventData()}
+          >
+            <Icon type="save" />
+          </Button>
+          <Button
+            type="primary"
+            disabled={!isAnytingEdited || !isRequiredFieldsFilled}
+            style={{ margin: "0 0 0 8px" }}
+            onClick={() => this.postEventData()}
+          >
+            {publishButtonText}
+          </Button>
         </div>
         {updated_at && (
-          <div
-            className="no-data"
-            style={{ boxShadow: "none", margin: "80px 8px 0 0" }}
-          >
-            {"last update " +
-              makeTimeBeautiful(this.state.updated_at, "dateandtime")}
+          <div className="no-data">
+            {"last update " + makeTimeBeautiful(updated_at, "dateandtime")}
           </div>
         )}
       </div>
@@ -557,9 +608,12 @@ class EventEditable extends React.Component {
   }
 
   render() {
-    history.pushState(null, null, location.href);
-    window.onpopstate = function() {
-      window.location.assign("events");
+    const { redirect } = this.state;
+    if (redirect !== null) {
+      return <Redirect to={redirect} />;
+    }
+    window.onpopstate = () => {
+      this.setState({ redirect: "/action?type=redirect&" + location.pathname });
     };
     return (
       <div className="event-details">

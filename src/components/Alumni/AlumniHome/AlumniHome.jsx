@@ -4,7 +4,12 @@ import { Carousel } from "antd";
 
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { EVENTS, BLOGS, COLLEGES, apiRoot } from "../../../utils/constants/endpoints.js";
+import {
+  EVENTS,
+  BLOGS,
+  COLLEGES,
+  apiRoot
+} from "../../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import Event from "../../Events/Event.jsx";
 import BlogCard from "../../Blog/BlogCard.jsx";
@@ -106,7 +111,7 @@ class AlumniHome extends React.Component {
               : window.open(banner.link)
           }
         >
-          <img src={banner.image} />
+          <img src={apiRoot + banner.image} />
         </div>
       );
     });

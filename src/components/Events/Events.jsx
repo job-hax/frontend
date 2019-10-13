@@ -3,7 +3,10 @@ import React from "react";
 import Event from "./Event.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api.js";
 import { USERS, EVENTS } from "../../utils/constants/endpoints.js";
-import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
+import {
+  IS_CONSOLE_LOG_OPEN,
+  USER_TYPES
+} from "../../utils/constants/constants.js";
 import Footer from "../Partials/Footer/Footer.jsx";
 import EventDetails from "./EventDetails.jsx";
 import EventEditable from "./EventEditable.jsx";
@@ -78,7 +81,8 @@ class Events extends React.Component {
         spot_count: 0,
         short_description: "",
         host_user: this.props.user,
-        updated_at: null
+        updated_at: null,
+        user_types: [{ id: 3 }, { id: 4 }]
       }
     };
 
@@ -124,6 +128,15 @@ class Events extends React.Component {
   }
 
   async getData(requestType) {
+    let path = window.location.pathname;
+    let exclusivity =
+      this.state.user_type.id !== USER_TYPES["career_services"]
+        ? ""
+        : path === "/student/events"
+        ? "&student=true"
+        : path === "/alumni/events"
+        ? "&student=false"
+        : "";
     this.setState({ isWaitingResponse: true });
     let config = { method: "GET" };
     let newUrl =
@@ -132,7 +145,8 @@ class Events extends React.Component {
           "?page=" +
           this.state.pageNo +
           "&page_size=" +
-          this.state.pageSize
+          this.state.pageSize +
+          exclusivity
         : this.state.edit_event_id == null
         ? EVENTS + this.state.detail_event_id + "/"
         : EVENTS + this.state.edit_event_id + "/";
@@ -254,6 +268,7 @@ class Events extends React.Component {
                 <EventDetails
                   event={this.state.detail_event}
                   handleTokenExpiration={this.props.handleTokenExpiration}
+                  cookie={this.props.cookie}
                 />
               )}
             </div>
@@ -263,6 +278,7 @@ class Events extends React.Component {
                 event={this.state.editable_event}
                 handleTokenExpiration={this.props.handleTokenExpiration}
                 alert={this.props.alert}
+                cookie={this.props.cookie}
               />
             </div>
           )}

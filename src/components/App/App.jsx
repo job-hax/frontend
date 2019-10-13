@@ -53,6 +53,8 @@ import {
 import "./style.scss";
 import BlogApproval from "../CareerService/Approval/BlogApproval.jsx";
 import EventApproval from "../CareerService/Approval/EventApproval.jsx";
+import BlogManage from "../CareerService/Manage/BlogManage.jsx";
+import EventManage from "../CareerService/Manage/EventManage.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -812,6 +814,28 @@ class App extends Component {
                   path="/career-service/approval/events"
                   render={() => (
                     <EventApproval
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/blogs"
+                  render={() => (
+                    <BlogManage
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/events"
+                  render={() => (
+                    <EventManage
                       alert={this.showAlert}
                       handleTokenExpiration={this.handleTokenExpiration}
                       cookie={this.cookie}

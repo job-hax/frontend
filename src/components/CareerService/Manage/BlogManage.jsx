@@ -10,7 +10,7 @@ import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
 import BlogCard from "../../Blog/BlogCard.jsx";
 import BlogDetails from "../../Blog/BlogDetails.jsx";
 
-class BlogApproval extends React.Component {
+class BlogManage extends React.Component {
   constructor(props) {
     super(props);
 
@@ -164,7 +164,7 @@ class BlogApproval extends React.Component {
     this.handleSubmit("reject", id);
   }
 
-  generateApprovalList() {
+  generateManageList() {
     const columns = [
       { title: "Author", dataIndex: "author", key: "author" },
       { title: "Type", dataIndex: "type", key: "type" },
@@ -205,7 +205,7 @@ class BlogApproval extends React.Component {
     });
 
     return (
-      <div className="approval-list-container">
+      <div className="manage-list-container">
         <Table
           columns={columns}
           expandedRowRender={record => (
@@ -258,8 +258,8 @@ class BlogApproval extends React.Component {
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing waiting blogs..." />;
-    return <div>{this.generateApprovalList()}</div>;
+    return <div>{this.generateManageList()}</div>;
   }
 }
 
-export default BlogApproval;
+export default BlogManage;

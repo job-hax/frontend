@@ -135,24 +135,16 @@ class Header extends Component {
       this.props.passStatesToApp("logout", true);
       await setStateAsync({ current: redirectPage });
       this.props.handleSignOut();
-    } else if (page === "/events") {
-      if (window.location.pathname.substring(0, 6) == "/event") {
-        this.setState({ current: "/action?type=redirect&/events" });
-      } else {
-        this.setState({ current: page });
-      }
-    } else if (page === "/blogs?edit=true") {
-      if (window.location.pathname.substring(0, 5) == "/blog") {
-        this.setState({ current: "/action?type=redirect&/blogs?edit=true" });
-      } else {
-        this.setState({ current: page });
-      }
-    } else if (page === "/blogs") {
-      if (window.location.pathname.substring(0, 5) == "/blog") {
-        this.setState({ current: "/action?type=redirect&/blogs" });
-      } else {
-        this.setState({ current: page });
-      }
+    } else if (
+      ["/events", "/events?edit=true"].includes(page) &&
+      window.location.pathname.includes("event")
+    ) {
+      this.setState({ current: "/action?type=redirect&" + page });
+    } else if (
+      ["/blogs", "/blogs?edit=true"].includes(page) &&
+      window.location.pathname.includes("blogs")
+    ) {
+      this.setState({ current: "/action?type=redirect&" + page });
     } else {
       this.setState({ current: page });
     }

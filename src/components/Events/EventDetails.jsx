@@ -1,8 +1,9 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import { Icon, Button, Affix } from "antd";
 import parse from "html-react-parser";
 
-import { makeTimeBeautiful } from "../../utils/constants/constants";
+import { makeTimeBeautiful, USER_TYPES } from "../../utils/constants/constants";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { apiRoot, EVENTS } from "../../utils/constants/endpoints";
 import Map from "../Metrics/SubComponents/Map/Map.jsx";
@@ -13,6 +14,8 @@ class EventDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirect: null,
+      user_type: this.props.cookie("get", "user_type"),
       isLinkDisplaying: false,
       attendance: this.props.event.attended
     };
@@ -238,12 +241,31 @@ class EventDetails extends React.Component {
   }
 
   render() {
-    history.pushState(null, null, location.href);
-    window.onpopstate = function() {
-      window.location.assign("events");
+    let editButtonDisplay =
+      this.props.event.mine === true &&
+      this.state.user_type.id !== USER_TYPES["career_services"];
+    const { redirect } = this.state;
+    if (redirect !== null) {
+      return <Redirect to={redirect} />;
+    }
+    window.onpopstate = () => {
+      this.setState({ redirect: "/action?type=redirect&" + location.pathname });
     };
+    const editButton = (
+      <div className="fixed-buttons-container">
+        <Button
+          type="primary"
+          shape="circle"
+          size="large"
+          onClick={() => this.props.setBlogEdit(this.props.blog)}
+        >
+          <Icon type="edit" />
+        </Button>
+      </div>
+    );
     return (
       <div className="event-details">
+        {editButtonDisplay && editButton}
         {this.generateEventHeader()}
         {this.generateEventBody()}
       </div>

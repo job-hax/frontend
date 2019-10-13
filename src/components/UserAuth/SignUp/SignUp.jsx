@@ -1403,13 +1403,12 @@ class SignUpPage extends Component {
   }
 
   render() {
-    if (this.state.redirect != null) {
-      return <Redirect to={this.state.redirect} />;
+    const { redirect } = this.state;
+    if (redirect !== null) {
+      return <Redirect to={redirect} />;
     }
-    IS_CONSOLE_LOG_OPEN && console.log("level", this.state.level);
-    history.pushState(null, null, location.href);
-    window.onpopstate = function() {
-      history.go(1);
+    window.onpopstate = () => {
+      this.setState({ redirect: "/action?type=redirect&" + location.pathname });
     };
     return (
       <div>

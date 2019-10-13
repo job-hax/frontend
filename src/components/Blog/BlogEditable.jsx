@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import { Icon, Button, Input, Upload, message, Checkbox } from "antd";
 import parse from "html-react-parser";
 import { EditorState, convertToRaw, ContentState } from "draft-js";
@@ -9,7 +10,8 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import {
   makeTimeBeautiful,
-  IS_CONSOLE_LOG_OPEN
+  IS_CONSOLE_LOG_OPEN,
+  USER_TYPES
 } from "../../utils/constants/constants";
 import { apiRoot, BLOGS } from "../../utils/constants/endpoints";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
@@ -40,6 +42,14 @@ class BlogEditable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirect: null,
+      user_type: this.props.cookie("get", "user_type"),
+      shareStudents: this.props.blog.user_types
+        .map(userType => userType.id)
+        .includes(USER_TYPES["student"]),
+      shareAlumni: this.props.blog.user_types
+        .map(userType => userType.id)
+        .includes(USER_TYPES["alumni"]),
       isLinkDisplaying: false,
       content: this.props.blog.content,
       created_at: this.props.blog.created_at,
@@ -70,6 +80,9 @@ class BlogEditable extends React.Component {
     this.saveBlogData = this.saveBlogData.bind(this);
     this.postBlogData = this.postBlogData.bind(this);
     this.onChange = this.onChange.bind(this);
+
+    this.isCareerService =
+      this.state.user_type.id === USER_TYPES["career_services"];
   }
 
   componentDidMount() {
@@ -91,12 +104,29 @@ class BlogEditable extends React.Component {
   }
 
   async saveBlogData() {
-    const { id, formData, title, snippet, content, is_publish } = this.state;
+    const {
+      id,
+      formData,
+      title,
+      snippet,
+      content,
+      is_publish,
+      shareAlumni,
+      shareStudents
+    } = this.state;
+    let user_types = [];
+    if (shareAlumni) {
+      user_types.push(USER_TYPES["alumni"]);
+    }
+    if (shareStudents) {
+      user_types.push(USER_TYPES["student"]);
+    }
     let config = id == null ? { method: "POST" } : { method: "PUT" };
     formData.append("title", title);
     formData.append("snippet", snippet);
     formData.append("content", content);
     formData.append("is_publish", is_publish);
+    this.isCareerService && formData.append("user_types", user_types);
     if (config.method == "PUT") {
       formData.append("blog_id", id);
     }
@@ -308,7 +338,7 @@ class BlogEditable extends React.Component {
       </div>
     );
     const image =
-      header_image.substring(0, 4) == "data"
+      header_image !== null && header_image.substring(0, 4) == "data"
         ? header_image
         : apiRoot + header_image;
     return (
@@ -324,7 +354,7 @@ class BlogEditable extends React.Component {
               beforeUpload={beforeUpload}
               action={file => this.handlePhotoUpdate(file)}
             >
-              {header_image != "" ? (
+              {header_image != "" && header_image != null ? (
                 <img src={image} alt="avatar" style={{ width: "100%" }} />
               ) : (
                 uploadButton
@@ -423,45 +453,80 @@ class BlogEditable extends React.Component {
   }
 
   generateFixedButtons() {
-    const { content, title, snippet, header_image, updated_at } = this.state;
+    const {
+      content,
+      title,
+      snippet,
+      header_image,
+      updated_at,
+      shareStudents,
+      shareAlumni
+    } = this.state;
     const { blog } = this.props;
     const isAnytingEdited =
       content != blog.content ||
       title != blog.title ||
       snippet != blog.snippet ||
-      header_image != blog.header_image;
+      header_image != blog.header_image ||
+      shareStudents !=
+        blog.user_types
+          .map(userType => userType.id)
+          .includes(USER_TYPES["student"]) ||
+      shareAlumni !=
+        blog.user_types
+          .map(userType => userType.id)
+          .includes(USER_TYPES["alumni"]);
     const isRequiredFieldsFilled = content && title && snippet && header_image;
+    const publishButtonText = this.isCareerService
+      ? "Publish"
+      : "Send for Approval";
     return (
-      <div className="fixed-button" style={{ boxShadow: "none" }}>
-        <div className="fixed-button" style={{ boxShadow: "none" }}>
-          {isAnytingEdited && (
-            <Button
-              type="primary"
-              shape="circle"
-              size="large"
-              onClick={() => this.saveBlogData()}
-            >
-              <Icon type="save" />
-            </Button>
-          )}
-
-          {isAnytingEdited && isRequiredFieldsFilled && (
-            <Button
-              type="primary"
-              style={{ margin: "0 0 0 8px" }}
-              onClick={() => this.postBlogData()}
-            >
-              Send for Approval
-            </Button>
-          )}
+      <div className="fixed-buttons-container">
+        {this.isCareerService && (
+          <div className="share-with-checkbox-area">
+            <div>Share with</div>
+            <div className="checkbox-container">
+              <Checkbox
+                checked={shareStudents}
+                onChange={event =>
+                  this.setState({ shareStudents: event.target.checked })
+                }
+              >
+                Students
+              </Checkbox>
+              <Checkbox
+                checked={shareAlumni}
+                onChange={event =>
+                  this.setState({ shareAlumni: event.target.checked })
+                }
+              >
+                Alumni
+              </Checkbox>
+            </div>
+          </div>
+        )}
+        <div className="save-buttons-container">
+          <Button
+            type="primary"
+            shape="circle"
+            size="large"
+            disabled={!isAnytingEdited}
+            onClick={() => this.saveBlogData()}
+          >
+            <Icon type="save" />
+          </Button>
+          <Button
+            type="primary"
+            disabled={!isAnytingEdited || !isRequiredFieldsFilled}
+            style={{ margin: "0 0 0 8px" }}
+            onClick={() => this.postBlogData()}
+          >
+            {publishButtonText}
+          </Button>
         </div>
         {updated_at && (
-          <div
-            className="no-data"
-            style={{ boxShadow: "none", margin: "80px 8px 0 0" }}
-          >
-            {"last update " +
-              makeTimeBeautiful(this.state.updated_at, "dateandtime")}
+          <div className="no-data">
+            {"last update " + makeTimeBeautiful(updated_at, "dateandtime")}
           </div>
         )}
       </div>
@@ -469,9 +534,12 @@ class BlogEditable extends React.Component {
   }
 
   render() {
-    history.pushState(null, null, location.href);
-    window.onpopstate = function() {
-      window.location.assign("blogs");
+    const { redirect } = this.state;
+    if (redirect !== null) {
+      return <Redirect to={redirect} />;
+    }
+    window.onpopstate = () => {
+      this.setState({ redirect: "/action?type=redirect&" + location.pathname });
     };
     return (
       <div className="blog-details">

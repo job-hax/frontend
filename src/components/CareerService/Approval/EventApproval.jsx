@@ -50,7 +50,7 @@ class EventApproval extends React.Component {
       <Button
         key="reject"
         onClick={() => this.handleReject(id)}
-        style={{ width: "105px", margin: "0px 12px" }}
+        style={{ width: "105px", marginRight: "12px" }}
       >
         Reject
       </Button>
@@ -233,6 +233,7 @@ class EventApproval extends React.Component {
                     event={this.state.detail_event}
                     handleTokenExpiration={this.props.handleTokenExpiration}
                     setEventEdit={false}
+                    cookie={this.props.cookie}
                   />
                 </Modal>
               )}

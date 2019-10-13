@@ -61,24 +61,26 @@ class DrawerMenu extends Component {
     let page = event.key;
     let request = page === "addCoach" ? false : true;
     this.setState({ request: request });
-    if (page === "/events") {
-      if (window.location.pathname.substring(0, 6) == "/event") {
-        this.setState({ current: "/action?type=redirect&/events" });
-      } else {
-        this.setState({ current: page });
-      }
-    } else if (page === "/blogs?edit=true") {
-      if (window.location.pathname.substring(0, 5) == "/blog") {
-        this.setState({ current: "/action?type=redirect&/blogs?edit=true" });
-      } else {
-        this.setState({ current: page });
-      }
-    } else if (page === "/blogs") {
-      if (window.location.pathname.substring(0, 5) == "/blog") {
-        this.setState({ current: "/action?type=redirect&/blogs" });
-      } else {
-        this.setState({ current: page });
-      }
+    if (
+      [
+        "/events",
+        "/events?edit=true",
+        "/student/events",
+        "/alumni/events"
+      ].includes(page) &&
+      window.location.pathname.includes("event")
+    ) {
+      this.setState({ current: "/action?type=redirect&" + page });
+    } else if (
+      [
+        "/blogs",
+        "/blogs?edit=true",
+        "/student/blogs",
+        "/alumni/blogs"
+      ].includes(page) &&
+      window.location.pathname.includes("blogs")
+    ) {
+      this.setState({ current: "/action?type=redirect&" + page });
     } else if (page === "addCoach") {
       this.setState({ addCoachVisible: true });
     } else {
@@ -116,8 +118,8 @@ class DrawerMenu extends Component {
           <Menu.Item key="/career-service/manage/alumniHome">
             Alumni Home Page
           </Menu.Item>
-          <Menu.Item key="/career-service/manage/events">Blogs</Menu.Item>
-          <Menu.Item key="/career-service/manage/blogs">Events</Menu.Item>
+          <Menu.Item key="/career-service/manage/events">Events</Menu.Item>
+          <Menu.Item key="/career-service/manage/blogs">Blogs</Menu.Item>
           <Menu.Item key="/career-service/manage/coaches">Coaches</Menu.Item>
         </SubMenu>
         <Menu.Item key="/career-service/metrics">University Metrics</Menu.Item>

@@ -149,17 +149,6 @@
             }
         }
     }
-
-    .fixed-button {
-        position: fixed;
-        display: flex;
-        align-items: center;
-        top: 80px;
-        right: 20px;
-        border-radius: 20px;
-        z-index: 201;
-        box-shadow: 1px 1px 4px 4px rgba(0, 0, 0, 0.2);
-    }
 }
 
 .blog-details {
@@ -324,31 +313,6 @@
                 }
 
                 .details {}
-
-                .toolbar {
-
-                    .rdw-link-modal {
-                        min-height: 240px;
-                    }
-
-                    .rdw-embedded-modal-header {
-                        font-size: 14px;
-                        height: fit-content;
-                    }
-
-                    .rdw-image-modal {
-                        min-width: 240px;
-                        padding: 15px 30px 15px 15px;
-                    }
-
-                    a {
-                        color: $text_color;
-                    }
-                }
-
-                .editor {
-                    min-height: 440px;
-                }
             }
 
             .engagement {
@@ -426,6 +390,32 @@
         }
     }
 
+}
+
+.toolbar {
+
+    .rdw-link-modal {
+        min-height: 240px;
+    }
+
+    .rdw-embedded-modal-header {
+        font-size: 14px;
+        height: fit-content;
+    }
+
+    .rdw-image-modal {
+        min-width: 240px;
+        padding: 15px 30px 15px 15px;
+    }
+
+    a {
+        color: $text_color;
+    }
+}
+
+.editor {
+    min-height: 440px;
+    border: 1px solid $line_color;
 }
 
 .blog-card-container {
@@ -556,6 +546,43 @@
 .blog-card-container:hover {
     cursor: pointer;
     box-shadow: 1px 1px 10px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+.fixed-buttons-container {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    width: -moz-fit-content;
+    padding: 16px;
+    background-color: rgba(100, 100, 100, 0.03);
+    top: 80px;
+    right: 20px;
+    border-radius: 8px;
+    z-index: 199;
+
+    .share-with-checkbox-area {
+        .checkbox-container {
+            display: flex;
+            justify-content: space-around;
+        }
+    }
+
+    .save-buttons-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: fit-content;
+        width: -moz-fit-content;
+        margin-top: 12px;
+    }
+
+    .ant-btn[disabled] {
+        background-color: $line_color;
+        border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    }
 }
 
 @media only screen and (max-device-width : 800px) and (-webkit-min-device-pixel-ratio : 2) {
