@@ -83,7 +83,7 @@ class EventEditable extends React.Component {
 
       loading: false,
       formData: new FormData(),
-      isEditingContent: false,
+      isEditingContent: true,
       isEditingDate: false,
       isEditingLocation: false,
       editorState: EditorState.createEmpty()
@@ -507,7 +507,7 @@ class EventEditable extends React.Component {
             )}
           </div>
         </div>
-        <Affix offsetTop={220}>
+        <Affix offsetTop={220} className="location-affix">
           <div className="location-container">
             <div className="location"> {this.generateLocationArea()} </div>
           </div>

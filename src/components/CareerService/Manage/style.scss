@@ -36,4 +36,20 @@
         min-width: 100%;
         width: min-content;
     }
+
+    .location-affix {
+        .ant-affix {
+            position: absolute !important;
+
+        }
+    }
+
+
+    .fixed-buttons-container {
+        position: fixed !important;
+        top: 180px !important;
+        right: calc(10vw + 20px) !important;
+    }
+
+
 }

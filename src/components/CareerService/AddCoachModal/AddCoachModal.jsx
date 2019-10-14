@@ -10,12 +10,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import {
-  EVENTS,
-  BLOGS,
-  COLLEGES,
-  apiRoot
-} from "../../../utils/constants/endpoints.js";
+import { COLLEGES, apiRoot } from "../../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
@@ -44,22 +39,41 @@ class AddCoachModal extends React.Component {
   constructor(props) {
     super(props);
 
+    const coach = this.props.coach
+      ? this.props.coach
+      : {
+          id: null,
+          first_name: null,
+          last_name: null,
+          email: null,
+          title: null,
+          calendar_link: null,
+          online_conference_link: null,
+          content: "",
+          summary_photo: "",
+          profile_photo: "",
+          is_publish: false
+        };
+
     this.state = {
       visible: this.props.visible,
-      id: null,
-      first_name: null,
-      last_name: null,
-      email: null,
-      title: null,
-      calendar_link: null,
-      online_conference_link: null,
-      content: "",
-      summary_photo: "",
-      profile_photo: "",
+      id: coach.id,
+      first_name: coach.first_name,
+      last_name: coach.last_name,
+      email: coach.email === "null" ? null : coach.email,
+      title: coach.title,
+      calendar_link: coach.calendar_link,
+      online_conference_link:
+        coach.online_conference_link === "null"
+          ? null
+          : coach.online_conference_link,
+      content: coach.content,
+      summary_photo: coach.summary_photo,
+      profile_photo: coach.profile_photo,
       isEditingContent: true,
       editorState: EditorState.createEmpty(),
       loading: false,
-      is_publish: false,
+      is_publish: coach.is_publish,
       formData: new FormData()
     };
 
@@ -383,7 +397,7 @@ class AddCoachModal extends React.Component {
         onClick={this.handleOk}
         style={{ width: "105px" }}
       >
-        Send
+        Save
       </Button>
     );
 

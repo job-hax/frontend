@@ -66,7 +66,7 @@ class BlogEditable extends React.Component {
       voted: this.props.blog.voted,
       snippet: this.props.blog.snippet,
       publisher: this.props.blog.publisher_profile,
-      isEditingContent: false,
+      isEditingContent: true,
       upVoted: false,
       downVoted: false,
       editorState: EditorState.createEmpty(),

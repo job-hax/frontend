@@ -90,7 +90,14 @@ class UniversityMetrics extends React.Component {
 
   render() {
     return (
-      <div style={{ width: "100%", overflowY: "hidden" }}>
+      <div
+        style={{
+          maxWidth: "100%",
+          width: "fit-content",
+          width: "-moz-fit-content",
+          overflowY: "hidden"
+        }}
+      >
         {this.generateDetailedMetricsGroup()}
       </div>
     );

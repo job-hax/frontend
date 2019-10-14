@@ -168,3 +168,15 @@ html {
   border: rgb(64, 169, 255) !important;
 
 }
+
+.delete-button {
+  .ant-btn {
+    color: red;
+    border-color: red;
+  }
+
+  .ant-btn:hover {
+    color: rgb(255, 120, 120) !important;
+    border-color: rgb(255, 120, 120) !important;
+  }
+}

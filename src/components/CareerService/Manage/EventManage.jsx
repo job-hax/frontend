@@ -11,9 +11,9 @@ import {
 } from "../../../utils/constants/constants.js";
 import Event from "../../Events/Event.jsx";
 import EventDetails from "../../Events/EventDetails.jsx";
+import EventEditable from "../../Events/EventEditable.jsx";
 
 import "./style.scss";
-import EventEditable from "../../Events/EventEditable.jsx";
 
 class EventManage extends React.Component {
   constructor(props) {
@@ -49,19 +49,19 @@ class EventManage extends React.Component {
 
     this.parameterMap = {
       career_services: {
-        parameter: "&mine=true",
+        parameter: "&type=" + USER_TYPES["career_services"],
         state: "career_service_event_list",
         paginationState: "career_service_pagination",
         pageState: "career_service_pageNo"
       },
       alumni: {
-        parameter: "&student=false",
+        parameter: "&type=" + USER_TYPES["alumni"],
         state: "alumni_event_list",
         paginationState: "alumni_pagination",
         pageState: "alumni_pageNo"
       },
       student: {
-        parameter: "&student=true",
+        parameter: "&type=" + USER_TYPES["student"],
         state: "student_event_list",
         paginationState: "student_pagination",
         pageState: "student_pageNo"
@@ -79,14 +79,16 @@ class EventManage extends React.Component {
       </Button>
     );
 
-    this.deleteButton = id => (
-      <Button
-        key="delete"
-        onClick={() => this.handleDelete(id)}
-        style={{ width: "105px", marginRight: "12px" }}
-      >
-        Delete
-      </Button>
+    this.deleteButton = (id, user_type) => (
+      <div className="delete-button">
+        <Button
+          key="delete"
+          onClick={() => this.handleDelete(id, user_type)}
+          style={{ width: "105px", marginRight: "12px" }}
+        >
+          Delete
+        </Button>
+      </div>
     );
   }
 
@@ -112,7 +114,7 @@ class EventManage extends React.Component {
     this.setState({ isWaitingResponse: true });
     let config = { method: "GET" };
     let newUrl =
-      this.state.detail_event_id == null
+      requestType !== "detailedRequest"
         ? EVENTS +
           "?page=" +
           this.state[this.parameterMap[parameter].pageState] +
@@ -165,7 +167,10 @@ class EventManage extends React.Component {
     this.getData("detailedRequest");
   }
 
-  handleModalCancel() {
+  handleModalCancel(user_type) {
+    if (this.state.isEditing) {
+      this.getData("initialRequest", user_type);
+    }
     this.setState({
       visible: false,
       detail_event_id: null,
@@ -182,17 +187,17 @@ class EventManage extends React.Component {
     });
   }
 
-  async handleDeleteRequest(id) {
+  async handleDeleteRequest(id, user_type) {
     let config = { method: "DELETE" };
     config.body = { event_id: id };
     await this.props.handleTokenExpiration("eventdelete handle");
     axiosCaptcha(EVENTS, config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success) {
-          let updatedList = this.state.eventList;
+          let updatedList = this.state[this.parameterMap[user_type].state];
           updatedList = updatedList.filter(event => event.id !== id);
-          this.setState({ eventList: updatedList });
-          this.handleModalCancel();
+          this.setState({ [this.parameterMap[user_type].state]: updatedList });
+          this.handleModalCancel(user_type);
         } else {
           this.props.alert(
             5000,
@@ -205,11 +210,13 @@ class EventManage extends React.Component {
   }
 
   handleEdit(id) {
-    this.setState({ detailed_event_id: id, isEditing: true });
+    this.setState({ isEditing: true });
+    !this.state.detailed_event_id && this.handleEventCardClick(id);
   }
 
-  handleDelete(id) {
-    this.handleDeleteRequest(id);
+  async handleDelete(id, user_type) {
+    await this.handleDeleteRequest(id, user_type);
+    this.getData("initialRequest", user_type);
   }
 
   generateManageList(user_type) {
@@ -243,9 +250,11 @@ class EventManage extends React.Component {
       </span>
     );
 
+    const colorMap = { Alumni: "geekblue", Student: "green", Public: "pink" };
+
     const columns = [
       { title: "Host", dataIndex: "host", key: "host" },
-      { title: "Host Type", dataIndex: "host_type", key: "host_type" },
+      { title: "Audience", dataIndex: "audience", key: "audience" },
       { title: "Event Type", dataIndex: "event_type", key: "event_type" },
       { title: "Title", dataIndex: "title", key: "title" },
       { title: "Time", dataIndex: "event_start", key: "event_start" },
@@ -263,7 +272,7 @@ class EventManage extends React.Component {
         key: "x",
         render: record => (
           <div style={{ display: "flex" }}>
-            {this.deleteButton(record.key)}
+            {this.deleteButton(record.key, user_type)}
             {user_type === "career_services" && this.editButton(record.key)}
           </div>
         )
@@ -274,7 +283,9 @@ class EventManage extends React.Component {
       return {
         key: event.id,
         host: event.host_user.first_name + " " + event.host_user.last_name,
-        host_type: event.user_types[0].name,
+        audience: event.user_types.map(type => (
+          <Tag color={colorMap[type.name]}>{type.name.toUpperCase()}</Tag>
+        )),
         event_type: event.event_type.name,
         title: event.title,
         address: event.location_address,
@@ -289,12 +300,8 @@ class EventManage extends React.Component {
       };
     });
 
-    const footer = [this.deleteButton(this.state.detail_event_id)];
-    user_type === "career_services" &&
-      footer.push(this.editButton(this.state.detail_event_id));
-
     return (
-      <div className="manage-list-container">
+      <div>
         <Table
           columns={columns}
           expandedRowRender={record => (
@@ -305,32 +312,6 @@ class EventManage extends React.Component {
                 alert={this.props.alert}
                 handleTokenExpiration={this.props.handleTokenExpiration}
               />
-              {this.state.visible && (
-                <Modal
-                  visible={this.state.visible}
-                  title="Manage"
-                  onCancel={this.handleModalCancel}
-                  width="80vw"
-                  getContainer={false}
-                  footer={footer}
-                >
-                  {!this.state.isEditing ? (
-                    <EventDetails
-                      event={this.state.detail_event}
-                      handleTokenExpiration={this.props.handleTokenExpiration}
-                      setEventEdit={false}
-                      cookie={this.props.cookie}
-                    />
-                  ) : (
-                    <EventEditable
-                      event={this.state.detail_event}
-                      handleTokenExpiration={this.props.handleTokenExpiration}
-                      alert={this.props.alert}
-                      cookie={this.props.cookie}
-                    />
-                  )}
-                </Modal>
-              )}
             </div>
           )}
           dataSource={data}
@@ -351,6 +332,7 @@ class EventManage extends React.Component {
             this.state[this.parameterMap[user_type].paginationState].total_count
           }
         />
+        {this.state.visible && this.generateDetailedModal(user_type)}
       </div>
     );
   }
@@ -372,8 +354,10 @@ class EventManage extends React.Component {
       { title: "Event Amount", dataIndex: "event_amount", key: "event_amount" }
     ];
 
-    const data = [
-      {
+    const data = [];
+
+    this.state[this.parameterMap["career_services"].state].length > 0 &&
+      data.push({
         key: USER_TYPES["career_services"],
         host_type: "Career Service",
         last_update: makeTimeBeautiful(
@@ -387,8 +371,10 @@ class EventManage extends React.Component {
           this.state[this.parameterMap["career_services"].paginationState]
             .total_count +
           " events"
-      },
-      {
+      });
+
+    this.state[this.parameterMap["alumni"].state].length > 0 &&
+      data.push({
         key: USER_TYPES["alumni"],
         host_type: "Alumni",
         last_update: makeTimeBeautiful(
@@ -401,8 +387,10 @@ class EventManage extends React.Component {
           "Total " +
           this.state[this.parameterMap["alumni"].paginationState].total_count +
           " events"
-      },
-      {
+      });
+
+    this.state[this.parameterMap["student"].state].length > 0 &&
+      data.push({
         key: USER_TYPES["student"],
         host_type: "Student",
         last_update: makeTimeBeautiful(
@@ -415,8 +403,7 @@ class EventManage extends React.Component {
           "Total " +
           this.state[this.parameterMap["student"].paginationState].total_count +
           " events"
-      }
-    ];
+      });
 
     return (
       <Table
@@ -431,12 +418,53 @@ class EventManage extends React.Component {
     );
   }
 
+  generateDetailedModal(user_type) {
+    const footer = [this.deleteButton(this.state.detail_event_id, user_type)];
+    user_type === "career_services" &&
+      footer.push(this.editButton(this.state.detail_event_id));
+
+    const cancelButton = [
+      <Button onClick={() => this.handleModalCancel(user_type)}>Cancel</Button>
+    ];
+
+    return (
+      <Modal
+        visible={this.state.visible}
+        title="Manage"
+        onCancel={() => this.handleModalCancel(user_type)}
+        width="80vw"
+        getContainer={() => document.getElementById("manage-container")}
+        footer={this.state.isEditing ? cancelButton : footer}
+      >
+        {!this.state.isEditing ? (
+          <EventDetails
+            event={this.state.detail_event}
+            handleTokenExpiration={this.props.handleTokenExpiration}
+            setEventEdit={false}
+            cookie={this.props.cookie}
+          />
+        ) : (
+          <EventEditable
+            event={this.state.detail_event}
+            handleTokenExpiration={this.props.handleTokenExpiration}
+            alert={this.props.alert}
+            cookie={this.props.cookie}
+          />
+        )}
+      </Modal>
+    );
+  }
+
   render() {
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing waiting events..." />;
-    return <div>{this.generateNestedManageList()}</div>;
+    return (
+      <div id="manage-container" className="manage-list-container">
+        {this.generateNestedManageList()}
+      </div>
+    );
   }
 }
 

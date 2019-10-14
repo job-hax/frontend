@@ -86,13 +86,11 @@ class Metrics extends PureComponent {
           <div className="university-metrics-header">{header}</div>
           <div className="header-line" />
         </div>
-        <div>
-          <UniversityMetrics
-            cookie={this.props.cookie}
-            isPublic={isPublic}
-            isStudent={isStudent}
-          />
-        </div>
+        <UniversityMetrics
+          cookie={this.props.cookie}
+          isPublic={isPublic}
+          isStudent={isStudent}
+        />
       </div>
     );
 

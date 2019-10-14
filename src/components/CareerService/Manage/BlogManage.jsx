@@ -1,14 +1,19 @@
 import React from "react";
-import { Table, Modal, Button, Pagination } from "antd";
+import { Table, Modal, Button, Pagination, Tag } from "antd";
 
 import { apiRoot, BLOGS } from "../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
 
 import "./style.scss";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
-import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
+import {
+  makeTimeBeautiful,
+  USER_TYPE_NAMES,
+  USER_TYPES
+} from "../../../utils/constants/constants.js";
 import BlogCard from "../../Blog/BlogCard.jsx";
 import BlogDetails from "../../Blog/BlogDetails.jsx";
+import BlogEditable from "../../Blog/BlogEditable.jsx";
 
 class BlogManage extends React.Component {
   constructor(props) {
@@ -19,48 +24,80 @@ class BlogManage extends React.Component {
       isInitialRequest: "beforeRequest",
       isNewPageRequested: false,
       redirect: "",
-      pageNo: 1,
+      career_service_pageNo: 1,
+      alumni_pageNo: 1,
+      student_pageNo: 1,
       pageSize: 10,
-      pagination: {},
-      blogList: [],
+      career_service_pagination: {},
+      alumni_pagination: {},
+      student_pagination: {},
+      career_service_blog_list: null,
+      alumni_blog_list: null,
+      student_blog_list: null,
       detail_blog: {},
       detail_blog_id: null,
+      isEditing: false,
       visible: false
     };
 
     this.handleBlogCardClick = this.handleBlogCardClick.bind(this);
     this.handleModalCancel = this.handleModalCancel.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
-    this.handleApprove = this.handleApprove.bind(this);
-    this.handleReject = this.handleReject.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleDeleteRequest = this.handleDeleteRequest.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
 
-    this.approveButton = id => (
+    this.parameterMap = {
+      career_services: {
+        parameter: "&type=" + USER_TYPES["career_services"],
+        state: "career_service_blog_list",
+        paginationState: "career_service_pagination",
+        pageState: "career_service_pageNo"
+      },
+      alumni: {
+        parameter: "&type=" + USER_TYPES["alumni"],
+        state: "alumni_blog_list",
+        paginationState: "alumni_pagination",
+        pageState: "alumni_pageNo"
+      },
+      student: {
+        parameter: "&type=" + USER_TYPES["student"],
+        state: "student_blog_list",
+        paginationState: "student_pagination",
+        pageState: "student_pageNo"
+      }
+    };
+
+    this.editButton = id => (
       <Button
-        key="approve"
+        key="edit"
         type="primary"
-        onClick={() => this.handleApprove(id)}
+        onClick={() => this.handleEdit(id)}
         style={{ width: "105px" }}
       >
-        Approve
+        Edit
       </Button>
     );
 
-    this.rejectButton = id => (
-      <Button
-        key="reject"
-        onClick={() => this.handleReject(id)}
-        style={{ width: "105px", marginRight: "12px" }}
-      >
-        Reject
-      </Button>
+    this.deleteButton = (id, user_type) => (
+      <div className="delete-button">
+        <Button
+          key="delete"
+          onClick={() => this.handleDelete(id, user_type)}
+          style={{ width: "105px", marginRight: "12px" }}
+        >
+          Delete
+        </Button>
+      </div>
     );
   }
 
   componentDidMount() {
     if (this.props.cookie("get", "jobhax_access_token") != ("" || null)) {
       this.setState({ isInitialRequest: true });
-      this.getData("initialRequest");
+      this.getData("initialRequest", "career_services");
+      this.getData("initialRequest", "alumni");
+      this.getData("initialRequest", "student");
     }
   }
 
@@ -73,47 +110,56 @@ class BlogManage extends React.Component {
     }
   }
 
-  async getData(requestType) {
+  async getData(requestType, parameter) {
     this.setState({ isWaitingResponse: true });
     let config = { method: "GET" };
     let newUrl =
-      this.state.detail_blog_id == null
+      requestType !== "detailedRequest"
         ? BLOGS +
           "?page=" +
-          this.state.pageNo +
+          this.state[this.parameterMap[parameter].pageState] +
           "&page_size=" +
           this.state.pageSize +
-          "&waiting=true"
+          this.parameterMap[parameter].parameter
         : BLOGS + this.state.detail_blog_id + "/";
     await this.props.handleTokenExpiration("blogApproval getData");
-    axiosCaptcha(newUrl, config).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success) {
-          if (requestType === "initialRequest") {
-            this.setState({
-              blogList: response.data.data,
-              pagination: response.data.pagination,
-              isWaitingResponse: false,
-              isInitialRequest: false
-            });
-          } else if (requestType === "newPageRequest") {
-            this.setState({
-              blogList: response.data.data,
-              pagination: response.data.pagination,
-              isWaitingResponse: false,
-              isNewPageRequested: false
-            });
-          } else if (requestType === "detailedRequest") {
-            this.setState({
-              detail_blog: response.data.data,
-              isWaitingResponse: false,
-              isInitialRequest: false,
-              visible: true
-            });
+    axiosCaptcha(newUrl, config)
+      .then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success) {
+            if (requestType === "initialRequest") {
+              this.setState({
+                [this.parameterMap[parameter].state]: response.data.data,
+                [this.parameterMap[parameter].paginationState]:
+                  response.data.pagination,
+                isWaitingResponse: false
+              });
+            } else if (requestType === "newPageRequest") {
+              this.setState({
+                [this.parameterMap[parameter].state]: response.data.data,
+                [this.parameterMap[parameter].paginationState]:
+                  response.data.pagination,
+                isWaitingResponse: false
+              });
+            } else if (requestType === "detailedRequest") {
+              this.setState({
+                detail_blog: response.data.data,
+                isWaitingResponse: false,
+                visible: true
+              });
+            }
           }
         }
-      }
-    });
+      })
+      .then(() => {
+        if (
+          this.state.career_service_blog_list &&
+          this.state.alumni_blog_list &&
+          this.state.student_blog_list
+        ) {
+          this.setState({ isInitialRequest: false });
+        }
+      });
   }
 
   async handleBlogCardClick(id) {
@@ -121,8 +167,16 @@ class BlogManage extends React.Component {
     this.getData("detailedRequest");
   }
 
-  handleModalCancel() {
-    this.setState({ visible: false, detail_blog_id: null, detail_blog: {} });
+  handleModalCancel(user_type) {
+    if (this.state.isEditing) {
+      this.getData("initialRequest", user_type);
+    }
+    this.setState({
+      visible: false,
+      detail_blog_id: null,
+      detail_blog: {},
+      isEditing: false
+    });
   }
 
   handlePageChange(page) {
@@ -133,18 +187,17 @@ class BlogManage extends React.Component {
     });
   }
 
-  async handleSubmit(decision, id) {
-    let approval = decision === "approve" ? true : false;
-    let config = { method: "PATCH" };
-    config.body = { blog_id: id, approved: approval };
-    await this.props.handleTokenExpiration("blogApproval decision");
+  async handleDeleteRequest(id, user_type) {
+    let config = { method: "DELETE" };
+    config.body = { blog_id: id };
+    await this.props.handleTokenExpiration("blogdelete handle");
     axiosCaptcha(BLOGS, config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success) {
-          let updatedList = this.state.blogList;
+          let updatedList = this.state[this.parameterMap[user_type].state];
           updatedList = updatedList.filter(blog => blog.id !== id);
-          this.setState({ blogList: updatedList });
-          this.handleModalCancel();
+          this.setState({ [this.parameterMap[user_type].state]: updatedList });
+          this.handleModalCancel(user_type);
         } else {
           this.props.alert(
             5000,
@@ -156,56 +209,98 @@ class BlogManage extends React.Component {
     });
   }
 
-  handleApprove(id) {
-    this.handleSubmit("approve", id);
+  handleEdit(id) {
+    this.setState({ isEditing: true });
+    !this.state.detailed_blog_id && this.handleBlogCardClick(id);
   }
 
-  handleReject(id) {
-    this.handleSubmit("reject", id);
+  async handleDelete(id, user_type) {
+    await this.handleDeleteRequest(id, user_type);
+    this.getData("initialRequest", user_type);
   }
 
-  generateManageList() {
+  generateManageList(user_type) {
+    const statusMap = status => (
+      <span className="tags-container">
+        {status.is_publish && status.is_approved && (
+          <Tag color={"green"} key={"published"}>
+            {"PUBLISHED"}
+          </Tag>
+        )}
+        {status.is_publish && status.is_rejected && (
+          <Tag color={"red"} key={"rejected"}>
+            {"REJECTED"}
+          </Tag>
+        )}
+        {status.is_publish && !status.is_rejected && !status.is_approved && (
+          <Tag color={"blue"} key={"pending"}>
+            {"WAITING APPROVAL"}
+          </Tag>
+        )}
+        {!status.is_publish && (
+          <Tag color={"geekblue"} key={"not_published"}>
+            {"NOT PUBLISHED"}
+          </Tag>
+        )}
+        {!status.is_publish && (
+          <Tag color={"green"} key={"saved"}>
+            {"SAVED"}
+          </Tag>
+        )}
+      </span>
+    );
+
+    const colorMap = { Alumni: "geekblue", Student: "green", Public: "pink" };
+
     const columns = [
       { title: "Author", dataIndex: "author", key: "author" },
-      { title: "Type", dataIndex: "type", key: "type" },
+      { title: "Audience", dataIndex: "audience", key: "audience" },
       { title: "Title", dataIndex: "title", key: "title" },
       { title: "Length", dataIndex: "lenght", key: "lenght" },
       { title: "Request Date", dataIndex: "request_date", key: "request_date" },
-      { title: "Pending", dataIndex: "pending", key: "pending" },
+      {
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        render: status => statusMap(status)
+      },
       {
         title: "Action",
         dataIndex: "",
         key: "x",
         render: record => (
           <div style={{ display: "flex" }}>
-            {this.rejectButton(record.key)}
-            {this.approveButton(record.key)}
+            {this.deleteButton(record.key, user_type)}
+            {user_type === "career_services" && this.editButton(record.key)}
           </div>
         )
       }
     ];
 
-    const data = this.state.blogList.map(blog => {
+    const data = this.state[this.parameterMap[user_type].state].map(blog => {
       return {
         key: blog.id,
         author:
           blog.publisher_profile.first_name +
           " " +
           blog.publisher_profile.last_name,
-        type: blog.user_types[0].name,
+        audience: blog.user_types.map(type => (
+          <Tag color={colorMap[type.name]}>{type.name.toUpperCase()}</Tag>
+        )),
         title: blog.title,
         lenght: blog.word_count + " words",
         request_date: makeTimeBeautiful(blog.updated_at, "dateandtime"),
-        pending:
-          Math.round(
-            (new Date() - new Date(blog.updated_at)) / (1000 * 60 * 60 * 24)
-          ) + " days",
+        status: {
+          is_publish: blog.is_publish,
+          is_approved: blog.is_approved,
+          is_rejected: blog.is_rejected
+        },
         details: blog
       };
     });
 
     return (
-      <div className="manage-list-container">
+      <div>
         <Table
           columns={columns}
           expandedRowRender={record => (
@@ -216,26 +311,6 @@ class BlogManage extends React.Component {
                 alert={this.props.alert}
                 handleTokenExpiration={this.props.handleTokenExpiration}
               />
-              {this.state.visible && (
-                <Modal
-                  visible={this.state.visible}
-                  title="Waiting Approval"
-                  onCancel={this.handleModalCancel}
-                  width="80vw"
-                  getContainer={false}
-                  footer={[
-                    this.rejectButton(this.state.detail_blog_id),
-                    this.approveButton(this.state.detail_blog_id)
-                  ]}
-                >
-                  <BlogDetails
-                    blog={this.state.detail_blog}
-                    handleTokenExpiration={this.props.handleTokenExpiration}
-                    setBlogEdit={false}
-                    cookie={this.props.cookie}
-                  />
-                </Modal>
-              )}
             </div>
           )}
           dataSource={data}
@@ -243,22 +318,152 @@ class BlogManage extends React.Component {
         />
         <Pagination
           onChange={this.handlePageChange}
-          defaultCurrent={this.state.pagination.current_page}
-          current={this.state.pagination.current_page}
+          defaultCurrent={
+            this.state[this.parameterMap[user_type].paginationState]
+              .current_page
+          }
+          current={
+            this.state[this.parameterMap[user_type].paginationState]
+              .current_page
+          }
           pageSize={this.state.pageSize}
-          total={this.state.pagination.total_count}
+          total={
+            this.state[this.parameterMap[user_type].paginationState].total_count
+          }
         />
+        {this.state.visible && this.generateDetailedModal(user_type)}
       </div>
     );
   }
 
+  generateNestedManageList() {
+    const columns = [
+      { title: "Author Type", dataIndex: "author_type", key: "author_type" },
+      { title: "Last Update", dataIndex: "last_update", key: "last_update" },
+      {
+        title: "Last Month Activity",
+        dataIndex: "last_month",
+        key: "last_month"
+      },
+      { title: "Likes", dataIndex: "likes", key: "likes" },
+      { title: "Views", dataIndex: "views", key: "views" },
+      { title: "Blog Amount", dataIndex: "blog_amount", key: "blog_amount" }
+    ];
+
+    const data = [];
+
+    this.state[this.parameterMap["career_services"].state].length > 0 &&
+      data.push({
+        key: USER_TYPES["career_services"],
+        author_type: "Career Service",
+        last_update: makeTimeBeautiful(
+          this.state[this.parameterMap["career_services"].state][0].updated_at,
+          "dateandtime"
+        ),
+        last_month: "5 blogs added",
+        likes: "48 likes",
+        views: "396 views",
+        blog_amount:
+          "Total " +
+          this.state[this.parameterMap["career_services"].paginationState]
+            .total_count +
+          " blogs"
+      });
+
+    this.state[this.parameterMap["alumni"].state].length > 0 &&
+      data.push({
+        key: USER_TYPES["alumni"],
+        author_type: "Alumni",
+        last_update: makeTimeBeautiful(
+          this.state[this.parameterMap["alumni"].state][0].updated_at,
+          "dateandtime"
+        ),
+        last_month: "3 blogs added",
+        likes: "25 likes",
+        views: "232 views",
+        blog_amount:
+          "Total " +
+          this.state[this.parameterMap["alumni"].paginationState].total_count +
+          " blogs"
+      });
+
+    this.state[this.parameterMap["student"].state].length > 0 &&
+      data.push({
+        key: USER_TYPES["student"],
+        author_type: "Student",
+        last_update: makeTimeBeautiful(
+          this.state[this.parameterMap["student"].state][0].updated_at,
+          "dateandtime"
+        ),
+        last_month: "4 blogs added",
+        likes: "34 likes",
+        views: "298 views",
+        blog_amount:
+          "Total " +
+          this.state[this.parameterMap["student"].paginationState].total_count +
+          " blogs"
+      });
+
+    return (
+      <Table
+        className="components-table-demo-nested"
+        columns={columns}
+        expandedRowRender={record =>
+          this.generateManageList(USER_TYPE_NAMES[record.key].type)
+        }
+        dataSource={data}
+        pagination={false}
+      />
+    );
+  }
+
+  generateDetailedModal(user_type) {
+    const footer = [this.deleteButton(this.state.detail_blog_id, user_type)];
+    user_type === "career_services" &&
+      footer.push(this.editButton(this.state.detail_blog_id));
+
+    const cancelButton = [
+      <Button onClick={() => this.handleModalCancel(user_type)}>Cancel</Button>
+    ];
+
+    return (
+      <Modal
+        visible={this.state.visible}
+        title="Manage"
+        onCancel={() => this.handleModalCancel(user_type)}
+        width="80vw"
+        getContainer={() => document.getElementById("manage-container")}
+        footer={this.state.isEditing ? cancelButton : footer}
+      >
+        {!this.state.isEditing ? (
+          <BlogDetails
+            blog={this.state.detail_blog}
+            handleTokenExpiration={this.props.handleTokenExpiration}
+            setBlogEdit={false}
+            cookie={this.props.cookie}
+          />
+        ) : (
+          <BlogEditable
+            blog={this.state.detail_blog}
+            handleTokenExpiration={this.props.handleTokenExpiration}
+            alert={this.props.alert}
+            cookie={this.props.cookie}
+          />
+        )}
+      </Modal>
+    );
+  }
+
   render() {
-    console.log(this.state);
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
       return <Spinner message="Preparing waiting blogs..." />;
-    return <div>{this.generateManageList()}</div>;
+    return (
+      <div id="manage-container" className="manage-list-container">
+        {this.generateNestedManageList()}
+      </div>
+    );
   }
 }
 

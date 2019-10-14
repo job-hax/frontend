@@ -254,7 +254,6 @@ class EventApproval extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)

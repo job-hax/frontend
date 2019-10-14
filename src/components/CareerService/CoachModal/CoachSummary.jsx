@@ -37,6 +37,7 @@ class CoachSummary extends React.Component {
   }
 
   render() {
+    console.log(this);
     return <div>{this.generateSummaryCard()}</div>;
   }
 }
