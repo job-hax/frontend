@@ -556,11 +556,12 @@
     width: fit-content;
     width: -moz-fit-content;
     padding: 16px;
-    background-color: rgba(100, 100, 100, 0.03);
+    background-color: white;
     top: 80px;
     right: 20px;
-    border-radius: 8px;
+    border-radius: 4px;
     z-index: 199;
+    box-shadow: 1px 1px 5px 1px #efefef;
 
     .share-with-checkbox-area {
         .checkbox-container {

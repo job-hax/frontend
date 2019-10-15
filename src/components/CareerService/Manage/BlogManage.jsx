@@ -36,6 +36,7 @@ class BlogManage extends React.Component {
       student_blog_list: null,
       detail_blog: {},
       detail_blog_id: null,
+      stats: null,
       isEditing: false,
       visible: false
     };
@@ -84,7 +85,7 @@ class BlogManage extends React.Component {
         <Button
           key="delete"
           onClick={() => this.handleDelete(id, user_type)}
-          style={{ width: "105px", marginRight: "12px" }}
+          style={{ width: "105px" }}
         >
           Delete
         </Button>
@@ -157,7 +158,17 @@ class BlogManage extends React.Component {
           this.state.alumni_blog_list &&
           this.state.student_blog_list
         ) {
-          this.setState({ isInitialRequest: false });
+          axiosCaptcha(BLOGS + "stats/", config).then(statsResponse => {
+            if (statsResponse.statusText === "OK") {
+              if (statsResponse.data.success) {
+                this.setState({
+                  stats: statsResponse.data.data,
+                  isWaitingResponse: false,
+                  isInitialRequest: false
+                });
+              }
+            }
+          });
         }
       });
   }
@@ -257,7 +268,10 @@ class BlogManage extends React.Component {
       { title: "Audience", dataIndex: "audience", key: "audience" },
       { title: "Title", dataIndex: "title", key: "title" },
       { title: "Length", dataIndex: "lenght", key: "lenght" },
-      { title: "Request Date", dataIndex: "request_date", key: "request_date" },
+      { title: "View Count", dataIndex: "views", key: "views" },
+      { title: "Likes", dataIndex: "likes", key: "likes" },
+      { title: "Dislikes", dataIndex: "dislikes", key: "dislikes" },
+      { title: "Last Updated", dataIndex: "request_date", key: "request_date" },
       {
         title: "Status",
         dataIndex: "status",
@@ -269,9 +283,9 @@ class BlogManage extends React.Component {
         dataIndex: "",
         key: "x",
         render: record => (
-          <div style={{ display: "flex" }}>
-            {this.deleteButton(record.key, user_type)}
+          <div>
             {user_type === "career_services" && this.editButton(record.key)}
+            {this.deleteButton(record.key, user_type)}
           </div>
         )
       }
@@ -289,6 +303,9 @@ class BlogManage extends React.Component {
         )),
         title: blog.title,
         lenght: blog.word_count + " words",
+        views: blog.view_count + " views",
+        likes: blog.upvote + " likes",
+        dislikes: blog.downvote + " dislikes",
         request_date: makeTimeBeautiful(blog.updated_at, "dateandtime"),
         status: {
           is_publish: blog.is_publish,
@@ -338,15 +355,16 @@ class BlogManage extends React.Component {
 
   generateNestedManageList() {
     const columns = [
-      { title: "Author Type", dataIndex: "author_type", key: "author_type" },
+      { title: "Added by", dataIndex: "author_type", key: "author_type" },
       { title: "Last Update", dataIndex: "last_update", key: "last_update" },
       {
         title: "Last Month Activity",
         dataIndex: "last_month",
         key: "last_month"
       },
+      { title: "View Count", dataIndex: "views", key: "views" },
       { title: "Likes", dataIndex: "likes", key: "likes" },
-      { title: "Views", dataIndex: "views", key: "views" },
+      { title: "Dislikes", dataIndex: "dislikes", key: "dislikes" },
       { title: "Blog Amount", dataIndex: "blog_amount", key: "blog_amount" }
     ];
 
@@ -360,9 +378,12 @@ class BlogManage extends React.Component {
           this.state[this.parameterMap["career_services"].state][0].updated_at,
           "dateandtime"
         ),
-        last_month: "5 blogs added",
-        likes: "48 likes",
-        views: "396 views",
+        last_month:
+          this.state.stats["Career Service"].last_x_days_created +
+          " blogs added",
+        views: this.state.stats["Career Service"].view_count + " views",
+        likes: this.state.stats["Career Service"].upvote_count + " likes",
+        dislikes: this.state.stats["Career Service"].downvote_count + " likes",
         blog_amount:
           "Total " +
           this.state[this.parameterMap["career_services"].paginationState]
@@ -378,9 +399,11 @@ class BlogManage extends React.Component {
           this.state[this.parameterMap["alumni"].state][0].updated_at,
           "dateandtime"
         ),
-        last_month: "3 blogs added",
-        likes: "25 likes",
-        views: "232 views",
+        last_month:
+          this.state.stats["Alumni"].last_x_days_created + " blogs added",
+        views: this.state.stats["Alumni"].view_count + " views",
+        likes: this.state.stats["Alumni"].upvote_count + " likes",
+        dislikes: this.state.stats["Alumni"].downvote_count + " dislikes",
         blog_amount:
           "Total " +
           this.state[this.parameterMap["alumni"].paginationState].total_count +
@@ -395,9 +418,11 @@ class BlogManage extends React.Component {
           this.state[this.parameterMap["student"].state][0].updated_at,
           "dateandtime"
         ),
-        last_month: "4 blogs added",
-        likes: "34 likes",
-        views: "298 views",
+        last_month:
+          this.state.stats["Student"].last_x_days_created + " blogs added",
+        views: this.state.stats["Student"].view_count + " views",
+        likes: this.state.stats["Student"].upvote_count + " likes",
+        dislikes: this.state.stats["Student"].downvote_count + " likes",
         blog_amount:
           "Total " +
           this.state[this.parameterMap["student"].paginationState].total_count +

@@ -36,6 +36,7 @@ class EventManage extends React.Component {
       student_event_list: null,
       detail_event: {},
       detail_event_id: null,
+      stats: null,
       isEditing: false,
       visible: false
     };
@@ -73,7 +74,7 @@ class EventManage extends React.Component {
         key="edit"
         type="primary"
         onClick={() => this.handleEdit(id)}
-        style={{ width: "105px" }}
+        style={{ width: "105px", margin: "4px 0px" }}
       >
         Edit
       </Button>
@@ -84,7 +85,7 @@ class EventManage extends React.Component {
         <Button
           key="delete"
           onClick={() => this.handleDelete(id, user_type)}
-          style={{ width: "105px", marginRight: "12px" }}
+          style={{ width: "105px" }}
         >
           Delete
         </Button>
@@ -157,7 +158,17 @@ class EventManage extends React.Component {
           this.state.alumni_event_list &&
           this.state.student_event_list
         ) {
-          this.setState({ isInitialRequest: false });
+          axiosCaptcha(EVENTS + "stats/", config).then(statsResponse => {
+            if (statsResponse.statusText === "OK") {
+              if (statsResponse.data.success) {
+                this.setState({
+                  stats: statsResponse.data.data,
+                  isWaitingResponse: false,
+                  isInitialRequest: false
+                });
+              }
+            }
+          });
         }
       });
   }
@@ -257,9 +268,9 @@ class EventManage extends React.Component {
       { title: "Audience", dataIndex: "audience", key: "audience" },
       { title: "Event Type", dataIndex: "event_type", key: "event_type" },
       { title: "Title", dataIndex: "title", key: "title" },
-      { title: "Time", dataIndex: "event_start", key: "event_start" },
+      { title: "Event Date", dataIndex: "event_start", key: "event_start" },
       { title: "Address", dataIndex: "address", key: "address" },
-      { title: "Request Date", dataIndex: "request_date", key: "request_date" },
+      { title: "Last Updated", dataIndex: "request_date", key: "request_date" },
       {
         title: "Status",
         dataIndex: "status",
@@ -271,9 +282,9 @@ class EventManage extends React.Component {
         dataIndex: "",
         key: "x",
         render: record => (
-          <div style={{ display: "flex" }}>
-            {this.deleteButton(record.key, user_type)}
+          <div>
             {user_type === "career_services" && this.editButton(record.key)}
+            {this.deleteButton(record.key, user_type)}
           </div>
         )
       }
@@ -339,10 +350,10 @@ class EventManage extends React.Component {
 
   generateNestedManageList() {
     const columns = [
-      { title: "Host Type", dataIndex: "host_type", key: "host_type" },
+      { title: "Added by", dataIndex: "host_type", key: "host_type" },
       { title: "Last Update", dataIndex: "last_update", key: "last_update" },
       {
-        title: "Upcoming Event Amount",
+        title: "Upcoming Events",
         dataIndex: "upcoming",
         key: "upcoming"
       },
@@ -364,8 +375,12 @@ class EventManage extends React.Component {
           this.state[this.parameterMap["career_services"].state][0].updated_at,
           "dateandtime"
         ),
-        upcoming: "5 Events in next 30 days",
-        last_month: "3 events added",
+        upcoming:
+          this.state.stats["Career Service"].upcoming_x_days +
+          " events in next 30 days",
+        last_month:
+          this.state.stats["Career Service"].last_x_days_created +
+          " events added",
         event_amount:
           "Total " +
           this.state[this.parameterMap["career_services"].paginationState]
@@ -381,8 +396,11 @@ class EventManage extends React.Component {
           this.state[this.parameterMap["alumni"].state][0].updated_at,
           "dateandtime"
         ),
-        upcoming: "3 Events in next 30 days",
-        last_month: "2 events added",
+        upcoming:
+          this.state.stats["Alumni"].upcoming_x_days +
+          " events in next 30 days",
+        last_month:
+          this.state.stats["Alumni"].last_x_days_created + " events added",
         event_amount:
           "Total " +
           this.state[this.parameterMap["alumni"].paginationState].total_count +
@@ -397,8 +415,11 @@ class EventManage extends React.Component {
           this.state[this.parameterMap["student"].state][0].updated_at,
           "dateandtime"
         ),
-        upcoming: "1 Events in next 30 days",
-        last_month: "2 events added",
+        upcoming:
+          this.state.stats["Student"].upcoming_x_days +
+          " events in next 30 days",
+        last_month:
+          this.state.stats["Student"].last_x_days_created + " events added",
         event_amount:
           "Total " +
           this.state[this.parameterMap["student"].paginationState].total_count +

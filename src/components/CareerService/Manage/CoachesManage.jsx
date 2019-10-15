@@ -40,7 +40,7 @@ class CoachesManage extends React.Component {
         key="edit"
         type="primary"
         onClick={() => this.handleEdit(id)}
-        style={{ width: "105px" }}
+        style={{ width: "105px", margin: "4px" }}
       >
         Edit
       </Button>
@@ -51,7 +51,7 @@ class CoachesManage extends React.Component {
         <Button
           key="delete"
           onClick={() => this.handleDelete(id)}
-          style={{ width: "105px", marginRight: "12px" }}
+          style={{ width: "105px" }}
         >
           Delete
         </Button>
@@ -62,7 +62,7 @@ class CoachesManage extends React.Component {
       <Button
         key="activation"
         onClick={() => this.handleActivation(coach)}
-        style={{ width: "105px", marginLeft: "12px" }}
+        style={{ width: "105px", margin: "4px" }}
       >
         {coach.is_publish ? "Deactivate" : "Activate"}
       </Button>
@@ -161,7 +161,10 @@ class CoachesManage extends React.Component {
 
   async handleActivationRequest(coach) {
     let config = { method: "PUT" };
-    config.body = { coach_id: id, is_publish: !coach.is_publish };
+    let formData = new FormData();
+    formData.append("coach_id", coach.id);
+    formData.append("is_publish", !coach.is_publish);
+    config.body = formData;
     await this.props.handleTokenExpiration("coachActivation handle");
     axiosCaptcha(COLLEGES("coaches"), config).then(response => {
       if (response.statusText === "OK") {

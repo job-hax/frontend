@@ -1,7 +1,7 @@
 import React from "react";
 import { Icon } from "antd";
 
-import { makeTimeBeautiful } from "../../utils/constants/constants";
+import { makeTimeBeautiful, imageIcon } from "../../utils/constants/constants";
 import { apiRoot } from "../../utils/constants/endpoints";
 
 import "./style.scss";
@@ -15,14 +15,17 @@ class Event extends React.Component {
   generateEventCard() {
     const { event } = this.props;
     let time = makeTimeBeautiful(event.event_date_start, "dateandtime");
+    const headerImage = event.header_image ? (
+      <img src={apiRoot + event.header_image} />
+    ) : (
+      imageIcon
+    );
     return (
       <div
         className="event-card-container"
         onClick={() => this.props.setEventDetail(event.id)}
       >
-        <div className="image">
-          <img src={apiRoot + event.header_image} />
-        </div>
+        <div className="image">{headerImage}</div>
         <div className="date-box">
           <div className="month">{time.split("-")[1].toUpperCase()}</div>
           <div className="day">{time.split("-")[0]}</div>

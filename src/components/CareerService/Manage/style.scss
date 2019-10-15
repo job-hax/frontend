@@ -25,8 +25,13 @@
 
     }
 
+    .ant-modal-footer {
+        display: flex;
+        justify-content: end;
+    }
+
     .event-details .event-header {
-        height: 212px;
+        height: 242px;
         min-width: 100%;
         width: min-content;
         padding: 28px calc((80vw - 1198px) / 2);
@@ -40,7 +45,7 @@
     .location-affix {
         .ant-affix {
             position: absolute !important;
-
+            top: 380px !important;
         }
     }
 

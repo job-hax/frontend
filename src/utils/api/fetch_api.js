@@ -157,11 +157,13 @@ export async function axiosCaptcha(url, config, action) {
     response = { statusText: "no response received" };
     //removeAllCookies();
     //window.location = "/?alert=your-session-has-been-terminated";
-  }
-  if (response == "before") {
+  } else if (response == "before") {
     response = {
       statusText: "request has not been sent because of internal filters"
     };
+  } else if (response.data.error_code === 401) {
+    //removeAllCookies();
+    //window.location = "/?alert=your-session-has-been-terminated";
   }
   return response;
 }

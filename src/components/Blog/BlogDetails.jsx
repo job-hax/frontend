@@ -7,7 +7,8 @@ import "./style.scss";
 import {
   makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN,
-  USER_TYPES
+  USER_TYPES,
+  imageIcon
 } from "../../utils/constants/constants";
 import { apiRoot, BLOGS } from "../../utils/constants/endpoints";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
@@ -157,12 +158,15 @@ class BlogDetails extends React.Component {
     const { blog } = this.props;
     const upVoteType = this.state.voted == 1 ? "primary" : "";
     const downVoteType = this.state.voted == -1 ? "primary" : "";
+    const headerImage = blog.header_image ? (
+      <img src={apiRoot + blog.header_image} />
+    ) : (
+      imageIcon
+    );
     return (
       <div className="blog-body">
         <div className="blog-data">
-          <div className="blog-photo">
-            <img src={apiRoot + blog.header_image} />
-          </div>
+          <div className="blog-photo">{headerImage}</div>
           <div className="details-container">
             <div className="details">{parse(`${blog.content}`)}</div>
           </div>

@@ -60,7 +60,7 @@ class Map extends React.PureComponent {
 
   delayedShowMarker() {
     setTimeout(() => {
-      this.setState({ isMarkerShown: false });
+      this.setState({ isMarkerShown: true });
     }, 3000);
   }
 

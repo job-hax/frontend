@@ -8,7 +8,10 @@ import {
   Upload,
   message,
   Checkbox,
-  DatePicker
+  DatePicker,
+  Tag,
+  Dropdown,
+  Menu
 } from "antd";
 import parse from "html-react-parser";
 import { EditorState, convertToRaw, ContentState } from "draft-js";
@@ -26,6 +29,7 @@ import {
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { apiRoot, EVENTS } from "../../utils/constants/endpoints";
 import Map from "../Metrics/SubComponents/Map/Map.jsx";
+import Spinner from "../Partials/Spinner/Spinner.jsx";
 
 import "./style.scss";
 
@@ -54,8 +58,10 @@ class EventEditable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isInitialRequest: true,
       redirect: null,
       user_type: this.props.cookie("get", "user_type"),
+      event_types: null,
       shareStudents: this.props.event.user_types
         .map(userType => userType.id)
         .includes(USER_TYPES["student"]),
@@ -97,6 +103,7 @@ class EventEditable extends React.Component {
     this.saveEventData = this.saveEventData.bind(this);
     this.postEventData = this.postEventData.bind(this);
     this.onLocationSelect = this.onLocationSelect.bind(this);
+    this.handleEventTypeClick = this.handleEventTypeClick.bind(this);
 
     this.isCareerService =
       this.state.user_type.id === USER_TYPES["career_services"];
@@ -113,6 +120,17 @@ class EventEditable extends React.Component {
         editorState: editorState
       });
     }
+    let config = { method: "GET" };
+    axiosCaptcha(EVENTS + "types/", config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success) {
+          this.setState({
+            event_types: response.data.data,
+            isInitialRequest: false
+          });
+        }
+      }
+    });
   }
 
   async postEventData() {
@@ -121,7 +139,14 @@ class EventEditable extends React.Component {
   }
 
   async saveEventData() {
-    const { id, formData, is_publish, shareAlumni, shareStudents } = this.state;
+    const {
+      id,
+      formData,
+      is_publish,
+      shareAlumni,
+      shareStudents,
+      event_type
+    } = this.state;
     let user_types = [];
     if (shareAlumni) {
       user_types.push(USER_TYPES["alumni"]);
@@ -141,12 +166,12 @@ class EventEditable extends React.Component {
       "location_title",
       "location_lat",
       "location_lon",
-      "spot_count",
-      "event_type"
+      "spot_count"
     ];
     let config = id == null ? { method: "POST" } : { method: "PUT" };
-    toAdd.forEach(enrty => formData.append(enrty, this.state[enrty]));
+    toAdd.forEach(entry => formData.append(entry, this.state[entry]));
     this.isCareerService && formData.append("user_types", user_types);
+    formData.append("event_type", event_type.id);
     if (config.method == "PUT") {
       formData.append("event_id", id);
     }
@@ -215,6 +240,7 @@ class EventEditable extends React.Component {
   }
 
   onDateOk(event) {
+    IS_CONSOLE_LOG_OPEN && console.log(event);
     this.setState({
       event_date_start: event[0].toISOString(),
       event_date_end: event[1].toISOString(),
@@ -224,6 +250,52 @@ class EventEditable extends React.Component {
 
   onLocationSelect(suggest) {
     IS_CONSOLE_LOG_OPEN && console.log(suggest);
+    let lat = suggest.location.lat;
+    let lon = suggest.location.lng;
+    let title = suggest.gmaps.name;
+    let address = suggest.description;
+    this.setState({
+      location_address: address,
+      location_lat: parseFloat(lat),
+      location_lon: parseFloat(lon),
+      location_title: title,
+      isEditingLocation: false
+    });
+  }
+
+  handleEventTypeClick(event) {
+    let name = event.item.props.value;
+    let id = parseFloat(event.key);
+    let type = { id: id, name: name };
+    console.log(type);
+    this.setState({ event_type: type });
+  }
+
+  generateEventTypeDropdown() {
+    const menu = () => (
+      <Menu onClick={event => this.handleEventTypeClick(event)}>
+        {this.state.event_types.map(type => (
+          <Menu.Item key={type.id} value={type.name}>
+            {type.name}
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
+    return (
+      <Dropdown overlay={menu()} placement="bottomCenter">
+        <Button
+          className="ant-dropdown-link"
+          style={{
+            margin: "-8px 0px 0px 0px",
+            color: "rgba(0, 0, 0, 0.4)",
+            borderColor: "rgb(217, 217, 217)"
+          }}
+        >
+          {this.state.event_type ? this.state.event_type.name : "Please Select"}
+          <Icon type="down" />
+        </Button>
+      </Dropdown>
+    );
   }
 
   generateEventHeader() {
@@ -231,7 +303,8 @@ class EventEditable extends React.Component {
       title,
       short_description,
       event_date_start,
-      host_user
+      host_user,
+      event_type
     } = this.state;
     const { event } = this.props;
     let photoUrl =
@@ -305,8 +378,28 @@ class EventEditable extends React.Component {
               </div>
             </div>
           </div>
+          {event_type ? (
+            <div>
+              <Tag color="geekblue" style={{ margin: "4px 0px 0px 60px" }}>
+                {event_type.name.toUpperCase()}
+              </Tag>
+              <Icon
+                type="edit"
+                style={{ fontSize: "120%", marginLeft: 12 }}
+                onClick={() => this.setState({ event_type: null })}
+              />
+            </div>
+          ) : (
+            <div style={{ marginLeft: 60 }}>
+              {this.generateEventTypeDropdown()}
+            </div>
+          )}
         </div>
-        <div className="attendance"></div>
+        <div
+          style={{
+            minWidth: "calc(668px - (100vw - 1198px)/2 - 40px)"
+          }}
+        ></div>
       </div>
     );
   }
@@ -339,30 +432,43 @@ class EventEditable extends React.Component {
       isEditingDate,
       event_date_start,
       event_date_end,
-      isEditingLocation
+      isEditingLocation,
+      location_address,
+      location_lat,
+      location_lon,
+      location_title
     } = this.state;
     let longDate = makeTimeBeautiful(event_date_start, "longDate");
+    let startDate = makeTimeBeautiful(event_date_start, "dateandtime");
+    let endDate = makeTimeBeautiful(event_date_end, "dateandtime");
+
+    const addressPickMargin = location_title ? 4 : 36;
     return (
       <div>
         <div>
           {!isEditingDate ? (
-            <div
-              className="info"
-              onClick={() => this.setState({ isEditingDate: true })}
-            >
+            <div className="info">
               <div className="icon">
                 <Icon type="schedule" style={{ fontSize: "150%" }} />
               </div>
-              <div>
-                <div>{longDate}</div>
+              <div
+                style={{
+                  width: "240px",
+                  display: "flex",
+                  justifyContent: "space-between"
+                }}
+              >
                 <div>
-                  {makeTimeBeautiful(event_date_start, "dateandtime").split(
-                    "at"
-                  )[1] +
-                    " to " +
-                    makeTimeBeautiful(event_date_end, "dateandtime").split(
-                      "at"
-                    )[1]}
+                  <div>{longDate}</div>
+                  <div>
+                    {startDate.split("at")[1] + " to " + endDate.split("at")[1]}
+                  </div>
+                </div>
+                <div
+                  onClick={() => this.setState({ isEditingDate: true })}
+                  style={{ marginTop: 16 }}
+                >
+                  <Icon type="edit" style={{ fontSize: "120%" }} />
                 </div>
               </div>
             </div>
@@ -377,33 +483,50 @@ class EventEditable extends React.Component {
             </div>
           )}
         </div>
-        <div
-          className="info"
-          onClick={() => this.setState({ isEditingLocation: true })}
-        >
+        <div className="info">
           <div className="icon">
             <Icon type="environment" style={{ fontSize: "150%" }} />
           </div>
-          <div>
-            <div>{event.location_title}</div>
+          <div style={{ height: "100%", zIndex: 9 }}>
+            {location_title && location_title !== "" && (
+              <div style={{ maxWidth: 260 }}>{location_title}</div>
+            )}
             <div>
               {isEditingLocation ? (
                 <Geosuggest
                   ref={el => (this._geoSuggest = el)}
                   placeholder="Add Location..."
                   onSuggestSelect={this.onLocationSelect}
+                  location={new google.maps.LatLng(location_lat, location_lon)}
+                  queryDelay={1000}
+                  minLength={3}
+                  placeDetailFields={["name"]}
                   radius="20"
                 />
               ) : (
-                event.location_address
+                <div
+                  onClick={() => this.setState({ isEditingLocation: true })}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "240px",
+                    marginTop: addressPickMargin,
+                    cursor: "pointer"
+                  }}
+                >
+                  {location_address === null || location_address === ""
+                    ? "Pick a location "
+                    : location_address}
+                  <Icon type="edit" style={{ fontSize: "120%" }} />
+                </div>
               )}
             </div>
           </div>
         </div>
         <div className="map">
           <Map
-            defaultCenter={{ lat: event.location_lat, lng: event.location_lon }}
-            positions={[{ lat: event.location_lat, lng: event.location_lon }]}
+            defaultCenter={{ lat: location_lat, lng: location_lon }}
+            positions={[{ lat: location_lat, lng: location_lon }]}
           />
         </div>
       </div>
@@ -526,7 +649,10 @@ class EventEditable extends React.Component {
       event_date_start,
       event_date_end,
       shareAlumni,
-      shareStudents
+      shareStudents,
+      location_lat,
+      location_lon,
+      event_type
     } = this.state;
     const { event } = this.props;
     const isAnytingEdited =
@@ -536,6 +662,9 @@ class EventEditable extends React.Component {
       header_image != event.header_image ||
       event_date_start != event.event_date_start ||
       event_date_end != event.event_date_end ||
+      location_lat != event.location_lat ||
+      location_lon != event.location_lon ||
+      event_type != event.event_type ||
       shareStudents !=
         event.user_types
           .map(userType => userType.id)
@@ -615,6 +744,8 @@ class EventEditable extends React.Component {
     window.onpopstate = () => {
       this.setState({ redirect: "/action?type=redirect&" + location.pathname });
     };
+    if (this.state.isInitialRequest === true)
+      return <Spinner message="Preparing event edit..." />;
     return (
       <div className="event-details">
         {this.generateFixedButtons()}

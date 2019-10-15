@@ -66,10 +66,7 @@ class Events extends React.Component {
           new Date().setTime(new Date().getTime() + 3 * 60 * 60 * 1000)
         ).toISOString(),
         id: null,
-        event_type: {
-          id: 3,
-          name: "MeetUp"
-        },
+        event_type: null,
         header_image: "",
         is_publish: false,
         is_public: false,

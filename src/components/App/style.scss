@@ -170,6 +170,10 @@ html {
 }
 
 .delete-button {
+  width: fit-content;
+  width: -moz-fit-content;
+  margin: 4px 4px 4px 0px;
+
   .ant-btn {
     color: red;
     border-color: red;
@@ -179,4 +183,41 @@ html {
     color: rgb(255, 120, 120) !important;
     border-color: rgb(255, 120, 120) !important;
   }
+}
+
+.geosuggest__suggests-wrapper {
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 1px 1px 10px 1px #efefef;
+  width: 280px;
+  max-height: 240px;
+  overflow-x: hidden;
+  padding: 0px;
+}
+
+.geosuggest__input {
+  height: 32px;
+  max-width: 100%;
+  width: 280px;
+  border-radius: 4px;
+  border-color: $selection_color !important;
+  padding: 4px;
+}
+
+.geosuggest__item {
+  padding: 4px;
+  list-style-type: none;
+  margin-left: -28px;
+  cursor: pointer;
+}
+
+.geosuggest__suggests--hidden {
+  max-height: 0;
+  overflow: hidden;
+  border-width: 0;
+}
+
+.geosuggest__item--active {
+  background: $selection_color;
+  color: white;
 }
