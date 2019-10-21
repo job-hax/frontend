@@ -112,6 +112,30 @@
         }
     }
 
+    .videos-area {
+        display: flex;
+        justify-content: flex-start;
+        padding: 0px 80px 80px 80px;
+        overflow-y: hidden;
+        width: 100%;
+
+        .video-container {
+            margin: 0px 40px;
+        }
+
+        .video-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        iframe {
+            width: 50vw;
+            height: calc(50vw / 560 * 315);
+            min-width: 560px;
+            min-height: 315px;
+        }
+    }
+
     .ant-carousel .slick-dots li button {
         width: 32px;
         height: 10px;

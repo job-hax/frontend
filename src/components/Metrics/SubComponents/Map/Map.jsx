@@ -9,6 +9,7 @@ import {
 import MarkerClusterer from "react-google-maps/lib/components/addons/MarkerClusterer";
 
 import { googleApiKey } from "../../../../config/config.js";
+import { imageIcon } from "../../../../utils/constants/constants.js";
 
 const MapComponent = compose(
   withProps({
@@ -29,13 +30,21 @@ const MapComponent = compose(
       height: "400px",
       width: "800px"
     }}
-    zoom={10}
+    zoom={8}
     center={props.defaultCenter}
   >
     {props.isMarkerShown && (
       <MarkerClusterer>
-        {props.positions.map((location, i) => (
-          <Marker key={i} position={location} />
+        {props.positions.map(location => (
+          <Marker
+            key={location.id}
+            title={location.company}
+            position={{
+              lat: location.location_lat,
+              lng: location.location_lon
+            }}
+            shape={{ type: "circle" }}
+          />
         ))}
       </MarkerClusterer>
     )}

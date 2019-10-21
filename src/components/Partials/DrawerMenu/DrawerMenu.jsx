@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import { Menu, Icon, Spin, Tooltip, Button } from "antd";
+import { Menu } from "antd";
 import ReactGA from "react-ga";
-
-import AddCoachModal from "../../CareerService/AddCoachModal/AddCoachModal.jsx";
 
 import "./style.scss";
 
@@ -24,12 +22,10 @@ class DrawerMenu extends Component {
           ? window.location.pathname
           : window.location.pathname + window.location.search,
       request: false,
-      redirect: false,
-      addCoachVisible: false
+      redirect: false
     };
 
     this.handleMenuClick = this.handleMenuClick.bind(this);
-    this.closeAddCoachModal = this.closeAddCoachModal.bind(this);
   }
 
   componentDidUpdate() {
@@ -51,10 +47,6 @@ class DrawerMenu extends Component {
     if (this.state.is_demo_user != this.props.cookie("get", "is_demo_user")) {
       this.setState({ is_demo_user: this.props.cookie("get", "is_demo_user") });
     }
-  }
-
-  closeAddCoachModal() {
-    this.setState({ addCoachVisible: false });
   }
 
   async handleMenuClick(event) {
@@ -109,18 +101,24 @@ class DrawerMenu extends Component {
         <SubMenu title="Add New">
           <Menu.Item key="/events?edit=true">Event</Menu.Item>
           <Menu.Item key="/blogs?edit=true">Blog</Menu.Item>
-          <Menu.Item key="addCoach">Coach</Menu.Item>
         </SubMenu>
         <SubMenu title="Manage">
-          <Menu.Item key="/career-service/manage/jobhaxHome">
-            Jobhax Home Page
-          </Menu.Item>
-          <Menu.Item key="/career-service/manage/alumniHome">
-            Alumni Home Page
-          </Menu.Item>
+          {/*<Menu.Item key="/career-service/manage/jobhax-landing-page">
+            Jobhax Landing Page
+            </Menu.Item>*/}
+          <SubMenu title="Alumni Home Page">
+            <Menu.Item key="/career-service/manage/alumni-home-page/banner-images">
+              Banner Images
+            </Menu.Item>
+            <Menu.Item key="/career-service/manage/alumni-home-page/coaches">
+              Coaches
+            </Menu.Item>
+            <Menu.Item key="/career-service/manage/alumni-home-page/videos">
+              Videos
+            </Menu.Item>
+          </SubMenu>
           <Menu.Item key="/career-service/manage/events">Events</Menu.Item>
           <Menu.Item key="/career-service/manage/blogs">Blogs</Menu.Item>
-          <Menu.Item key="/career-service/manage/coaches">Coaches</Menu.Item>
         </SubMenu>
         <Menu.Item key="/career-service/metrics">University Metrics</Menu.Item>
       </SubMenu>
@@ -172,11 +170,6 @@ class DrawerMenu extends Component {
       <div>
         <div className="drawer-container">{this.generateDrawerMenu()}</div>
         <div style={menuSpace}></div>
-        <AddCoachModal
-          visible={this.state.addCoachVisible}
-          handleCancel={this.closeAddCoachModal}
-          alert={this.props.alert}
-        />
       </div>
     );
   }

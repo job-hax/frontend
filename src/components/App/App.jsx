@@ -32,6 +32,13 @@ import HandleDemo from "../UserAuth/Action/HandleDemo.jsx";
 import CareerServiceDashboard from "../CareerService/CareerServiceDashboard/CareerServiceDashboard.jsx";
 import DrawerMenu from "../Partials/DrawerMenu/DrawerMenu.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
+import BlogApproval from "../CareerService/Approval/BlogApproval.jsx";
+import EventApproval from "../CareerService/Approval/EventApproval.jsx";
+import BlogManage from "../CareerService/Manage/BlogManage.jsx";
+import EventManage from "../CareerService/Manage/EventManage.jsx";
+import CoachesManage from "../CareerService/Manage/AlumniHomePage/CoachesManage.jsx";
+import VideosManage from "../CareerService/Manage/AlumniHomePage/VideosManage.jsx";
+import BannersManage from "../CareerService/Manage/AlumniHomePage/BannersManage.jsx";
 
 import {
   googleClientId,
@@ -51,11 +58,6 @@ import {
 } from "../../utils/constants/endpoints.js";
 
 import "./style.scss";
-import BlogApproval from "../CareerService/Approval/BlogApproval.jsx";
-import EventApproval from "../CareerService/Approval/EventApproval.jsx";
-import BlogManage from "../CareerService/Manage/BlogManage.jsx";
-import EventManage from "../CareerService/Manage/EventManage.jsx";
-import CoachesManage from "../CareerService/Manage/CoachesManage.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -130,9 +132,10 @@ class App extends Component {
       "/career-service/approval/events",
       "/career-service/manage/blogs",
       "/career-service/manage/events",
-      "/career-service/manage/coaches",
-      "/career-service/manage/jobhaxHome",
-      "/career-service/manage/alumniHome",
+      //"/career-service/manage/jobhax-landing-page",
+      "/career-service/manage/alumni-home-page/coaches",
+      "/career-service/manage/alumni-home-page/videos",
+      "/career-service/manage/alumni-home-page/banner-images",
       "/career-service/metrics",
       "/alumni",
       "/alumni/signup",
@@ -845,11 +848,45 @@ class App extends Component {
                 />
                 <Route
                   exact
-                  path="/career-service/manage/coaches"
+                  path="/career-service/manage/alumni-home-page/coaches"
                   render={() => (
                     <CoachesManage
                       alert={this.showAlert}
                       handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/alumni-home-page/videos"
+                  render={() => (
+                    <VideosManage
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/alumni-home-page/banner-images"
+                  render={() => (
+                    <BannersManage
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/jobhax-landing-page"
+                  render={() => (
+                    <Home
+                      isUserLoggedIn={true}
+                      passStatesToApp={this.passStatesToApp}
+                      alert={this.showAlert}
                       cookie={this.cookie}
                     />
                   )}

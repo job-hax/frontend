@@ -197,7 +197,7 @@ class EventDetails extends React.Component {
         <div className="map">
           <Map
             defaultCenter={{ lat: event.location_lat, lng: event.location_lon }}
-            positions={[{ lat: event.location_lat, lng: event.location_lon }]}
+            positions={[{id:event.id, company:event.location_title, location_lat: event.location_lat, location_lon: event.location_lon }]}
           />
         </div>
       </div>

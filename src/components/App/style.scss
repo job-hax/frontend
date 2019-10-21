@@ -169,6 +169,10 @@ html {
 
 }
 
+textarea.ant-input {
+  resize: none;
+}
+
 .delete-button {
   width: fit-content;
   width: -moz-fit-content;

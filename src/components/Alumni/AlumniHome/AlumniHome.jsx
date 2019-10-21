@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { Carousel } from "antd";
+import parse from "html-react-parser";
 
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
@@ -182,6 +183,17 @@ class AlumniHome extends React.Component {
     );
   }
 
+  generateVideosArea() {
+    const videos = this.state.alumnihome.videos.map(video => (
+      <div className="video-container">
+        <div> {parse(`${video.embed_code}`)}</div>
+        <div className="video-title">{video.title}</div>
+        <div>{video.description}</div>
+      </div>
+    ));
+    return <div className="videos-area">{videos}</div>;
+  }
+
   render() {
     const header = title => <div className="area-title">{title}</div>;
     if (this.state.redirect !== "") {
@@ -202,6 +214,8 @@ class AlumniHome extends React.Component {
             {this.generateEventsArea()}
             {header("Recent Blogs")}
             {this.generateBlogsArea()}
+            {header("Videos")}
+            {this.generateVideosArea()}
           </div>
           <div className="footer-margin">
             <Footer />

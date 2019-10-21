@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { Carousel, Modal, Button } from "antd";
+import parse from "html-react-parser";
 
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
@@ -16,6 +17,7 @@ import BlogCard from "../../Blog/BlogCard.jsx";
 import Footer from "../../Partials/Footer/Footer.jsx";
 import CoachSummary from "../CoachModal/CoachSummary.jsx";
 import AddCoachModal from "../AddCoachModal/AddCoachModal.jsx";
+import AddVideoModal from "../AddVideoModal/AddVideoModal.jsx";
 
 import "./style.scss";
 
@@ -27,6 +29,7 @@ class CareerServiceDashboard extends React.Component {
       isWaitingResponse: false,
       isInitialRequest: "beforeRequest",
       addCoachVisible: false,
+      addVideoVisible: false,
       redirect: "",
       events: null,
       blogs: null,
@@ -41,6 +44,7 @@ class CareerServiceDashboard extends React.Component {
     this.handleBlogCardClick = this.handleBlogCardClick.bind(this);
     this.handleEventCardClick = this.handleEventCardClick.bind(this);
     this.closeAddCoachModal = this.closeAddCoachModal.bind(this);
+    this.closeAddVideoModal = this.closeAddVideoModal.bind(this);
 
     this.add_new_style = {
       backgroundColor: "#efefef",
@@ -92,6 +96,10 @@ class CareerServiceDashboard extends React.Component {
 
   closeAddCoachModal() {
     this.setState({ addCoachVisible: false });
+  }
+
+  closeAddVideoModal() {
+    this.setState({ addVideoVisible: false });
   }
 
   generateSocialButtons() {
@@ -250,6 +258,40 @@ class CareerServiceDashboard extends React.Component {
     );
   }
 
+  generateVideosArea() {
+    const videos = this.state.alumnihome.videos.map(video => (
+      <div className="video-container">
+        <div> {parse(`${video.embed_code}`)}</div>
+        <div className="video-title">{video.title}</div>
+        <div>{video.description}</div>
+      </div>
+    ));
+
+    const add_new = (
+      <div>
+        <div
+          className="add-new-button"
+          style={this.add_new_style}
+          onClick={() => this.setState({ addVideoVisible: true })}
+        >
+          +
+        </div>
+        <AddVideoModal
+          visible={this.state.addVideoVisible}
+          handleCancel={this.closeAddVideoModal}
+          alert={this.props.alert}
+        />
+      </div>
+    );
+
+    return (
+      <div className="videos-area">
+        {add_new}
+        {videos}
+      </div>
+    );
+  }
+
   render() {
     const header = title => <div className="area-title">{title}</div>;
     if (this.state.redirect !== "") {
@@ -268,6 +310,8 @@ class CareerServiceDashboard extends React.Component {
             {this.generateBlogsArea()}
             {header("Coaches")}
             {this.generateCoachArea()}
+            {header("Videos")}
+            {this.generateVideosArea()}
           </div>
           <div className="footer-margin">
             <Footer />

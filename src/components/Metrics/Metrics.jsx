@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 
 import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { USERS } from "../../utils/constants/endpoints.js";
+import { USERS, METRICS } from "../../utils/constants/endpoints.js";
 import {
   IS_CONSOLE_LOG_OPEN,
   USER_TYPES,
@@ -19,7 +19,8 @@ class Metrics extends PureComponent {
     super(props);
 
     this.state = {
-      user_type: this.props.cookie("get", "user_type")
+      user_type: this.props.cookie("get", "user_type"),
+      locations: []
     };
 
     this.metricMap = {
@@ -62,6 +63,15 @@ class Metrics extends PureComponent {
           }
         }
       );
+      axiosCaptcha(METRICS("companyLocations/"), {
+        method: "GET"
+      }).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success) {
+            this.setState({ locations: response.data.data });
+          }
+        }
+      });
     }
   }
 
@@ -105,12 +115,7 @@ class Metrics extends PureComponent {
         <div style={{ margin: "0 0 0px 0", height: 400 }}>
           <Map
             defaultCenter={{ lat: 37.3729, lng: -121.856 }}
-            positions={[
-              { lat: 37.3729, lng: -121.856 },
-              { lat: 37.4174343, lng: -122.0874049 },
-              { lat: 37.4850753, lng: -122.1496129 },
-              { lat: 37.3317042, lng: -122.0325086 }
-            ]}
+            positions={this.state.locations}
           />
         </div>
         <div className="metrics-big-group-container">

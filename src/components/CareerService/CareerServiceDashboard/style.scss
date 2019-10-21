@@ -96,11 +96,42 @@
             height: 544px;
             width: 30vw;
         }
+    }
 
-        .add-new-button:hover {
-            cursor: pointer;
-            box-shadow: 1px 1px 10px 4px rgba(0, 0, 0, 0.2) !important;
+    .videos-area {
+        display: flex;
+        justify-content: flex-start;
+        padding: 20px 80px 80px 80px;
+        overflow-y: hidden;
+        width: 100%;
+
+        .video-container {
+            margin: 0px 40px;
         }
+
+        .video-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        iframe {
+            width: 50vw;
+            height: calc(50vw / 560 * 315);
+            min-width: 560px;
+            min-height: 315px;
+        }
+
+        .add-new-button {
+            width: 50vw;
+            height: calc(50vw / 560 * 315);
+            min-width: 560px;
+            min-height: 315px;
+        }
+    }
+
+    .add-new-button:hover {
+        cursor: pointer;
+        box-shadow: 1px 1px 10px 4px rgba(0, 0, 0, 0.2) !important;
     }
 
     .ant-carousel .slick-dots li button {

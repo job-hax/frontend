@@ -102,7 +102,6 @@ class AddCoachModal extends React.Component {
   }
 
   async handleOk() {
-    console.log(this.state);
     const {
       id,
       calendar_link,
@@ -403,7 +402,7 @@ class AddCoachModal extends React.Component {
 
     return (
       <Modal
-        title={"Add Coach"}
+        title={this.state.id ? "Edit Coach" : "Add Coach"}
         visible={this.state.visible}
         onOk={this.handleOk}
         onCancel={this.props.handleCancel}

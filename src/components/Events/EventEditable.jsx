@@ -443,6 +443,15 @@ class EventEditable extends React.Component {
     let endDate = makeTimeBeautiful(event_date_end, "dateandtime");
 
     const addressPickMargin = location_title ? 4 : 36;
+    const mapPosition = [
+      {
+        id: 1,
+        company: location_title,
+        location_lat: location_lat,
+        location_lon: location_lon
+      }
+    ];
+
     return (
       <div>
         <div>
@@ -526,7 +535,7 @@ class EventEditable extends React.Component {
         <div className="map">
           <Map
             defaultCenter={{ lat: location_lat, lng: location_lon }}
-            positions={[{ lat: location_lat, lng: location_lon }]}
+            positions={mapPosition}
           />
         </div>
       </div>

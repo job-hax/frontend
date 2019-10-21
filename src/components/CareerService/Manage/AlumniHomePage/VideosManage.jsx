@@ -1,16 +1,16 @@
 import React from "react";
 import { Table, Modal, Button, Pagination, Tag } from "antd";
+import parse from "html-react-parser";
 
-import { apiRoot, COLLEGES } from "../../../utils/constants/endpoints.js";
-import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
-import Spinner from "../../Partials/Spinner/Spinner.jsx";
-import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
+import { apiRoot, COLLEGES } from "../../../../utils/constants/endpoints.js";
+import { axiosCaptcha } from "../../../../utils/api/fetch_api.js";
+import Spinner from "../../../Partials/Spinner/Spinner.jsx";
+import { makeTimeBeautiful } from "../../../../utils/constants/constants.js";
+import AddVideoModal from "../../AddVideoModal/AddVideoModal.jsx";
 
-import "./style.scss";
-import AddCoachModal from "../AddCoachModal/AddCoachModal.jsx";
-import CoachSummary from "../CoachModal/CoachSummary.jsx";
+import "../style.scss";
 
-class CoachesManage extends React.Component {
+class VideosManage extends React.Component {
   constructor(props) {
     super(props);
 
@@ -22,9 +22,9 @@ class CoachesManage extends React.Component {
       pageNo: 1,
       pageSize: 10,
       pagination: {},
-      coachList: [],
-      detail_coach: {},
-      detail_coach_id: null,
+      videoList: [],
+      detail_video: {},
+      detail_video_id: null,
       visible: false
     };
 
@@ -58,13 +58,13 @@ class CoachesManage extends React.Component {
       </div>
     );
 
-    this.activationButton = coach => (
+    this.activationButton = video => (
       <Button
         key="activation"
-        onClick={() => this.handleActivation(coach)}
+        onClick={() => this.handleActivation(video)}
         style={{ width: "105px", margin: "4px" }}
       >
-        {coach.is_publish ? "Deactivate" : "Activate"}
+        {video.is_publish ? "Deactivate" : "Activate"}
       </Button>
     );
   }
@@ -88,20 +88,20 @@ class CoachesManage extends React.Component {
   async getData(requestType) {
     this.setState({ isWaitingResponse: true });
     let config = { method: "GET" };
-    await this.props.handleTokenExpiration("coachManage getData");
-    axiosCaptcha(COLLEGES("coaches"), config).then(response => {
+    await this.props.handleTokenExpiration("videosManage getData");
+    axiosCaptcha(COLLEGES("homePage/videos"), config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success) {
           if (requestType === "initialRequest") {
             this.setState({
-              coachList: response.data.data,
+              videoList: response.data.data,
               pagination: response.data.pagination,
               isWaitingResponse: false,
               isInitialRequest: false
             });
           } else if (requestType === "newPageRequest") {
             this.setState({
-              coachList: response.data.data,
+              videoList: response.data.data,
               pagination: response.data.pagination,
               isWaitingResponse: false,
               isNewPageRequested: false
@@ -113,8 +113,8 @@ class CoachesManage extends React.Component {
   }
 
   async handleCoachCardClick(id) {
-    let coach = this.state.coachList.filter(coach => coach.id === id)[0];
-    this.setState({ detail_coach_id: id, visible: true, detail_coach: coach });
+    let video = this.state.videoList.filter(video => video.id === id)[0];
+    this.setState({ detail_video_id: id, visible: true, detail_video: video });
   }
 
   handleModalCancel() {
@@ -123,8 +123,8 @@ class CoachesManage extends React.Component {
     }
     this.setState({
       visible: false,
-      detail_coach_id: null,
-      detail_coach: {},
+      detail_video_id: null,
+      detail_video: {},
       isEditing: false
     });
   }
@@ -133,20 +133,20 @@ class CoachesManage extends React.Component {
     this.setState({
       pageNo: page,
       isNewPageRequested: true,
-      detail_coach_id: null
+      detail_video_id: null
     });
   }
 
   async handleDeleteRequest(id) {
     let config = { method: "DELETE" };
-    config.body = { coach_id: id };
-    await this.props.handleTokenExpiration("coachdelete handle");
-    axiosCaptcha(COLLEGES("coaches"), config).then(response => {
+    config.body = { homepage_video_id: id };
+    await this.props.handleTokenExpiration("videodelete handle");
+    axiosCaptcha(COLLEGES("homePage/videos"), config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success) {
-          let updatedList = this.state.coachList;
-          updatedList = updatedList.filter(coach => coach.id !== id);
-          this.setState({ coachList: updatedList });
+          let updatedList = this.state.videoList;
+          updatedList = updatedList.filter(video => video.id !== id);
+          this.setState({ videoList: updatedList });
           this.handleModalCancel();
         } else {
           this.props.alert(
@@ -159,14 +159,12 @@ class CoachesManage extends React.Component {
     });
   }
 
-  async handleActivationRequest(coach) {
+  async handleActivationRequest(video) {
     let config = { method: "PUT" };
-    let formData = new FormData();
-    formData.append("coach_id", coach.id);
-    formData.append("is_publish", !coach.is_publish);
-    config.body = formData;
-    await this.props.handleTokenExpiration("coachActivation handle");
-    axiosCaptcha(COLLEGES("coaches"), config).then(response => {
+    let body = { homepage_video_id: video.id, is_publish: !video.is_publish };
+    config.body = body;
+    await this.props.handleTokenExpiration("videoActivation handle");
+    axiosCaptcha(COLLEGES("homePage/videos"), config).then(response => {
       if (response.statusText === "OK") {
         if (response.data.success) {
           this.handleModalCancel();
@@ -181,14 +179,14 @@ class CoachesManage extends React.Component {
     });
   }
 
-  async handleActivation(coach) {
-    await this.handleActivationRequest(coach);
+  async handleActivation(video) {
+    await this.handleActivationRequest(video);
     this.getData("initialRequest");
   }
 
   handleEdit(id) {
     this.setState({ isEditing: true });
-    !this.state.detailed_coach_id && this.handleCoachCardClick(id);
+    !this.state.detailed_video_id && this.handleCoachCardClick(id);
   }
 
   async handleDelete(id) {
@@ -198,9 +196,8 @@ class CoachesManage extends React.Component {
 
   generateManageList() {
     const columns = [
-      { title: "Coach", dataIndex: "coach", key: "coach" },
       { title: "Title", dataIndex: "title", key: "title" },
-      { title: "Email", dataIndex: "email", key: "email" },
+      { title: "Description", dataIndex: "description", key: "description" },
       { title: "Join Date", dataIndex: "date", key: "date" },
       { title: "Status", dataIndex: "status", key: "status" },
       {
@@ -217,30 +214,49 @@ class CoachesManage extends React.Component {
       }
     ];
 
-    const data = this.state.coachList.map(coach => {
+    const data = this.state.videoList.map(video => {
       return {
-        key: coach.id,
-        coach: coach.first_name + " " + coach.last_name,
-        title: coach.title,
-        email: coach.email,
-        date: makeTimeBeautiful(coach.created_at, "date"),
+        key: video.id,
+        title: video.title,
+        description: video.description,
+        date: makeTimeBeautiful(video.created_at, "date"),
         status: (
-          <Tag color={coach.is_publish ? "green" : "red"}>
-            {coach.is_publish ? "ACTIVE" : "DEACTIVATED"}
+          <Tag color={video.is_publish ? "green" : "red"}>
+            {video.is_publish ? "ACTIVE" : "DEACTIVATED"}
           </Tag>
         ),
-        details: coach
+        details: video
       };
     });
 
+    const addNewButton = (
+      <div className="add-new-button-container">
+        <Button
+          type="primary"
+          onClick={() =>
+            this.setState({
+              detail_video: null,
+              detail_video_id: null,
+              visible: true
+            })
+          }
+        >
+          Add Video
+        </Button>
+      </div>
+    );
+
     return (
       <div>
+        <div className="header-button-container">{addNewButton}</div>
         <Table
           columns={columns}
           expandedRowRender={record => (
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <div className="side-carousel-container">
-                <CoachSummary coach={record.details} />
+              <div className="video-container">
+                <div> {parse(`${record.details.embed_code}`)}</div>
+                <div className="video-title">{record.details.title}</div>
+                <div>{record.details.description}</div>
               </div>
             </div>
           )}
@@ -273,8 +289,8 @@ class CoachesManage extends React.Component {
         getContainer={() => document.getElementById("manage-container")}
         footer={cancelButton}
       >
-        <AddCoachModal
-          coach={this.state.detail_coach}
+        <AddVideoModal
+          video={this.state.detail_video}
           visible={this.state.visible}
           handleCancel={this.handleModalCancel}
           handleTokenExpiration={this.props.handleTokenExpiration}
@@ -286,11 +302,10 @@ class CoachesManage extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     if (this.state.isInitialRequest === "beforeRequest")
       return <Spinner message="Reaching your account..." />;
     else if (this.state.isInitialRequest === true)
-      return <Spinner message="Preparing waiting coachs..." />;
+      return <Spinner message="Preparing waiting videos..." />;
     return (
       <div id="manage-container" className="manage-list-container">
         {this.generateManageList()}
@@ -299,4 +314,4 @@ class CoachesManage extends React.Component {
   }
 }
 
-export default CoachesManage;
+export default VideosManage;
