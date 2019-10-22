@@ -135,24 +135,16 @@ class Header extends Component {
       this.props.passStatesToApp("logout", true);
       await setStateAsync({ current: redirectPage });
       this.props.handleSignOut();
-    } else if (page === "/events") {
-      if (window.location.pathname.substring(0, 6) == "/event") {
-        this.setState({ current: "/action?type=redirect&/events" });
-      } else {
-        this.setState({ current: page });
-      }
-    } else if (page === "/blogs?edit=true") {
-      if (window.location.pathname.substring(0, 5) == "/blog") {
-        this.setState({ current: "/action?type=redirect&/blogs?edit=true" });
-      } else {
-        this.setState({ current: page });
-      }
-    } else if (page === "/blogs") {
-      if (window.location.pathname.substring(0, 5) == "/blog") {
-        this.setState({ current: "/action?type=redirect&/blogs" });
-      } else {
-        this.setState({ current: page });
-      }
+    } else if (
+      ["/events", "/events?edit=true"].includes(page) &&
+      window.location.pathname.includes("event")
+    ) {
+      this.setState({ current: "/action?type=redirect&" + page });
+    } else if (
+      ["/blogs", "/blogs?edit=true"].includes(page) &&
+      window.location.pathname.includes("blogs")
+    ) {
+      this.setState({ current: "/action?type=redirect&" + page });
     } else {
       this.setState({ current: page });
     }
@@ -249,9 +241,13 @@ class Header extends Component {
             mode="horizontal"
             style={{ backgroundColor: "transparent", border: "none" }}
           >
-            {this.state.user_type.name === "Alumni" && alumniMenu}
-            {jobMenu}
-            {this.state.user_type.name !== "Alumni" && communityMenu}
+            {this.state.user_type.name === "Alumni" &&
+              this.state.user_type.name !== "Career Service" &&
+              alumniMenu}
+            {this.state.user_type.name !== "Career Service" && jobMenu}
+            {this.state.user_type.name !== "Alumni" &&
+              this.state.user_type.name !== "Career Service" &&
+              communityMenu}
           </Menu>
           {!this.props.isNotificationsShowing ? (
             <div
@@ -296,6 +292,7 @@ class Header extends Component {
             >
               <Menu.Item key="/profile">Profile</Menu.Item>
               {this.state.user_type.blog_creation_enabled &&
+                this.state.user_type.name !== "Career Service" &&
                 window.screen.availWidth > 800 && (
                   <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
                 )}

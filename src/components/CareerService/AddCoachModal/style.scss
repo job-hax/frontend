@@ -1,0 +1,108 @@
+@import "../../App/style.scss";
+
+.add-coach-container {
+    width: 100%;
+
+    .add-coach-modal-body {
+        display: flex;
+        justify-content: space-around;
+
+        .summary-photo {
+            height: 544px;
+            width: 30vw;
+            margin: 0px 20px;
+            overflow: hidden;
+            position: relative;
+
+            img {
+                position: absolute;
+                margin: auto;
+                min-height: 544px;
+                min-width: 30vw;
+                width: auto;
+                left: -100%;
+                right: -100%;
+                top: -100%;
+                bottom: -100%;
+                cursor: pointer;
+            }
+        }
+
+        .coach-modal-part {
+            width: 460px;
+
+            .header-part {
+                display: flex;
+                justify-content: space-around;
+                margin-bottom: 20px;
+
+                .profile-photo {
+                    min-width: 160px;
+                    min-height: 160px;
+                    max-width: 160px;
+                    max-height: 160px;
+                    border-radius: 80px;
+                    overflow: hidden;
+                    position: relative;
+                    margin: 4px 24px 0 0;
+                    border: 1px solid rgba(0, 0, 0, 0.1);
+
+                    img {
+                        position: absolute;
+                        margin: auto;
+                        min-width: 160px;
+                        min-height: 160px;
+                        max-width: 180px;
+                        max-height: 180px;
+                        left: -100%;
+                        right: -100%;
+                        top: -100%;
+                        bottom: -100%;
+                        border-radius: 80px;
+                    }
+                }
+
+                .coach-input {
+
+                    .ant-input {
+                        width: 280px;
+                        margin: 4px 0px;
+                    }
+                }
+            }
+
+            .content-container {
+                display: flex;
+                justify-content: center;
+            }
+        }
+
+    }
+
+    .toolbar {
+        max-width: 460px;
+
+        .rdw-link-modal {
+            min-height: 240px;
+        }
+
+        .rdw-embedded-modal-header {
+            font-size: 14px;
+            height: fit-content;
+        }
+
+        .rdw-image-modal {
+            min-width: 240px;
+            padding: 15px 30px 15px 15px;
+        }
+
+        a {
+            color: $text_color;
+        }
+    }
+
+    .editor {
+        min-height: 240px;
+        border: 1px solid $line_color;
+    }
+}

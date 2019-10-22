@@ -5,7 +5,10 @@ import { Redirect } from "react-router-dom";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { makeTimeBeautiful } from "../../utils/constants/constants.js";
+import {
+  makeTimeBeautiful,
+  USER_TYPES
+} from "../../utils/constants/constants.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import { apiRoot, USERS, BLOGS } from "../../utils/constants/endpoints.js";
 import BlogDetails from "./BlogDetails.jsx";
@@ -69,7 +72,8 @@ class Blog extends React.Component {
         voted: 0,
         snippet: "",
         publisher_profile: this.props.user,
-        updated_at: null
+        updated_at: null,
+        user_types: [{ id: 3 }, { id: 4 }]
       }
     };
 
@@ -118,6 +122,15 @@ class Blog extends React.Component {
   }
 
   async getData(requestType) {
+    let path = window.location.pathname;
+    let exclusivity =
+      this.state.user_type.id !== USER_TYPES["career_services"]
+        ? ""
+        : path === "/student/blogs"
+        ? "&student=true"
+        : path === "/alumni/blogs"
+        ? "&student=false"
+        : "";
     this.setState({ isWaitingResponse: true });
     let config = { method: "GET" };
     let newUrl =
@@ -126,7 +139,8 @@ class Blog extends React.Component {
           "?page=" +
           this.state.pageNo +
           "&page_size=" +
-          this.state.pageSize
+          this.state.pageSize +
+          exclusivity
         : this.state.edit_blog_id == null
         ? BLOGS + this.state.detail_blog_id + "/"
         : BLOGS + this.state.edit_blog_id + "/";
@@ -222,6 +236,7 @@ class Blog extends React.Component {
             onChange={this.handlePageChange}
             defaultCurrent={this.state.pagination.current_page}
             current={this.state.pagination.current_page}
+            pageSize={this.state.pageSize}
             total={this.state.pagination.total_count}
           />
         </div>
@@ -336,6 +351,7 @@ class Blog extends React.Component {
                   blog={this.state.detail_blog}
                   handleTokenExpiration={this.props.handleTokenExpiration}
                   setBlogEdit={this.setBlogEdit}
+                  cookie={this.props.cookie}
                 />
               )}
             </div>
@@ -344,6 +360,7 @@ class Blog extends React.Component {
               <BlogEditable
                 blog={this.state.editable_blog}
                 handleTokenExpiration={this.props.handleTokenExpiration}
+                cookie={this.props.cookie}
                 alert={this.props.alert}
               />
             </div>

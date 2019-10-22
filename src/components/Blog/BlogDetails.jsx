@@ -1,11 +1,14 @@
 import React from "react";
 import { Icon, Button, Affix } from "antd";
 import parse from "html-react-parser";
+import { Redirect } from "react-router-dom";
 
 import "./style.scss";
 import {
   makeTimeBeautiful,
-  IS_CONSOLE_LOG_OPEN
+  IS_CONSOLE_LOG_OPEN,
+  USER_TYPES,
+  imageIcon
 } from "../../utils/constants/constants";
 import { apiRoot, BLOGS } from "../../utils/constants/endpoints";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
@@ -14,13 +17,13 @@ class BlogDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user_type: this.props.cookie("get", "user_type"),
       isLinkDisplaying: false,
       viewCount: null,
-      isDetailRequested: false,
-      isDetailsShowing: false,
       upVote: null,
       downVote: null,
-      voted: null
+      voted: null,
+      redirect: null
     };
 
     this.postBlogStats = this.postBlogStats.bind(this);
@@ -155,12 +158,15 @@ class BlogDetails extends React.Component {
     const { blog } = this.props;
     const upVoteType = this.state.voted == 1 ? "primary" : "";
     const downVoteType = this.state.voted == -1 ? "primary" : "";
+    const headerImage = blog.header_image ? (
+      <img src={apiRoot + blog.header_image} />
+    ) : (
+      imageIcon
+    );
     return (
       <div className="blog-body">
         <div className="blog-data">
-          <div className="blog-photo">
-            <img src={apiRoot + blog.header_image} />
-          </div>
+          <div className="blog-photo">{headerImage}</div>
           <div className="details-container">
             <div className="details">{parse(`${blog.content}`)}</div>
           </div>
@@ -219,24 +225,34 @@ class BlogDetails extends React.Component {
   }
 
   render() {
-    history.pushState(null, null, location.href);
-    window.onpopstate = function() {
-      window.location.assign("blogs");
+    let editButtonDisplay =
+      this.props.blog.mine === true &&
+      this.state.user_type.id !== USER_TYPES["career_services"];
+
+    const { redirect } = this.state;
+    if (redirect !== null) {
+      return <Redirect to={redirect} />;
+    }
+    window.onpopstate = () => {
+      this.setState({ redirect: "/action?type=redirect&" + location.pathname });
     };
+
+    const editButton = (
+      <div className="fixed-buttons-container">
+        <Button
+          type="primary"
+          shape="circle"
+          size="large"
+          onClick={() => this.props.setBlogEdit(this.props.blog)}
+        >
+          <Icon type="edit" />
+        </Button>
+      </div>
+    );
+
     return (
       <div className="blog-details">
-        {this.props.blog.mine == true && (
-          <div className="fixed-button">
-            <Button
-              type="primary"
-              shape="circle"
-              size="large"
-              onClick={() => this.props.setBlogEdit(this.props.blog)}
-            >
-              <Icon type="edit" />
-            </Button>
-          </div>
-        )}
+        {editButtonDisplay && editButton}
         {this.generateBlogHeader()}
         {this.generateBlogBody()}
       </div>

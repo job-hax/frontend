@@ -1,8 +1,13 @@
 import React from "react";
-import { Icon, Button, Affix } from "antd";
+import { Redirect } from "react-router-dom";
+import { Icon, Button, Affix, Tag } from "antd";
 import parse from "html-react-parser";
 
-import { makeTimeBeautiful } from "../../utils/constants/constants";
+import {
+  makeTimeBeautiful,
+  USER_TYPES,
+  imageIcon
+} from "../../utils/constants/constants";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { apiRoot, EVENTS } from "../../utils/constants/endpoints";
 import Map from "../Metrics/SubComponents/Map/Map.jsx";
@@ -13,6 +18,8 @@ class EventDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirect: null,
+      user_type: this.props.cookie("get", "user_type"),
       isLinkDisplaying: false,
       attendance: this.props.event.attended
     };
@@ -121,6 +128,11 @@ class EventDetails extends React.Component {
               </div>
             </div>
           </div>
+          {event.event_type && (
+            <Tag color="geekblue" style={{ margin: "4px 0px 0px 60px" }}>
+              {event.event_type.name.toUpperCase()}
+            </Tag>
+          )}
         </div>
         {window.screen.availWidth > 1200 &&
           window.innerHeight > 600 &&
@@ -178,14 +190,14 @@ class EventDetails extends React.Component {
             <Icon type="environment" style={{ fontSize: "150%" }} />
           </div>
           <div>
-            <div>{event.location_title}</div>
-            <div>{event.location_address}</div>
+            <div style={{ maxWidth: 260 }}>{event.location_title}</div>
+            <div style={{ maxWidth: 260 }}>{event.location_address}</div>
           </div>
         </div>
         <div className="map">
           <Map
             defaultCenter={{ lat: event.location_lat, lng: event.location_lon }}
-            positions={[{ lat: event.location_lat, lng: event.location_lon }]}
+            positions={[{id:event.id, company:event.location_title, location_lat: event.location_lat, location_lon: event.location_lon }]}
           />
         </div>
       </div>
@@ -199,12 +211,15 @@ class EventDetails extends React.Component {
       event.attendee_list.map(attendee => {
         return this.generateAttendeeCard(attendee);
       });
+    const headerImage = event.header_image ? (
+      <img src={apiRoot + event.header_image} />
+    ) : (
+      imageIcon
+    );
     return (
       <div className="event-body">
         <div className="event-data">
-          <div className="event-photo">
-            <img src={apiRoot + event.header_image} />
-          </div>
+          <div className="event-photo">{headerImage}</div>
           <div className="details-container">
             <div className="title">Details</div>
             <div className="details">{parse(`${event.details}`)}</div>
@@ -238,12 +253,31 @@ class EventDetails extends React.Component {
   }
 
   render() {
-    history.pushState(null, null, location.href);
-    window.onpopstate = function() {
-      window.location.assign("events");
+    let editButtonDisplay =
+      this.props.event.mine === true &&
+      this.state.user_type.id !== USER_TYPES["career_services"];
+    const { redirect } = this.state;
+    if (redirect !== null) {
+      return <Redirect to={redirect} />;
+    }
+    window.onpopstate = () => {
+      this.setState({ redirect: "/action?type=redirect&" + location.pathname });
     };
+    const editButton = (
+      <div className="fixed-buttons-container">
+        <Button
+          type="primary"
+          shape="circle"
+          size="large"
+          onClick={() => this.props.setBlogEdit(this.props.blog)}
+        >
+          <Icon type="edit" />
+        </Button>
+      </div>
+    );
     return (
       <div className="event-details">
+        {editButtonDisplay && editButton}
         {this.generateEventHeader()}
         {this.generateEventBody()}
       </div>

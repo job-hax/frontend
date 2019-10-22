@@ -1,4 +1,5 @@
 import axios from "axios";
+import { message } from "antd";
 
 import {
   reCaptchaV3SiteKey,
@@ -14,6 +15,10 @@ script.async = true;
 script.defer = true;
 script.src = `https://www.google.com/recaptcha/api.js?render=${reCaptchaV3SiteKey}`;
 document.body.appendChild(script);
+
+const error = content => {
+  message.error(content);
+};
 
 function reCaptchaToken(action) {
   return new Promise(resolve => {
@@ -155,13 +160,15 @@ export async function axiosCaptcha(url, config, action) {
         action
       );
     response = { statusText: "no response received" };
+    error("Your session has been terminated!");
     removeAllCookies();
-    window.location = "/?alert=your-session-has-been-terminated";
-  }
-  if (response == "before") {
+  } else if (response == "before") {
     response = {
       statusText: "request has not been sent because of internal filters"
     };
+  } else if (response.data.error_code === 401) {
+    error("Your request is unauthorized!");
+    removeAllCookies();
   }
   return response;
 }

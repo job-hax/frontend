@@ -29,8 +29,14 @@ class UniversityMetrics extends React.Component {
     ) {
       this.setState({ isInitialRequest: true });
       let config = { method: "GET" };
+      const careerServiceParameter =
+        this.props.isStudent === null ? "" : "&student=" + this.props.isStudent;
       axiosCaptcha(
-        METRICS("aggregated/generic/?public=" + this.props.isPublic),
+        METRICS(
+          "aggregated/generic/?public=" +
+            this.props.isPublic +
+            careerServiceParameter
+        ),
         config
       ).then(response => {
         if (response.statusText === "OK") {
@@ -43,7 +49,11 @@ class UniversityMetrics extends React.Component {
         }
       });
       axiosCaptcha(
-        METRICS("aggregated/detailed/?public=" + this.props.isPublic),
+        METRICS(
+          "aggregated/detailed/?public=" +
+            this.props.isPublic +
+            careerServiceParameter
+        ),
         config
       ).then(response => {
         if (response.statusText === "OK") {
@@ -61,7 +71,7 @@ class UniversityMetrics extends React.Component {
 
   generateDetailedMetricsGroup() {
     return (
-      <div style={{margin:"20px 0px", width: "fit-content" }}>
+      <div style={{ margin: "20px 0px", minWidth: "fit-content" }}>
         <div>
           <SummaryMetricsGroup
             cookie={this.props.cookie}
@@ -80,7 +90,14 @@ class UniversityMetrics extends React.Component {
 
   render() {
     return (
-      <div style={{ width: "100%", overflowY: "hidden" }}>
+      <div
+        style={{
+          maxWidth: "100%",
+          width: "fit-content",
+          width: "-moz-fit-content",
+          overflowY: "hidden"
+        }}
+      >
         {this.generateDetailedMetricsGroup()}
       </div>
     );

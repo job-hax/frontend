@@ -10,7 +10,7 @@ const refElement = document.getElementById("nameJobhax");
 
 const meta = document.createElement("meta");
 meta.httpEquiv = `Content-Security-Policy`;
-meta.content = `script-src 'nonce-${nonceCSP}' 'unsafe-inline' 'unsafe-eval' 'self' https://*.google.com https://*.googleapis.com https://www.google-analytics.com https://www.gstatic.com; frame-src https://*.google.com`;
+meta.content = `script-src 'nonce-${nonceCSP}' 'unsafe-inline' 'unsafe-eval' 'self' https://*.google.com https://*.googleapis.com https://www.google-analytics.com https://www.gstatic.com; frame-src https://*.google.com https://*.youtube.com`;
 document.head.insertBefore(meta, refElement);
 
 let script = document.createElement("script");

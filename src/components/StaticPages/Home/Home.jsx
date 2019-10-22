@@ -39,7 +39,7 @@ class Home extends Component {
     return (
       <section className="interior_area">
         <div className="row">
-          <img src={imageLink} alt="" />
+          <img src={window.location.origin + imageLink} alt="" />
           <div className="text-group">
             <h4>{header}</h4>
             <p className="small-text">{body}</p>
@@ -59,7 +59,7 @@ class Home extends Component {
             <p className="small-text">{body}</p>
             {this.generateSignupButton()}
           </div>
-          <img src={imageLink} alt="" />
+          <img src={window.location.origin + imageLink} alt="" />
         </div>
       </section>
     );
@@ -91,11 +91,16 @@ class Home extends Component {
           <div className="image-container">
             <img
               className="envelopes"
-              src={"src/assets/images/gmail_envelopes.png"}
+              src={
+                window.location.origin +
+                "/src/assets/images/gmail_envelopes.png"
+              }
             ></img>
             <img
               className="dashboard-main"
-              src={"src/assets/images/dashboard_main.png"}
+              src={
+                window.location.origin + "/src/assets/images/dashboard_main.png"
+              }
             ></img>
           </div>
         </div>
@@ -107,23 +112,23 @@ class Home extends Component {
     return (
       <div className="how_it_works_area" id="howitworks">
         {this.generateInteriorItem(
-          "src/assets/images/mail_parse.png",
+          "/src/assets/images/mail_parse.png",
           "Create a card for each application",
           "Apply anywhere - get it tracked in one place. Automatically."
         )}
         {window.screen.availWidth > 800
           ? this.generateInteriorItemFlipLR(
-              "src/assets/images/move.png",
+              "/src/assets/images/move.png",
               "Organize your job hunting progress",
               "Application process is visualized like no spreadsheet can do."
             )
           : this.generateInteriorItem(
-              "src/assets/images/move.png",
+              "/src/assets/images/move.png",
               "Organize your job hunting progress",
               "Application process is visualized like no spreadsheet can do."
             )}
         {this.generateInteriorItem(
-          "src/assets/images/metrics.png",
+          "/src/assets/images/metrics.png",
           "Leverage data to step up your job search game",
           "Hiring trends, skill analysis, interview success rate to help you hunt like a pro."
         )}
@@ -156,11 +161,16 @@ class Home extends Component {
           <div className="image-container">
             <img
               className="envelopes"
-              src={"src/assets/images/gmail_envelopes.png"}
+              src={
+                window.location.origin +
+                "/src/assets/images/gmail_envelopes.png"
+              }
             ></img>
             <img
               className="dashboard-main"
-              src={"src/assets/images/dashboard_main.png"}
+              src={
+                window.location.origin + "/src/assets/images/dashboard_main.png"
+              }
             ></img>
           </div>
         </div>
@@ -172,23 +182,23 @@ class Home extends Component {
     return (
       <div className="how_it_works_area" id="howitworks">
         {this.generateInteriorItem(
-          "src/assets/images/mail_parse.png",
+          "/src/assets/images/mail_parse.png",
           "Create a card for each application",
           "Apply anywhere - get it tracked in one place. Automatically."
         )}
         {window.screen.availWidth > 800
           ? this.generateInteriorItemFlipLR(
-              "src/assets/images/move.png",
+              "/src/assets/images/move.png",
               "Organize your job hunting progress",
               "Application process is visualized like no spreadsheet can do."
             )
           : this.generateInteriorItem(
-              "src/assets/images/move.png",
+              "/src/assets/images/move.png",
               "Organize your job hunting progress",
               "Application process is visualized like no spreadsheet can do."
             )}
         {this.generateInteriorItem(
-          "src/assets/images/metrics.png",
+          "/src/assets/images/metrics.png",
           "Leverage data to step up your job search game",
           "Hiring trends, skill analysis, interview success rate to help you hunt like a pro."
         )}
@@ -200,6 +210,7 @@ class Home extends Component {
     if (this.state.redirect != null) {
       return <Redirect to={this.state.redirect} />;
     }
+    console.log(window.location);
     return (
       <div>
         {window.location.pathname === "/alumni" ? (

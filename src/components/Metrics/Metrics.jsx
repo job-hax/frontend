@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 
 import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
-import { USERS } from "../../utils/constants/endpoints.js";
+import { USERS, METRICS } from "../../utils/constants/endpoints.js";
 import {
   IS_CONSOLE_LOG_OPEN,
   USER_TYPES,
@@ -19,7 +19,27 @@ class Metrics extends PureComponent {
     super(props);
 
     this.state = {
-      user_type: this.props.cookie("get", "user_type")
+      user_type: this.props.cookie("get", "user_type"),
+      locations: []
+    };
+
+    this.metricMap = {
+      public: [
+        { header: "Jobhax Aggregated Metrics", public: true, student: null }
+      ],
+      student: [
+        { header: "Student Aggregated Metrics", public: false, student: null },
+        { header: "Jobhax Aggregated Metrics", public: true, student: null }
+      ],
+      alumni: [
+        { header: "Alumni Aggregated Metrics", public: false, student: null },
+        { header: "Jobhax Aggregated Metrics", public: true, student: null }
+      ],
+      career_services: [
+        { header: "Alumni Aggregated Metrics", public: false, student: false },
+        { header: "Student Aggregated Metrics", public: false, student: true },
+        { header: "University Aggregated Metrics", public: true, student: null }
+      ]
     };
   }
 
@@ -43,68 +63,65 @@ class Metrics extends PureComponent {
           }
         }
       );
+      axiosCaptcha(METRICS("companyLocations/"), {
+        method: "GET"
+      }).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success) {
+            this.setState({ locations: response.data.data });
+          }
+        }
+      });
     }
   }
 
   render() {
-    const exclusiveName = this.state.user_type.college_specific_metrics_enabled
-      ? USER_TYPE_NAMES[this.state.user_type.id]["header"] + " Job Metrics"
-      : "";
+    const user_type = type =>
+      this.state.user_type.id === USER_TYPES[type] ? true : false;
+    const individualMetrics = (
+      <div className="metric-big-group">
+        <div className="university-metrics-header-container">
+          <div className="header-line" />
+          <div className="university-metrics-header">Individual Metrics</div>
+          <div className="header-line" />
+        </div>
+        <IndividualMetrics cookie={this.props.cookie} />
+      </div>
+    );
+
+    const universityMetrics = (header, isPublic, isStudent) => (
+      <div className="metric-big-group">
+        <div className="university-metrics-header-container">
+          <div className="header-line" />
+          <div className="university-metrics-header">{header}</div>
+          <div className="header-line" />
+        </div>
+        <UniversityMetrics
+          cookie={this.props.cookie}
+          isPublic={isPublic}
+          isStudent={isStudent}
+        />
+      </div>
+    );
+
+    const aggregatedMetrics = this.metricMap[
+      USER_TYPE_NAMES[this.state.user_type.id].type
+    ].map(metric => {
+      return universityMetrics(metric.header, metric.public, metric.student);
+    });
 
     return (
       <div>
         <div style={{ margin: "0 0 0px 0", height: 400 }}>
           <Map
             defaultCenter={{ lat: 37.3729, lng: -121.856 }}
-            positions={[
-              { lat: 37.3729, lng: -121.856 },
-              { lat: 37.4174343, lng: -122.0874049 },
-              { lat: 37.4850753, lng: -122.1496129 },
-              { lat: 37.3317042, lng: -122.0325086 }
-            ]}
+            positions={this.state.locations}
           />
         </div>
         <div className="metrics-big-group-container">
           <div>
-            <div className="metric-big-group">
-              <div className="university-metrics-header-container">
-                <div className="header-line" />
-                <div className="university-metrics-header">
-                  Individual Metrics
-                </div>
-                <div className="header-line" />
-              </div>
-              <IndividualMetrics cookie={this.props.cookie} />
-            </div>
-            {exclusiveName !== "" && (
-              <div className="metric-big-group">
-                <div className="university-metrics-header-container">
-                  <div className="header-line" />
-                  <div className="university-metrics-header">
-                    {exclusiveName}
-                  </div>
-                  <div className="header-line" />
-                </div>
-                <div>
-                  <UniversityMetrics
-                    cookie={this.props.cookie}
-                    isPublic={false}
-                  />
-                </div>
-              </div>
-            )}
-            <div className="metric-big-group">
-              <div className="university-metrics-header-container">
-                <div className="header-line" />
-                <div className="university-metrics-header">
-                  Jobhax Aggregated Metrics
-                </div>
-                <div className="header-line" />
-              </div>
-              <div>
-                <UniversityMetrics cookie={this.props.cookie} isPublic={true} />
-              </div>
-            </div>
+            {!user_type("career_services") && individualMetrics}
+            {aggregatedMetrics}
           </div>
         </div>
         <div>

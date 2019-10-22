@@ -16,20 +16,28 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        min-height: 50vh;
         height: 30vw;
 
-        .social-button {
-            max-width: 24px;
-            max-height: 24px;
-            margin: 12px;
-            transition: 0.2s;
-            cursor: pointer;
-        }
+        .social-buttons-small-container {
+            height: fit-content;
+            height: -moz-fit-content;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
 
-        .social-button:hover {
-            transform: scale(1.1);
-            -moz-transform: scale(1.1);
+            .social-button {
+                max-width: 24px;
+                max-height: 24px;
+                margin: 12px;
+                transition: 0.2s;
+                cursor: pointer;
+            }
+
+            .social-button:hover {
+                transform: scale(1.1);
+                -moz-transform: scale(1.1);
+            }
         }
     }
 
@@ -41,15 +49,15 @@
         .carousel-image {
             width: 100%;
             height: 30vw;
-            min-height: 50vh;
             overflow: hidden;
             position: relative;
 
             img {
                 position: absolute;
                 margin: auto;
-                min-height: 50vh;
                 width: 100%;
+                height: 100%;
+                object-fit: cover;
                 left: -100%;
                 right: -100%;
                 top: -100%;
@@ -84,15 +92,16 @@
 
             .side-carousel-image {
                 height: 544px;
-                margin: 20px 0px;
+                margin: 20px 0px 0px 0px;
                 overflow: hidden;
                 position: relative;
 
                 img {
                     position: absolute;
                     margin: auto;
-                    min-height: 544px;
-                    min-width: 30vw;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
                     left: -100%;
                     right: -100%;
                     top: -100%;
@@ -100,6 +109,30 @@
                     cursor: pointer;
                 }
             }
+        }
+    }
+
+    .videos-area {
+        display: flex;
+        justify-content: flex-start;
+        padding: 0px 80px 80px 80px;
+        overflow-y: hidden;
+        width: 100%;
+
+        .video-container {
+            margin: 0px 40px;
+        }
+
+        .video-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        iframe {
+            width: 50vw;
+            height: calc(50vw / 560 * 315);
+            min-width: 560px;
+            min-height: 315px;
         }
     }
 
@@ -127,6 +160,16 @@
 
         .events-container {
             justify-content: flex-start;
+        }
+
+        .social-buttons-container {
+            height: 50vw;
+        }
+
+        .carousel-container {
+            .carousel-image {
+                height: 50vw;
+            }
         }
     }
 }

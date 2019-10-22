@@ -28,7 +28,17 @@ import Mentors from "../Mentors/Mentors.jsx";
 import AlumniNetwork from "../Alumni/AlumniNetwork/AlumniNetwork.jsx";
 import AlumniHome from "../Alumni/AlumniHome/AlumniHome.jsx";
 import Events from "../Events/Events.jsx";
+import HandleDemo from "../UserAuth/Action/HandleDemo.jsx";
+import CareerServiceDashboard from "../CareerService/CareerServiceDashboard/CareerServiceDashboard.jsx";
+import DrawerMenu from "../Partials/DrawerMenu/DrawerMenu.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
+import BlogApproval from "../CareerService/Approval/BlogApproval.jsx";
+import EventApproval from "../CareerService/Approval/EventApproval.jsx";
+import BlogManage from "../CareerService/Manage/BlogManage.jsx";
+import EventManage from "../CareerService/Manage/EventManage.jsx";
+import CoachesManage from "../CareerService/Manage/AlumniHomePage/CoachesManage.jsx";
+import VideosManage from "../CareerService/Manage/AlumniHomePage/VideosManage.jsx";
+import BannersManage from "../CareerService/Manage/AlumniHomePage/BannersManage.jsx";
 
 import {
   googleClientId,
@@ -48,7 +58,6 @@ import {
 } from "../../utils/constants/endpoints.js";
 
 import "./style.scss";
-import HandleDemo from "../UserAuth/Action/HandleDemo.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -111,8 +120,6 @@ class App extends Component {
       "/home",
       "/demo",
       "/signup",
-      "/alumni/signup",
-      "/alumni/home",
       "/signin",
       "/dashboard",
       "/metrics",
@@ -120,8 +127,24 @@ class App extends Component {
       "/events",
       "/companies",
       "/profile",
+      "/career-service/dashboard",
+      "/career-service/approval/blogs",
+      "/career-service/approval/events",
+      "/career-service/manage/blogs",
+      "/career-service/manage/events",
+      //"/career-service/manage/jobhax-landing-page",
+      "/career-service/manage/alumni-home-page/coaches",
+      "/career-service/manage/alumni-home-page/videos",
+      "/career-service/manage/alumni-home-page/banner-images",
+      "/career-service/metrics",
       "/alumni",
+      "/alumni/signup",
+      "/alumni/home",
+      "/alumni/blogs",
+      "/alumni/events",
       "/alumni/network",
+      "/student/events",
+      "/student/blogs",
       "/action",
       "/action-linkedin-oauth2",
       "/underconstruction",
@@ -139,12 +162,23 @@ class App extends Component {
   componentDidMount() {
     document.addEventListener("mouseout", this.handleExit);
     document.addEventListener("mouseover", this.handleIn);
-    this.handleTokenExpiration("app componentdidmount").then(() => {
-      this.setState({
-        isInitialRequest: true,
-        isAuthenticationChecking: false
+    if (window.gapi) {
+      this.handleTokenExpiration("app componentdidmount").then(() => {
+        this.setState({
+          isInitialRequest: true,
+          isAuthenticationChecking: false
+        });
       });
-    });
+    } else {
+      setTimeout(() => {
+        this.handleTokenExpiration("app componentdidmount").then(() => {
+          this.setState({
+            isInitialRequest: true,
+            isAuthenticationChecking: false
+          });
+        });
+      }, 5000);
+    }
     if (
       this.cookie("get", "signup_flow_completed") === "false" &&
       this.cookie("get", "signup_complete_required") != "false"
@@ -532,7 +566,7 @@ class App extends Component {
           width: "100%",
           display: "flex",
           justifyContent: "center",
-          zIndex: 100
+          zIndex: 9999
         }}
       >
         <div>
@@ -558,7 +592,18 @@ class App extends Component {
     const appRenderConsole = false;
 
     const isAlumni =
-      isUserLoggedIn && this.props.cookies.get("user_type").name === "Alumni";
+      isUserLoggedIn &&
+      this.props.cookies.get("user_type") &&
+      this.props.cookies.get("user_type").id === USER_TYPES["alumni"];
+
+    const isCareerService =
+      isUserLoggedIn &&
+      this.props.cookies.get("user_type") &&
+      this.props.cookies.get("user_type").id === USER_TYPES["career_services"];
+
+    const mainWidth = isCareerService
+      ? { width: "calc(100% - 180px)" }
+      : { width: "100%" };
 
     IS_CONSOLE_LOG_OPEN &&
       appRenderConsole &&
@@ -587,7 +632,7 @@ class App extends Component {
     else if (isUserLoggedIn && this.state.active) {
       return (
         <Router>
-          <div className="main-container">
+          <div>
             <Header
               handleSignOut={this.handleSignOut}
               alert={this.showAlert}
@@ -603,204 +648,324 @@ class App extends Component {
               isAdmin={this.state.user.is_admin}
               isSynchingGmail={this.state.isSynchingGmail}
             />
-            <FeedBack
-              alert={this.showAlert}
-              handleTokenExpiration={this.handleTokenExpiration}
-              feedbackEmphasis={this.state.feedbackEmphasis}
-              passStatesToApp={this.passStatesToApp}
-              isUserLoggedIn={isUserLoggedIn}
-              visible={this.state.feedbackVisible}
-              type={this.state.feedbackType}
-              user={this.state.user}
-              cookie={this.cookie}
-            />
-            {this.state.isPollShowing && (
-              <PollBox
-                data={this.pollData}
-                togglePollDisplay={this.toggleIsPollShowing}
-                alert={this.showAlert}
-                cookie={this.cookie}
-                handleTokenExpiration={this.handleTokenExpiration}
-              />
-            )}
-            {this.state.isAlertShowing && <div>{this.generateAlert()}</div>}
-            <Route
-              exact
-              path="/profile"
-              render={() => (
-                <ProfilePage
+            <div className="main-big-container">
+              {isCareerService && <DrawerMenu cookie={this.cookie} />}
+              <div
+                className="main-container"
+                id="main-container"
+                style={mainWidth}
+              >
+                <FeedBack
                   alert={this.showAlert}
                   handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
-                  setProfilePhotoUrlInHeader={this.reRunComponentDidUpdate}
-                  notificationsList={this.state.notificationsList}
-                  notificationCheck={this.checkNotifications}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/blogs"
-              render={() => (
-                <Blog
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
-                  user={this.state.user}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/dashboard"
-              render={() => (
-                <Dashboard
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
-                  syncResponseTimestamp={this.state.syncResponseTimestamp}
+                  feedbackEmphasis={this.state.feedbackEmphasis}
                   passStatesToApp={this.passStatesToApp}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/signin"
-              render={() =>
-                logout ? (
-                  <Spinner message="Logging out..." />
-                ) : window.location.search.split("=")[1] ===
-                  "reCapthcaCouldNotPassed" ? (
-                  <Spinner message="checking reCaptcha..." />
-                ) : isAlumni ? (
-                  <Redirect to="/alumni/home" />
-                ) : (
-                  <Redirect to="/dashboard" />
-                )
-              }
-            />
-            <Route
-              exact
-              path={[
-                "/",
-                "/home",
-                "/alumni",
-                "/signup",
-                "alumni/signup",
-                "/demo"
-              ]}
-              render={() =>
-                logout ? (
-                  <Spinner message="Logging out..." />
-                ) : this.props.cookies.get("user_type").name === "Alumni" ? (
-                  <Redirect to="/alumni/home" />
-                ) : (
-                  <Redirect to="/dashboard" />
-                )
-              }
-            />
-            <Route
-              exact
-              path="/metrics"
-              render={() => (
-                <Metrics
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/alumni/network"
-              render={() =>
-                isAlumni ? (
-                  <AlumniNetwork
-                    alert={this.showAlert}
-                    handleTokenExpiration={this.handleTokenExpiration}
-                    cookie={this.cookie}
-                  />
-                ) : (
-                  <Redirect to="/dashboard" />
-                )
-              }
-            />
-            <Route
-              exact
-              path="/alumni/home"
-              render={() =>
-                isAlumni ? (
-                  <AlumniHome
-                    alert={this.showAlert}
-                    handleTokenExpiration={this.handleTokenExpiration}
-                    cookie={this.cookie}
-                  />
-                ) : (
-                  <Redirect to="/dashboard" />
-                )
-              }
-            />
-            <Route
-              exact
-              path="/events"
-              render={() => (
-                <Events
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
+                  isUserLoggedIn={isUserLoggedIn}
+                  visible={this.state.feedbackVisible}
+                  type={this.state.feedbackType}
                   user={this.state.user}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/mentors"
-              render={() => (
-                <Mentors
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
                   cookie={this.cookie}
                 />
-              )}
-            />
-            <Route
-              exact
-              path="/companies"
-              render={() => (
-                <Companies
-                  alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  cookie={this.cookie}
+                {this.state.isPollShowing && (
+                  <PollBox
+                    data={this.pollData}
+                    togglePollDisplay={this.toggleIsPollShowing}
+                    alert={this.showAlert}
+                    cookie={this.cookie}
+                    handleTokenExpiration={this.handleTokenExpiration}
+                  />
+                )}
+                {this.state.isAlertShowing && <div>{this.generateAlert()}</div>}
+                <Route
+                  exact
+                  path="/profile"
+                  render={() => (
+                    <ProfilePage
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                      setProfilePhotoUrlInHeader={this.reRunComponentDidUpdate}
+                      notificationsList={this.state.notificationsList}
+                      notificationCheck={this.checkNotifications}
+                    />
+                  )}
                 />
-              )}
-            />
-            <Route exact path="/aboutus" render={() => <AboutUs />} />
-            <Route
-              exact
-              path="/privacypolicy"
-              render={() => <PrivacyPolicy />}
-            />
-            <Route
-              exact
-              path="/useragreement"
-              render={() => <UserAgreement />}
-            />
-            <Route
-              exact
-              path="/underconstruction"
-              render={() => <UnderConstruction />}
-            />
-            <Route exact path="/faqs" render={() => <FAQ />} />
-            <Route
-              exact
-              path="/action"
-              render={() => <Action alert={this.showAlert} />}
-            />
-            <Route
-              exact
-              path="/action-linkedin-oauth2"
-              render={() => <LinkedInOAuthAction alert={this.showAlert} />}
-            />
+                <Route
+                  exact
+                  path="/dashboard"
+                  render={() =>
+                    !isCareerService ? (
+                      <Dashboard
+                        alert={this.showAlert}
+                        handleTokenExpiration={this.handleTokenExpiration}
+                        cookie={this.cookie}
+                        syncResponseTimestamp={this.state.syncResponseTimestamp}
+                        passStatesToApp={this.passStatesToApp}
+                      />
+                    ) : (
+                      <Redirect to="/career-service/dashboard" />
+                    )
+                  }
+                />
+                <Route
+                  exact
+                  path="/signin"
+                  render={() =>
+                    logout ? (
+                      <Spinner message="Logging out..." />
+                    ) : window.location.search.split("=")[1] ===
+                      "reCapthcaCouldNotPassed" ? (
+                      <Spinner message="checking reCaptcha..." />
+                    ) : isAlumni ? (
+                      <Redirect to="/alumni/home" />
+                    ) : isCareerService ? (
+                      <Redirect to="/career-service/dashboard" />
+                    ) : (
+                      <Redirect to="/dashboard" />
+                    )
+                  }
+                />
+                <Route
+                  exact
+                  path={[
+                    "/",
+                    "/home",
+                    "/alumni",
+                    "/signup",
+                    "alumni/signup",
+                    "/demo"
+                  ]}
+                  render={() =>
+                    logout ? (
+                      <Spinner message="Logging out..." />
+                    ) : this.props.cookies.get("user_type").id ===
+                      USER_TYPES["alumni"] ? (
+                      <Redirect to="/alumni/home" />
+                    ) : (
+                      <Redirect to="/dashboard" />
+                    )
+                  }
+                />
+                <Route
+                  exact
+                  path={["/metrics", "/career-service/metrics"]}
+                  render={() => (
+                    <Metrics
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/alumni/network"
+                  render={() =>
+                    isAlumni || isCareerService ? (
+                      <AlumniNetwork
+                        alert={this.showAlert}
+                        handleTokenExpiration={this.handleTokenExpiration}
+                        cookie={this.cookie}
+                      />
+                    ) : (
+                      <Redirect to="/dashboard" />
+                    )
+                  }
+                />
+                <Route
+                  exact
+                  path="/alumni/home"
+                  render={() =>
+                    isAlumni || isCareerService ? (
+                      <AlumniHome
+                        alert={this.showAlert}
+                        handleTokenExpiration={this.handleTokenExpiration}
+                        cookie={this.cookie}
+                      />
+                    ) : (
+                      <Redirect to="/dashboard" />
+                    )
+                  }
+                />
+                <Route
+                  exact
+                  path="/career-service/dashboard"
+                  render={() =>
+                    isCareerService ? (
+                      <CareerServiceDashboard
+                        alert={this.showAlert}
+                        handleTokenExpiration={this.handleTokenExpiration}
+                        cookie={this.cookie}
+                      />
+                    ) : (
+                      <Redirect to="/dashboard" />
+                    )
+                  }
+                />
+                <Route
+                  exact
+                  path="/career-service/approval/blogs"
+                  render={() => (
+                    <BlogApproval
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/approval/events"
+                  render={() => (
+                    <EventApproval
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/blogs"
+                  render={() => (
+                    <BlogManage
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/events"
+                  render={() => (
+                    <EventManage
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/alumni-home-page/coaches"
+                  render={() => (
+                    <CoachesManage
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/alumni-home-page/videos"
+                  render={() => (
+                    <VideosManage
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/alumni-home-page/banner-images"
+                  render={() => (
+                    <BannersManage
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/career-service/manage/jobhax-landing-page"
+                  render={() => (
+                    <Home
+                      isUserLoggedIn={true}
+                      passStatesToApp={this.passStatesToApp}
+                      alert={this.showAlert}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path={["/events", "/student/events", "/alumni/events"]}
+                  render={() => (
+                    <Events
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                      user={this.state.user}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path={["/blogs", "/student/blogs", "/alumni/blogs"]}
+                  render={() => (
+                    <Blog
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                      user={this.state.user}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/mentors"
+                  render={() => (
+                    <Mentors
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/companies"
+                  render={() => (
+                    <Companies
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route exact path="/aboutus" render={() => <AboutUs />} />
+                <Route
+                  exact
+                  path="/privacypolicy"
+                  render={() => <PrivacyPolicy />}
+                />
+                <Route
+                  exact
+                  path="/useragreement"
+                  render={() => <UserAgreement />}
+                />
+                <Route
+                  exact
+                  path="/underconstruction"
+                  render={() => <UnderConstruction />}
+                />
+                <Route exact path="/faqs" render={() => <FAQ />} />
+                <Route
+                  exact
+                  path="/action"
+                  render={() => <Action alert={this.showAlert} />}
+                />
+                <Route
+                  exact
+                  path="/action-linkedin-oauth2"
+                  render={() => <LinkedInOAuthAction alert={this.showAlert} />}
+                />
+              </div>
+            </div>
           </div>
         </Router>
       );
@@ -827,120 +992,122 @@ class App extends Component {
       } else
         return (
           <Router>
-            <div className="main-container">
-              <Header
-                alert={this.showAlert}
-                isUserLoggedIn={false}
-                cookie={this.cookie}
-              />
-              {this.state.isAlertShowing && <div>{this.generateAlert()}</div>}
-              {this.state.feedbackEmphasis && (
-                <FeedBack
+            <div className="main-big-container">
+              <div className="main-container">
+                <Header
                   alert={this.showAlert}
-                  handleTokenExpiration={this.handleTokenExpiration}
-                  feedbackEmphasis={this.state.feedbackEmphasis}
-                  visible={true}
-                  passStatesToApp={this.passStatesToApp}
-                  isUserLoggedIn={isUserLoggedIn}
+                  isUserLoggedIn={false}
+                  cookie={this.cookie}
                 />
-              )}
-              <Route exact path="/" render={() => <Redirect to="/home" />} />
-              <Route
-                exact
-                path={["/home", "/alumni"]}
-                render={() => (
-                  <Home
-                    isUserLoggedIn={false}
-                    passStatesToApp={this.passStatesToApp}
+                {this.state.isAlertShowing && <div>{this.generateAlert()}</div>}
+                {this.state.feedbackEmphasis && (
+                  <FeedBack
                     alert={this.showAlert}
-                    cookie={this.cookie}
+                    handleTokenExpiration={this.handleTokenExpiration}
+                    feedbackEmphasis={this.state.feedbackEmphasis}
+                    visible={true}
+                    passStatesToApp={this.passStatesToApp}
+                    isUserLoggedIn={isUserLoggedIn}
                   />
                 )}
-              />
-              <Route
-                exact
-                path="/demo"
-                render={() => (
-                  <HandleDemo
-                    passStatesToApp={this.passStatesToApp}
-                    alert={this.showAlert}
-                    cookie={this.cookie}
-                  />
-                )}
-              />
-              <Route
-                exact
-                path="/aboutus"
-                render={() => (
-                  <AboutUs isUserLoggedIn={this.state.isUserLoggedIn} />
-                )}
-              />
-              <Route
-                exact
-                path="/underconstruction"
-                render={() => <UnderConstruction />}
-              />
-              <Route
-                exact
-                path="/signin"
-                render={() => (
-                  <SignIn
-                    googleAuth={this.googleAuth}
-                    passStatesToApp={this.passStatesToApp}
-                    alert={this.showAlert}
-                    cookie={this.cookie}
-                  />
-                )}
-              />
-              <Route
-                exact
-                path="/signup"
-                render={() => (
-                  <SignUp
-                    googleAuth={this.googleAuth}
-                    alert={this.showAlert}
-                    passStatesToApp={this.passStatesToApp}
-                    passStatesToAppForFuture={this.passStatesToAppForFuture}
-                    cookie={this.cookie}
-                    signupType={"general"}
-                  />
-                )}
-              />
-              <Route
-                exact
-                path="/alumni/signup"
-                render={() => (
-                  <SignUp
-                    googleAuth={this.googleAuth}
-                    alert={this.showAlert}
-                    passStatesToApp={this.passStatesToApp}
-                    passStatesToAppForFuture={this.passStatesToAppForFuture}
-                    cookie={this.cookie}
-                    signupType={"alumni"}
-                  />
-                )}
-              />
-              <Route exact path="/faqs" render={() => <FAQ />} />
-              <Route
-                exact
-                path="/privacypolicy"
-                render={() => <PrivacyPolicy />}
-              />
-              <Route
-                exact
-                path="/useragreement"
-                render={() => <UserAgreement />}
-              />
-              <Route
-                exact
-                path="/action"
-                render={() => <Action alert={this.showAlert} />}
-              />
-              <Route
-                exact
-                path="/action-linkedin-oauth2"
-                render={() => <LinkedInOAuthAction alert={this.showAlert} />}
-              />
+                <Route exact path="/" render={() => <Redirect to="/home" />} />
+                <Route
+                  exact
+                  path={["/home", "/alumni"]}
+                  render={() => (
+                    <Home
+                      isUserLoggedIn={false}
+                      passStatesToApp={this.passStatesToApp}
+                      alert={this.showAlert}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/demo"
+                  render={() => (
+                    <HandleDemo
+                      passStatesToApp={this.passStatesToApp}
+                      alert={this.showAlert}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/aboutus"
+                  render={() => (
+                    <AboutUs isUserLoggedIn={this.state.isUserLoggedIn} />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/underconstruction"
+                  render={() => <UnderConstruction />}
+                />
+                <Route
+                  exact
+                  path="/signin"
+                  render={() => (
+                    <SignIn
+                      googleAuth={this.googleAuth}
+                      passStatesToApp={this.passStatesToApp}
+                      alert={this.showAlert}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/signup"
+                  render={() => (
+                    <SignUp
+                      googleAuth={this.googleAuth}
+                      alert={this.showAlert}
+                      passStatesToApp={this.passStatesToApp}
+                      passStatesToAppForFuture={this.passStatesToAppForFuture}
+                      cookie={this.cookie}
+                      signupType={"general"}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/alumni/signup"
+                  render={() => (
+                    <SignUp
+                      googleAuth={this.googleAuth}
+                      alert={this.showAlert}
+                      passStatesToApp={this.passStatesToApp}
+                      passStatesToAppForFuture={this.passStatesToAppForFuture}
+                      cookie={this.cookie}
+                      signupType={"alumni"}
+                    />
+                  )}
+                />
+                <Route exact path="/faqs" render={() => <FAQ />} />
+                <Route
+                  exact
+                  path="/privacypolicy"
+                  render={() => <PrivacyPolicy />}
+                />
+                <Route
+                  exact
+                  path="/useragreement"
+                  render={() => <UserAgreement />}
+                />
+                <Route
+                  exact
+                  path="/action"
+                  render={() => <Action alert={this.showAlert} />}
+                />
+                <Route
+                  exact
+                  path="/action-linkedin-oauth2"
+                  render={() => <LinkedInOAuthAction alert={this.showAlert} />}
+                />
+              </div>
             </div>
           </Router>
         );

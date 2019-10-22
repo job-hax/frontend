@@ -33,10 +33,72 @@ html {
   background-color: white;
 }
 
-.main-container {
+.main-big-container {
+  display: flex;
+  justify-content: flex-start;
   height: 100%;
   width: 100%;
+
+  .main-container {
+    height: 100%;
+    width: 100%;
+
+    .coach-modal-header {
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+
+      .coach-head-photo {
+        min-width: 80px;
+        min-height: 80px;
+        max-width: 80px;
+        max-height: 80px;
+        border-radius: 40px;
+        overflow: hidden;
+        position: relative;
+        margin: 4px 24px 0 0;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+
+        img {
+          position: absolute;
+          margin: auto;
+          min-width: 80px;
+          min-height: 80px;
+          max-width: 90px;
+          max-height: 90px;
+          left: -100%;
+          right: -100%;
+          top: -100%;
+          bottom: -100%;
+          border-radius: 40px;
+        }
+      }
+
+      .coach-header-info {
+        font-size: 14px;
+        font-weight: normal;
+
+        .coach-name {
+          font-size: 16px;
+        }
+
+        .connection-buttons-container {
+          margin: 12px 0px;
+          display: flex;
+          justify-content: space-around;
+
+          .ant-btn {
+            margin-right: 12px;
+          }
+        }
+      }
+    }
+
+    .coach-modal-body {}
+
+  }
 }
+
 
 .react-tel-input {
   position: relative;
@@ -105,4 +167,61 @@ html {
   background-color: rgb(64, 169, 255) !important;
   border: rgb(64, 169, 255) !important;
 
+}
+
+textarea.ant-input {
+  resize: none;
+}
+
+.delete-button {
+  width: fit-content;
+  width: -moz-fit-content;
+  margin: 4px 4px 4px 0px;
+
+  .ant-btn {
+    color: red;
+    border-color: red;
+  }
+
+  .ant-btn:hover {
+    color: rgb(255, 120, 120) !important;
+    border-color: rgb(255, 120, 120) !important;
+  }
+}
+
+.geosuggest__suggests-wrapper {
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 1px 1px 10px 1px #efefef;
+  width: 280px;
+  max-height: 240px;
+  overflow-x: hidden;
+  padding: 0px;
+}
+
+.geosuggest__input {
+  height: 32px;
+  max-width: 100%;
+  width: 280px;
+  border-radius: 4px;
+  border-color: $selection_color !important;
+  padding: 4px;
+}
+
+.geosuggest__item {
+  padding: 4px;
+  list-style-type: none;
+  margin-left: -28px;
+  cursor: pointer;
+}
+
+.geosuggest__suggests--hidden {
+  max-height: 0;
+  overflow: hidden;
+  border-width: 0;
+}
+
+.geosuggest__item--active {
+  background: $selection_color;
+  color: white;
 }

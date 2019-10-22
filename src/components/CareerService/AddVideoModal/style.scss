@@ -1,0 +1,47 @@
+@import "../../App/style.scss";
+
+.add-video-container {
+
+    .add-video-modal-body {
+        display: flex;
+        justify-content: space-around;
+
+        .video-container {
+            margin: 0px 40px;
+            width: 50vw;
+            min-width: 560px;
+        }
+
+        .video-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        iframe,
+        .video-frame {
+            width: 50vw;
+            height: calc(50vw / 560 * 315);
+            min-width: 560px;
+            min-height: 315px;
+        }
+
+        .video-input {
+            width: 300px;
+
+            .ant-input {
+                width: 280px;
+                margin: 4px 0px;
+            }
+
+            .error-note {
+                color: red;
+            }
+        }
+
+    }
+
+    .ant-modal-body {
+        padding: 24px 0px;
+        overflow-y: hidden;
+    }
+}

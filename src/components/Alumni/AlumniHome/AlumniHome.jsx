@@ -1,13 +1,20 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { Carousel } from "antd";
+import parse from "html-react-parser";
 
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { EVENTS, BLOGS, ALUMNI } from "../../../utils/constants/endpoints.js";
+import {
+  EVENTS,
+  BLOGS,
+  COLLEGES,
+  apiRoot
+} from "../../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import Event from "../../Events/Event.jsx";
 import BlogCard from "../../Blog/BlogCard.jsx";
+import CoachSummary from "../../CareerService/CoachModal/CoachSummary.jsx";
 import Footer from "../../Partials/Footer/Footer.jsx";
 
 import "./style.scss";
@@ -26,7 +33,7 @@ class AlumniHome extends React.Component {
       roots: {
         events: EVENTS,
         blogs: BLOGS,
-        alumnihome: ALUMNI + "homePage/"
+        alumnihome: COLLEGES("homePage")
       }
     };
 
@@ -76,12 +83,16 @@ class AlumniHome extends React.Component {
       return (
         <img
           className="social-button"
-          src={social.icon}
+          src={apiRoot + social.icon}
           onClick={() => window.open(social.link)}
         />
       );
     });
-    return <div className="social-buttons-container">{social_buttons}</div>;
+    return (
+      <div className="social-buttons-container">
+        <div className="social-buttons-small-container">{social_buttons}</div>
+      </div>
+    );
   }
 
   generateCarouselArea(banners, type) {
@@ -90,7 +101,7 @@ class AlumniHome extends React.Component {
       type === "side" ? "side-carousel-container" : "carousel-container";
     const imgDivClass =
       type === "side" ? "side-carousel-image" : "carousel-image";
-    const media = banners.map(banner => {
+    const header_media = banners.map(banner => {
       return (
         <div
           className={imgDivClass}
@@ -101,10 +112,16 @@ class AlumniHome extends React.Component {
               : window.open(banner.link)
           }
         >
-          <img src={banner.image} />
+          <img src={apiRoot + banner.image} />
         </div>
       );
     });
+
+    const coach_media = banners.map(coach => {
+      return <CoachSummary coach={coach} />;
+    });
+
+    const media = type === "header" ? header_media : coach_media;
     const carousel = (
       <Carousel autoplay={!isSingle} dots={!isSingle}>
         {media}
@@ -166,6 +183,17 @@ class AlumniHome extends React.Component {
     );
   }
 
+  generateVideosArea() {
+    const videos = this.state.alumnihome.videos.map(video => (
+      <div className="video-container">
+        <div> {parse(`${video.embed_code}`)}</div>
+        <div className="video-title">{video.title}</div>
+        <div>{video.description}</div>
+      </div>
+    ));
+    return <div className="videos-area">{videos}</div>;
+  }
+
   render() {
     const header = title => <div className="area-title">{title}</div>;
     if (this.state.redirect !== "") {
@@ -186,6 +214,8 @@ class AlumniHome extends React.Component {
             {this.generateEventsArea()}
             {header("Recent Blogs")}
             {this.generateBlogsArea()}
+            {header("Videos")}
+            {this.generateVideosArea()}
           </div>
           <div className="footer-margin">
             <Footer />

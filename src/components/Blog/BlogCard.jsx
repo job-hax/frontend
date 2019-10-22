@@ -2,7 +2,10 @@ import React from "react";
 import { Icon } from "antd";
 
 import { apiRoot } from "../../utils/constants/endpoints";
-import { makeTimeBeautiful } from "../../utils/constants/constants.js";
+import {
+  makeTimeBeautiful,
+  imageIcon
+} from "../../utils/constants/constants.js";
 
 import "./style.scss";
 
@@ -28,6 +31,12 @@ class BlogCard extends React.Component {
       blog.publisher_profile.profile_photo != ("" || null)
         ? apiRoot + blog.publisher_profile.profile_photo
         : "../../../src/assets/icons/User@3x.png";
+
+    const headerImage = blog.header_image ? (
+      <img src={apiRoot + blog.header_image} />
+    ) : (
+      imageIcon
+    );
     return (
       <div
         className="blog-card-container"
@@ -61,16 +70,32 @@ class BlogCard extends React.Component {
               </div>
             </div>
           </div>
-          <div className="blog-card-right">
-            <img src={apiRoot + blog.header_image} />
-          </div>
+          <div className="blog-card-right">{headerImage}</div>
         </div>
       </div>
     );
   }
 
+  generateAddNewBlogCard(style, content) {
+    return (
+      <div
+        className="blog-card-container"
+        onClick={() => this.props.setBlogDetail("add_new")}
+        style={style}
+      >
+        {content}
+      </div>
+    );
+  }
+
   render() {
-    return <div>{this.generateBlogCard()}</div>;
+    return (
+      <div>
+        {this.props.blog.id === "add_new"
+          ? this.generateAddNewBlogCard(this.props.style, this.props.content)
+          : this.generateBlogCard()}
+      </div>
+    );
   }
 }
 

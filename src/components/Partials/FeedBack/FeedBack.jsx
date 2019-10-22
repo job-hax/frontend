@@ -231,7 +231,7 @@ class FeedBack extends React.Component {
           <div style={{ padding: "0px 0px 7px 0px" }}>
             {"Hey " +
               this.props.user.first_name +
-              ", we are happy to see you back!"}
+              ", we are happy to see you are back!"}
           </div>
         )}
         <div style={{ padding: "0px 0px 7px 0px" }}>
@@ -271,7 +271,7 @@ class FeedBack extends React.Component {
         style={this.modalBoxStyle}
         onCancel={this.handleCancel}
         confirmLoading={this.state.loading}
-        title="Your Feedback"
+        title="Got Feedback?"
         footer={[this.sendButton]}
         closeIcon={closeIcon}
         getContainer={false}
