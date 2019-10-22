@@ -299,7 +299,7 @@ class Notes extends React.Component {
               <div>
                 <TextArea
                   name="addNoteForm"
-                  placeholder="+ Add note"
+                  placeholder="+ Add a note"
                   onChange={this.onAddNoteChange}
                   ref="addNoteFormDefault"
                   autosize={{ maxRows: 12 }}
@@ -322,7 +322,7 @@ class Notes extends React.Component {
             <div style={{ margin: "0 0 8px 0" }}>
               <TextArea
                 className="add-note-area --height-min"
-                placeholder="+ Add note"
+                placeholder="+ Add a note"
                 onClick={this.toggleEdit}
                 ref="addNoteFormDefault"
                 autosize={{ maxRows: 12 }}

@@ -271,7 +271,7 @@ class FeedBack extends React.Component {
         style={this.modalBoxStyle}
         onCancel={this.handleCancel}
         confirmLoading={this.state.loading}
-        title="Your Feedback"
+        title="Got Feedback?"
         footer={[this.sendButton]}
         closeIcon={closeIcon}
         getContainer={false}
