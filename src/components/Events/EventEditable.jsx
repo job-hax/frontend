@@ -65,12 +65,16 @@ class EventEditable extends React.Component {
       redirect: null,
       user_type: this.props.cookie("get", "user_type"),
       event_types: null,
-      shareStudents: this.props.event.user_types
-        .map(userType => userType.id)
-        .includes(USER_TYPES["student"]),
-      shareAlumni: this.props.event.user_types
-        .map(userType => userType.id)
-        .includes(USER_TYPES["alumni"]),
+      shareStudents:
+        this.props.event.user_types &&
+        this.props.event.user_types
+          .map(userType => userType.id)
+          .includes(USER_TYPES["student"]),
+      shareAlumni:
+        this.props.event.user_types &&
+        this.props.event.user_types
+          .map(userType => userType.id)
+          .includes(USER_TYPES["alumni"]),
       isLinkDisplaying: false,
       created_at: this.props.event.created_at,
       details: this.props.event.details,
@@ -411,7 +415,7 @@ class EventEditable extends React.Component {
         </div>
         <div
           style={{
-            minWidth: "calc(668px - (100vw - 1198px)/2 - 40px)"
+            minWidth: "410px"
           }}
         ></div>
       </div>
@@ -693,14 +697,16 @@ class EventEditable extends React.Component {
       location_lat != event.location_lat ||
       location_lon != event.location_lon ||
       event_type != event.event_type ||
-      shareStudents !=
-        event.user_types
-          .map(userType => userType.id)
-          .includes(USER_TYPES["student"]) ||
-      shareAlumni !=
-        event.user_types
-          .map(userType => userType.id)
-          .includes(USER_TYPES["alumni"]);
+      (event.user_types &&
+        shareStudents !=
+          event.user_types
+            .map(userType => userType.id)
+            .includes(USER_TYPES["student"])) ||
+      (event.user_types &&
+        shareAlumni !=
+          event.user_types
+            .map(userType => userType.id)
+            .includes(USER_TYPES["alumni"]));
     const isRequiredFieldsFilled =
       details &&
       title &&

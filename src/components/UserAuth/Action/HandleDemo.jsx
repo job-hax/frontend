@@ -25,7 +25,7 @@ class HandleDemo extends React.Component {
         this.setState(state, resolve);
       });
     };
-    const type = window.location.search.split("=")[1];
+    const type = window.location.search.split("=")[1] || "alumni";
     const type_id = USER_TYPES[type];
 
     IS_CONSOLE_LOG_OPEN && console.log("handle demo first");

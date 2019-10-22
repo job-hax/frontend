@@ -48,12 +48,16 @@ class BlogEditable extends React.Component {
     this.state = {
       redirect: null,
       user_type: this.props.cookie("get", "user_type"),
-      shareStudents: this.props.blog.user_types
-        .map(userType => userType.id)
-        .includes(USER_TYPES["student"]),
-      shareAlumni: this.props.blog.user_types
-        .map(userType => userType.id)
-        .includes(USER_TYPES["alumni"]),
+      shareStudents:
+        this.props.blog.user_types &&
+        this.props.blog.user_types
+          .map(userType => userType.id)
+          .includes(USER_TYPES["student"]),
+      shareAlumni:
+        this.props.blog.user_types &&
+        this.props.blog.user_types
+          .map(userType => userType.id)
+          .includes(USER_TYPES["alumni"]),
       isLinkDisplaying: false,
       content: this.props.blog.content,
       created_at: this.props.blog.created_at,
@@ -476,14 +480,16 @@ class BlogEditable extends React.Component {
       title != blog.title ||
       snippet != blog.snippet ||
       header_image != blog.header_image ||
-      shareStudents !=
-        blog.user_types
-          .map(userType => userType.id)
-          .includes(USER_TYPES["student"]) ||
-      shareAlumni !=
-        blog.user_types
-          .map(userType => userType.id)
-          .includes(USER_TYPES["alumni"]);
+      (blog.user_types &&
+        shareStudents !=
+          blog.user_types
+            .map(userType => userType.id)
+            .includes(USER_TYPES["student"])) ||
+      (blog.user_types &&
+        shareAlumni !=
+          blog.user_types
+            .map(userType => userType.id)
+            .includes(USER_TYPES["alumni"]));
     const isRequiredFieldsFilled = content && title && snippet && header_image;
     const publishButtonText = this.isCareerService
       ? "Publish"
