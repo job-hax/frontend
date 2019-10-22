@@ -33,6 +33,7 @@ class Column extends Component {
       ongoingsAmount: this.props.cards.length,
       rejectedsAmount: this.props.cardsRejecteds.length,
       isAmountChanged: false,
+      hideAddJobButton: false,
       amountChangeOngoings: 0,
       amountChangeRejecteds: 0
     };
@@ -78,8 +79,16 @@ class Column extends Component {
 
   toggleJobInput() {
     this.setState(state => ({
-      showJobInput: !state.showJobInput
+      showJobInput: !state.showJobInput,
+      hideAddJobButton: false
     }));
+  }
+
+  addJobButtonClick() {
+    this.toggleJobInput();
+    setTimeout(() => {
+      this.setState({ hideAddJobButton: true });
+    }, 500);
   }
 
   renderCards(type) {
@@ -199,7 +208,8 @@ class Column extends Component {
       showRejectedCards,
       rejectedsAmount,
       isAmountChanged,
-      amountChangeRejecteds
+      amountChangeRejecteds,
+      hideAddJobButton
     } = this.state;
 
     const {
@@ -210,7 +220,18 @@ class Column extends Component {
 
     const columnCardContainerClass = classNames({
       "column-card-container": true,
-      "--short": showJobInput
+      "--short": showJobInput && hideAddJobButton,
+      "--shortest": showJobInput && !hideAddJobButton
+    });
+
+    const columnBodyContainerClass = classNames({
+      "column-body-container": true,
+      "--short": showJobInput && !hideAddJobButton
+    });
+
+    const addJobButtonClass = classNames({
+      "job-input-button": true,
+      "--animation-disappear": showJobInput && !hideAddJobButton
     });
 
     const ongoingsContainerClass = classNames({
@@ -246,14 +267,14 @@ class Column extends Component {
         <div className={ongoingsContainerClass}>
           <div className={columnContainerClass}>
             {this.generateColumnHeader()}
-            <div className="column-body-container">
+            <div className={columnBodyContainerClass}>
               <div className={columnCardContainerClass}>
                 {this.renderCards("ongoing")}
               </div>
-              {!showJobInput && (
+              {!hideAddJobButton && (
                 <div
-                  onClick={() => this.setState({ showJobInput: !showJobInput })}
-                  className="job-input-button"
+                  onClick={() => !showJobInput && this.addJobButtonClick()}
+                  className={addJobButtonClass}
                 >
                   <div className="button-inside">+</div>
                 </div>
