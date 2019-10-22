@@ -2,6 +2,8 @@
 
 $column_header_height: 50px;
 $column_header_height_add_job: 162px;
+$add_job_button_height: 30px;
+$add_job_button_y_padding: 10.5px;
 $rejected_button_height: 48px;
 $column_parts_margin: 8px;
 $column_max_width: 400px;
@@ -9,8 +11,9 @@ $column_min_width: 240px;
 $amountChangeAnimationTransitionDuration: .3s;
 $amountChangeAnimationZoomInScale: 1.2;
 $amountChangeAnimationZoomOutScale: 0.8;
-$addJobButtonAnimationTransitionDuration: .15s;
-$addJobButtonAnimationZoomInScale: 1.03;
+$addJobButtonAnimationTransitionDuration: .5s;
+$addJobButtonAnimationZoomInScale: 1.1;
+$addJobButtonAnimationZoomOutScale: 0.0;
 
 
 
@@ -157,6 +160,19 @@ $addJobButtonAnimationZoomInScale: 1.03;
         max-height: -moz-calc(100% - #{$column_header_height});
         max-height: calc(100% - #{$column_header_height});
 
+        &.--short {
+          height: -webkit-calc(100% - #{$column_header_height_add_job} - #{$add_job_button_height} - #{$add_job_button_y_padding});
+          height: -moz-calc(100% - #{$column_header_height_add_job} - #{$add_job_button_height} - #{$add_job_button_y_padding});
+          height: calc(100% - #{$column_header_height_add_job} - #{$add_job_button_height} - #{$add_job_button_y_padding});
+          min-height: -webkit-calc(100% - #{$column_header_height_add_job} - #{$add_job_button_height} - #{$add_job_button_y_padding});
+          min-height: -moz-calc(100% - #{$column_header_height_add_job} - #{$add_job_button_height} - #{$add_job_button_y_padding});
+          min-height: calc(100% - #{$column_header_height_add_job} - #{$add_job_button_height} - #{$add_job_button_y_padding});
+          max-height: -webkit-calc(100% - #{$column_header_height_add_job} - #{$add_job_button_height} - #{$add_job_button_y_padding});
+          max-height: -moz-calc(100% - #{$column_header_height_add_job} - #{$add_job_button_height} - #{$add_job_button_y_padding});
+          max-height: calc(100% - #{$column_header_height_add_job} - #{$add_job_button_height} - #{$add_job_button_y_padding});
+        }
+
+
         .column-card-container {
           overflow-x: hidden;
           display: flex;
@@ -179,8 +195,16 @@ $addJobButtonAnimationZoomInScale: 1.03;
             max-height: calc(100% - #{$column_header_height_add_job});
           }
 
-          &.shortest {
-            //max-height: 49%;
+          &.--shortest {
+            height: -webkit-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
+            height: -moz-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
+            height: calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
+            min-height: -webkit-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
+            min-height: -moz-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
+            min-height: calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
+            max-height: -webkit-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
+            max-height: -moz-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
+            max-height: calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
           }
         }
 
@@ -204,20 +228,34 @@ $addJobButtonAnimationZoomInScale: 1.03;
           -o-transition: transform $addJobButtonAnimationTransitionDuration;
           -ms-transition: transform $addJobButtonAnimationTransitionDuration;
 
+          &.--animation-disappear {
+            transform: scale($addJobButtonAnimationZoomOutScale);
+            -webkit-transform: scale($addJobButtonAnimationZoomOutScale);
+            -moz-transform: scale($addJobButtonAnimationZoomOutScale);
+            -o-transform: scale($addJobButtonAnimationZoomOutScale);
+            -ms-transform: scale($addJobButtonAnimationZoomOutScale);
+          }
+
 
           .button-inside {
             font-size: 18pt;
             color: rgb(150, 150, 150);
             line-height: normal;
+            width: 100%;
+            transition: transform $addJobButtonAnimationTransitionDuration;
+            -webkit-transition: transform $addJobButtonAnimationTransitionDuration;
+            -moz-transition: transform $addJobButtonAnimationTransitionDuration;
+            -o-transition: transform $addJobButtonAnimationTransitionDuration;
+            -ms-transition: transform $addJobButtonAnimationTransitionDuration;
           }
-        }
 
-        .job-input-button:hover {
-          transform: scale($addJobButtonAnimationZoomInScale);
-          -webkit-transform: scale($addJobButtonAnimationZoomInScale);
-          -moz-transform: scale($addJobButtonAnimationZoomInScale);
-          -o-transform: scale($addJobButtonAnimationZoomInScale);
-          -ms-transform: scale($addJobButtonAnimationZoomInScale);
+          .button-inside:hover {
+            transform: scale($addJobButtonAnimationZoomInScale);
+            -webkit-transform: scale($addJobButtonAnimationZoomInScale);
+            -moz-transform: scale($addJobButtonAnimationZoomInScale);
+            -o-transform: scale($addJobButtonAnimationZoomInScale);
+            -ms-transform: scale($addJobButtonAnimationZoomInScale);
+          }
         }
       }
     }
