@@ -95,15 +95,12 @@ class BlogDetails extends React.Component {
 
   generateBlogHeader() {
     const { blog } = this.props;
-    let photoUrl =
-      blog.publisher_profile.profile_photo != ("" || null)
-        ? apiRoot + blog.publisher_profile.profile_photo
-        : "../../../src/assets/icons/User@3x.png";
+    let photoUrl = apiRoot + blog.publisher_profile.profile_photo;
 
     let longDateAndTime = moment(blog.created_at).format(
       LONG_DATE_AND_TIME_FORMAT
     );
-    let joinDate = moment(blog.publisher.date_joined).format(
+    let joinDate = moment(blog.publisher_profile.date_joined).format(
       MEDIUM_DATE_FORMAT
     );
 
@@ -111,7 +108,11 @@ class BlogDetails extends React.Component {
       <div className="blog-header">
         <div className="blog-datebox">
           <div className="day">{moment(blog.created_at).format("DD")}</div>
-          <div className="month">{moment(blog.created_at).format("MMM").toUpperCase()}</div>
+          <div className="month">
+            {moment(blog.created_at)
+              .format("MMM")
+              .toUpperCase()}
+          </div>
         </div>
         <div className="blog-info">
           <div className="title">{blog.title}</div>
