@@ -629,7 +629,11 @@ class App extends Component {
       return <Spinner message="Page not found!" />;
     else if (logout && page == "/home")
       return <Spinner message="Logging out..." />;
-    else if (isUserLoggedIn && this.state.active) {
+    else if (
+      isUserLoggedIn &&
+      this.state.active &&
+      this.cookie("get", "jobhax_access_token")
+    ) {
       return (
         <Router>
           <div>

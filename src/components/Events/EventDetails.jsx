@@ -4,15 +4,16 @@ import { Icon, Button, Affix, Tag } from "antd";
 import parse from "html-react-parser";
 
 import {
-  makeTimeBeautiful,
   USER_TYPES,
-  imageIcon
+  imageIcon,
+  LONG_DATE_FORMAT
 } from "../../utils/constants/constants";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { apiRoot, EVENTS } from "../../utils/constants/endpoints";
 import Map from "../Metrics/SubComponents/Map/Map.jsx";
 
 import "./style.scss";
+import moment from "moment";
 
 class EventDetails extends React.Component {
   constructor(props) {
@@ -106,16 +107,23 @@ class EventDetails extends React.Component {
       event.host_user.profile_photo != ("" || null)
         ? apiRoot + event.host_user.profile_photo
         : "../../../src/assets/icons/User@3x.png";
-    let time = makeTimeBeautiful(event.event_date_start, "dateandtime");
-    let longDate = makeTimeBeautiful(event.event_date_start, "longDate");
+
+    let start_date_locale = moment(event.event_date_start).format(
+      LONG_DATE_FORMAT
+    );
+    let day_locale = moment(event.event_date_start).format("DD");
+    let month_locale = moment(event.event_date_start)
+      .format("MMM")
+      .toUpperCase();
+
     return (
       <div className="event-header">
         <div className="event-datebox">
-          <div className="day">{time.split("-")[0]}</div>
-          <div className="month">{time.split("-")[1].toUpperCase()}</div>
+          <div className="day">{day_locale}</div>
+          <div className="month">{month_locale}</div>
         </div>
         <div className="event-info">
-          <div className="event-date">{longDate}</div>
+          <div className="event-date">{start_date_locale}</div>
           <div className="title">{event.title}</div>
           <div className="host-info">
             <div className="host-photo">
@@ -165,7 +173,11 @@ class EventDetails extends React.Component {
 
   generateLocationArea() {
     const { event } = this.props;
-    let longDate = makeTimeBeautiful(event.event_date_start, "longDate");
+    let start_date_locale = moment(event.event_date_start).format(
+      LONG_DATE_FORMAT
+    );
+    let start_hour_locale = moment(event.event_date_start).format("LT");
+    let end_hour_locale = moment(event.event_date_end).format("LT");
     return (
       <div>
         <div className="info">
@@ -173,16 +185,8 @@ class EventDetails extends React.Component {
             <Icon type="schedule" style={{ fontSize: "150%" }} />
           </div>
           <div>
-            <div>{longDate}</div>
-            <div>
-              {makeTimeBeautiful(event.event_date_start, "dateandtime").split(
-                "at"
-              )[1] +
-                " to " +
-                makeTimeBeautiful(event.event_date_end, "dateandtime").split(
-                  "at"
-                )[1]}
-            </div>
+            <div>{start_date_locale}</div>
+            <div>{start_hour_locale + " to " + end_hour_locale}</div>
           </div>
         </div>
         <div className="info">
@@ -197,7 +201,14 @@ class EventDetails extends React.Component {
         <div className="map">
           <Map
             defaultCenter={{ lat: event.location_lat, lng: event.location_lon }}
-            positions={[{id:event.id, company:event.location_title, location_lat: event.location_lat, location_lon: event.location_lon }]}
+            positions={[
+              {
+                id: event.id,
+                company: event.location_title,
+                location_lat: event.location_lat,
+                location_lon: event.location_lon
+              }
+            ]}
           />
         </div>
       </div>
@@ -211,11 +222,13 @@ class EventDetails extends React.Component {
       event.attendee_list.map(attendee => {
         return this.generateAttendeeCard(attendee);
       });
+
     const headerImage = event.header_image ? (
       <img src={apiRoot + event.header_image} />
     ) : (
       imageIcon
     );
+
     return (
       <div className="event-body">
         <div className="event-data">

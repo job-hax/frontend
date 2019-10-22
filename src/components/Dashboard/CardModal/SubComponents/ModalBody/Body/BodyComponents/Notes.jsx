@@ -1,11 +1,12 @@
 import React from "react";
 import classNames from "classnames";
 import { Input, Button } from "antd";
+import moment from "moment";
 
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api";
 import {
   IS_CONSOLE_LOG_OPEN,
-  makeTimeBeautiful
+  DATE_AND_TIME_FORMAT
 } from "../../../../../../../utils/constants/constants.js";
 import { NOTES } from "../../../../../../../utils/constants/endpoints";
 
@@ -227,12 +228,12 @@ class Notes extends React.Component {
                   {item.update_date == null ? (
                     <p className="date">
                       {" "}
-                      {makeTimeBeautiful(item.created_date, "dateandtime")}
+                      {moment(item.created_date).format(DATE_AND_TIME_FORMAT)}
                     </p>
                   ) : (
                     <p className="date">
                       last updated{" "}
-                      {makeTimeBeautiful(item.update_date, "dateandtime")}
+                      {moment(item.update_date).format(DATE_AND_TIME_FORMAT)}
                     </p>
                   )}
                 </div>

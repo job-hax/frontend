@@ -26,7 +26,6 @@ class AddVideoModal extends React.Component {
           title: null,
           description: null,
           embed_code: null,
-          embed_code_correct: true,
           is_publish: false
         };
 
@@ -36,7 +35,8 @@ class AddVideoModal extends React.Component {
       title: video.title,
       description: video.description,
       embed_code: video.embed_code,
-      is_publish: video.is_publish
+      is_publish: video.is_publish,
+      embed_code_correct: true
     };
 
     this.handleOk = this.handleOk.bind(this);
@@ -82,8 +82,8 @@ class AddVideoModal extends React.Component {
 
   handleEmbedCodeInput(event) {
     let code = event.target.value;
-    const code_validity = code.substring(0, 7) === "<iframe" ? true : false;
-    console.log(code, code_validity, "subst", code.substring(0, 7));
+    const code_validity = code.startsWith("<iframe");
+    console.log("validity", code, code_validity);
     this.setState({ embed_code: code, embed_code_correct: code_validity });
   }
 
@@ -161,7 +161,7 @@ class AddVideoModal extends React.Component {
         visible={this.state.visible}
         onOk={this.handleOk}
         onCancel={this.props.handleCancel}
-        getContainer={() => document.getElementById("main-container")}
+        getContainer={() => document.getElementById("manage-container")}
         width="80vw"
         footer={[this.sendButton]}
       >

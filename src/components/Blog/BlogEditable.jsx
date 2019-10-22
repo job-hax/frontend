@@ -7,11 +7,15 @@ import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import moment from "moment";
 
 import {
-  makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN,
-  USER_TYPES
+  USER_TYPES,
+  DATE_AND_TIME_FORMAT,
+  MEDIUM_DATE_FORMAT,
+  LONG_DATE_AND_TIME_FORMAT,
+  errorMessage
 } from "../../utils/constants/constants";
 import { apiRoot, BLOGS } from "../../utils/constants/endpoints";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
@@ -144,10 +148,12 @@ class BlogEditable extends React.Component {
         });
         !is_publish
           ? this.props.alert(3000, "success", "Saved!")
+          : this.isCareerService
+          ? this.props.alert(3000, "success", "Published")
           : this.props.alert(
               3000,
               "success",
-              "Your blog has been sent for approval! Approval procedure may take several days!"
+              "Your event has been sent for approval! Approval procedure may take several days!"
             );
         if (config.method == "POST") {
           let create_date = new Date().toISOString();
@@ -155,7 +161,13 @@ class BlogEditable extends React.Component {
             created_at: create_date
           });
         }
-        IS_CONSOLE_LOG_OPEN && console.log("done!");
+        if (this.isCareerService && this.props.userType) {
+          this.props.handleModalCancel(this.props.userType);
+        }
+      } else {
+        errorMessage(
+          response.data.error_code + " " + response.data.error_message
+        );
       }
     }
   }
@@ -210,14 +222,17 @@ class BlogEditable extends React.Component {
       publisher.profile_photo != ("" || null)
         ? apiRoot + publisher.profile_photo
         : "../../../src/assets/icons/User@3x.png";
-    let time = makeTimeBeautiful(created_at, "dateandtime");
-    let longDate = makeTimeBeautiful(created_at, "longDate");
-    let joinDate = makeTimeBeautiful(publisher.date_joined, "longDate");
+    let longDateAndTime = moment(created_at).format(LONG_DATE_AND_TIME_FORMAT);
+    let joinDate = moment(publisher.date_joined).format(MEDIUM_DATE_FORMAT);
     return (
       <div className="blog-header">
         <div className="blog-datebox">
-          <div className="day">{time.split("-")[0]}</div>
-          <div className="month">{time.split("-")[1].toUpperCase()}</div>
+          <div className="day">{moment(created_at).format("DD")}</div>
+          <div className="month">
+            {moment(created_at)
+              .format("MMM")
+              .toUpperCase()}
+          </div>
         </div>
         <div className="blog-info">
           <div>
@@ -269,9 +284,7 @@ class BlogEditable extends React.Component {
             </div>
           </div>
           <div className="info-container">
-            <div className="info">
-              {longDate + " at " + time.split("at")[1]}
-            </div>
+            <div className="info">{longDateAndTime}</div>
             <div className="info">
               <Icon type="dashboard" />
               {" " + Math.round(content.split(" ").length / 200, 0) + " min"}
@@ -294,12 +307,7 @@ class BlogEditable extends React.Component {
                   </div>
                 </div>
                 <div className="details-container">
-                  <div>
-                    {"joined" +
-                      joinDate.split(",")[1] +
-                      "," +
-                      joinDate.split(",")[2]}
-                  </div>
+                  <div>{"joined " + joinDate}</div>
                 </div>
               </div>
             </div>
@@ -480,6 +488,9 @@ class BlogEditable extends React.Component {
     const publishButtonText = this.isCareerService
       ? "Publish"
       : "Send for Approval";
+    const publishButtonDisable = blog.is_publish
+      ? !isAnytingEdited || !isRequiredFieldsFilled
+      : !isRequiredFieldsFilled;
     return (
       <div className="fixed-buttons-container">
         {this.isCareerService && (
@@ -517,7 +528,7 @@ class BlogEditable extends React.Component {
           </Button>
           <Button
             type="primary"
-            disabled={!isAnytingEdited || !isRequiredFieldsFilled}
+            disabled={publishButtonDisable}
             style={{ margin: "0 0 0 8px" }}
             onClick={() => this.postBlogData()}
           >
@@ -526,7 +537,7 @@ class BlogEditable extends React.Component {
         </div>
         {updated_at && (
           <div className="no-data">
-            {"last update " + makeTimeBeautiful(updated_at, "dateandtime")}
+            {"last update " + moment(updated_at).format(DATE_AND_TIME_FORMAT)}
           </div>
         )}
       </div>

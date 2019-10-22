@@ -3,8 +3,9 @@ import { AutoComplete, DatePicker, Select, Timeline } from "antd";
 import moment from "moment";
 
 import {
-  makeTimeBeautiful,
-  IS_CONSOLE_LOG_OPEN
+  IS_CONSOLE_LOG_OPEN,
+  MEDIUM_DATE_FORMAT,
+  DATE_AND_TIME_FORMAT
 } from "../../../../../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../../../../../utils/api/fetch_api.js";
 import {
@@ -27,7 +28,7 @@ class JobDetails extends React.Component {
         this.props.card.company_object &&
         this.props.card.company_object.company,
       jobTitle: this.props.card.position && this.props.card.position.job_title,
-      apply_date: makeTimeBeautiful(this.props.card.apply_date, "date"),
+      apply_date: moment(this.props.card.apply_date).format(MEDIUM_DATE_FORMAT),
       source:
         this.props.card.app_source === null
           ? "N/A"
@@ -305,10 +306,7 @@ class JobDetails extends React.Component {
         {isApplyDateEditing == true ? (
           <DatePicker
             onChange={this.handleApplyDate}
-            defaultValue={moment(
-              new Date(this.props.card.apply_date.split("T")[0] + "T06:00:00"),
-              dateFormat
-            )}
+            defaultValue={moment(this.props.card.apply_date)}
             format={dateFormat}
             style={this.inputStyle}
           />
@@ -424,7 +422,7 @@ class JobDetails extends React.Component {
   generateTimeline() {
     const points = this.props.card.timeline.map(point => (
       <Timeline.Item key={point.id}>
-        {point.name} {makeTimeBeautiful(point.time, "dateandtime")}
+        {point.name} {moment(point.time).format(DATE_AND_TIME_FORMAT)}
       </Timeline.Item>
     ));
 

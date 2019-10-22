@@ -1,15 +1,12 @@
 import React from "react";
-import { Table, Modal, Button, Pagination, Tag } from "antd";
+import { Table, Modal, Button } from "antd";
 
 import { apiRoot, COLLEGES } from "../../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../../utils/api/fetch_api.js";
 import Spinner from "../../../Partials/Spinner/Spinner.jsx";
-import { makeTimeBeautiful } from "../../../../utils/constants/constants.js";
-import EventDetails from "../../../Events/EventDetails.jsx";
-import EventEditable from "../../../Events/EventEditable.jsx";
+import AddBannerOrSocialModal from "../../AddBannerOrSocialModal/AddBannerOrSocialModal.jsx";
 
 import "../style.scss";
-import AddBannerOrSocialModal from "../../AddBannerOrSocialModal/AddBannerOrSocialModal.jsx";
 
 class BannersManage extends React.Component {
   constructor(props) {

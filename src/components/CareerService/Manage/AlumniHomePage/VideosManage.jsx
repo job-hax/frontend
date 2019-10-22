@@ -1,11 +1,12 @@
 import React from "react";
 import { Table, Modal, Button, Pagination, Tag } from "antd";
 import parse from "html-react-parser";
+import moment from "moment";
 
-import { apiRoot, COLLEGES } from "../../../../utils/constants/endpoints.js";
+import { COLLEGES } from "../../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../../utils/api/fetch_api.js";
+import { MEDIUM_DATE_FORMAT } from "../../../../utils/constants/constants.js";
 import Spinner from "../../../Partials/Spinner/Spinner.jsx";
-import { makeTimeBeautiful } from "../../../../utils/constants/constants.js";
 import AddVideoModal from "../../AddVideoModal/AddVideoModal.jsx";
 
 import "../style.scss";
@@ -219,7 +220,7 @@ class VideosManage extends React.Component {
         key: video.id,
         title: video.title,
         description: video.description,
-        date: makeTimeBeautiful(video.created_at, "date"),
+        date: moment(video.created_at).format(MEDIUM_DATE_FORMAT),
         status: (
           <Tag color={video.is_publish ? "green" : "red"}>
             {video.is_publish ? "ACTIVE" : "DEACTIVATED"}

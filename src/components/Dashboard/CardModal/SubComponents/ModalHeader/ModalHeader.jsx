@@ -2,6 +2,7 @@ import React from "react";
 
 import defaultLogo from "../../../../../assets/icons/JobHax-logo-black.svg";
 import MoveOptions from "./MoveOptions.jsx";
+import { apiRoot } from "../../../../../utils/constants/endpoints";
 
 class ModalHeader extends React.Component {
   constructor(props) {
@@ -9,8 +10,7 @@ class ModalHeader extends React.Component {
 
     this.state = {
       updateHeader: this.props.updateHeader,
-      card: this.props.card,
-      companyLogoError: false
+      card: this.props.card
     };
   }
 
@@ -29,15 +29,7 @@ class ModalHeader extends React.Component {
         <div className="modal-header">
           <div className="job-card-info-container">
             <div className="modal-company-icon">
-              {card.company_object.cb_company_logo == null ||
-              this.state.companyLogoError ? (
-                <img src={card.company_object.company_logo || defaultLogo} />
-              ) : (
-                <img
-                  onError={() => this.setState({ companyLogoError: true })}
-                  src={card.company_object.cb_company_logo}
-                />
-              )}
+              <img src={apiRoot + card.company_object.logo} />
             </div>
             <div className="header-text">
               {card.company_object && (

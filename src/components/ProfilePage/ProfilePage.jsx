@@ -18,8 +18,8 @@ import moment, { max } from "moment";
 import Spinner from "../Partials/Spinner/Spinner.jsx";
 import NotificationsBox from "../Partials/NotificationsBox/NotificationsBox.jsx";
 import {
-  makeTimeBeautiful,
-  IS_CONSOLE_LOG_OPEN
+  IS_CONSOLE_LOG_OPEN,
+  MEDIUM_DATE_FORMAT
 } from "../../utils/constants/constants.js";
 import { linkedInOAuth } from "../../utils/helpers/oAuthHelperFunctions.js";
 import { apiRoot, USERS } from "../../utils/constants/endpoints.js";
@@ -359,7 +359,7 @@ class ProfilePage extends React.Component {
 
   handleDatePickerChange(event) {
     this.setState({ selectedDateShowing: event });
-    this.body["dob"] = event.toISOString().split("T")[0];
+    this.body["dob"] = event.toISOString();
   }
 
   async handleProfilePhotoUpdate(file) {
@@ -454,7 +454,9 @@ class ProfilePage extends React.Component {
               {this.state.data != null && this.state.data.date_joined && (
                 <span>
                   Registered on{" "}
-                  {makeTimeBeautiful(this.state.data.date_joined, "date")}
+                  {moment(this.state.data.date_joined).format(
+                    MEDIUM_DATE_FORMAT
+                  )}
                 </span>
               )}
             </div>
@@ -579,7 +581,7 @@ class ProfilePage extends React.Component {
                   <div className="info-content-body-item-label">Birthday:</div>
                   <div className="info-content-body-item-text">
                     {this.state.data != null && this.state.data.dob ? (
-                      makeTimeBeautiful(this.state.data.dob + "T", "date")
+                      moment(this.state.data.dob).format(MEDIUM_DATE_FORMAT)
                     ) : (
                       <span className="not-specified-notice">
                         Not specified!
@@ -787,7 +789,9 @@ class ProfilePage extends React.Component {
                 <span>Registered on </span>
                 {this.state.data != null &&
                   this.state.data.date_joined &&
-                  makeTimeBeautiful(this.state.data.date_joined, "date")}
+                  moment(this.state.data.date_joined).format(
+                    MEDIUM_DATE_FORMAT
+                  )}
               </div>
               <div className="professional-info-container">
                 <div className="professional-info-header">

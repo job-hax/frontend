@@ -1,8 +1,9 @@
 import React from "react";
+import moment from "moment";
 
 import {
-  makeTimeBeautiful,
-  IS_CONSOLE_LOG_OPEN
+  IS_CONSOLE_LOG_OPEN,
+  DATE_AND_TIME_FORMAT
 } from "../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { VOTE_POLL } from "../../../utils/constants/endpoints.js";
@@ -72,7 +73,7 @@ class PollCard extends React.Component {
       <div className="poll-card" key={poll.id}>
         <div>
           <div className="date">
-            {makeTimeBeautiful(poll.date, "dateandtime")}
+            {moment(poll.date).format(DATE_AND_TIME_FORMAT)}
           </div>
           <div className="question">{poll.title}</div>
         </div>

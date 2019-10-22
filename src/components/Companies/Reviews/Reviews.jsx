@@ -1,7 +1,8 @@
 import React from "react";
 import { Rate, Menu, Dropdown, Button, Icon } from "antd";
+import moment from "moment";
 
-import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
+import { DATE_AND_TIME_FORMAT } from "../../../utils/constants/constants.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import { REVIEWS } from "../../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
@@ -99,7 +100,7 @@ class Reviews extends React.Component {
               </div>
               <div className="header-bottom">
                 <div className="date">
-                  {makeTimeBeautiful(review.update_date, "dateandtime")}
+                  {moment(review.update_date).format(DATE_AND_TIME_FORMAT)}
                 </div>
                 <div style={{ marginTop: "-16px" }}>
                   <Rate

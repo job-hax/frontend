@@ -267,11 +267,14 @@ class CareerServiceDashboard extends React.Component {
       </div>
     ));
 
+    const addNewVideoStyle = Object.assign({}, this.add_new_style);
+    addNewVideoStyle.marginRight = 80;
+
     const add_new = (
       <div>
         <div
           className="add-new-button"
-          style={this.add_new_style}
+          style={addNewVideoStyle}
           onClick={() => this.setState({ addVideoVisible: true })}
         >
           +

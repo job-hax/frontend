@@ -1,14 +1,15 @@
 import React from "react";
 import { Table, Modal, Button, Pagination, Tag } from "antd";
+import moment from "moment";
 
-import { apiRoot, EVENTS } from "../../../utils/constants/endpoints.js";
+import { EVENTS } from "../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
-import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import {
-  makeTimeBeautiful,
   USER_TYPES,
-  USER_TYPE_NAMES
+  USER_TYPE_NAMES,
+  DATE_AND_TIME_FORMAT
 } from "../../../utils/constants/constants.js";
+import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import Event from "../../Events/Event.jsx";
 import EventDetails from "../../Events/EventDetails.jsx";
 import EventEditable from "../../Events/EventEditable.jsx";
@@ -300,8 +301,10 @@ class EventManage extends React.Component {
         event_type: event.event_type.name,
         title: event.title,
         address: event.location_address,
-        event_start: makeTimeBeautiful(event.event_date_start, "dateandtime"),
-        request_date: makeTimeBeautiful(event.updated_at, "dateandtime"),
+        event_start: moment(event.event_date_start).format(
+          DATE_AND_TIME_FORMAT
+        ),
+        request_date: moment(event.updated_at).format(DATE_AND_TIME_FORMAT),
         status: {
           is_publish: event.is_publish,
           is_approved: event.is_approved,
@@ -371,10 +374,9 @@ class EventManage extends React.Component {
       data.push({
         key: USER_TYPES["career_services"],
         host_type: "Career Service",
-        last_update: makeTimeBeautiful(
-          this.state[this.parameterMap["career_services"].state][0].updated_at,
-          "dateandtime"
-        ),
+        last_update: moment(
+          this.state[this.parameterMap["career_services"].state][0].updated_at
+        ).format(DATE_AND_TIME_FORMAT),
         upcoming:
           this.state.stats["Career Service"].upcoming_x_days +
           " events in next 30 days",
@@ -392,10 +394,9 @@ class EventManage extends React.Component {
       data.push({
         key: USER_TYPES["alumni"],
         host_type: "Alumni",
-        last_update: makeTimeBeautiful(
-          this.state[this.parameterMap["alumni"].state][0].updated_at,
-          "dateandtime"
-        ),
+        last_update: moment(
+          this.state[this.parameterMap["alumni"].state][0].updated_at
+        ).format(DATE_AND_TIME_FORMAT),
         upcoming:
           this.state.stats["Alumni"].upcoming_x_days +
           " events in next 30 days",
@@ -411,10 +412,9 @@ class EventManage extends React.Component {
       data.push({
         key: USER_TYPES["student"],
         host_type: "Student",
-        last_update: makeTimeBeautiful(
-          this.state[this.parameterMap["student"].state][0].updated_at,
-          "dateandtime"
-        ),
+        last_update: moment(
+          this.state[this.parameterMap["student"].state][0].updated_at
+        ).format(DATE_AND_TIME_FORMAT),
         upcoming:
           this.state.stats["Student"].upcoming_x_days +
           " events in next 30 days",
@@ -470,6 +470,8 @@ class EventManage extends React.Component {
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
             cookie={this.props.cookie}
+            handleModalCancel={this.handleModalCancel}
+            userType={user_type}
           />
         )}
       </Modal>

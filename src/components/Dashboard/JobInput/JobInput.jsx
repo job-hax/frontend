@@ -15,12 +15,19 @@ class JobInput extends PureComponent {
       companyName: "",
       jobTitle: "",
       autoCompleteCompanyData: [],
-      autoCompletePositionsData: []
+      autoCompletePositionsData: [],
+      animate: true
     };
     this.handlePositionsSearch = this.handlePositionsSearch.bind(this);
     this.handleAddNewApplication = this.handleAddNewApplication.bind(this);
     this.cancelJobInputEdit = this.cancelJobInputEdit.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ animate: false });
+    }, 5);
   }
 
   handleSearch(value) {
@@ -127,11 +134,16 @@ class JobInput extends PureComponent {
 
   render() {
     const { showInput, toggleJobInput } = this.props;
-    const { companyName, jobTitle } = this.state;
+    const { companyName, jobTitle, animate } = this.state;
+
+    const containerClass = classNames({
+      "column-addJob-form": true,
+      "--animation-from-zero": animate
+    });
     return (
       <div>
         <form
-          className="column-addJob-form"
+          className={containerClass}
           onSubmit={this.handleAddNewApplication}
         >
           <AutoComplete

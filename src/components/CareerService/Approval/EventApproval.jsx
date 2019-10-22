@@ -1,10 +1,11 @@
 import React from "react";
 import { Table, Modal, Button, Pagination } from "antd";
+import moment from "moment";
 
-import { apiRoot, EVENTS } from "../../../utils/constants/endpoints.js";
+import { EVENTS } from "../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
+import { DATE_AND_TIME_FORMAT } from "../../../utils/constants/constants.js";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
-import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
 import Event from "../../Events/Event.jsx";
 import EventDetails from "../../Events/EventDetails.jsx";
 
@@ -195,8 +196,10 @@ class EventApproval extends React.Component {
         event_type: event.event_type.name,
         title: event.title,
         address: event.location_address,
-        event_start: makeTimeBeautiful(event.event_date_start, "dateandtime"),
-        request_date: makeTimeBeautiful(event.updated_at, "dateandtime"),
+        event_start: moment(event.event_date_start).format(
+          DATE_AND_TIME_FORMAT
+        ),
+        request_date: moment(event.updated_at).format(DATE_AND_TIME_FORMAT),
         pending:
           Math.round(
             (new Date() - new Date(event.updated_at)) / (1000 * 60 * 60 * 24)

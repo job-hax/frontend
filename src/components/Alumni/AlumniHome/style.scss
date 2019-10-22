@@ -115,12 +115,12 @@
     .videos-area {
         display: flex;
         justify-content: flex-start;
-        padding: 0px 80px 80px 80px;
+        padding: 0px 0px 80px 80px;
         overflow-y: hidden;
         width: 100%;
 
         .video-container {
-            margin: 0px 40px;
+            padding: 0px 80px 0px 0px;
         }
 
         .video-title {

@@ -210,7 +210,7 @@ class AddBannerOrSocialModal extends React.Component {
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.props.handleCancel}
-        getContainer={() => document.getElementById("main-container")}
+        getContainer={() => document.getElementById("manage-container")}
         width="80vw"
         footer={[this.sendButton]}
       >
