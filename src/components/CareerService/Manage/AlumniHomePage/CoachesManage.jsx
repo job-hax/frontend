@@ -1,14 +1,15 @@
 import React from "react";
 import { Table, Modal, Button, Pagination, Tag } from "antd";
+import moment from "moment";
 
-import { apiRoot, COLLEGES } from "../../../../utils/constants/endpoints.js";
+import { COLLEGES } from "../../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../../utils/api/fetch_api.js";
+import { MEDIUM_DATE_FORMAT } from "../../../../utils/constants/constants.js";
 import Spinner from "../../../Partials/Spinner/Spinner.jsx";
-import { makeTimeBeautiful } from "../../../../utils/constants/constants.js";
-
-import "../style.scss";
 import AddCoachModal from "../../AddCoachModal/AddCoachModal.jsx";
 import CoachSummary from "../../CoachModal/CoachSummary.jsx";
+
+import "../style.scss";
 
 class CoachesManage extends React.Component {
   constructor(props) {
@@ -220,7 +221,7 @@ class CoachesManage extends React.Component {
         coach: coach.first_name + " " + coach.last_name,
         title: coach.title,
         email: coach.email,
-        date: makeTimeBeautiful(coach.created_at, "date"),
+        date: moment(coach.created_at).format(MEDIUM_DATE_FORMAT),
         status: (
           <Tag color={coach.is_publish ? "green" : "red"}>
             {coach.is_publish ? "ACTIVE" : "DEACTIVATED"}

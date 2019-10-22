@@ -192,6 +192,9 @@ $addJobButtonAnimationZoomInScale: 1.03;
           max-height: 30px;
           border-radius: 8px;
           background-color: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           text-align: center;
           cursor: pointer;
           box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
@@ -203,12 +206,9 @@ $addJobButtonAnimationZoomInScale: 1.03;
 
 
           .button-inside {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 180%;
-            height: 100%;
+            font-size: 18pt;
             color: rgb(150, 150, 150);
+            line-height: normal;
           }
         }
 

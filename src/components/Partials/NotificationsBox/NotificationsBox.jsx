@@ -1,7 +1,8 @@
 import React from "react";
+import moment from "moment";
 
 import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
-import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
+import { DATE_AND_TIME_FORMAT } from "../../../utils/constants/constants.js";
 
 import "./style.scss";
 
@@ -20,7 +21,7 @@ class NotificationsBox extends React.Component {
           <div className="notification-header">
             <div className="notification-title">{notification.title}</div>
             <div className="notification-date">
-              {makeTimeBeautiful(notification.created_at, "dateandtime")}
+              {moment(notification.created_at).format(DATE_AND_TIME_FORMAT)}
             </div>
           </div>
           <div className="notification-content">{notification.content}</div>

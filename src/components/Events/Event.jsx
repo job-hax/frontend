@@ -1,7 +1,11 @@
 import React from "react";
 import { Icon } from "antd";
+import moment from "moment";
 
-import { makeTimeBeautiful, imageIcon } from "../../utils/constants/constants";
+import {
+  imageIcon,
+  DATE_AND_TIME_FORMAT
+} from "../../utils/constants/constants";
 import { apiRoot } from "../../utils/constants/endpoints";
 
 import "./style.scss";
@@ -14,7 +18,11 @@ class Event extends React.Component {
 
   generateEventCard() {
     const { event } = this.props;
-    let time = makeTimeBeautiful(event.event_date_start, "dateandtime");
+    let day_locale = moment(event.event_date_start).format("DD");
+    let month_locale = moment(event.event_date_start)
+      .format("MMM")
+      .toUpperCase();
+
     const headerImage = event.header_image ? (
       <img src={apiRoot + event.header_image} />
     ) : (
@@ -27,8 +35,8 @@ class Event extends React.Component {
       >
         <div className="image">{headerImage}</div>
         <div className="date-box">
-          <div className="month">{time.split("-")[1].toUpperCase()}</div>
-          <div className="day">{time.split("-")[0]}</div>
+          <div className="month">{month_locale}</div>
+          <div className="day">{day_locale}</div>
         </div>
         <div className="body-container">
           <div className="body">
@@ -40,7 +48,7 @@ class Event extends React.Component {
                 type="schedule"
                 style={{ fontSize: "120%", marginRight: 8 }}
               />
-              {time}
+              {moment(event.event_date_start).format(DATE_AND_TIME_FORMAT)}
             </div>
           </div>
           <div className="footer">{event.attendee_count + " attendees"}</div>

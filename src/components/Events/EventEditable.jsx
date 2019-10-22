@@ -20,11 +20,14 @@ import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
 import Geosuggest from "react-geosuggest";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import moment from "moment";
 
 import {
-  makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN,
-  USER_TYPES
+  USER_TYPES,
+  errorMessage,
+  DATE_AND_TIME_FORMAT,
+  LONG_DATE_FORMAT
 } from "../../utils/constants/constants";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import { apiRoot, EVENTS } from "../../utils/constants/endpoints";
@@ -171,7 +174,7 @@ class EventEditable extends React.Component {
     let config = id == null ? { method: "POST" } : { method: "PUT" };
     toAdd.forEach(entry => formData.append(entry, this.state[entry]));
     this.isCareerService && formData.append("user_types", user_types);
-    formData.append("event_type", event_type.id);
+    event_type && formData.append("event_type_id", event_type.id);
     if (config.method == "PUT") {
       formData.append("event_id", id);
     }
@@ -189,6 +192,8 @@ class EventEditable extends React.Component {
         });
         !is_publish
           ? this.props.alert(3000, "success", "Saved!")
+          : this.isCareerService
+          ? this.props.alert(3000, "success", "Published")
           : this.props.alert(
               3000,
               "success",
@@ -200,6 +205,13 @@ class EventEditable extends React.Component {
             created_at: create_date
           });
         }
+        if (this.isCareerService && this.props.userType) {
+          this.props.handleModalCancel(this.props.userType);
+        }
+      } else {
+        errorMessage(
+          response.data.error_code + " " + response.data.error_message
+        );
       }
     }
   }
@@ -267,7 +279,6 @@ class EventEditable extends React.Component {
     let name = event.item.props.value;
     let id = parseFloat(event.key);
     let type = { id: id, name: name };
-    console.log(type);
     this.setState({ event_type: type });
   }
 
@@ -311,16 +322,19 @@ class EventEditable extends React.Component {
       host_user.profile_photo === ("" || null)
         ? "../../../src/assets/icons/User@3x.png"
         : apiRoot + host_user.profile_photo;
-    let time = makeTimeBeautiful(event_date_start, "dateandtime");
-    let longDate = makeTimeBeautiful(event_date_start, "longDate");
+    let start_date_locale = moment(event_date_start).format(LONG_DATE_FORMAT);
+    let day_locale = moment(event_date_start).format("DD");
+    let month_locale = moment(event_date_start)
+      .format("MMM")
+      .toUpperCase();
     return (
       <div className="event-header">
         <div className="event-datebox">
-          <div className="day">{time.split("-")[0]}</div>
-          <div className="month">{time.split("-")[1].toUpperCase()}</div>
+          <div className="day">{day_locale}</div>
+          <div className="month">{month_locale}</div>
         </div>
         <div className="event-info">
-          <div className="event-date">{longDate}</div>
+          <div className="event-date">{start_date_locale}</div>
           <div>
             <div
               style={{
@@ -438,9 +452,10 @@ class EventEditable extends React.Component {
       location_lon,
       location_title
     } = this.state;
-    let longDate = makeTimeBeautiful(event_date_start, "longDate");
-    let startDate = makeTimeBeautiful(event_date_start, "dateandtime");
-    let endDate = makeTimeBeautiful(event_date_end, "dateandtime");
+
+    let start_date_locale = moment(event_date_start).format(LONG_DATE_FORMAT);
+    let start_hour_locale = moment(event_date_start).format("LT");
+    let end_hour_locale = moment(event_date_end).format("LT");
 
     const addressPickMargin = location_title ? 4 : 36;
     const mapPosition = [
@@ -468,10 +483,8 @@ class EventEditable extends React.Component {
                 }}
               >
                 <div>
-                  <div>{longDate}</div>
-                  <div>
-                    {startDate.split("at")[1] + " to " + endDate.split("at")[1]}
-                  </div>
+                  <div>{start_date_locale}</div>
+                  <div>{start_hour_locale + " to " + end_hour_locale}</div>
                 </div>
                 <div
                   onClick={() => this.setState({ isEditingDate: true })}
@@ -486,6 +499,10 @@ class EventEditable extends React.Component {
               <RangePicker
                 showTime={{ format: "HH:mm" }}
                 format="YYYY-MM-DD HH:mm"
+                defaultValue={[
+                  moment(event_date_start),
+                  moment(event_date_end)
+                ]}
                 placeholder={["Start Time", "End Time"]}
                 onOk={this.onDateOk}
               />
@@ -560,10 +577,14 @@ class EventEditable extends React.Component {
         </div>
       </div>
     );
-    const image =
-      header_image !== null && header_image.substring(0, 4) == "data"
-        ? header_image
-        : apiRoot + header_image;
+
+    const headerImage =
+      header_image !== null && header_image.substring(0, 4) === "data" ? (
+        <img src={header_image} />
+      ) : (
+        <img src={apiRoot + header_image} />
+      );
+
     const attendees =
       event.attendee_list &&
       event.attendee_list.map(attendee => {
@@ -582,11 +603,9 @@ class EventEditable extends React.Component {
               beforeUpload={beforeUpload}
               action={file => this.handlePhotoUpdate(file)}
             >
-              {header_image != "" ? (
-                <img src={image} alt="avatar" style={{ width: "100%" }} />
-              ) : (
-                uploadButton
-              )}
+              {header_image !== "" && header_image !== null
+                ? headerImage
+                : uploadButton}
             </Upload>
           </div>
           <div className="details-container">
@@ -692,6 +711,9 @@ class EventEditable extends React.Component {
     const publishButtonText = this.isCareerService
       ? "Publish"
       : "Send for Approval";
+    const publishButtonDisable = this.state.is_publish
+      ? !isAnytingEdited || !isRequiredFieldsFilled
+      : !isRequiredFieldsFilled;
     return (
       <div className="fixed-buttons-container">
         {this.isCareerService && (
@@ -729,7 +751,7 @@ class EventEditable extends React.Component {
           </Button>
           <Button
             type="primary"
-            disabled={!isAnytingEdited || !isRequiredFieldsFilled}
+            disabled={publishButtonDisable}
             style={{ margin: "0 0 0 8px" }}
             onClick={() => this.postEventData()}
           >
@@ -738,7 +760,7 @@ class EventEditable extends React.Component {
         </div>
         {updated_at && (
           <div className="no-data">
-            {"last update " + makeTimeBeautiful(updated_at, "dateandtime")}
+            {"last update " + moment(updated_at).format(DATE_AND_TIME_FORMAT)}
           </div>
         )}
       </div>

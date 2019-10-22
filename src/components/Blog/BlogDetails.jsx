@@ -2,16 +2,19 @@ import React from "react";
 import { Icon, Button, Affix } from "antd";
 import parse from "html-react-parser";
 import { Redirect } from "react-router-dom";
+import moment from "moment";
 
-import "./style.scss";
 import {
-  makeTimeBeautiful,
   IS_CONSOLE_LOG_OPEN,
   USER_TYPES,
-  imageIcon
+  imageIcon,
+  LONG_DATE_AND_TIME_FORMAT,
+  MEDIUM_DATE_FORMAT
 } from "../../utils/constants/constants";
 import { apiRoot, BLOGS } from "../../utils/constants/endpoints";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
+
+import "./style.scss";
 
 class BlogDetails extends React.Component {
   constructor(props) {
@@ -96,25 +99,25 @@ class BlogDetails extends React.Component {
       blog.publisher_profile.profile_photo != ("" || null)
         ? apiRoot + blog.publisher_profile.profile_photo
         : "../../../src/assets/icons/User@3x.png";
-    let time = makeTimeBeautiful(blog.created_at, "dateandtime");
-    let longDate = makeTimeBeautiful(blog.created_at, "longDate");
-    let joinDate = makeTimeBeautiful(
-      blog.publisher_profile.date_joined,
-      "longDate"
+
+    let longDateAndTime = moment(blog.created_at).format(
+      LONG_DATE_AND_TIME_FORMAT
     );
+    let joinDate = moment(blog.publisher.date_joined).format(
+      MEDIUM_DATE_FORMAT
+    );
+
     return (
       <div className="blog-header">
         <div className="blog-datebox">
-          <div className="day">{time.split("-")[0]}</div>
-          <div className="month">{time.split("-")[1].toUpperCase()}</div>
+          <div className="day">{moment(blog.created_at).format("DD")}</div>
+          <div className="month">{moment(blog.created_at).format("MMM").toUpperCase()}</div>
         </div>
         <div className="blog-info">
           <div className="title">{blog.title}</div>
           <div className="snippet">{blog.snippet}</div>
           <div className="info-container">
-            <div className="info">
-              {longDate + " at " + time.split("at")[1]}
-            </div>
+            <div className="info">{longDateAndTime}</div>
             <div className="info">
               <Icon type="dashboard" />
               {" " + Math.round(blog.word_count / 200, 0) + " min"}
@@ -139,12 +142,7 @@ class BlogDetails extends React.Component {
                   </div>
                 </div>
                 <div className="details-container">
-                  <div>
-                    {"joined" +
-                      joinDate.split(",")[1] +
-                      "," +
-                      joinDate.split(",")[2]}
-                  </div>
+                  <div>{"joined " + joinDate}</div>
                 </div>
               </div>
             </div>

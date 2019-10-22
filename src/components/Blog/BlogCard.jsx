@@ -1,10 +1,11 @@
 import React from "react";
 import { Icon } from "antd";
+import moment from "moment";
 
 import { apiRoot } from "../../utils/constants/endpoints";
 import {
-  makeTimeBeautiful,
-  imageIcon
+  imageIcon,
+  MEDIUM_MD_FORMAT
 } from "../../utils/constants/constants.js";
 
 import "./style.scss";
@@ -26,7 +27,6 @@ class BlogCard extends React.Component {
 
   generateBlogCard() {
     const { blog } = this.props;
-    let longDate = makeTimeBeautiful(blog.created_at, "longDate");
     let photoUrl =
       blog.publisher_profile.profile_photo != ("" || null)
         ? apiRoot + blog.publisher_profile.profile_photo
@@ -57,7 +57,9 @@ class BlogCard extends React.Component {
                     blog.publisher_profile.last_name}
                 </div>
                 <div className="info-container">
-                  <div className="info">{longDate.split(",")[1]}</div>
+                  <div className="info">
+                    {moment(blog.created_at).format(MEDIUM_MD_FORMAT)}
+                  </div>
                   <div className="info">
                     <Icon type="dashboard" />
                     {" " + Math.round(blog.word_count / 200, 0) + " min"}

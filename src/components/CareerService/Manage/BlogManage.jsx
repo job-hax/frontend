@@ -1,19 +1,20 @@
 import React from "react";
 import { Table, Modal, Button, Pagination, Tag } from "antd";
+import moment from "moment";
 
 import { apiRoot, BLOGS } from "../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
-
-import "./style.scss";
-import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import {
-  makeTimeBeautiful,
   USER_TYPE_NAMES,
-  USER_TYPES
+  USER_TYPES,
+  DATE_AND_TIME_FORMAT
 } from "../../../utils/constants/constants.js";
+import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import BlogCard from "../../Blog/BlogCard.jsx";
 import BlogDetails from "../../Blog/BlogDetails.jsx";
 import BlogEditable from "../../Blog/BlogEditable.jsx";
+
+import "./style.scss";
 
 class BlogManage extends React.Component {
   constructor(props) {
@@ -74,7 +75,7 @@ class BlogManage extends React.Component {
         key="edit"
         type="primary"
         onClick={() => this.handleEdit(id)}
-        style={{ width: "105px" }}
+        style={{ width: "105px", margin: "4px 0px" }}
       >
         Edit
       </Button>
@@ -306,7 +307,7 @@ class BlogManage extends React.Component {
         views: blog.view_count + " views",
         likes: blog.upvote + " likes",
         dislikes: blog.downvote + " dislikes",
-        request_date: makeTimeBeautiful(blog.updated_at, "dateandtime"),
+        request_date: moment(blog.updated_at).format(DATE_AND_TIME_FORMAT),
         status: {
           is_publish: blog.is_publish,
           is_approved: blog.is_approved,
@@ -374,10 +375,9 @@ class BlogManage extends React.Component {
       data.push({
         key: USER_TYPES["career_services"],
         author_type: "Career Service",
-        last_update: makeTimeBeautiful(
-          this.state[this.parameterMap["career_services"].state][0].updated_at,
-          "dateandtime"
-        ),
+        last_update: moment(
+          this.state[this.parameterMap["career_services"].state][0].updated_at
+        ).format(DATE_AND_TIME_FORMAT),
         last_month:
           this.state.stats["Career Service"].last_x_days_created +
           " blogs added",
@@ -395,10 +395,9 @@ class BlogManage extends React.Component {
       data.push({
         key: USER_TYPES["alumni"],
         author_type: "Alumni",
-        last_update: makeTimeBeautiful(
-          this.state[this.parameterMap["alumni"].state][0].updated_at,
-          "dateandtime"
-        ),
+        last_update: moment(
+          this.state[this.parameterMap["alumni"].state][0].updated_at
+        ).format(DATE_AND_TIME_FORMAT),
         last_month:
           this.state.stats["Alumni"].last_x_days_created + " blogs added",
         views: this.state.stats["Alumni"].view_count + " views",
@@ -414,10 +413,9 @@ class BlogManage extends React.Component {
       data.push({
         key: USER_TYPES["student"],
         author_type: "Student",
-        last_update: makeTimeBeautiful(
-          this.state[this.parameterMap["student"].state][0].updated_at,
-          "dateandtime"
-        ),
+        last_update: moment(
+          this.state[this.parameterMap["student"].state][0].updated_at
+        ).format(DATE_AND_TIME_FORMAT),
         last_month:
           this.state.stats["Student"].last_x_days_created + " blogs added",
         views: this.state.stats["Student"].view_count + " views",
@@ -473,6 +471,8 @@ class BlogManage extends React.Component {
             handleTokenExpiration={this.props.handleTokenExpiration}
             alert={this.props.alert}
             cookie={this.props.cookie}
+            handleModalCancel={this.handleModalCancel}
+            userType={user_type}
           />
         )}
       </Modal>

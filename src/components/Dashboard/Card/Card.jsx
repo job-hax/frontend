@@ -20,6 +20,7 @@ import CardModal from "../CardModal/CardModal.jsx";
 
 import "./style.scss";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants";
+import { apiRoot } from "../../../utils/constants/endpoints";
 
 const cardSpec = {
   beginDrag(props) {
@@ -50,11 +51,9 @@ class Card extends PureComponent {
     super(props);
     this.state = {
       showModal: false,
-      imageLoadError: true,
       showSelect: false,
       isSelected: this.props.isSelected,
       animate: false,
-      companyLogoError: false,
       clickbox: false
     };
     this.toggleModal = this.toggleModal.bind(this);
@@ -205,15 +204,7 @@ class Card extends PureComponent {
           />
         )}
         <div className="card-company-icon">
-          {company_object.cb_company_logo === null ||
-          this.state.companyLogoError ? (
-            <img src={company_object.company_logo || defaultLogo} />
-          ) : (
-            <img
-              onError={() => this.setState({ companyLogoError: true })}
-              src={company_object.cb_company_logo}
-            />
-          )}
+          <img src={apiRoot + company_object.logo} />
         </div>
         <div className="card-company-info">
           <div id="company" className="card-company-name">

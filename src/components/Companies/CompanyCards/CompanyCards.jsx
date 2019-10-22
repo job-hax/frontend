@@ -4,7 +4,11 @@ import classNames from "classnames";
 import Reviews from "../Reviews/Reviews.jsx";
 import defaultLogo from "../../../assets/icons/JobHax-logo-black.svg";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
-import { COMPANIES, REVIEWS } from "../../../utils/constants/endpoints.js";
+import {
+  COMPANIES,
+  REVIEWS,
+  apiRoot
+} from "../../../utils/constants/endpoints.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
 import CompanyStats from "../../Partials/CompanyStats/CompanyStats.jsx";
 
@@ -18,8 +22,7 @@ class CompanyCards extends React.Component {
       isReviewsShowing: false,
       imageLoadError: true,
       positionsList: [],
-      reviewsList: [],
-      companyLogoError: false
+      reviewsList: []
     };
 
     this.toggleReviewsDisplay = this.toggleReviewsDisplay.bind(this);
@@ -83,15 +86,7 @@ class CompanyCards extends React.Component {
         <div className="company-card-initial">
           <div className="company-card-left">
             <div className="company-logo">
-              {company.cb_company_logo == null ||
-              this.state.companyLogoError ? (
-                <img src={company.company_logo || defaultLogo} />
-              ) : (
-                <img
-                  onError={() => this.setState({ companyLogoError: true })}
-                  src={company.cb_company_logo}
-                />
-              )}
+              <img src={apiRoot + company.logo} />
             </div>
           </div>
           <div className="company-card-right">

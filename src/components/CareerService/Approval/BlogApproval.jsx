@@ -1,15 +1,15 @@
 import React from "react";
 import { Table, Modal, Button, Pagination } from "antd";
+import moment from "moment";
 
-import { apiRoot, BLOGS } from "../../../utils/constants/endpoints.js";
+import { BLOGS } from "../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api.js";
-
-import "./style.scss";
+import { DATE_AND_TIME_FORMAT } from "../../../utils/constants/constants.js";
 import Spinner from "../../Partials/Spinner/Spinner.jsx";
-import { makeTimeBeautiful } from "../../../utils/constants/constants.js";
 import BlogCard from "../../Blog/BlogCard.jsx";
 import BlogDetails from "../../Blog/BlogDetails.jsx";
 
+import "./style.scss";
 class BlogApproval extends React.Component {
   constructor(props) {
     super(props);
@@ -195,7 +195,7 @@ class BlogApproval extends React.Component {
         type: blog.user_types[0].name,
         title: blog.title,
         lenght: blog.word_count + " words",
-        request_date: makeTimeBeautiful(blog.updated_at, "dateandtime"),
+        request_date: moment(blog.updated_at).format(DATE_AND_TIME_FORMAT),
         pending:
           Math.round(
             (new Date() - new Date(blog.updated_at)) / (1000 * 60 * 60 * 24)

@@ -1,5 +1,8 @@
 @import "../../App/style.scss";
 
+$addJobAnimationTransitionDuration: .5s;
+$addJobAnimationFromZeroScale: 0.0;
+
 .column-addJob-form {
   margin: 8px 15px 15px 15px;
   padding: 8px 12px;
@@ -11,6 +14,19 @@
   border-radius: 8px;
   box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
   font-weight: 600;
+  transition: transform $addJobAnimationTransitionDuration;
+  -webkit-transition: transform $addJobAnimationTransitionDuration;
+  -moz-transition: transform $addJobAnimationTransitionDuration;
+  -o-transition: transform $addJobAnimationTransitionDuration;
+  -ms-transition: transform $addJobAnimationTransitionDuration;
+
+  &.--animation-from-zero {
+    transform: scale($addJobAnimationFromZeroScale);
+    -webkit-transform: scale($addJobAnimationFromZeroScale);
+    -moz-transform: scale($addJobAnimationFromZeroScale);
+    -o-transform: scale($addJobAnimationFromZeroScale);
+    -ms-transform: scale($addJobAnimationFromZeroScale);
+  }
 
 
   .ant-select-auto-complete.ant-select .ant-input {

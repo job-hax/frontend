@@ -6,8 +6,8 @@ import Spinner from "../Partials/Spinner/Spinner.jsx";
 import Footer from "../Partials/Footer/Footer.jsx";
 import { axiosCaptcha } from "../../utils/api/fetch_api";
 import {
-  makeTimeBeautiful,
-  USER_TYPES
+  USER_TYPES,
+  MEDIUM_MD_FORMAT
 } from "../../utils/constants/constants.js";
 import { IS_CONSOLE_LOG_OPEN } from "../../utils/constants/constants.js";
 import { apiRoot, USERS, BLOGS } from "../../utils/constants/endpoints.js";
@@ -16,6 +16,7 @@ import BlogEditable from "./BlogEditable.jsx";
 import BlogCard from "./BlogCard.jsx";
 
 import "./style.scss";
+import moment from "moment";
 
 class Blog extends React.Component {
   constructor(props) {
@@ -246,7 +247,6 @@ class Blog extends React.Component {
 
   generateFeaturedBlog() {
     const blog = this.state.blogList[0];
-    let longDate = makeTimeBeautiful(blog.created_at, "longDate");
     let photoUrl =
       blog.publisher_profile.profile_photo != ("" || null)
         ? apiRoot + blog.publisher_profile.profile_photo
@@ -272,7 +272,9 @@ class Blog extends React.Component {
                     blog.publisher_profile.last_name}
                 </div>
                 <div className="info-container">
-                  <div className="info">{longDate.split(",")[1]}</div>
+                  <div className="info">
+                    {moment(blog.created_at).format(MEDIUM_MD_FORMAT)}
+                  </div>
                   <div className="info">
                     <Icon type="dashboard" />
                     {" " + Math.round(blog.word_count / 200, 0) + " min"}
