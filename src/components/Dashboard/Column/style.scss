@@ -3,7 +3,7 @@
 $column_header_height: 50px;
 $column_header_height_add_job: 162px;
 $add_job_button_height: 30px;
-$add_job_button_y_padding: 10.5px;
+$add_job_button_y_padding: 8px;
 $rejected_button_height: 48px;
 $column_parts_margin: 8px;
 $column_max_width: 400px;
@@ -196,15 +196,15 @@ $addJobButtonAnimationZoomOutScale: 0.0;
           }
 
           &.--shortest {
-            height: -webkit-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
-            height: -moz-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
-            height: calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
-            min-height: -webkit-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
-            min-height: -moz-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
-            min-height: calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
-            max-height: -webkit-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
-            max-height: -moz-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
-            max-height: calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 2));
+            height: -webkit-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 3));
+            height: -moz-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 3));
+            height: calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 3));
+            min-height: -webkit-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 3));
+            min-height: -moz-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 3));
+            min-height: calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 3));
+            max-height: -webkit-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 3));
+            max-height: -moz-calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 3));
+            max-height: calc(100% - #{$add_job_button_height} - (#{$add_job_button_y_padding} * 3));
           }
         }
 
@@ -235,7 +235,6 @@ $addJobButtonAnimationZoomOutScale: 0.0;
             -o-transform: scale($addJobButtonAnimationZoomOutScale);
             -ms-transform: scale($addJobButtonAnimationZoomOutScale);
           }
-
 
           .button-inside {
             font-size: 18pt;
