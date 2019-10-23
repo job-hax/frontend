@@ -406,7 +406,7 @@ class AddCoachModal extends React.Component {
         visible={this.state.visible}
         onOk={this.handleOk}
         onCancel={this.props.handleCancel}
-        getContainer={() => document.getElementById("manage-container")}
+        getContainer={() => document.getElementById("main-container")}
         width="80vw"
         footer={[this.sendButton]}
       >

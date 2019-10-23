@@ -245,7 +245,9 @@ class CareerServiceDashboard extends React.Component {
         <AddCoachModal
           visible={this.state.addCoachVisible}
           handleCancel={this.closeAddCoachModal}
+          handleTokenExpiration={this.props.handleTokenExpiration}
           alert={this.props.alert}
+          cookie={this.props.cookie}
         />
       </div>
     );
