@@ -158,26 +158,28 @@ class JobDetails extends React.Component {
 
   handleCompanySearch(value) {
     this.setState({ companyName: value });
-    let url =
-      "https://autocomplete.clearbit.com/v1/companies/suggest?query=" + value;
-    let config = {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
-    axiosCaptcha(url, config).then(response => {
-      if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log(response);
-        let bufferList = [];
-        response.data.forEach(company => bufferList.push(company.name));
-        this.setState({
-          autoCompleteCompanyData: bufferList
-        });
-      }
-    });
+    if (value.trim() !== "") {
+      let url =
+        "https://autocomplete.clearbit.com/v1/companies/suggest?query=" + value;
+      let config = {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };
+      axiosCaptcha(url, config).then(response => {
+        if (response.statusText === "OK") {
+          IS_CONSOLE_LOG_OPEN && console.log(response);
+          let bufferList = [];
+          response.data.forEach(company => bufferList.push(company.name));
+          this.setState({
+            autoCompleteCompanyData: bufferList
+          });
+        }
+      });
+    }
   }
 
   generateCompanyInfo() {
@@ -225,22 +227,24 @@ class JobDetails extends React.Component {
 
   handlePositionsSearch(value) {
     this.setState({ jobTitle: value });
-    let config = { method: "GET" };
-    let newUrl = AUTOCOMPLETE("positions") + "?q=" + value + "&count=5";
-    axiosCaptcha(newUrl, config).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success) {
-          IS_CONSOLE_LOG_OPEN && console.log(response.data);
-          let bufferPositionsList = [];
-          response.data.data.forEach(position =>
-            bufferPositionsList.push(position.job_title)
-          );
-          this.setState({
-            autoCompletePositionsData: bufferPositionsList
-          });
+    if (value.trim() !== "") {
+      let config = { method: "GET" };
+      let newUrl = AUTOCOMPLETE("positions") + "?q=" + value + "&count=5";
+      axiosCaptcha(newUrl, config).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success) {
+            IS_CONSOLE_LOG_OPEN && console.log(response.data);
+            let bufferPositionsList = [];
+            response.data.data.forEach(position =>
+              bufferPositionsList.push(position.job_title)
+            );
+            this.setState({
+              autoCompletePositionsData: bufferPositionsList
+            });
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   generatePositionsInfo() {

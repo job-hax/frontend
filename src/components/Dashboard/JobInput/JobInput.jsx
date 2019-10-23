@@ -32,23 +32,24 @@ class JobInput extends PureComponent {
 
   handleSearch(value) {
     this.setState({ companyName: value });
-    let url =
-      "https://autocomplete.clearbit.com/v1/companies/suggest?query=" + value;
-    let config = {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
-    axiosCaptcha(url, config).then(response => {
-      if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log(response);
-        let bufferList = [];
-        response.data.forEach(company => bufferList.push(company.name));
-        {
-          /*<Select.Option
+    if (value.trim() !== "") {
+      let url =
+        "https://autocomplete.clearbit.com/v1/companies/suggest?query=" + value;
+      let config = {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };
+      axiosCaptcha(url, config).then(response => {
+        if (response.statusText === "OK") {
+          IS_CONSOLE_LOG_OPEN && console.log(response);
+          let bufferList = [];
+          response.data.forEach(company => bufferList.push(company.name));
+          {
+            /*<Select.Option
               key={Math.random()}
               value={company.name}
               style={{ display: "flex", justifyContent: "left" }}
@@ -76,57 +77,56 @@ class JobInput extends PureComponent {
                 </div>
               </div>
           </Select.Option>*/
+          }
+          this.setState({
+            autoCompleteCompanyData: bufferList
+          });
         }
-        this.setState({
-          autoCompleteCompanyData: bufferList
-        });
-      }
-    });
+      });
+    }
   }
 
   async handlePositionsSearch(value) {
     this.setState({ jobTitle: value });
-    await this.props.handleTokenExpiration("jobInput handlePositionsSearch");
-    let config = { method: "GET" };
-    let newUrl = AUTOCOMPLETE("positions") + "?q=" + value + "&count=5";
-    axiosCaptcha(newUrl, config).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success) {
-          IS_CONSOLE_LOG_OPEN && console.log(response.data);
-          let bufferPositionsList = [];
-          response.data.data.forEach(position =>
-            bufferPositionsList.push(position.job_title)
-          );
-          this.setState({
-            autoCompletePositionsData: bufferPositionsList
-          });
+    if (value.trim() !== "") {
+      await this.props.handleTokenExpiration("jobInput handlePositionsSearch");
+      let config = { method: "GET" };
+      let newUrl = AUTOCOMPLETE("positions") + "?q=" + value + "&count=5";
+      axiosCaptcha(newUrl, config).then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success) {
+            IS_CONSOLE_LOG_OPEN && console.log(response.data);
+            let bufferPositionsList = [];
+            response.data.data.forEach(position =>
+              bufferPositionsList.push(position.job_title)
+            );
+            this.setState({
+              autoCompletePositionsData: bufferPositionsList
+            });
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   handleAddNewApplication() {
     const { columnName } = this.props;
-    this.props.toggleJobInput();
-    this.props
-      .addNewApplication({
-        columnName,
-        name: this.state.companyName,
-        title: this.state.jobTitle
-      })
-      .then(({ ok }) => {
-        if (ok) {
-          this.setState({
-            companyName: "",
-            jobTitle: ""
-          });
-        }
-      });
+    //this.props.toggleJobInput();
+    this.props.addNewApplication({
+      columnName,
+      name: this.state.companyName,
+      title: this.state.jobTitle
+    });
+    this.setState({
+      companyName: "",
+      jobTitle: ""
+    });
   }
 
   cancelJobInputEdit() {
     this.props.toggleJobInput();
     this.setState({
+      animate: true,
       companyName: "",
       jobTitle: ""
     });
@@ -140,6 +140,7 @@ class JobInput extends PureComponent {
       "column-addJob-form": true,
       "--animation-from-zero": animate
     });
+
     return (
       <div>
         <form

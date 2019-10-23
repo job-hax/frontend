@@ -34,6 +34,7 @@ class Column extends Component {
       rejectedsAmount: this.props.cardsRejecteds.length,
       isAmountChanged: false,
       hideAddJobButton: false,
+      animateAddJobButton: false,
       amountChangeOngoings: 0,
       amountChangeRejecteds: 0
     };
@@ -78,17 +79,21 @@ class Column extends Component {
   }
 
   toggleJobInput() {
-    this.setState(state => ({
-      showJobInput: !state.showJobInput,
-      hideAddJobButton: false
-    }));
-  }
-
-  addJobButtonClick() {
-    this.toggleJobInput();
-    setTimeout(() => {
-      this.setState({ hideAddJobButton: true });
-    }, 500);
+    const { showJobInput, hideAddJobButton, animateAddJobButton } = this.state;
+    if (!hideAddJobButton) {
+      this.setState({ showJobInput: true, animateAddJobButton: true });
+      setTimeout(() => {
+        this.setState({ hideAddJobButton: true });
+      }, 500);
+    } else {
+      this.setState({ hideAddJobButton: false });
+      setTimeout(() => {
+        this.setState({ animateAddJobButton: false });
+      }, 50);
+      setTimeout(() => {
+        this.setState({ showJobInput: false });
+      }, 500);
+    }
   }
 
   renderCards(type) {
@@ -209,7 +214,8 @@ class Column extends Component {
       rejectedsAmount,
       isAmountChanged,
       amountChangeRejecteds,
-      hideAddJobButton
+      hideAddJobButton,
+      animateAddJobButton
     } = this.state;
 
     const {
@@ -231,7 +237,7 @@ class Column extends Component {
 
     const addJobButtonClass = classNames({
       "job-input-button": true,
-      "--animation-disappear": showJobInput && !hideAddJobButton
+      "--animation-disappear": animateAddJobButton && !hideAddJobButton
     });
 
     const ongoingsContainerClass = classNames({
@@ -273,7 +279,7 @@ class Column extends Component {
               </div>
               {!hideAddJobButton && (
                 <div
-                  onClick={() => !showJobInput && this.addJobButtonClick()}
+                  onClick={() => !showJobInput && this.toggleJobInput()}
                   className={addJobButtonClass}
                 >
                   <div className="button-inside">+</div>
