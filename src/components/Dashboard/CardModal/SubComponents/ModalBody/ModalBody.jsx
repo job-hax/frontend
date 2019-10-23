@@ -22,7 +22,7 @@ class ModalBody extends React.Component {
     return (
       <div className="modal-body">
         <NavigationPanel
-          sections={["Overview", "Contacts", "Reviews", "Notes"]}
+          sections={["Overview", "Contacts", "Reviews", "Notes", "Files"]}
           setDisplaying={this.setDisplaying}
           displaying={this.state.displaying}
         />

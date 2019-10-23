@@ -4,6 +4,7 @@ import JobDetails from "./BodyComponents/JobDetails.jsx";
 import Contacts from "./BodyComponents/Contacts.jsx";
 import Notes from "./BodyComponents/Notes.jsx";
 import JobReviews from "./BodyComponents/JobReviews.jsx";
+import Files from "./BodyComponents/Files.jsx";
 
 class BodyComponents extends React.Component {
   constructor(props) {
@@ -42,6 +43,15 @@ class BodyComponents extends React.Component {
         return (
           <div className="notes">
             <Notes
+              card={this.props.card}
+              handleTokenExpiration={this.props.handleTokenExpiration}
+            />
+          </div>
+        );
+      case "Files":
+        return (
+          <div className="files">
+            <Files
               card={this.props.card}
               handleTokenExpiration={this.props.handleTokenExpiration}
             />

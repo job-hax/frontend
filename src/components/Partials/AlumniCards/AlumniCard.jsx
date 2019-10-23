@@ -24,7 +24,7 @@ class AlumniCard extends React.Component {
   generateCard() {
     const { alumni, displayingAt } = this.props;
     const width = displayingAt == "contacts" ? "380px" : "100%";
-    const margin = displayingAt == "contacts" ? "-24px 0 0 0" : "0 0 0 0";
+    const margin = displayingAt == "contacts" ? "-4px 0px 0px 0px" : "0 0 0 0";
     return (
       <div className="header">
         <div className="header-left">
