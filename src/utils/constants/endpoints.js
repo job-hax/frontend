@@ -1,4 +1,4 @@
-export const apiRoot = "https://backend.jobhax.com"; //"https://backend.jobhax.com"; //"http://10.0.0.75:8000"; //"http://0.0.0.0:8000";
+export const apiRoot = "https://backend.jobhax.com"; //"https://backend.jobhax.com"; //"http://10.0.0.77:8000"; //"http://0.0.0.0:8000";
 
 //USER REQUESTS//
 export const USERS = type => `${apiRoot}/api/users/${type}/`;
@@ -17,6 +17,8 @@ export const GET_NEW_JOBAPPS = timestamp =>
   `${apiRoot}/api/jobapps/?timestamp=${timestamp}`;
 
 export const NOTES = jobappId => `${apiRoot}/api/jobapps/${jobappId}/notes/`;
+
+export const FILES = jobappId => `${apiRoot}/api/jobapps/${jobappId}/files/`;
 
 //METRICS REQUESTS//
 export const METRICS = type => `${apiRoot}/api/metrics/${type}`;

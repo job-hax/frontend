@@ -315,7 +315,6 @@
         margin-left: 24px;
         height: fit-content;
         height: -moz-fit-content;
-        display: table;
         text-align: start;
 
 
@@ -410,6 +409,10 @@
           }
         }
 
+        .files {
+          padding: 10px 40px 20px 10px;
+          width: 100%;
+        }
 
         .notes {
           width: 520px;

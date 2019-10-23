@@ -114,7 +114,7 @@ class Metrics extends PureComponent {
       <div>
         <div style={{ margin: "0 0 0px 0", height: 400 }}>
           <Map
-            defaultCenter={{ lat: 37.3729, lng: -121.856 }}
+            defaultCenter={{ lat: 37.5237183, lng: -122.3423894 }}
             positions={this.state.locations}
           />
         </div>
