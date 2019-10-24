@@ -230,7 +230,7 @@ class AboutUs extends Component {
     return (
       <div className="about-us-container">
         <div>
-          {/*this.generateCarouselArea()*/}
+          {this.generateCarouselArea()}
           {this.generateIntro()}
           {this.generateTeam()}
           {this.generateVideosArea()}
