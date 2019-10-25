@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import Footer from "../../Partials/Footer/Footer.jsx";
 import { apiRoot } from "../../../utils/constants/endpoints.js";
 import parse from "html-react-parser";
+import { Carousel } from "antd";
 
 import "./style.scss";
-import { Carousel } from "antd";
 
 const team_first = [
   {
@@ -17,7 +17,7 @@ const team_first = [
     name: "Sako",
     title: "CTO,FOUNDER",
     desc:
-      "PM@Google & Microsoft with experience driving large enterprise B2B solutions from innovation to launch. Studied Computer Science, Business, & Mathematics in Virginia Tech. Enjoys being active, outdoors, & exploring new foods to eat!"
+      "DevOps@OpenGov - a Cloud-based SaaS solution that helps governments to be more effective and accountable. Sako’s international experience is unbeatable - for the last 10 years he has worked for 7 tech companies in 6 different countries. While pursuing his third master’s degree, he was analyzing gaps in the job market and the education system which lead to the creation of JobHax."
   },
   {
     name: "Egemen",
@@ -86,7 +86,7 @@ const videosList = [
 class AboutUs extends Component {
   generateCarouselArea() {
     const list = [];
-    for (let i = 3; i < 64; i++) {
+    for (let i = 1; i < 64; i++) {
       if (i < 10) {
         list.push("/media/aboutus00" + i.toString() + ".jpg");
       } else {
