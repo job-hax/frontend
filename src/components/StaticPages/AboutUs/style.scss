@@ -58,7 +58,7 @@
                 z-index: 999;
                 position: relative;
                 width: 300px;
-                top: -60%;
+                top: -59%;
                 left: 55%;
             }
 
@@ -204,5 +204,91 @@
         display: flex;
         align-items: center;
         color: #FCFCFC;
+    }
+
+    @media only screen and (max-device-width : 1030px) and (-webkit-min-device-pixel-ratio : 2) {
+        .intro-container {
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            width: 100%;
+
+            .info-area {
+                margin: 0px;
+                width: 100%;
+            }
+
+            .quotes-area {
+                width: 100%;
+
+                img {
+                    width: 100%;
+                }
+
+                .ant-carousel {
+                    z-index: 999;
+                    position: relative;
+                    width: 45vw;
+                    top: calc(-1 * 100vw / 777 * 705 * 0.85);
+                    left: 50%;
+                }
+
+                .ant-carousel .slick-track {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+        }
+
+        .quote {
+            font-size: 16px;
+            line-height: 20px;
+        }
+
+        .team-container {
+            text-align: center;
+
+            .team-members {
+                background-color: #0056DE;
+                margin-top: 200px;
+                height: fit-content;
+                height: -moz-fit-content;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding-top: 0 !important;
+
+                .person-container {
+                    padding: 0px 12px 100px 12px;
+                    width: 100%;
+                    max-width: 600px;
+                }
+            }
+        }
+
+        .videos-area {
+            display: flex;
+            justify-content: flex-start;
+            padding: 60px 0px 20px 20px;
+            overflow-y: hidden;
+            width: 100%;
+
+            .video-container {
+                padding: 0px 20px 0px 0px;
+            }
+
+            .video-title {
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            iframe {
+                width: 60vw;
+                height: calc(60vw / 560 * 315);
+                min-width: unset;
+                min-height: unset;
+            }
+        }
     }
 }

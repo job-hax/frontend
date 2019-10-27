@@ -245,8 +245,8 @@ class Header extends Component {
               this.state.user_type.name !== "Career Service" &&
               alumniMenu}
             {this.state.user_type.name !== "Career Service" && jobMenu}
-            {this.state.user_type.name !== "Alumni" &&
-              this.state.user_type.name !== "Career Service" &&
+            {this.state.user_type.name === "Alumni" &&
+              this.state.user_type.name === "Career Service" &&
               communityMenu}
           </Menu>
           {!this.props.isNotificationsShowing ? (
@@ -292,7 +292,7 @@ class Header extends Component {
             >
               <Menu.Item key="/profile">Profile</Menu.Item>
               {this.state.user_type.blog_creation_enabled &&
-                this.state.user_type.name !== "Career Service" &&
+                this.state.user_type.name === "none" &&
                 window.screen.availWidth > 800 && (
                   <Menu.Item key="/blogs?edit=true">Add Blog</Menu.Item>
                 )}
@@ -323,6 +323,15 @@ class Header extends Component {
                 functional && this.setState({ current: "/home", request: true })
               }
             />
+          </div>
+          <div
+            className="option"
+            onClick={() =>
+              functional &&
+              this.setState({ current: "/aboutus", request: true })
+            }
+          >
+            About us
           </div>
         </div>
         <div className="right-container out">
