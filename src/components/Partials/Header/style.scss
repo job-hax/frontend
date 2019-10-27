@@ -64,6 +64,22 @@
 
     .left-container {
       display: flex;
+
+      .option {
+        cursor: pointer;
+        transition: color .3s;
+        -webkit-transition: color .3s;
+        -moz-transition: color .3s;
+        -o-transition: color .3s;
+        -ms-transition: color .3s;
+        margin: 20px;
+        font-size: 18px;
+        font-weight: lighter;
+      }
+
+      .option:hover {
+        color: $active_color;
+      }
     }
 
     .right-container {

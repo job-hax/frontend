@@ -175,13 +175,6 @@ class AboutUs extends Component {
   }
 
   generateTeam() {
-    const seyfo = {
-      name: "Seyfo",
-      title: "FOUNDING ENGINEER",
-      desc:
-        "Backend lead, experienced mobile developer with more than 4 years of development experience. Studied Computer Engineering in Turkey. Seyfo loves video games, like CSGO, FIFA."
-    };
-
     const person = info => (
       <div className="person-container">
         <div className="person-photo">
@@ -206,7 +199,10 @@ class AboutUs extends Component {
             return person(member);
           })}
         </div>
-        <div className="team-members" style={{ marginTop: 0, paddingTop: 120 }}>
+        <div
+          className="team-members"
+          style={{ marginTop: "-1px", paddingTop: 120 }}
+        >
           {team_second.map(member => {
             return person(member);
           })}
