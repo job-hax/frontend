@@ -7,14 +7,10 @@ import {
   IS_CONSOLE_LOG_OPEN,
   USER_TYPES
 } from "../../../utils/constants/constants.js";
-import {
-  googleClientId,
-  jobHaxClientId,
-  jobHaxClientSecret,
-  googleApiKey
-} from "../../../config/config.js";
+import { jobHaxClientId, jobHaxClientSecret } from "../../../config/config.js";
 import { USERS } from "../../../utils/constants/endpoints.js";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
+import { googleOAuth } from "../../../utils/helpers/oAuthHelperFunctions.js";
 
 import "./style.scss";
 
@@ -263,9 +259,9 @@ class SignInPage extends Component {
     this.props.cookie(
       "set",
       "google_access_token_expiration",
-      googleAccessTokenExpiresOn.getTime(),
+      googleAccessTokenExpiresOn,
       "/",
-      googleAccessTokenExpiresOn
+      new Date(googleAccessTokenExpiresOn)
     );
     this.props.cookie("set", "google_login_first_instance", true, "/");
     this.props.cookie("set", "jobhax_access_token", this.token, "/", date);
@@ -279,104 +275,56 @@ class SignInPage extends Component {
     this.props.cookie("set", "remember_me", true, "/");
   }
 
-  handleGoogleSignIn() {
-    window.gapi.load("client:auth2", () => {
-      window.gapi.client
-        .init({
-          apiKey: googleApiKey,
-          clientId: googleClientId,
-          scope: "email https://www.googleapis.com/auth/gmail.readonly",
-          prompt: "select_account"
-        })
-        .then(() => {
-          this.googleAuth = window.gapi.auth2.getAuthInstance();
-          this.googleAuth.signIn().then(response => {
-            IS_CONSOLE_LOG_OPEN && console.log("signIn response", response);
-            if (response.Zi.token_type === "Bearer") {
-              let photoUrl = response.w3.Paa;
-              let googleAccessTokenExpiresOn = new Date();
-              googleAccessTokenExpiresOn.setSeconds(
-                googleAccessTokenExpiresOn.getSeconds() + response.Zi.expires_in
-              );
-              let config = { method: "POST" };
-              config.body = {
-                client_id: jobHaxClientId,
-                client_secret: jobHaxClientSecret,
-                provider: "google-oauth2"
-              };
-              config.body.token = this.googleAuth.currentUser
-                .get()
-                .getAuthResponse().access_token;
-              axiosCaptcha(USERS("authSocialUser"), config, "signin")
-                .then(response => {
-                  if (response.statusText === "OK") {
-                    if (response.data.success == true) {
-                      this.setCookies(response, googleAccessTokenExpiresOn);
-                    }
-                  }
-                  return response;
-                })
-                .then(response => {
-                  if (response.statusText === "OK") {
-                    if (response.data.success == true) {
-                      this.postGoogleProfilePhoto(photoUrl);
-                      IS_CONSOLE_LOG_OPEN &&
-                        console.log(this.token, "profile updated?");
-                      if (!response.data.data.signup_flow_completed) {
-                        if (
-                          this.props.cookie("get", "user_type") &&
-                          this.props.cookie("get", "user_type").id ===
-                            USER_TYPES["alumni"]
-                        ) {
-                          window.location = "/alumni/signup?=intro";
-                        } else {
-                          window.location = "/signup?=intro";
-                        }
-                      }
-                      //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn -> true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
-                      if (
-                        window.location.search.split("=")[1] ===
-                        "reCapthcaCouldNotPassed"
-                      ) {
-                        window.location = "/signin";
-                      } else {
-                        if (!response.data.data.signup_flow_completed) {
-                          if (
-                            this.props.cookie("get", "user_type") &&
-                            this.props.cookie("get", "user_type").id ===
-                              USER_TYPES["alumni"]
-                          ) {
-                            window.location = "/alumni/signup?=intro";
-                          } else {
-                            window.location = "/signup?=intro";
-                          }
-                        } else {
-                          this.props.passStatesToApp("isUserLoggedIn", true);
-                          this.props.passStatesToApp(
-                            "isAuthenticationChecking",
-                            false
-                          );
-                        }
-                      }
-                    }
-                  }
-                });
-            }
-          });
-        });
-    });
-  }
-
-  postGoogleProfilePhoto(photoURL) {
-    let bodyFormData = new FormData();
-    bodyFormData.set("photo_url", photoURL);
+  async handleGoogleSignIn() {
+    let userGoogleInfo = await googleOAuth();
     let config = { method: "POST" };
-    config.body = bodyFormData;
-    axiosCaptcha(USERS("updateProfilePhoto"), config).then(response => {
-      if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log(response);
-      }
-    });
+    config.body = {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret,
+      provider: "google-oauth2",
+      user_type: this.state.user_type,
+      token: userGoogleInfo.access_token,
+      first_name: userGoogleInfo.first_name,
+      last_name: userGoogleInfo.last_name,
+      email: userGoogleInfo.email,
+      photo_url: userGoogleInfo.photo_url
+    };
+    axiosCaptcha(USERS("authSocialUser"), config, "signin")
+      .then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success == true) {
+            this.setCookies(response, userGoogleInfo.expires_at);
+          }
+        }
+        return response;
+      })
+      .then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success == true) {
+            //if signIn page opened because of reCapthcha fail; before setting isUserLoggedIn -> true I am changing location to /signin because otherwise App Router would return <spinner message=reCaptcha checking.../>//
+            if (
+              window.location.search.split("=")[1] === "reCapthcaCouldNotPassed"
+            ) {
+              window.location = "/signin";
+            } else {
+              if (response.data.data.signup_flow_completed === "required") {
+                if (
+                  this.props.cookie("get", "user_type") &&
+                  this.props.cookie("get", "user_type").id ===
+                    USER_TYPES["alumni"]
+                ) {
+                  window.location = "/alumni/signup?=intro";
+                } else {
+                  window.location = "/signup?=intro";
+                }
+              } else {
+                this.props.passStatesToApp("isUserLoggedIn", true);
+                this.props.passStatesToApp("isAuthenticationChecking", false);
+              }
+            }
+          }
+        }
+      });
   }
 
   generateSignInForm() {

@@ -5,11 +5,142 @@
     height: 16vh;
 }
 
+
 .sign_up-vertical-container {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 100px 0 200px 0;
+
+    .sign-up-big-form-container {
+        margin: auto;
+        width: 730px;
+        height: fit-content;
+        border: 1px solid $gray_text_color;
+        box-sizing: border-box;
+        border-radius: 4px;
+        background-color: white;
+        padding: 100px 120px;
+
+        .content-container {
+            width: 100%;
+
+            h1 {
+                font-size: 48px;
+                line-height: 58px;
+                text-align: center;
+                margin-bottom: 40px;
+                font-weight: lighter;
+            }
+
+            h2 {
+                font-size: 24px;
+                line-height: 29px;
+                margin-bottom: 20px;
+                font-weight: 300;
+            }
+
+            .explanation {
+                font-size: 16px;
+                line-height: 19px;
+                margin-bottom: 15px;
+                color: $text_color;
+
+                a {
+                    color: $text_color;
+                    text-decoration: underline;
+                }
+            }
+
+            .existing-account-question {
+                text-align: center;
+                font-size: 24px;
+                line-height: 29px;
+                margin-top: 90px;
+                font-weight: 300;
+                color: $gray_text_color;
+            }
+
+            .right-align-container {
+                width: 100%;
+                display: flex;
+                justify-content: right;
+            }
+
+            .center-image {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin: 20px 0px;
+
+                img {
+                    width: 360px;
+                    height: auto;
+                }
+            }
+        }
+
+        .separator {
+            font-style: italic;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: $gray_text_color;
+            width: 100%;
+            height: 30px;
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 40px;
+
+            .line {
+                height: 2px;
+                width: 20px;
+                margin: 0px 12px;
+                background-color: $gray_text_color
+            }
+        }
+
+        .ant-checkbox-inner,
+        .ant-checkbox-checked .ant-checkbox-inner {
+            width: 20px;
+            height: 20px;
+            border-radius: 2px;
+            border: none;
+            background-color: $line_color;
+            color: $gray_text_color !important;
+        }
+
+        .ant-checkbox-checked .ant-checkbox-inner::after {
+            left: 30%;
+            border: 2px solid $gray_text_color;
+            border-top: 0;
+            border-left: 0;
+            -webkit-transform: rotate(45deg) scale(1) translate(-50%, -50%);
+            -ms-transform: rotate(45deg) scale(1) translate(-50%, -50%);
+        }
+
+        .anticon {
+            font-size: 36px;
+            line-height: 36px !important;
+            height: 36px;
+        }
+
+        .ant-btn-primary {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 36px;
+            font-size: 24px;
+        }
+
+        .ant-input {
+            font-size: 24px;
+            line-height: 29px;
+            font-weight: 300;
+            border-color: $gray_text_color !important;
+        }
+
+    }
 
     .sign_up-form-container {
         margin: auto;

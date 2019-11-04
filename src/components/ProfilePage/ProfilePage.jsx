@@ -514,18 +514,14 @@ class ProfilePage extends React.Component {
           <div className="profile-header">
             <div className="name">
               <div className="first-name">
-                {this.state.data != null && this.state.data.first_name ? (
-                  this.state.data.first_name
-                ) : (
-                  <span>First Name</span>
-                )}
+                {this.state.data != null &&
+                  this.state.data.first_name &&
+                  this.state.data.first_name}
               </div>
               <div className="last-name">
-                {this.state.data != null && this.state.data.last_name ? (
-                  this.state.data.last_name
-                ) : (
-                  <span>Last Name</span>
-                )}
+                {this.state.data != null &&
+                  this.state.data.last_name &&
+                  this.state.data.last_name}
               </div>
             </div>
             {this.state.data != null &&
