@@ -228,7 +228,7 @@ class Companies extends React.Component {
                         })
                       }
                     />
-                    My applications only
+                    <span style={{marginLeft:5}}>My applications only</span>
                   </div>
                   <div>
                     <Checkbox
@@ -241,7 +241,7 @@ class Companies extends React.Component {
                         })
                       }
                     />
-                    With reviews only
+                    <span style={{marginLeft:5}}>With reviews only</span>
                   </div>
                 </div>
                 <div>

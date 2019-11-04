@@ -13,7 +13,10 @@ import {
   AutoComplete
 } from "antd";
 
-import { linkedInOAuth } from "../../../utils/helpers/oAuthHelperFunctions.js";
+import {
+  linkedInOAuth,
+  googleOAuth
+} from "../../../utils/helpers/oAuthHelperFunctions.js";
 import {
   googleApiKey,
   googleClientId,
@@ -53,7 +56,9 @@ class SignUpPage extends Component {
           ? "intro"
           : "undefined",
       user_type:
-        this.props.signupType === "alumni" ? USER_TYPES["alumni"] : null,
+        this.props.signupType === "alumni"
+          ? USER_TYPES["alumni"]
+          : USER_TYPES["public"],
       first_name: "",
       last_name: "",
       college_id: null,
@@ -69,6 +74,18 @@ class SignUpPage extends Component {
       state_id: null,
       googleAccessToken: "",
       photoUrl: ""
+    };
+
+    this.rightButtonStyle = {
+      width: "124px",
+      height: "40px",
+      borderRadius: "100px",
+      marginBottom: "24px"
+    };
+
+    this.bigButtonStyle = {
+      width: "100%",
+      height: 48
     };
 
     this.nextButtonStyle = {
@@ -165,9 +182,9 @@ class SignUpPage extends Component {
     this.props.cookie(
       "set",
       "google_access_token_expiration",
-      googleAccessTokenExpiresOn.getTime(),
+      googleAccessTokenExpiresOn,
       "/",
-      googleAccessTokenExpiresOn
+      new Date(googleAccessTokenExpiresOn)
     );
     this.props.cookie("set", "google_login_first_instance", true, "/");
     this.props.cookie("set", "jobhax_access_token", this.token, "/", date);
@@ -187,76 +204,50 @@ class SignUpPage extends Component {
     );
   }
 
-  handleGoogleSignUp() {
-    window.gapi.load("client:auth2", () => {
-      window.gapi.client
-        .init({
-          apiKey: googleApiKey,
-          clientId: googleClientId,
-          scope: "email https://www.googleapis.com/auth/gmail.readonly",
-          prompt: "select_account"
-        })
-        .then(() => {
-          this.googleAuth = window.gapi.auth2.getAuthInstance();
-          this.googleAuth.signIn().then(response => {
-            IS_CONSOLE_LOG_OPEN && console.log("signUp response", response);
-            if (response.Zi.token_type === "Bearer") {
-              let photoUrl = response.w3.Paa;
-              let googleAccessTokenExpiresOn = new Date();
-              googleAccessTokenExpiresOn.setSeconds(
-                googleAccessTokenExpiresOn.getSeconds() + response.Zi.expires_in
-              );
-              const googleAccessToken = this.googleAuth.currentUser
-                .get()
-                .getAuthResponse().access_token;
-              let config = { method: "POST" };
-              config.body = {
-                client_id: jobHaxClientId,
-                client_secret: jobHaxClientSecret,
-                provider: "google-oauth2"
-              };
-              config.body.token = googleAccessToken;
-              if (this.state.user_type != null) {
-                config.body.user_type = this.state.user_type;
-              }
-              axiosCaptcha(USERS("authSocialUser"), config, "signin")
-                .then(response => {
-                  if (response.statusText === "OK") {
-                    if (response.data.success === true) {
-                      this.setCookies(response, googleAccessTokenExpiresOn);
-                    }
-                  }
-                  return response;
-                })
-                .then(response => {
-                  if (response.statusText === "OK") {
-                    if (response.data.success === true) {
-                      if (!response.data.data.signup_flow_completed) {
-                        this.setState({ level: "intro" });
-                      } else {
-                        this.props.cookie("set", "remember_me", true, "/");
-                        this.props.passStatesToApp("isUserLoggedIn", true);
-                      }
-                      this.postGoogleProfilePhoto(photoUrl);
-                    }
-                  }
-                });
-            }
-          });
-        });
-    });
+  setFirstSignUpFeedback() {
+    this.props.passStatesToAppForFuture("feedbackType", "afterSignup", 2 * 5);
+    this.props.passStatesToAppForFuture("feedbackVisible", true, 2 * 60);
+    this.props.passStatesToAppForFuture("feedbackEmphasis", true, 2 * 60);
   }
 
-  postGoogleProfilePhoto(photoURL) {
-    let bodyFormData = new FormData();
-    bodyFormData.set("photo_url", photoURL);
+  async handleGoogleSignUp() {
+    let userGoogleInfo = await googleOAuth();
     let config = { method: "POST" };
-    config.body = bodyFormData;
-    axiosCaptcha(USERS("updateProfilePhoto"), config).then(response => {
-      if (response.statusText === "OK") {
-        IS_CONSOLE_LOG_OPEN && console.log(response);
-      }
-    });
+    config.body = {
+      client_id: jobHaxClientId,
+      client_secret: jobHaxClientSecret,
+      provider: "google-oauth2",
+      user_type: this.state.user_type,
+      token: userGoogleInfo.access_token,
+      first_name: userGoogleInfo.first_name,
+      last_name: userGoogleInfo.last_name,
+      email: userGoogleInfo.email,
+      photo_url: userGoogleInfo.photo_url
+    };
+    axiosCaptcha(USERS("authSocialUser"), config, "signin")
+      .then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            this.setCookies(response, userGoogleInfo.expires_at);
+          }
+        }
+        return response;
+      })
+      .then(response => {
+        if (response.statusText === "OK") {
+          if (response.data.success === true) {
+            if (response.data.data.signup_flow_completed === "required") {
+              this.setState({ level: "intro" });
+            } else {
+              this.props.cookie("set", "remember_me", true, "/");
+              this.setFirstSignUpFeedback();
+              this.props.alert(5000, "success", "Welcome to Jobhax!");
+              this.props.passStatesToApp("isUserLoggedIn", true);
+            }
+          }
+        }
+      });
+    return;
   }
 
   handleFinish() {
@@ -303,13 +294,7 @@ class SignUpPage extends Component {
           );
           this.props.cookie("set", "signup_flow_completed", true, "/");
           this.setState({ redirect: "/signup?=final" });
-          this.props.passStatesToAppForFuture(
-            "feedbackType",
-            "afterSignup",
-            2 * 5
-          );
-          this.props.passStatesToAppForFuture("feedbackVisible", true, 2 * 60);
-          this.props.passStatesToAppForFuture("feedbackEmphasis", true, 2 * 60);
+          this.setFirstSignUpFeedback();
           this.props.passStatesToApp("isUserLoggedIn", true);
           this.props.alert(
             5000,
@@ -334,18 +319,18 @@ class SignUpPage extends Component {
     let config = { method: "POST" };
     config.body = {};
     if (
-      event.target[1].value.trim() === (null || "") ||
-      event.target[2].value.trim() === (null || "") ||
-      event.target[3].value.trim() === (null || "") ||
-      event.target[4].value.trim() === (null || "")
+      event.target[0].value.trim() === (null || "") ||
+      event.target[1].value.trim() === (null || "")
     ) {
       this.props.alert(3000, "error", "You have to fill out all sign up form!");
     } else {
       if (this.state.isAgreementRead === true) {
-        config.body.username = event.target[1].value;
-        config.body.email = event.target[2].value;
-        config.body.password = event.target[3].value;
-        config.body.password2 = event.target[4].value;
+        config.body.email = event.target[0].value;
+        config.body.password = event.target[1].value;
+        config.body.password2 = event.target[1].value;
+        config.body.username =
+          event.target[0].value.split("@")[0] +
+          new Date().getMilliseconds().toString();
         config.body.client_id = jobHaxClientId;
         config.body.client_secret = jobHaxClientSecret;
         if (this.state.user_type != null) {
@@ -357,11 +342,6 @@ class SignUpPage extends Component {
               this.token = `${
                 response.data.data.token_type
               } ${response.data.data.access_token.trim()}`;
-              if (!response.data.data.signup_flow_completed) {
-                this.setState({ level: "intro" });
-              } else {
-                this.props.passStatesToApp("isUserLoggedIn", true);
-              }
               IS_CONSOLE_LOG_OPEN && console.log(this.token);
               this.refresh_token = response.data.data.refresh_token;
               let date = new Date();
@@ -399,6 +379,11 @@ class SignUpPage extends Component {
                 this.refresh_token,
                 "/"
               );
+              if (response.data.data.signup_flow_completed === "required") {
+                this.setState({ level: "intro" });
+              } else {
+                this.props.passStatesToApp("isUserLoggedIn", true);
+              }
             } else {
               IS_CONSOLE_LOG_OPEN &&
                 console.log(response, response.data.error_message);
@@ -431,51 +416,7 @@ class SignUpPage extends Component {
 
     return (
       <Form onSubmit={() => this.handleSignUpFormNext(event)}>
-        <div style={{ margin: "0px 0 16px 0" }}>
-          <div className="social-buttons-container">
-            {/*<div>
-              <div className="social-buttons-google">
-                <img
-                  style={{ marginLeft: 48 }}
-                  onClick={this.handleGoogleSignUp}
-                  src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
-                />
-              </div>
-            </div>*/}
-            <div>
-              <Button
-                type="primary"
-                icon="google"
-                onClick={this.handleGoogleSignUp}
-                style={{ width: "240px" }}
-              >
-                {" "}
-                Sign Up with Google
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div
-          className="separator"
-          style={{ margin: "12px 24px 12px 24px", width: 224 }}
-        />
-        <Form.Item style={{ width: "272px" }}>
-          {getFieldDecorator("Username", {
-            rules: [
-              {
-                required: true,
-                message: "Please enter your Username!",
-                whitespace: true
-              }
-            ]
-          })(
-            <Input
-              prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder="Username"
-              style={{ width: "272px" }}
-            />
-          )}
-        </Form.Item>
+        <h1>Sign up with email</h1>
         <Form.Item>
           {getFieldDecorator("email", {
             rules: [
@@ -490,9 +431,8 @@ class SignUpPage extends Component {
             ]
           })(
             <Input
-              prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder="E-mail"
-              style={{ width: "272px" }}
+              placeholder="email"
+              style={{ width: "100%", height: "36px" }}
             />
           )}
         </Form.Item>
@@ -502,38 +442,13 @@ class SignUpPage extends Component {
               {
                 required: true,
                 message: "Please enter your password!"
-              },
-              {
-                validator: this.validateToNextPassword
               }
             ]
           })(
             <Input
-              prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
               type="password"
-              placeholder="Password"
-              style={{ width: "272px" }}
-            />
-          )}
-        </Form.Item>
-        <Form.Item>
-          {getFieldDecorator("confirm", {
-            rules: [
-              {
-                required: true,
-                message: "Please confirm your password!"
-              },
-              {
-                validator: this.compareToFirstPassword
-              }
-            ]
-          })(
-            <Input
-              prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
-              type="password"
-              placeholder="Confirm Password"
-              style={{ width: "272px" }}
-              onBlur={this.handleConfirmBlur}
+              placeholder="password"
+              style={{ width: "100%", height: "36px" }}
             />
           )}
         </Form.Item>
@@ -542,12 +457,8 @@ class SignUpPage extends Component {
             valuePropName: "checked"
           })(
             <div style={{ display: "flex", justifyContent: "left" }}>
-              <div>
+              <div style={{ marginRight: 5, lineHeight: "20px" }}>
                 <Checkbox
-                  style={{
-                    width: "24px",
-                    height: "48px"
-                  }}
                   onClick={() =>
                     this.setState({
                       isAgreementRead: !this.state.isAgreementRead
@@ -555,127 +466,132 @@ class SignUpPage extends Component {
                   }
                 />
               </div>
-              <div style={{ marginTop: "-8px" }}>
-                <span
-                  style={{
-                    width: "252px",
-                    fontSize: "90%",
-                    height: "48px",
-                    padding: 0
-                  }}
-                >
-                  I agree with the{" "}
-                  <a onClick={() => window.open("/useragreement")}>
-                    user agreement
-                  </a>{" "}
-                  and{" "}
-                </span>
-                <div
-                  style={{
-                    marginTop: "-24px",
-                    fontSize: "90%"
-                  }}
-                >
-                  <a onClick={() => window.open("/privacypolicy")}>
-                    privacy policy
-                  </a>
-                </div>
+              <div className="explanation">
+                I understand, by choosing to sign up with email instead of
+                Google, I will not be able to use the auto tracking features and
+                get the most out of JobHax. I agree with the{" "}
+                <a onClick={() => window.open("/useragreement")}>
+                  user agreement
+                </a>{" "}
+                and{" "}
+                <a onClick={() => window.open("/privacypolicy")}>
+                  privacy policy
+                </a>
               </div>
             </div>
           )}
         </Form.Item>
-        <Form.Item>
-          <div style={{ marginTop: "-28px" }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={this.nextButtonStyle}
-            >
-              Next
-            </Button>
-          </div>
-        </Form.Item>
-        <div style={{ fontSize: "90%" }}>
-          Do you have an account? Go <Link to="/signin">sign in!</Link>
+        <div className="right-align-container">
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={this.rightButtonStyle}
+          >
+            Sign up
+          </Button>
+        </div>
+        <div className="separator">
+          <div className="line" />
+          <div> OR </div>
+          <div className="line" />
+        </div>
+        <div>
+          <Button
+            type="primary"
+            icon="google"
+            onClick={() =>
+              this.setState({ isEmailSignUpRequested: "informed" })
+            }
+            style={this.bigButtonStyle}
+          >
+            {" "}
+            Sign Up with Google
+          </Button>
+        </div>
+        <div className="existing-account-question">
+          Already have an account? <Link to="/signin">Log in!</Link>
         </div>
       </Form>
     );
   }
 
-  generateSignupOptions() {
+  generateStepOne() {
     return (
       <div>
+        <h1>Sign up</h1>
         <div>
-          <div className="social-buttons-container">
-            {/*<div>
-              <button className="social-buttons-google">
-                <img
-                  onClick={this.handleGoogleSignUp}
-                  src="../../../src/assets/icons/btn_google_signin_light_normal_web@2x.png"
-                />
-              </button>
-            </div>*/}
-            <div>
-              <Button
-                type="primary"
-                icon="google"
-                onClick={this.handleGoogleSignUp}
-                style={{ width: "240px" }}
-              >
-                {" "}
-                Sign Up with Google
-              </Button>
-            </div>
-          </div>
-
-          {/*<div className="email-button-container">
-            <div
-              onClick={() => this.setState({ isEmailSignUpRequested: true })}
-              className="email-button"
-            >
-              <Icon type="mail" />
-              Sign Up with E-mail
-            </div>
-          </div>*/}
-          <div
-            className="separator"
-            style={{ width: "224px", margin: "12px 24px 0px 24px" }}
-          />
-          <div
-            className="social-buttons-container"
-            style={{ marginBottom: 20 }}
+          <Button
+            type="primary"
+            icon="google"
+            onClick={() =>
+              this.setState({ isEmailSignUpRequested: "informed" })
+            }
+            style={this.bigButtonStyle}
           >
-            <div>
-              <Button
-                icon="mail"
-                onClick={() =>
-                  this.setState({
-                    isEmailSignUpRequested: true,
-                    user_type: null,
-                    college_id: null,
-                    college: "",
-                    collegeList: [],
-                    major: "",
-                    grad_year: null,
-                    alumniEmployment: true,
-                    company: "",
-                    job_title: "",
-                    country: "",
-                    stateOrProvince: "",
-                    googleAccessToken: "",
-                    photoUrl: ""
-                  })
-                }
-                style={{ width: "240px" }}
-              >
-                {" "}
-                Sign Up with Email
-              </Button>
-            </div>
-          </div>
+            {" "}
+            Sign Up with Google
+          </Button>
         </div>
-        <div style={{ fontSize: "90%" }}>
-          Do you have an account? Go <Link to="/signin">sign in!</Link>
+        <div className="existing-account-question">
+          Already have an account? <Link to="/signin">Log in!</Link>
+        </div>
+      </div>
+    );
+  }
+
+  generatePermissionInfoStep() {
+    return (
+      <div>
+        <h1>Why grant permission?</h1>
+        <h2>
+          Want to effortlessly auto track your job hunting progress (with manual
+          override)? Grant permission in next step.
+        </h2>
+        <div className="center-image">
+          <img src="../../../src/assets/images/mock_permission.png" />
+        </div>
+        <div className="right-align-container">
+          <Button
+            type="primary"
+            onClick={this.handleGoogleSignUp}
+            style={this.rightButtonStyle}
+          >
+            {" "}
+            Next
+          </Button>
+        </div>
+        <div className="explanation">
+          We strictly follow privacy laws and Google’s policy. JobHax does NOT
+          read, store, or share your emails in any way.{" "}
+        </div>
+        <div className="explanation">
+          You can also{" "}
+          <a
+            onClick={() =>
+              this.setState({
+                isEmailSignUpRequested: true,
+                user_type: USER_TYPES["public"],
+                college_id: null,
+                college: "",
+                collegeList: [],
+                major: "",
+                grad_year: null,
+                alumniEmployment: true,
+                company: "",
+                job_title: "",
+                country: "",
+                stateOrProvince: "",
+                googleAccessToken: "",
+                photoUrl: ""
+              })
+            }
+          >
+            sign up with email
+          </a>{" "}
+          and manually enter and update your job applications.{" "}
+        </div>
+        <div className="existing-account-question">
+          Already have an account? <Link to="/signin">Log in!</Link>
         </div>
       </div>
     );
@@ -683,12 +599,13 @@ class SignUpPage extends Component {
 
   generateSignUp() {
     return (
-      <div className="sign_up-form-container">
+      <div className="sign-up-big-form-container">
         <div className="content-container">
-          <h1>Sign up</h1>
-          {this.state.isEmailSignUpRequested
+          {this.state.isEmailSignUpRequested === true
             ? this.generateSignUpForm()
-            : this.generateSignupOptions()}
+            : this.state.isEmailSignUpRequested === "informed"
+            ? this.generatePermissionInfoStep()
+            : this.generateStepOne()}
         </div>
       </div>
     );

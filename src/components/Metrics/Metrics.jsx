@@ -28,11 +28,11 @@ class Metrics extends PureComponent {
         { header: "Jobhax Aggregated Metrics", public: true, student: null }
       ],
       student: [
-        { header: "Student Aggregated Metrics", public: false, student: null },
+        //{ header: "Student Aggregated Metrics", public: false, student: null },
         { header: "Jobhax Aggregated Metrics", public: true, student: null }
       ],
       alumni: [
-        { header: "Alumni Aggregated Metrics", public: false, student: null },
+        //{ header: "Alumni Aggregated Metrics", public: false, student: null },
         { header: "Jobhax Aggregated Metrics", public: true, student: null }
       ],
       career_services: [

@@ -1,93 +1,122 @@
 @import "../../App/style.scss";
 
-.sign_in-background {
-    background-color: white;
-    height: 16vh;
-}
-
-.sign_in-top {
-    display: flex;
-    justify-content: space-between;
-    padding: 2vh 8vh;
-
-    button {
-        color: white;
-        font-size: 12pt;
-        background-color: rgba(0, 0, 0, 0.2);
-        border: none;
-        border-radius: 50px;
-        padding: 15px 35px;
-        margin-top: 4vh;
-        cursor: pointer;
-    }
-
-    .logo {
-        width: 90px;
-    }
-}
-
-
 .sign_in-vertical-container {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 100px 0 200px 0;
 
-    .sign_in-form-container {
-        margin: auto;
-        width: 320px;
-        height: fit-content;
-        border: 1px solid rgba(150, 150, 150, 0.4);
-        background-color: white;
-        padding: 24px 24px 0px 24px;
+    .sign_in-container {
+        width: calc(100vw - 20px);
 
-        .content-container {
+        .sign_in-form-container {
+            margin: auto;
+            min-width: 300px;
+            max-width: 400px;
+            height: fit-content;
+            border: 1px solid $gray_text_color;
+            box-sizing: border-box;
+            border-radius: 4px;
+            background-color: white;
+            padding: 40px 50px;
 
-            h1 {
-                color: rgb(0, 0, 0);
-                text-align: center;
-            }
-        }
+            .content-container {
+                width: 100%;
 
-        .social-buttons-container {
-            margin: 0px 0 12px 0;
-            display: flex;
-            justify-content: center;
+                h1 {
+                    font-size: 28px;
+                    line-height: 36px;
+                    text-align: center;
+                    margin-bottom: 24px;
+                    font-weight: lighter;
+                }
 
-            .social-buttons-google {
-                display: flex;
-                justify-content: center;
-                width: 288px;
-                border: none;
-                padding: none;
-                background-color: white;
-                cursor: default;
-                color: rgb(0, 0, 0);
-                font-size: 12pt;
-
-                img {
+                .forgot-password {
                     cursor: pointer;
-                    width: 186px;
-                    height: 42px;
+                    font-size: 90%;
+                    text-align: right;
+                    color: $active_color;
+                    transition: 0.3s;
+                }
+
+                .forgot-password:hover {
+                    color: $primary_button_hover_color;
                 }
             }
-        }
 
-        .separator {
-            font-style: italic;
-            font-size: 90%;
-            display: flex;
-            justify-content: center;
-            color: rgba(150, 150, 150, 0.8);
+            .existing-account-question {
+                text-align: center;
+                font-size: 16px;
+                line-height: 20px;
+                margin-top: 60px;
+                font-weight: 300;
+                color: $gray_text_color;
+            }
 
-            .line {
-                height: 1px;
-                width: 92px;
-                margin: 8px 12px 24px 12px;
-                background-color: rgba(150, 150, 150, 0.4)
+            .separator {
+                font-style: italic;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: $gray_text_color;
+                width: 100%;
+                height: 20px;
+                font-size: 16px;
+                font-weight: 300;
+                margin: 24px 0px;
+
+                .line {
+                    height: 2px;
+                    width: 20px;
+                    margin: 0px 12px;
+                    background-color: $gray_text_color
+                }
+            }
+
+            .ant-checkbox-inner,
+            .ant-checkbox-checked .ant-checkbox-inner {
+                width: 20px;
+                height: 20px;
+                border-radius: 2px;
+                border: none;
+                background-color: $line_color;
+                color: $gray_text_color !important;
+            }
+
+            .ant-checkbox-checked .ant-checkbox-inner::after {
+                left: 30%;
+                border: 2px solid $gray_text_color;
+                border-top: 0;
+                border-left: 0;
+                -webkit-transform: rotate(45deg) scale(1) translate(-50%, -50%);
+                -ms-transform: rotate(45deg) scale(1) translate(-50%, -50%);
+            }
+
+            .anticon {
+                font-size: 24px;
+                line-height: 24px !important;
+                height: 24px;
+            }
+
+            .ant-btn-primary {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 48px;
+                font-size: 16px;
+                width: 100%;
+            }
+
+            .ant-input {
+                font-size: 16px;
+                line-height: 20px;
+                font-weight: 300;
+                border-color: $gray_text_color !important;
             }
         }
     }
+
+
 }
 
 .bottom-fixed-footer {

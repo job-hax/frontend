@@ -8,6 +8,7 @@ $base_color: rgba(0, 0, 0, 0.5);
 $border_color: rgba(0, 0, 0, 1);
 $soft_button_color: rgb(11, 106, 255);
 $primary_button_color: $soft_button_color;
+$primary_button_hover_color: rgb(64, 169, 255);
 $active_color: transparentize($soft_button_color, 0.2);
 $selection_color: transparentize($soft_button_color, 0.3);
 $hover_color: transparentize($soft_button_color, 0.6);
@@ -159,14 +160,14 @@ html {
 }
 
 .ant-btn:hover {
-  color: rgb(64, 169, 255) !important;
-  border-color: rgb(64, 169, 255) !important;
+  color: $primary_button_hover_color !important;
+  border-color: $primary_button_hover_color !important;
 }
 
 .ant-btn-primary:hover {
   color: #fff !important;
-  background-color: rgb(64, 169, 255) !important;
-  border: rgb(64, 169, 255) !important;
+  background-color: $primary_button_hover_color !important;
+  border: $primary_button_hover_color !important;
 
 }
 
