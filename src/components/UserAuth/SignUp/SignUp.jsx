@@ -77,10 +77,15 @@ class SignUpPage extends Component {
     };
 
     this.rightButtonStyle = {
-      width: "190px",
-      height: "60px",
+      width: "124px",
+      height: "40px",
       borderRadius: "100px",
-      marginBottom: "40px"
+      marginBottom: "24px"
+    };
+
+    this.bigButtonStyle = {
+      width: "100%",
+      height: 48
     };
 
     this.nextButtonStyle = {
@@ -427,7 +432,7 @@ class SignUpPage extends Component {
           })(
             <Input
               placeholder="email"
-              style={{ width: "490px", height: "50px" }}
+              style={{ width: "100%", height: "36px" }}
             />
           )}
         </Form.Item>
@@ -443,7 +448,7 @@ class SignUpPage extends Component {
             <Input
               type="password"
               placeholder="password"
-              style={{ width: "490px", height: "50px" }}
+              style={{ width: "100%", height: "36px" }}
             />
           )}
         </Form.Item>
@@ -497,7 +502,7 @@ class SignUpPage extends Component {
             onClick={() =>
               this.setState({ isEmailSignUpRequested: "informed" })
             }
-            style={{ width: "490px", height: "90px" }}
+            style={this.bigButtonStyle}
           >
             {" "}
             Sign Up with Google
@@ -521,7 +526,7 @@ class SignUpPage extends Component {
             onClick={() =>
               this.setState({ isEmailSignUpRequested: "informed" })
             }
-            style={{ width: "490px", height: "90px" }}
+            style={this.bigButtonStyle}
           >
             {" "}
             Sign Up with Google

@@ -75,10 +75,12 @@
         margin: 20px;
         font-size: 18px;
         font-weight: lighter;
+        overflow: hidden;
       }
 
       .option:hover {
         color: $active_color;
+        overflow: visible;
       }
     }
 
@@ -104,7 +106,6 @@
         -moz-transition: color .3s;
         -o-transition: color .3s;
         -ms-transition: color .3s;
-
       }
 
       .option:hover {

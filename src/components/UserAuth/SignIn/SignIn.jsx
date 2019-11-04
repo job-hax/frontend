@@ -351,7 +351,6 @@ class SignInPage extends Component {
               type="primary"
               icon="google"
               onClick={this.handleGoogleSignIn}
-              style={{ width: "240px" }}
             >
               {" "}
               Sign In with Google
@@ -360,7 +359,7 @@ class SignInPage extends Component {
         </div>
         <div className="separator">
           <div className="line" />
-          <div> or </div>
+          <div> OR </div>
           <div className="line" />
         </div>
         <Form.Item>
@@ -368,7 +367,12 @@ class SignInPage extends Component {
             rules: [{ required: true, message: "Please enter your username!" }]
           })(
             <Input
-              prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
+              prefix={
+                <Icon
+                  type="user"
+                  style={{ color: "rgba(0,0,0,.25)", fontSize: "14px" }}
+                />
+              }
               placeholder="Username"
             />
           )}
@@ -378,25 +382,32 @@ class SignInPage extends Component {
             rules: [{ required: true, message: "Please enter your Password!" }]
           })(
             <Input
-              prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+              prefix={
+                <Icon
+                  type="lock"
+                  style={{ color: "rgba(0,0,0,.25)", fontSize: "14px" }}
+                />
+              }
               type="password"
               placeholder="Password"
             />
           )}
         </Form.Item>
-        <Form.Item>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {getFieldDecorator("remember", {
-              valuePropName: "checked",
-              initialValue: true
-            })(<Checkbox>Remember me</Checkbox>)}
-            <a
-              className="login-form-forgot"
-              style={{ fontSize: "90%" }}
-              onClick={this.toggleModal}
-            >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: 10
+          }}
+        >
+          {getFieldDecorator("remember", {
+            valuePropName: "checked",
+            initialValue: true
+          })(<Checkbox>Remember me</Checkbox>)}
+          <div>
+            <div className="forgot-password" onClick={this.toggleModal}>
               Forgot password
-            </a>
+            </div>
             <ForgotPasswordModal
               wrappedComponentRef={this.saveFormRef}
               visible={this.state.showModal}
@@ -404,29 +415,26 @@ class SignInPage extends Component {
               onCreate={this.handleCreate}
             />
           </div>
-          {this.state.isVerificationReSendDisplaying && (
-            <div
-              style={styleResendPassword}
-              onClick={() => this.postUser("sendActivationCode")}
-            >
-              <a> Resend activation email? </a>
-            </div>
-          )}
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="login-form-button"
-            style={{ width: "100%", borderRadius: 0 }}
+        </div>
+        {this.state.isVerificationReSendDisplaying && (
+          <div
+            style={styleResendPassword}
+            onClick={() => this.postUser("sendActivationCode")}
           >
-            Log in
-          </Button>
-          <div>
-            Or{" "}
-            <Link to="/signup" style={{ fontSize: "90%" }}>
-              register now!
-            </Link>
+            <a> Resend activation email? </a>
           </div>
-        </Form.Item>
+        )}
+        <Button
+          type="primary"
+          htmlType="submit"
+          className="login-form-button"
+          style={{ width: "100%", borderRadius: 0 }}
+        >
+          Log in
+        </Button>
+        <div className="existing-account-question">
+          Don't have an account? <Link to="/signup">Sign up!</Link>
+        </div>
       </Form>
     );
   }
