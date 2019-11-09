@@ -113,7 +113,10 @@ class AboutUs extends Component {
 
   generateIntro() {
     const quoteList = [
-      { quote: `“It's the best!”.`, owner: "Anonymous" },
+      {
+        quote: `Do you want to join us?`,
+        owner: ""
+      },
       {
         quote: `“I’m passionate about disrupting the career advising market and building my brilliant team”.`,
         owner: "Sako, Founder"
@@ -122,7 +125,7 @@ class AboutUs extends Component {
 
     const quotes = quoteList.map(quote => {
       return (
-        <div key={quoteList.indexOf(quote)}>
+        <div key={quoteList.indexOf(quote)} className="quote-container">
           <div className="quote">{quote.quote}</div>
           <div className="quote">{quote.owner}</div>
         </div>
