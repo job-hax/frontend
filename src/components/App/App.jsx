@@ -58,6 +58,7 @@ import {
 } from "../../utils/constants/endpoints.js";
 
 import "./style.scss";
+import Jobs from "../Jobs/Jobs.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -152,7 +153,8 @@ class App extends Component {
       "/faqs",
       "/privacypolicy",
       "/aboutus",
-      "/mentors"
+      "/mentors",
+      "/jobs"
     ];
 
     ReactGA.initialize(googleAnalyticsId);
@@ -941,6 +943,17 @@ class App extends Component {
                     />
                   )}
                 />
+                <Route
+                  exact
+                  path="/jobs"
+                  render={() => (
+                    <Jobs
+                      alert={this.showAlert}
+                      handleTokenExpiration={this.handleTokenExpiration}
+                      cookie={this.cookie}
+                    />
+                  )}
+                />
                 <Route exact path="/aboutus" render={() => <AboutUs />} />
                 <Route
                   exact
@@ -1049,6 +1062,16 @@ class App extends Component {
                   exact
                   path="/underconstruction"
                   render={() => <UnderConstruction />}
+                />
+                <Route
+                  exact
+                  path="/jobs"
+                  render={() => (
+                    <Jobs
+                      alert={this.showAlert}
+                      cookie={this.cookie}
+                    />
+                  )}
                 />
                 <Route
                   exact

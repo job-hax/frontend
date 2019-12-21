@@ -1,0 +1,154 @@
+@import "../../App/style.scss";
+
+.job-modal-container {
+
+    .application-form-container {
+        transition: .5s;
+        padding: 24px;
+        height: 300px;
+        //border-top: 1px solid $line_color;
+        box-shadow: inset 1px 4px 9px -6px $gray_text_color, inset 1px -4px 9px -6px $gray_text_color, ;
+
+        &.--invisible {
+            padding: 0px;
+            height: 0px;
+            overflow: hidden;
+        }
+
+        .title {
+            font-size: calc(100% * 16/14);
+            font-weight: bold;
+        }
+
+        .application-form-body {
+            display: flex;
+            justify-content: space-around;
+
+            .resume-container {
+                margin: 0px 40px;
+                width: 30%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .application-inputs-container {
+                width: 60%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                .input-container {
+                    display: flex;
+                    justify-content: left;
+                    align-items: center;
+
+                    label {
+                        color: $text_color;
+                        font-weight: 500;
+                        width: 80px;
+                    }
+                }
+
+                .ant-input {
+                    width: 280px;
+                    margin: 4px 0px;
+                }
+
+                .error-note {
+                    color: red;
+                    margin: -12px -8px 0px 2px;
+                }
+            }
+        }
+
+    }
+
+    .job-details-body {
+        padding: 24px;
+
+        .job-card-initial {
+            display: flex;
+            justify-content: left;
+            width: calc(100% - 80px - 20px);
+
+            .job-card-left {
+                height: 100%;
+                margin-right: 12px;
+
+                .company-logo {
+                    width: calc(100vh * 80/1440);
+                    min-width: 80px;
+                    height: auto;
+                    margin: 0px 10px 0px 0px;
+                    display: flex;
+                    align-items: center;
+                    border-radius: 4px;
+                    overflow: hidden;
+                    margin-bottom: 15px;
+
+                    img {
+                        width: calc(100vh * 80/1440);
+                        min-width: 80px;
+                        border-radius: 4px;
+                        height: auto;
+                    }
+                }
+
+            }
+
+            .job-card-right {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+
+                .job-title {
+                    font-size: calc(100% * 16/14);
+                    font-weight: bold;
+                }
+
+                .company-name {
+                    font-size: calc(100% * 14/14);
+                    font-weight: 500;
+                }
+
+                .job-location-and-type {
+                    font-size: calc(100% * 13/14);
+                    font-weight: normal;
+                    color: $gray_text_color;
+                    font-variant-caps: all-petite-caps;
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                }
+
+            }
+        }
+
+        .post-date {
+            font-size: calc(100% * 13/14);
+            color: $gray_text_color;
+            font-weight: bold;
+            font-variant-caps: all-small-caps;
+        }
+
+        .details-title {
+            font-size: calc(100% * 16/14);
+            font-weight: bold;
+            padding: 24px;
+        }
+
+        .details-text {
+            padding: 0px 24px;
+            font-size: calc(100% * 12/14);
+            font-weight: normal;
+            color: $text_color;
+        }
+    }
+}
+
+.ant-modal-body {
+    padding: 24px 0px 0px 0px;
+    overflow-y: hidden;
+}

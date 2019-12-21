@@ -2,6 +2,7 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 import { Icon, Button, Affix, Tag } from "antd";
 import parse from "html-react-parser";
+import moment from "moment";
 
 import {
   USER_TYPES,
@@ -13,7 +14,6 @@ import { apiRoot, EVENTS } from "../../utils/constants/endpoints";
 import Map from "../Metrics/SubComponents/Map/Map.jsx";
 
 import "./style.scss";
-import moment from "moment";
 
 class EventDetails extends React.Component {
   constructor(props) {

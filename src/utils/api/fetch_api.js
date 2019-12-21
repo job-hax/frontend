@@ -9,7 +9,7 @@ import {
   IS_CONSOLE_LOG_OPEN,
   errorMessage
 } from "../../utils/constants/constants.js";
-import { apiRoot } from "../constants/endpoints.js";
+import { apiRoot, jobPostingApiRoot } from "../constants/endpoints.js";
 
 const script = document.createElement("script");
 script.nonce = nonceCSP;
@@ -90,7 +90,10 @@ export async function axiosCaptcha(url, config, action) {
       "Content-Type": "application/json; charset=utf-8"
     };
   }
-  if (url.substring(0, apiRoot.length) === apiRoot) {
+  if (
+    url.substring(0, apiRoot.length) === apiRoot ||
+    url.substring(0, jobPostingApiRoot.length) === jobPostingApiRoot
+  ) {
     if (url.substring(url.length - 13, url.length) != "refreshToken/") {
       config.headers.Authorization = getCookie("jobhax_access_token");
     }
