@@ -1,5 +1,7 @@
 export const apiRoot = "https://backend.jobhax.com"; //"https://backend.jobhax.com"; //"http://10.0.0.77:8000"; //"http://0.0.0.0:8000";
 
+export const jobPostingApiRoot = "https://jobposting-be.jobhax.com";
+
 //USER REQUESTS//
 export const USERS = type => `${apiRoot}/api/users/${type}/`;
 
@@ -63,3 +65,8 @@ export const FEEDBACKS = `${apiRoot}/api/feedbacks/`;
 //COLLEGE REQUESTS//
 
 export const COLLEGES = type => `${apiRoot}/api/colleges/${type}/`;
+
+//JOBS REQUESTS//
+
+export const JOBS = parameters =>
+  `${jobPostingApiRoot}/api/positions/company${parameters}/`;

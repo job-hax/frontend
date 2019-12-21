@@ -178,6 +178,7 @@ class Header extends Component {
         <Menu.Item key="/dashboard">Dashboard</Menu.Item>
         <Menu.Item key="/metrics">Metrics</Menu.Item>
         <Menu.Item key="/companies">Companies</Menu.Item>
+        <Menu.Item key="/jobs">Jobs</Menu.Item>
       </SubMenu>
     );
 
