@@ -1,6 +1,6 @@
-export const apiRoot = "https://backend.jobhax.com"; //"https://backend.jobhax.com"; //"http://10.0.0.77:8000"; //"http://0.0.0.0:8000";
+export const apiRoot = "https://jts-be.jobhax.com"; //"https://jts-be.jobhax.com"; //"http://10.0.0.77:8000"; //"http://0.0.0.0:8000";
 
-export const jobPostingApiRoot = "https://jobposting-be.jobhax.com";
+export const jobPostingApiRoot = "https://ats-be.jobhax.com";
 
 //USER REQUESTS//
 export const USERS = type => `${apiRoot}/api/users/${type}/`;
@@ -70,3 +70,5 @@ export const COLLEGES = type => `${apiRoot}/api/colleges/${type}/`;
 
 export const JOBS = parameters =>
   `${jobPostingApiRoot}/api/positions/company${parameters}/`;
+
+export const SUBMIT_JOB_APPLICATION = `${jobPostingApiRoot}/api/positionapps/apply/`;

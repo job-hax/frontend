@@ -15,90 +15,60 @@ class ResumeUploader extends React.Component {
     super(props);
 
     this.state = {
-      files: null,
-      formData: null
+      files: this.props.formed_files
     };
 
     this.handleUpload = this.handleUpload.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
-    this.getFiles = this.getFiles.bind(this);
   }
 
-  componentDidMount() {
-    this.getFiles();
-  }
-
-  async getFiles() {
-    await this.props.handleTokenExpiration("resume Uploader getResume");
-    const { card } = this.props;
-    let config = { method: "GET" };
-    axiosCaptcha(FILES(card.id), config).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success) {
-          let rawFiles = response.data.data;
-          let formedFiles = [];
-          rawFiles.forEach(element => {
-            let file = {};
-            file.uid = element.id.toString();
-            file.name = element.name;
-            file.status = "done";
-            file.url = apiRoot + element.file;
-            formedFiles.push(file);
-          });
-          this.setState({
-            files: formedFiles
-          });
-        }
-      }
-    });
+  componentDidUpdate() {
+    if (this.props.formed_files != this.state.files) {
+      this.setState({ files: this.props.formed_files });
+    }
   }
 
   handleUpload(file) {
-    const { card } = this.props;
-    console.log(file);
-    let bodyFormData = new FormData();
-    let config = { method: "POST" };
-    config.headers = {};
-    config.headers["Content-Type"] = "multipart/form-data";
-    bodyFormData.append("file", file);
-    config.body = bodyFormData;
-    axiosCaptcha(FILES(card.id), config).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success) {
-          console.log("file submitted!");
-          this.getFiles();
-        }
+    console.log("resume upload file", file);
+    let formedFiles = [
+      {
+        uid: "1",
+        name: file.name,
+        status: "done"
       }
-    });
+    ];
+    this.props.updateParentState("resume", file);
+    this.props.updateParentState("formed_files", formedFiles);
   }
 
   handleRemove(file) {
-    const { card } = this.props;
-    let config = { method: "DELETE" };
-    console.log(file);
-    config.body = { jobapp_file_id: parseInt(file.uid) };
-    axiosCaptcha(FILES(card.id), config).then(response => {
-      if (response.statusText === "OK") {
-        if (response.data.success) {
-          this.getFiles();
-        }
-      }
+    let formedFiles = this.state.files.filter(
+      stored_file => stored_file != file
+    );
+    this.setState({
+      files: formedFiles
     });
+    this.props.updateParentState("resume", null);
+    this.props.updateParentState("formed_files", []);
   }
 
   generateFiles() {
-    console.log(this.state);
+    console.log("resume uploader state", this.state);
     return (
       <Upload
-        action={file => this.handleUpload(file)}
+        beforeUpload={file => this.handleUpload(file)}
         onRemove={this.handleRemove}
         fileList={this.state.files}
-        showUploadList={{ showRemoveIcon: true, showDownloadIcon: true }}
+        showUploadList={{ showRemoveIcon: true }}
       >
-        <Button>
-          <Icon type="upload" /> Upload CV
-        </Button>
-        {(this.state.files === null || this.state.files.length === 0) && <div style={{color:"red", textAlign:"right"}}>* required</div>}
+        {(this.state.files === null || this.state.files.length === 0) && (
+          <div>
+            <Button>
+              <Icon type="upload" /> Upload CV
+            </Button>
+            <div style={{ color: "red", textAlign: "right" }}>* required</div>
+          </div>
+        )}
       </Upload>
     );
   }
