@@ -9,12 +9,19 @@ import Spinner from "../../Partials/Spinner/Spinner.jsx";
 import { axiosCaptcha } from "../../../utils/api/fetch_api";
 import {
   apiRoot,
-  jobPostingApiRoot
+  jobPostingApiRoot,
+  JOB_APPS,
+  FILES,
+  SUBMIT_JOB_APPLICATION
 } from "../../../utils/constants/endpoints.js";
-import { IS_CONSOLE_LOG_OPEN } from "../../../utils/constants/constants.js";
+import {
+  IS_CONSOLE_LOG_OPEN,
+  successMessage
+} from "../../../utils/constants/constants.js";
 import ResumeUploader from "./ResumeUploader.jsx";
 
 import "./style.scss";
+import { generateCurrentDate } from "../../../utils/helpers/helperFunctions.js";
 
 const { TextArea } = Input;
 
@@ -30,10 +37,13 @@ class JobModal extends React.Component {
       last_name: applicant.last_name,
       email: applicant.email,
       reference: "",
-      resume: false
+      phone_number: applicant.phone_number,
+      body_form_data: false,
+      resume: null,
+      formed_files: [],
+      is_applied: false
     };
 
-    this.handleOk = this.handleOk.bind(this);
     this.updateParentState = this.updateParentState.bind(this);
   }
 
@@ -47,10 +57,73 @@ class JobModal extends React.Component {
     }
   }
 
-  async handleOk() {
-    const { first_name, last_name, email, resume, reference } = this.state;
-    this.submitApplication();
-    this.addJob();
+  submitApplication() {
+    const {
+      first_name,
+      last_name,
+      email,
+      phone_number,
+      resume,
+      reference
+    } = this.state;
+    let bodyFormData = new FormData();
+    bodyFormData.append("candidate_resume", resume);
+    bodyFormData.append("first_name", first_name);
+    bodyFormData.append("last_name", last_name);
+    bodyFormData.append("email", email);
+    bodyFormData.append("phone_number", phone_number);
+    bodyFormData.append("reference", reference);
+    bodyFormData.append("position_id", this.props.job.id);
+
+    let config = { method: "POST" };
+    config.headers = {};
+    config.headers["Content-Type"] = "multipart/form-data";
+
+    config.body = bodyFormData;
+    axiosCaptcha(SUBMIT_JOB_APPLICATION, config).then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success) {
+          successMessage("Application is submitted to the Company");
+          this.addNewApplication();
+        }
+      }
+    });
+  }
+
+  async addNewApplication() {
+    const { job } = this.props;
+    await this.props.handleTokenExpiration("jobs addNewApplication");
+    let config = { method: "POST" };
+    config.body = {
+      job_title: job.job,
+      status_id: 1,
+      company: job.company.company,
+      application_date: generateCurrentDate(),
+      source: "JOBHAX"
+    };
+    axiosCaptcha(JOB_APPS, config, "add_job").then(response => {
+      if (response.statusText === "OK") {
+        if (response.data.success) {
+          const job_info = response.data.data;
+          successMessage("Application is added to the dashboard");
+          let config = { method: "POST" };
+          config.headers = {};
+          config.headers["Content-Type"] = "multipart/form-data";
+          const bodyFormData = new FormData();
+          bodyFormData.append("file", this.state.resume);
+          config.body = bodyFormData;
+          axiosCaptcha(FILES(job_info.id), config).then(response => {
+            if (response.statusText === "OK") {
+              if (response.data.success) {
+                successMessage("CV is attached to the job application");
+                this.props.updateParentState("isJobModalShowing", "DETAILS");
+                this.setState({ is_applied: true });
+              }
+            }
+          });
+        }
+      }
+    });
   }
 
   generateApplicationFrom() {
@@ -109,6 +182,13 @@ class JobModal extends React.Component {
               is_required: true
             })}
             {inputWrapper({
+              label: "Phone: ",
+              state: "phone_number",
+              type: "phone",
+              placeholder: "2221112233",
+              is_required: true
+            })}
+            {inputWrapper({
               label: "Reference: ",
               state: "reference",
               type: "text",
@@ -118,9 +198,8 @@ class JobModal extends React.Component {
           </div>
           <div className="resume-container">
             <ResumeUploader
-              card={{ id: 1 }}
-              handleTokenExpiration={this.props.handleTokenExpiration}
               updateParentState={this.updateParentState}
+              formed_files={this.state.formed_files}
             />
           </div>
         </div>
@@ -136,18 +215,12 @@ class JobModal extends React.Component {
         <div className="job-card-initial">
           <div className="job-card-left">
             <div className="company-logo">
-              <img
-                src={
-                  apiRoot + "/media/0958d356-1a85-4e2d-9e4d-22b2ea386f54.jpg"
-                }
-              />
+              <img src={apiRoot + job.company.logo} />
             </div>
           </div>
           <div className="job-card-right">
             <div className="job-title">{job.job.job_title}</div>
-            <div className="company-name">
-              International Technological University
-            </div>
+            <div className="company-name">{job.company.company}</div>
             <div className="job-location-and-type">
               <div>
                 {job.city}, {job.state.code}, {job.country.name}
@@ -172,15 +245,26 @@ class JobModal extends React.Component {
   }
 
   generateJobModal() {
-    const { first_name, last_name, email, resume, reference } = this.state;
-    let minimumInput = first_name && last_name && email && resume;
+    const {
+      first_name,
+      last_name,
+      email,
+      resume,
+      phone_number,
+      reference,
+      is_applied
+    } = this.state;
+    let minimumInput =
+      first_name && last_name && email && resume && phone_number;
+
+    const apply_button_text = is_applied ? "Applied" : "Apply";
 
     const sendButton = () => {
       return (
         <Button
           type="primary"
           disabled={!minimumInput}
-          onClick={() => this.handleOk()}
+          onClick={() => this.submitApplication()}
           style={{ width: "105px" }}
         >
           Submit
@@ -192,12 +276,13 @@ class JobModal extends React.Component {
       return (
         <Button
           type="primary"
+          disabled={is_applied}
           onClick={() =>
             this.props.updateParentState("isJobModalShowing", "APPLY")
           }
           style={{ width: "105px" }}
         >
-          Apply
+          {apply_button_text}
         </Button>
       );
     };
@@ -224,7 +309,7 @@ class JobModal extends React.Component {
       <Modal
         title={this.state.mode}
         visible={true}
-        onOk={this.handleOk}
+        onOk={this.submitApplication}
         onCancel={() =>
           this.props.updateParentState("isJobModalShowing", false)
         }

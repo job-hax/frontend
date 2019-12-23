@@ -41,18 +41,12 @@ class JobCard extends React.Component {
           <div className="job-card-initial">
             <div className="job-card-left">
               <div className="company-logo">
-                <img
-                  src={
-                    apiRoot + "/media/0958d356-1a85-4e2d-9e4d-22b2ea386f54.jpg"
-                  }
-                />
+                <img src={apiRoot + job.company.logo} />
               </div>
             </div>
             <div className="job-card-right">
-              <div className="job-title">{job.job.job_title}</div>
-              <div className="company-name">
-                International Technological University
-              </div>
+              <div className="job-title">{job.job}</div>
+              <div className="company-name">{job.company.company}</div>
               <div className="job-location-and-type">
                 <div>
                   {job.city}, {job.state.code}, {job.country.name}
